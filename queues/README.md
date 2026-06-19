@@ -12,11 +12,13 @@
 | `done/` | выполненные задания |
 | `failed/` | задания с ошибкой |
 
-## Правило
+## Рабочий цикл (Очередь 2.0)
 
-Агент не обязан сразу менять основные файлы проекта. Безопаснее, если он:
+Захват и завершение задач — через инструмент `tools/queue.py` (атомарно, с TTL и fencing), **а не ручным перемещением файлов**:
 
-1. читает задачу из `queues/inbox/`;
-2. создает отметку в `queues/claimed/`;
-3. пишет результат в `queues/outbox/`;
-4. главный участник или сборщик переносит важное в `STATUS.md`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md` или в тему.
+1. `python tools/queue.py claim <task> <agent>` — атомарно взять задачу (печатает `claim_id`).
+2. агент пишет результат в `queues/outbox/<task>-result.md`.
+3. `python tools/queue.py complete <task> <agent> --claim-id ID` — отметить выполненной (done-маркер, очистка `inbox`/`claim`).
+4. главный участник/сборщик переносит важное в `STATUS.md`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md` или в тему.
+
+Подробности и гарантии (атомарность `O_EXCL`, TTL-lease, fencing-token) — в `tools/README.md`. Claim хранится по детерминированному пути `queues/claimed/<task>.claim.md` — это и даёт атомарность. `python tools/queue.py list` показывает занятость, `check` — осиротевшие claim.

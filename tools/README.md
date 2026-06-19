@@ -106,3 +106,24 @@ next: следующий шаг
 Зачем: агенты создают/правят **свои** файлы задач, а не общую таблицу — нет конфликтов записи на `TASKS.md`. Поля `priority`/`risk`/`depends_on` пока хранятся для будущего (DAG, риск-гейтинг), в индексной таблице не показываются.
 
 Цикл: создал/изменил `tasks/T-XXX.md` → `python tools/generate.py` → коммит (hook проверит `--check`). Поля `priority`/`risk`/`depends_on` — задел под Этапы D–E из `темы/scaling-design.md`.
+
+## Очередь 2.0 (`queue.py`, T-009)
+
+Атомарный рабочий цикл задач для многих агентов. Агент **не двигает файлы руками** — вызывает инструмент, инструмент меняет `queues/*` консистентно.
+
+```bash
+python tools/queue.py list                                  # что в inbox и кем занято
+python tools/queue.py claim    <task> <agent> [--ttl 30]    # атомарно взять задачу → печатает claim_id
+python tools/queue.py complete <task> <agent> --claim-id ID [--result PATH]
+python tools/queue.py fail     <task> <agent> --claim-id ID [--reason TEXT]
+python tools/queue.py release  <task> <agent> --claim-id ID
+python tools/queue.py check                                 # claim без задания/без done
+```
+
+`<task>` — имя файла из `queues/inbox/<task>.md` (без `.md`). Гарантии:
+
+- **Атомарность:** claim создаётся через `O_CREAT|O_EXCL` — два агента не возьмут задачу одновременно (второй получит `BUSY`).
+- **TTL:** claim «свежий», пока lease в будущем; протухший (упавший агент) можно перехватить.
+- **Fencing:** уникальный `claim_id`; `complete`/`fail` требуют его — агент, чей claim перехватили, не завершит чужую задачу.
+
+Это рабочая замена ручному перемещению файлов между `inbox/claimed/outbox/done/failed` (дефект из смоук-теста T-004).
