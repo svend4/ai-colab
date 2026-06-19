@@ -42,6 +42,7 @@
 | 2026-06-19 | Claude | T-008 завершён: шардированы и вопросы (`questions/Q-XXX.md`), и решения (`decisions/D-XXX.md`); `QUESTIONS.md`/`DECISIONS.md` стали генерируемыми индексами; генератор и валидатор расширены. | `questions/*`, `decisions/*`, `tools/*`, `QUESTIONS.md`, `DECISIONS.md` |
 | 2026-06-19 | Claude | T-010: валидатор v2 — `check_sources` проверяет файлы-источники tasks/questions/decisions (front-matter, уникальность id, имя=id, статусы, целостность `depends_on`); аддитивно, существующие проверки не тронуты. Самопроверено. | `tools/validate.py`, `tasks/T-010.md` |
 | 2026-06-19 | Codex | Перепроверен новый машинный индекс: `index.json` сгенерирован из front-matter, `generate.py --check` теперь проверяет его актуальность; назначение описано в `tools/README.md`. | `index.json`, `tools/generate.py`, `tools/README.md`, `темы/scaling-design.md` |
+| 2026-06-19 | Claude | T-012 роли (`tools/permissions.py` + `permissions.json`: проверка зоны записи агента) и T-013 git-flow (`tools/flow.py`: ветка-на-агента + merge-гейт). Совещательные guard'ы, самопроверено. Закрывает пункты 5–6 роадмапа. | `tools/permissions.py`, `tools/permissions.json`, `tools/flow.py`, `tasks/T-012.md`, `tasks/T-013.md` |
 
 ## Активные темы
 

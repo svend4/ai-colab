@@ -1,0 +1,15 @@
+{
+  "claude": ["**"],
+  "codex": ["**"],
+  "mavis": [
+    "tasks/**",
+    "questions/**",
+    "decisions/**",
+    "темы/**",
+    "queues/**",
+    "docs/**",
+    "code/**",
+    "STATUS.md",
+    "Диалог.md"
+  ]
+}

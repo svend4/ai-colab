@@ -164,6 +164,28 @@
       "depends_on": "[T-008]",
       "topic": "темы/scaling-design.md",
       "next": "index.json генерится из front-matter, --check контролирует свежесть; Codex верифицировал и задокументировал"
+    },
+    {
+      "id": "T-012",
+      "title": "Роли и path-права (permissions.py)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "medium",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "permissions.py + permissions.json проверяют, что агент пишет в свою зону; совещательный guard (не безопасность)"
+    },
+    {
+      "id": "T-013",
+      "title": "Git-flow для агентов (flow.py)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-012]",
+      "topic": "темы/scaling-design.md",
+      "next": "flow.py печатает команды ветка-на-агента + merge-гейт (validate/generate/permissions); --run выполняет"
     }
   ],
   "questions": [
