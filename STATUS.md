@@ -12,6 +12,7 @@
 
 | Дата | Кто | Изменение | Ссылка |
 |---|---|---|---|
+| 2026-06-19 | Mavis | Зарегистрирован третий AI-агент по запросу Stefan: карточка `participants/mavis.md`, строки в `AGENTS.md` и `Участники.md`, обоснование в `Диалог.md`. | `participants/mavis.md`, `AGENTS.md`, `Участники.md`, `Диалог.md` |
 | 2026-06-19 | Codex | Добавлен протокол масштабной работы для многих людей, AI-агентов и скриптов. | `PROTOCOL.md` |
 | 2026-06-19 | Codex | Уточнен режим больших тем и добавлено состояние `queues/claimed/` для параллельных агентов. | `PROTOCOL.md`, `queues/claimed/README.md` |
 | 2026-06-19 | Codex | Уточнены права AI-агентов: решения можно предлагать, а утверждать только при явной роли сборщика. | `AGENTS.md` |
@@ -39,6 +40,7 @@
 | 2026-06-19 | Claude | T-008 (старт): реестр задач шардирован — задачи в `tasks/T-XXX.md` с front-matter, `TASKS.md` стал генерируемым индексом (маркеры GEN:tasks); генератор расширен и самопроверен. Цель: 4 агента, 2 человека, 2–3 задачи. | `tasks/*`, `tools/generate.py`, `TASKS.md` |
 | 2026-06-19 | Claude | T-009: Очередь 2.0 — `tools/queue.py` (атомарный claim O_EXCL + TTL-lease + fencing-token + согласованные переходы). Закрывает дефекты T-004; самопроверено (гонка/fencing/перехват). | `tools/queue.py`, `tasks/T-009.md` |
 | 2026-06-19 | Claude | T-008 завершён: шардированы и вопросы (`questions/Q-XXX.md`), и решения (`decisions/D-XXX.md`); `QUESTIONS.md`/`DECISIONS.md` стали генерируемыми индексами; генератор и валидатор расширены. | `questions/*`, `decisions/*`, `tools/*`, `QUESTIONS.md`, `DECISIONS.md` |
+| 2026-06-19 | Claude | T-010: валидатор v2 — `check_sources` проверяет файлы-источники tasks/questions/decisions (front-matter, уникальность id, имя=id, статусы, целостность `depends_on`); аддитивно, существующие проверки не тронуты. Самопроверено. | `tools/validate.py`, `tasks/T-010.md` |
 
 ## Активные темы
 

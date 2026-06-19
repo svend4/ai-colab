@@ -82,6 +82,20 @@ def table_rows(text, id_prefix):
     return rows
 
 
+def parse_front_matter(text):
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}
+    fm = {}
+    for line in text[3:end].strip().splitlines():
+        if ":" in line:
+            k, v = line.split(":", 1)
+            fm[k.strip()] = v.strip()
+    return fm
+
+
 # ---------- DECISIONS ----------
 def parse_decisions():
     # Источник правды — decisions/*.md; DECISIONS.md — генерируемый индекс-таблица.
@@ -205,10 +219,62 @@ def check_naming():
         ok("Все имена файлов ASCII (D-005)")
 
 
+# ---------- источники: tasks/ questions/ decisions/ (валидатор v2) ----------
+def check_sources():
+    registries = [
+        ("tasks", "T-", {"todo", "doing", "blocked", "review", "done"}),
+        ("questions", "Q-", {"open", "answered", "closed"}),
+        ("decisions", "D-", {"accepted", "proposed", "rejected", "superseded"}),
+    ]
+    task_ids = set()
+    task_deps = {}
+    for dirname, prefix, valid_status in registries:
+        d = os.path.join(ROOT, dirname)
+        if not os.path.isdir(d):
+            continue
+        seen = set()
+        for fn in sorted(os.listdir(d)):
+            if not fn.endswith(".md") or fn == "README.md":
+                continue
+            rel = "%s/%s" % (dirname, fn)
+            text = read(rel)
+            if text is None:
+                continue
+            fm = parse_front_matter(text)
+            fid = fm.get("id")
+            if not fid:
+                err("%s: нет front-matter id" % rel)
+                continue
+            if not fid.startswith(prefix):
+                err("%s: id «%s» без префикса %s" % (rel, fid, prefix))
+            if fid in seen:
+                err("%s: дубликат id %s" % (dirname, fid))
+            seen.add(fid)
+            if fn[:-3] != fid:
+                warn("%s: имя файла не совпадает с id %s" % (rel, fid))
+            if not fm.get("title"):
+                err("%s: нет front-matter title" % rel)
+            st = fm.get("status")
+            if not st:
+                err("%s: нет front-matter status" % rel)
+            elif st not in valid_status:
+                warn("%s: нестандартный status «%s»" % (rel, st))
+            if dirname == "tasks":
+                task_deps[fid] = fm.get("depends_on", "")
+        if dirname == "tasks":
+            task_ids = set(seen)
+    for fid, dep in task_deps.items():
+        for ref in re.findall(r"T-\d+", dep):
+            if ref not in task_ids:
+                err("tasks/%s.md: depends_on → несуществующая задача %s" % (fid, ref))
+    ok("sources: tasks/questions/decisions проверены (front-matter, id, статусы, depends_on)")
+
+
 def main():
     decisions = parse_decisions()
     parse_questions(decisions)
     parse_tasks()
+    check_sources()
     check_nav()
     check_naming()
 
