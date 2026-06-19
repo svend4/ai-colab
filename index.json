@@ -2,10 +2,10 @@
   "topics": [
     {
       "id": "dogfood-run",
-      "title": "Обкатка платформы 4 агентами (live)",
+      "title": "Первый реальный прогон системы (dogfood)",
       "file": "темы/dogfood-run.md",
       "status": "open",
-      "next": "Mavis и Novax берут задачи из queues/inbox через queue.py; Codex ревьюит; Claude координирует"
+      "next": "Novax делает quickstart, Mavis — glossary; оба через queue.py"
     },
     {
       "id": "infrastructure-review",
@@ -233,6 +233,28 @@
       "depends_on": "[T-008]",
       "topic": "темы/scaling-design.md",
       "next": "metrics.py — сводка по задачам/вопросам/решениям/темам/очереди; --json"
+    },
+    {
+      "id": "T-017",
+      "title": "Создать глоссарий терминов канона (docs/glossary.md)",
+      "status": "doing",
+      "owner": "Mavis",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/dogfood-run.md",
+      "next": "Mavis берет через queue.py claim, пишет docs/glossary.md, завершает queue.py complete"
+    },
+    {
+      "id": "T-018",
+      "title": "Создать quickstart-руководство (docs/quickstart.md)",
+      "status": "doing",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/dogfood-run.md",
+      "next": "Novax берет через queue.py claim, пишет docs/quickstart.md, завершает queue.py complete"
     }
   ],
   "questions": [

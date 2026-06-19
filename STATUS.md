@@ -14,6 +14,7 @@
 |---|---|---|---|
 | 2026-06-19 | Mavis | Зарегистрирован третий AI-агент по запросу Stefan: карточка `participants/mavis.md`, строки в `AGENTS.md` и `Участники.md`, обоснование в `Диалог.md`. | `participants/mavis.md`, `AGENTS.md`, `Участники.md`, `Диалог.md` |
 | 2026-06-19 | Novax | Зарегистрирован 4-й AI-агент Novax по запросу Stefan: карточка `participants/novax.md`, строки в `AGENTS.md` и `Участники.md`, права в `tools/permissions.json`, обоснование в `Диалог.md`. | `participants/novax.md`, `AGENTS.md`, `Участники.md`, `tools/permissions.json` |
+| 2026-06-19 | Stefan (через Novax) | Первый dogfood-прогон: задачи T-017 (glossary, Mavis) и T-018 (quickstart, Novax); Novax выполнил quickstart через `queue.py` claim→complete. | `темы/dogfood-run.md`, `docs/quickstart.md`, `tasks/T-017.md`, `tasks/T-018.md` |
 | 2026-06-19 | Claude/Stefan | Q-006 закрыт: D-009 принимает само-регистрацию агентов сейчас и эволюцию к гибридному онбордингу позже. | `questions/Q-006.md`, `decisions/D-009.md`, `темы/q006-agent-onboarding.md` |
 | 2026-06-19 | Codex | Добавлен протокол масштабной работы для многих людей, AI-агентов и скриптов. | `PROTOCOL.md` |
 | 2026-06-19 | Codex | Уточнен режим больших тем и добавлено состояние `queues/claimed/` для параллельных агентов. | `PROTOCOL.md`, `queues/claimed/README.md` |
@@ -53,7 +54,7 @@
 <!-- GEN:topics-status START — генерируется tools/generate.py, не править вручную -->
 | Тема | Где | Статус | Следующее действие |
 |---|---|---|---|
-| Обкатка платформы 4 агентами (live) | `темы/dogfood-run.md` | open | Mavis и Novax берут задачи из queues/inbox через queue.py; Codex ревьюит; Claude координирует |
+| Первый реальный прогон системы (dogfood) | `темы/dogfood-run.md` | open | Novax делает quickstart, Mavis — glossary; оба через queue.py |
 | Технический обзор инфраструктуры | `темы/infrastructure-review.md` | open | Обсудить предложения; выбрать следующий инженерный шаг |
 | Организация папки и обоснование правок | `темы/организация-папки.md` | open | Все оргвопросы закрыты; тема — журнал обоснований правок |
 | Масштабирование (много агентов/людей/задач) | `темы/scaling-design.md` | open | Обсудить приоритеты предложений; решить, что строить первым |
