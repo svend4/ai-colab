@@ -28,6 +28,17 @@ import os
 import sys
 import glob
 
+
+def configure_output():
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name, None)
+        if stream is None or not hasattr(stream, "reconfigure"):
+            continue
+        stream.reconfigure(encoding="utf-8", errors="replace")
+
+
+configure_output()
+
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
