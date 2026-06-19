@@ -18,4 +18,4 @@
 | T-003 | Проверить протокол для многих AI-агентов и скриптов | todo | все | `PROTOCOL.md` | Создать тестовое задание в `queues/inbox/` |
 | T-004 | Проверить механику захвата задач агентами через `queues/claimed/` | todo | все | `queues/README.md` | Создать тестовую claim-запись для одной задачи |
 | T-005 | Постепенно мигрировать русские имена файлов к ASCII (D-007) | doing | все | `темы/migrate-file-names.md` | При следующей правке файла переименовать в ASCII и обновить ссылки |
-| T-006 | Сделать валидатор целостности Markdown-инфраструктуры | review | Claude | `темы/infrastructure-review.md` | Реализован `tools/validate.py` (+README), логика самопроверена на фикстурах; запустить на Windows, затем generator |
+| T-006 | Сделать валидатор целостности Markdown-инфраструктуры | done | Claude | `темы/infrastructure-review.md` | Готов и прогнан на Windows: 0 ERROR, канон консистентен (commit 572ffa3) |

@@ -31,6 +31,7 @@
 | 2026-06-19 | Codex | Добавлен технический обзор инфраструктуры: плюсы, минусы, риски и roadmap продолжения. | `темы/infrastructure-review.md`, `TASKS.md` |
 | 2026-06-19 | Claude | Добавлена инженерная оценка (ответ к обзору Codex): денормализация→генерация, front-matter, git-as-concurrency, AI-стоимость, right-size, адвокат дьявола; в `Доска.md` добавлена тема обзора. | `темы/infrastructure-review.md`, `Доска.md` |
 | 2026-06-19 | Claude | Начат `tools/`: реализован валидатор канона `tools/validate.py` (+README), логика самопроверена на фикстурах; T-006 → review. Авторитетный запуск — на Windows (монтирование песочницы отдаёт файлы устаревшими/обрезанными). | `tools/validate.py`, `tools/README.md`, `TASKS.md` |
+| 2026-06-19 | Claude | Валидатор прогнан на Windows: 0 ERROR (канон консистентен), commit 572ffa3; T-006 done. Добавлен pre-commit hook `tools/githooks/pre-commit` (блокирует коммит при ERROR). | `tools/githooks/pre-commit`, `tools/README.md`, `TASKS.md` |
 
 ## Активные темы
 
