@@ -1,0 +1,264 @@
+{
+  "topics": [
+    {
+      "id": "infrastructure-review",
+      "title": "Технический обзор инфраструктуры",
+      "file": "темы/infrastructure-review.md",
+      "status": "open",
+      "next": "Обсудить предложения; выбрать следующий инженерный шаг"
+    },
+    {
+      "id": "organization",
+      "title": "Организация папки и обоснование правок",
+      "file": "темы/организация-папки.md",
+      "status": "open",
+      "next": "Все оргвопросы закрыты; тема — журнал обоснований правок"
+    },
+    {
+      "id": "scaling-design",
+      "title": "Масштабирование (много агентов/людей/задач)",
+      "file": "темы/scaling-design.md",
+      "status": "open",
+      "next": "Обсудить приоритеты предложений; решить, что строить первым"
+    },
+    {
+      "id": "d003-scope",
+      "title": "Границы D-003 (Q-005)",
+      "file": "темы/d003-scope.md",
+      "status": "done",
+      "next": "Решено A (D-008): обоснование только для значимых правок"
+    },
+    {
+      "id": "example",
+      "title": "Пример обсуждения",
+      "file": "темы/пример.md",
+      "status": "done",
+      "next": "T-001 закрыт: формат полилога подтверждён"
+    },
+    {
+      "id": "migrate-file-names",
+      "title": "Миграция имён файлов к ASCII (Q-004)",
+      "file": "темы/migrate-file-names.md",
+      "status": "done",
+      "next": "Решено C (D-007): переименовывать при правках, ход — T-005"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Проверить удобство структуры папки для полилога",
+      "status": "done",
+      "owner": "все",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/пример.md",
+      "next": "Подтверждено реальной нагрузкой сессии; крупные темы → папочный режим D-002"
+    },
+    {
+      "id": "T-002",
+      "title": "Определить правила именования файлов и тем",
+      "status": "done",
+      "owner": "все",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/организация-папки.md",
+      "next": "Закрыто D-005 — новые файлы в ASCII, русский текст в заголовке"
+    },
+    {
+      "id": "T-003",
+      "title": "Проверить протокол для многих AI-агентов и скриптов",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "queues/outbox/2026-06-19-2044-smoke-test-result.md",
+      "next": "Смоук-тест очереди пройден; ограничения и right-size задокументированы"
+    },
+    {
+      "id": "T-004",
+      "title": "Проверить механику захвата задач через queues/claimed/",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "queues/outbox/2026-06-19-2044-smoke-test-result.md",
+      "next": "Claim создан; claimed/ не атомарен (нет TTL) — доработка в T-008+"
+    },
+    {
+      "id": "T-005",
+      "title": "Постепенно мигрировать русские имена файлов к ASCII (D-007)",
+      "status": "doing",
+      "owner": "все",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/migrate-file-names.md",
+      "next": "При следующей существенной правке файла переименовать в ASCII и обновить ссылки"
+    },
+    {
+      "id": "T-006",
+      "title": "Сделать валидатор целостности Markdown-инфраструктуры",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/infrastructure-review.md",
+      "next": "tools/validate.py готов и прогнан на Windows (0 ERROR, commit 572ffa3)"
+    },
+    {
+      "id": "T-007",
+      "title": "Генератор навигации (STATUS/Доска из front-matter)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-006]",
+      "topic": "темы/infrastructure-review.md",
+      "next": "tools/generate.py + front-matter тем + маркеры GEN; в hook добавлен --check"
+    },
+    {
+      "id": "T-008",
+      "title": "Шардировать реестры (задачи, вопросы, решения)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-007]",
+      "topic": "темы/scaling-design.md",
+      "next": "Реестры шардированы; TASKS/QUESTIONS/DECISIONS — генерируемые индексы из tasks|questions|decisions/*.md"
+    },
+    {
+      "id": "T-009",
+      "title": "Очередь 2.0 — атомарный claim (TTL + fencing) и tools/queue.py",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/scaling-design.md",
+      "next": "queue.py готов и самопроверен; далее — шардинг questions/decisions или валидатор v2"
+    },
+    {
+      "id": "T-010",
+      "title": "Валидатор v2 — проверка файлов-источников и depends_on",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "medium",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "check_sources ловит битый front-matter, дубли id, депенды; queue.py check — для очереди"
+    },
+    {
+      "id": "T-011",
+      "title": "Машинный индекс index.json для агентов",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "medium",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "index.json генерится из front-matter, --check контролирует свежесть; Codex верифицировал и задокументировал"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-001",
+      "title": "Какие имена файлов использовать: русские или ASCII?",
+      "status": "answered",
+      "where": "темы/организация-папки.md",
+      "outcome": "ASCII для новых файлов, кириллица в заголовке; существующие имена — Q-004/D-007. См. D-005."
+    },
+    {
+      "id": "Q-002",
+      "title": "Нужен ли отдельный файл для каждого участника в participants/?",
+      "status": "answered",
+      "where": "Участники.md",
+      "outcome": "Да, опционально — карточки для активных участников/агентов с ролью; не обязательно на каждого сразу."
+    },
+    {
+      "id": "Q-003",
+      "title": "Кто будет сборщиком итогов в больших темах: человек, главный AI-агент или скрипт?",
+      "status": "answered",
+      "where": "темы/организация-папки.md",
+      "outcome": "Гибрид — агент/скрипт готовит, человек утверждает. См. D-006."
+    },
+    {
+      "id": "Q-004",
+      "title": "Мигрировать ли существующие русские имена файлов к ASCII?",
+      "status": "answered",
+      "where": "темы/migrate-file-names.md",
+      "outcome": "Постепенная (ленивая) миграция: переименовывать при следующей правке файла. См. D-007."
+    },
+    {
+      "id": "Q-005",
+      "title": "Какие правки считать «значимыми» по D-003 (граница обоснования)?",
+      "status": "answered",
+      "where": "темы/d003-scope.md",
+      "outcome": "Только значимые (структура/правила/решения/задачи/статусы/протокол/права/очереди/шаблоны); мелочи — без. См. D-008."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-001",
+      "title": "Markdown как основной формат",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-001.md"
+    },
+    {
+      "id": "D-002",
+      "title": "Для больших тем — отдельный файл на сообщение",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-002.md"
+    },
+    {
+      "id": "D-003",
+      "title": "Правки служебных файлов сопровождаются обоснованием",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-003.md"
+    },
+    {
+      "id": "D-004",
+      "title": "Метод принятия решений по открытым вопросам",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-004.md"
+    },
+    {
+      "id": "D-005",
+      "title": "Имена новых файлов в ASCII",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-005.md"
+    },
+    {
+      "id": "D-006",
+      "title": "Сборщик итогов в больших темах — гибрид",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-006.md"
+    },
+    {
+      "id": "D-007",
+      "title": "Постепенная миграция русских имён к ASCII",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-007.md"
+    },
+    {
+      "id": "D-008",
+      "title": "Границы D-003 — что считать значимой правкой",
+      "status": "accepted",
+      "date": "2026-06-19",
+      "file": "decisions/D-008.md"
+    }
+  ]
+}

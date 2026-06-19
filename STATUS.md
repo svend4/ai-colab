@@ -41,6 +41,7 @@
 | 2026-06-19 | Claude | T-009: Очередь 2.0 — `tools/queue.py` (атомарный claim O_EXCL + TTL-lease + fencing-token + согласованные переходы). Закрывает дефекты T-004; самопроверено (гонка/fencing/перехват). | `tools/queue.py`, `tasks/T-009.md` |
 | 2026-06-19 | Claude | T-008 завершён: шардированы и вопросы (`questions/Q-XXX.md`), и решения (`decisions/D-XXX.md`); `QUESTIONS.md`/`DECISIONS.md` стали генерируемыми индексами; генератор и валидатор расширены. | `questions/*`, `decisions/*`, `tools/*`, `QUESTIONS.md`, `DECISIONS.md` |
 | 2026-06-19 | Claude | T-010: валидатор v2 — `check_sources` проверяет файлы-источники tasks/questions/decisions (front-matter, уникальность id, имя=id, статусы, целостность `depends_on`); аддитивно, существующие проверки не тронуты. Самопроверено. | `tools/validate.py`, `tasks/T-010.md` |
+| 2026-06-19 | Codex | Перепроверен новый машинный индекс: `index.json` сгенерирован из front-matter, `generate.py --check` теперь проверяет его актуальность; назначение описано в `tools/README.md`. | `index.json`, `tools/generate.py`, `tools/README.md`, `темы/scaling-design.md` |
 
 ## Активные темы
 

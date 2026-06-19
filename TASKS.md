@@ -24,4 +24,5 @@
 | T-008 | Шардировать реестры (задачи, вопросы, решения) | done | Claude | `темы/scaling-design.md` | Реестры шардированы; TASKS/QUESTIONS/DECISIONS — генерируемые индексы из tasks|questions|decisions/*.md |
 | T-009 | Очередь 2.0 — атомарный claim (TTL + fencing) и tools/queue.py | done | Claude | `темы/scaling-design.md` | queue.py готов и самопроверен; далее — шардинг questions/decisions или валидатор v2 |
 | T-010 | Валидатор v2 — проверка файлов-источников и depends_on | done | Claude | `темы/scaling-design.md` | check_sources ловит битый front-matter, дубли id, депенды; queue.py check — для очереди |
+| T-011 | Машинный индекс index.json для агентов | done | Claude | `темы/scaling-design.md` | index.json генерится из front-matter, --check контролирует свежесть; Codex верифицировал и задокументировал |
 <!-- GEN:tasks END -->

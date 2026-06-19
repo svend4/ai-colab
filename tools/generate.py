@@ -27,6 +27,7 @@ Front-matter темы (наш простой парсер: key: value, value —
 import os
 import sys
 import glob
+import json
 
 
 def configure_output():
@@ -114,6 +115,9 @@ def collect_tasks():
                 "title": fm["title"],
                 "status": fm.get("status", "todo"),
                 "owner": fm.get("owner", "—"),
+                "priority": fm.get("priority", ""),
+                "risk": fm.get("risk", ""),
+                "depends_on": fm.get("depends_on", ""),
                 "topic": fm.get("topic", ""),
                 "next": fm.get("next", ""),
             }
@@ -217,6 +221,34 @@ def replace_block(text, marker, new_inner):
     return text[:close] + "\n" + new_inner + "\n" + text[e:]
 
 
+def build_index():
+    # Машинный индекс всего канона из front-matter (детерминированный, без таймстампов).
+    topics = [
+        {"id": t["id"], "title": t["title"], "file": t["file"],
+         "status": t["status"], "next": t["next"]}
+        for t in collect_topics()
+    ]
+    tasks = [
+        {"id": t["id"], "title": t["title"], "status": t["status"],
+         "owner": t["owner"], "priority": t.get("priority", ""),
+         "risk": t.get("risk", ""), "depends_on": t.get("depends_on", ""),
+         "topic": t["topic"], "next": t["next"]}
+        for t in collect_tasks()
+    ]
+    questions = [
+        {"id": q["id"], "title": q["title"], "status": q["status"],
+         "where": q["where"], "outcome": q["outcome"]}
+        for q in collect_questions()
+    ]
+    decisions = [
+        {"id": d["id"], "title": d["title"], "status": d["status"],
+         "date": d["date"], "file": d["file"]}
+        for d in collect_decisions()
+    ]
+    return {"topics": topics, "tasks": tasks,
+            "questions": questions, "decisions": decisions}
+
+
 def main():
     check = "--check" in sys.argv
     topics = collect_topics()
@@ -252,6 +284,24 @@ def main():
                 print("OK: обновлён %s" % fname)
         else:
             print("OK: %s уже актуален" % fname)
+
+    # index.json — машинный индекс (целый файл, без маркеров)
+    index_text = json.dumps(build_index(), ensure_ascii=False, indent=2) + "\n"
+    ipath = os.path.join(ROOT, "index.json")
+    old_index = ""
+    if os.path.exists(ipath):
+        with open(ipath, encoding="utf-8") as f:
+            old_index = f.read()
+    if index_text != old_index:
+        changed_any = True
+        if check:
+            print("STALE: index.json")
+        else:
+            with open(ipath, "w", encoding="utf-8", newline="\n") as f:
+                f.write(index_text)
+            print("OK: обновлён index.json")
+    else:
+        print("OK: index.json актуален")
 
     if error:
         sys.exit(1)
