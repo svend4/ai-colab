@@ -101,6 +101,41 @@ def render_board_table(topics):
     return "\n".join(out)
 
 
+def collect_tasks():
+    tasks = []
+    for path in glob.glob(os.path.join(ROOT, "tasks", "*.md")):
+        with open(path, encoding="utf-8") as f:
+            fm = parse_front_matter(f.read())
+        if not fm.get("id") or not fm.get("title"):
+            continue  # задача без id/title в индекс не попадает
+        tasks.append(
+            {
+                "id": fm["id"],
+                "title": fm["title"],
+                "status": fm.get("status", "todo"),
+                "owner": fm.get("owner", "—"),
+                "topic": fm.get("topic", ""),
+                "next": fm.get("next", ""),
+            }
+        )
+    tasks.sort(key=lambda t: t["id"])
+    return tasks
+
+
+def render_tasks_table(tasks):
+    out = [
+        "| ID | Задача | Статус | Ответственный | Тема | Следующий шаг |",
+        "|---|---|---|---|---|---|",
+    ]
+    for t in tasks:
+        topic = "`%s`" % t["topic"] if t["topic"] else "—"
+        out.append(
+            "| %s | %s | %s | %s | %s | %s |"
+            % (t["id"], t["title"], t["status"], t["owner"], topic, t["next"])
+        )
+    return "\n".join(out)
+
+
 def replace_block(text, marker, new_inner):
     start = "<!-- GEN:%s START" % marker
     end = "<!-- GEN:%s END -->" % marker
@@ -121,6 +156,7 @@ def main():
     targets = [
         ("STATUS.md", "topics-status", render_status_table(topics)),
         ("Доска.md", "topics-board", render_board_table(topics)),
+        ("TASKS.md", "tasks", render_tasks_table(collect_tasks())),
     ]
     changed_any = False
     error = False

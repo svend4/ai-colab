@@ -77,3 +77,32 @@ python tools/generate.py --check  # ничего не писать; exit 1, ес
 Между маркерами `<!-- GEN:topics-status START ... -->` … `END` и `<!-- GEN:topics-board START ... -->` … `END` править вручную не нужно — перезапишется. Остальной текст `STATUS.md`/`Доска.md` (включая журнал «Что изменилось») не трогается.
 
 Рабочий цикл: меняешь `status`/`next` в front-matter темы → `python tools/generate.py` → `git add -A && git commit` (hook проверит, что навигация актуальна).
+
+## Шардирование реестра задач (T-008)
+
+Чтобы убрать «горячий файл» при многих агентах, **каждая задача — отдельный файл** `tasks/T-XXX.md` с front-matter, а `TASKS.md` — генерируемый индекс (между маркерами `<!-- GEN:tasks … -->`).
+
+Front-matter задачи:
+
+```md
+---
+id: T-009
+type: task
+title: Краткое название
+status: todo            # todo | doing | blocked | review | done
+owner: Claude           # кто отвечает
+priority: normal        # low | normal | high
+risk: low               # low | medium | high
+topic: темы/scaling-design.md
+depends_on: [T-008]     # зависимости (для будущего DAG)
+next: следующий шаг
+---
+
+# T-009 — Краткое название
+
+Человеческое описание / заметки.
+```
+
+Зачем: агенты создают/правят **свои** файлы задач, а не общую таблицу — нет конфликтов записи на `TASKS.md`. Поля `priority`/`risk`/`depends_on` пока хранятся для будущего (DAG, риск-гейтинг), в индексной таблице не показываются.
+
+Цикл: создал/изменил `tasks/T-XXX.md` → `python tools/generate.py` → коммит (hook проверит `--check`). Поля `priority`/`risk`/`depends_on` — задел под Этапы D–E из `темы/scaling-design.md`.
