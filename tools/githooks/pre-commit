@@ -24,11 +24,18 @@ if [ -z "$PY" ]; then
   exit 0
 fi
 
-"$PY" tools/validate.py
-if [ $? -ne 0 ]; then
+"$PY" tools/validate.py || {
   echo ""
   echo "pre-commit: валидатор канона нашёл ошибки (см. выше). Коммит отклонён."
   echo "Исправь их или используй 'git commit --no-verify', если уверен."
   exit 1
-fi
+}
+
+"$PY" tools/generate.py --check || {
+  echo ""
+  echo "pre-commit: навигация устарела. Запусти 'python tools/generate.py', добавь изменения (git add) и закоммить снова."
+  echo "Или 'git commit --no-verify', если уверен."
+  exit 1
+}
+
 exit 0

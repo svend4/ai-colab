@@ -5,6 +5,8 @@
 ## Состав
 
 - `validate.py` — валидатор канона. Проверяет инварианты между `DECISIONS.md`, `QUESTIONS.md`, `TASKS.md`, `Доска.md`, `STATUS.md` и темами. Заменяет ручную «перепроварку».
+- `generate.py` — генератор навигации: таблицы тем в `STATUS.md` и `Доска.md` собираются из front-matter тем. Режим `--check` для hook/CI.
+- `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
 
 ## Как запускать
 
@@ -44,3 +46,34 @@ git config core.hooksPath tools/githooks
 ```
 
 Разовый пропуск: `git commit --no-verify`. На Unix может понадобиться `chmod +x tools/githooks/pre-commit` (на Windows с Git for Windows не требуется).
+
+## Генератор навигации (`generate.py`)
+
+Таблицы тем в `STATUS.md` («Активные темы») и `Доска.md` («Темы») больше не редактируются руками — они **генерируются** из front-matter каждого файла `темы/*.md`. Один источник на тему ⇒ две таблицы не могут разойтись (класс дрейфа устранён структурно).
+
+Front-matter темы (вверху файла, парсер простой: `ключ: значение`):
+
+```md
+---
+id: organization
+title: Организация папки и обоснование правок
+status: open
+wait: все
+next: краткий следующий шаг
+---
+
+# Тема: ...
+```
+
+Поля: `id` (для сортировки), `title`, `status` (`open`/`needs-decision`/`waiting`/`done`/`archive`), `wait` (колонка «Ждём ответ от» в Доске), `next` (следующий шаг). Тема без `title` в навигацию не попадает.
+
+Запуск:
+
+```bash
+python tools/generate.py          # переписать таблицы между маркерами GEN:
+python tools/generate.py --check  # ничего не писать; exit 1, если навигация устарела (используется в hook)
+```
+
+Между маркерами `<!-- GEN:topics-status START ... -->` … `END` и `<!-- GEN:topics-board START ... -->` … `END` править вручную не нужно — перезапишется. Остальной текст `STATUS.md`/`Доска.md` (включая журнал «Что изменилось») не трогается.
+
+Рабочий цикл: меняешь `status`/`next` в front-matter темы → `python tools/generate.py` → `git add -A && git commit` (hook проверит, что навигация актуальна).

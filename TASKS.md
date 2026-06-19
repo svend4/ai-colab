@@ -19,3 +19,4 @@
 | T-004 | Проверить механику захвата задач агентами через `queues/claimed/` | done | Claude | `queues/outbox/2026-06-19-2044-smoke-test-result.md` | Claim создан; claimed/ не атомарен (нет TTL) — доработка по необходимости |
 | T-005 | Постепенно мигрировать русские имена файлов к ASCII (D-007) | doing | все | `темы/migrate-file-names.md` | При следующей правке файла переименовать в ASCII и обновить ссылки |
 | T-006 | Сделать валидатор целостности Markdown-инфраструктуры | done | Claude | `темы/infrastructure-review.md` | Готов и прогнан на Windows: 0 ERROR, канон консистентен (commit 572ffa3) |
+| T-007 | Генератор навигации (STATUS/Доска из front-matter) | done | Claude | `темы/infrastructure-review.md` | `tools/generate.py` + front-matter тем + маркеры GEN; самопроверен; запуск/коммит на Windows |
