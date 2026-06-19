@@ -6,6 +6,12 @@
 
 - `validate.py` — валидатор канона. Проверяет инварианты между `DECISIONS.md`, `QUESTIONS.md`, `TASKS.md`, `Доска.md`, `STATUS.md` и темами. Заменяет ручную «перепроварку».
 - `generate.py` — генератор навигации и машинного индекса: таблицы тем/задач/вопросов/решений собираются из front-matter, `index.json` собирается из того же канона. Режим `--check` для hook/CI.
+- `queue.py` — Queue 2.0: атомарный claim, TTL lease и fencing-token для заданий в `queues/`.
+- `dispatch.py` — read-only диспетчер задач: показывает готовые и заблокированные задачи по `depends_on`.
+- `risk_gate.py` — советчик по уровню автономии: `low -> AUTO`, `medium -> REVIEW`, `high -> HUMAN`.
+- `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
+- `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
+- `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
 
 ## Как запускать
@@ -154,3 +160,53 @@ python tools/queue.py check                                 # claim без за�
 - `depends_on` в задачах ссылается на существующие задачи.
 
 Зачем: генератор молча пропускает файл с битым/отсутствующим front-matter — валидатор v2 это ловит. Целостность самой очереди проверяет `python tools/queue.py check`.
+
+## Диспетчер задач (`dispatch.py`, T-014)
+
+Показывает, какие задачи можно брать прямо сейчас: `status=todo` и все `depends_on` уже `done`.
+
+```bash
+python tools/dispatch.py       # списки готовых и заблокированных задач
+python tools/dispatch.py next  # один id задачи с наивысшим приоритетом
+```
+
+Инструмент ничего не меняет. Захват задачи делается отдельно через `queue.py`.
+
+## Риск-гейтинг (`risk_gate.py`, T-015)
+
+Советчик для многоуровневой автономии:
+
+```bash
+python tools/risk_gate.py policy
+python tools/risk_gate.py T-016
+```
+
+Политика: `low -> AUTO`, `medium -> REVIEW`, `high -> HUMAN`. Это не отменяет D-006: высокорисковые решения по-прежнему утверждает человек.
+
+## Права и git-flow (`permissions.py`, `flow.py`)
+
+`permissions.py` проверяет, не выходит ли агент за разрешенные пути из `tools/permissions.json`.
+
+```bash
+python tools/permissions.py mavis
+python tools/permissions.py mavis tasks/T-020.md темы/scaling-design.md
+```
+
+`flow.py` печатает безопасные git-команды для модели "ветка-на-агента"; с `--run` выполняет их.
+
+```bash
+python tools/flow.py start mavis T-020
+python tools/flow.py gate mavis
+python tools/flow.py finish mavis T-020
+```
+
+## Метрики (`metrics.py`, T-016)
+
+Сводка для быстрой ориентации:
+
+```bash
+python tools/metrics.py
+python tools/metrics.py --json
+```
+
+Очередь считается по текущему формату Queue 2.0: `claimed` = `*.claim.md`, `done` = `*.done.md`, `failed` = `*.failed.md`. Старые legacy-файлы в этих папках остаются историей, но не считаются активным состоянием очереди.

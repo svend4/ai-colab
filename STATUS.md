@@ -13,6 +13,7 @@
 | Дата | Кто | Изменение | Ссылка |
 |---|---|---|---|
 | 2026-06-19 | Mavis | Зарегистрирован третий AI-агент по запросу Stefan: карточка `participants/mavis.md`, строки в `AGENTS.md` и `Участники.md`, обоснование в `Диалог.md`. | `participants/mavis.md`, `AGENTS.md`, `Участники.md`, `Диалог.md` |
+| 2026-06-19 | Novax | Зарегистрирован 4-й AI-агент Novax по запросу Stefan: карточка `participants/novax.md`, строки в `AGENTS.md` и `Участники.md`, права в `tools/permissions.json`, обоснование в `Диалог.md`. | `participants/novax.md`, `AGENTS.md`, `Участники.md`, `tools/permissions.json` |
 | 2026-06-19 | Codex | Добавлен протокол масштабной работы для многих людей, AI-агентов и скриптов. | `PROTOCOL.md` |
 | 2026-06-19 | Codex | Уточнен режим больших тем и добавлено состояние `queues/claimed/` для параллельных агентов. | `PROTOCOL.md`, `queues/claimed/README.md` |
 | 2026-06-19 | Codex | Уточнены права AI-агентов: решения можно предлагать, а утверждать только при явной роли сборщика. | `AGENTS.md` |
@@ -44,6 +45,7 @@
 | 2026-06-19 | Codex | Перепроверен новый машинный индекс: `index.json` сгенерирован из front-matter, `generate.py --check` теперь проверяет его актуальность; назначение описано в `tools/README.md`. | `index.json`, `tools/generate.py`, `tools/README.md`, `темы/scaling-design.md` |
 | 2026-06-19 | Claude | T-012 роли (`tools/permissions.py` + `permissions.json`: проверка зоны записи агента) и T-013 git-flow (`tools/flow.py`: ветка-на-агента + merge-гейт). Совещательные guard'ы, самопроверено. Закрывает пункты 5–6 роадмапа. | `tools/permissions.py`, `tools/permissions.json`, `tools/flow.py`, `tasks/T-012.md`, `tasks/T-013.md` |
 | 2026-06-19 | Claude | T-014 диспетчер+DAG (`dispatch.py`: готовые/заблокированные по depends_on), T-015 риск-гейтинг (`risk_gate.py`: low→AUTO/medium→REVIEW/high→HUMAN), T-016 метрики (`metrics.py`). Самопроверено. Роадмап `scaling-design` закрыт полностью. | `tools/dispatch.py`, `tools/risk_gate.py`, `tools/metrics.py`, `tasks/T-014.md`, `tasks/T-015.md`, `tasks/T-016.md` |
+| 2026-06-19 | Codex | Перепроверены инструменты масштабного слоя: документация `tools/README.md` дополнена, `metrics.py` считает активную очередь по Queue 2.0, `flow.py` исправлен для UTF-8 вывода в Windows-консоли. | `tools/README.md`, `tools/metrics.py`, `tools/flow.py`, `темы/scaling-design.md` |
 
 ## Активные темы
 
@@ -56,6 +58,7 @@
 | Границы D-003 (Q-005) | `темы/d003-scope.md` | done | Решено A (D-008): обоснование только для значимых правок |
 | Пример обсуждения | `темы/пример.md` | done | T-001 закрыт: формат полилога подтверждён |
 | Миграция имён файлов к ASCII (Q-004) | `темы/migrate-file-names.md` | done | Решено C (D-007): переименовывать при правках, ход — T-005 |
+| Онбординг агентов (Q-006) | `темы/q006-agent-onboarding.md` | done | Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия |
 <!-- GEN:topics-status END -->
 
 ## Как просить ИИ отреагировать

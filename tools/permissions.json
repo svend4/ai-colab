@@ -11,5 +11,16 @@
     "code/**",
     "STATUS.md",
     "Диалог.md"
+  ],
+  "novax": [
+    "tasks/**",
+    "questions/**",
+    "decisions/**",
+    "темы/**",
+    "queues/**",
+    "docs/**",
+    "code/**",
+    "STATUS.md",
+    "Диалог.md"
   ]
 }

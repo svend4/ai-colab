@@ -96,9 +96,9 @@ def build():
         "decisions": {"total": len(decisions), "by_status": by_status(decisions)},
         "topics": {"total": len(topics), "by_status": by_status(topics)},
         "queue": {"inbox": count_dir("queues/inbox"),
-                  "claimed": count_dir("queues/claimed"),
-                  "done": count_dir("queues/done"),
-                  "failed": count_dir("queues/failed")},
+                  "claimed": count_dir("queues/claimed", ".claim.md"),
+                  "done": count_dir("queues/done", ".done.md"),
+                  "failed": count_dir("queues/failed", ".failed.md")},
     }
 
 
