@@ -131,7 +131,7 @@ def main():
             if check:
                 print("STALE: %s — навигация устарела" % fname)
             else:
-                with open(path, "w", encoding="utf-8") as f:
+                with open(path, "w", encoding="utf-8", newline="\n") as f:
                     f.write(new)
                 print("OK: обновлён %s" % fname)
         else:

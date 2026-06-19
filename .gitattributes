@@ -1,0 +1,6 @@
+# Единые переводы строк: текстовые файлы хранятся и выгружаются с LF.
+# Убирает предупреждения "CRLF will be replaced by LF" на Windows.
+* text=auto eol=lf
+
+# Скрипты-хуки обязательно LF (иначе ломаются под sh на Unix).
+tools/githooks/* text eol=lf
