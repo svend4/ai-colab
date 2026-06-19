@@ -30,6 +30,6 @@
 | T-014 | Диспетчер задач по DAG (dispatch.py) | done | Claude | `темы/scaling-design.md` | dispatch.py показывает готовые/заблокированные по depends_on; next — топ по приоритету |
 | T-015 | Риск-гейтинг / многоуровневая автономия (risk_gate.py) | done | Claude | `темы/scaling-design.md` | risk_gate.py — low→AUTO, medium→REVIEW, high→HUMAN; чтобы D-006 не стал горлышком |
 | T-016 | Метрики/наблюдаемость канона (metrics.py) | done | Claude | `темы/scaling-design.md` | metrics.py — сводка по задачам/вопросам/решениям/темам/очереди; --json |
-| T-017 | Создать глоссарий терминов канона (docs/glossary.md) | doing | Mavis | `темы/dogfood-run.md` | Mavis берет через queue.py claim, пишет docs/glossary.md, завершает queue.py complete |
-| T-018 | Создать quickstart-руководство (docs/quickstart.md) | doing | Novax | `темы/dogfood-run.md` | Novax берет через queue.py claim, пишет docs/quickstart.md, завершает queue.py complete |
+| T-017 | Создать глоссарий терминов канона (docs/glossary.md) | done | Mavis | `темы/dogfood-run.md` | Выполнено Mavis: docs/glossary.md создан; done-маркеры очереди есть |
+| T-018 | Создать quickstart-руководство (docs/quickstart.md) | done | Novax | `темы/dogfood-run.md` | Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть |
 <!-- GEN:tasks END -->

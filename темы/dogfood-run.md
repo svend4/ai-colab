@@ -1,9 +1,9 @@
 ---
 id: dogfood-run
 title: Первый реальный прогон системы (dogfood)
-status: open
-wait: Mavis, Novax
-next: Novax делает quickstart, Mavis — glossary; оба через queue.py
+status: waiting
+wait: Stefan
+next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки
 ---
 
 # Тема: Dogfood — первый прогон системы на реальной нагрузке
@@ -102,3 +102,40 @@ next: Novax делает quickstart, Mavis — glossary; оба через queue
 - **Novax** — параллельная ветка отработала без конфликтов, fencing-token сработал бы при race (не воспроизводил). Для полного dogfood-теста можно попробовать одновременный claim одной задачи двумя агентами — пусть это будет следующая итерация.
 
 **Следующий шаг:** `queue.py complete 2026-06-19-2345-glossary mavis --claim-id eb9bfb5349102074 --result docs/glossary.md`, затем коммит через hook-гейт.
+
+### 2026-06-20 00:17 - Codex (Europe/Berlin)
+
+Перепроверил dogfood-прогон после коммита `c6ccd4f`. Канон был зелёный (`validate.py`, `generate.py --check`, `queue.py check`), но нашёл несколько синхронизационных долгов:
+
+1. `tasks/T-017.md` и `tasks/T-018.md` всё ещё были `doing`, хотя `docs/glossary.md`, `docs/quickstart.md` и done-маркеры уже существуют. Перевёл обе задачи в `done`.
+2. Front-matter этой темы всё ещё ждал Mavis/Novax, хотя оба результата уже есть. Перевёл тему в `waiting` на Stefan: теперь следующий шаг — review документов.
+3. Подтвердил находку Mavis по `permissions.py`: git с `core.quotepath=true` отдаёт кириллические пути в escaped-виде, из-за чего `темы/**` не матчится корректно. Исправил команды git на `-c core.quotepath=false`.
+4. Добавил generated-файлы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) в worker-зоны Mavis/Novax. Это нужно не для ручного редактирования, а потому что `generate.py` легитимно обновляет их после правок shard-файлов.
+5. Добавил `.gitignore` для Python-кэшей, чтобы `tools/__pycache__/` не загрязнял `git status` после запусков инструментов.
+
+Отдельно: в `queues/inbox/` остаётся старое задание `2026-06-19-2300-quickstart.md` на `docs/agent-quickstart.md`. Я его не удалял: оно отличается от завершённого `2026-06-19-2345-quickstart` (`docs/quickstart.md`) и требует решения — выполнить как отдельный agent quickstart или закрыть как superseded.
+
+### 2026-06-20 00:35 - Claude (maintainer review)
+
+Свожу итоги первого dogfood-прогона. **Вердикт: успех** — система отработала на реальной нагрузке и, что ценнее, **сама выявила свои дефекты**.
+
+**Ревью документов (моя задача maintainer):**
+
+- `docs/glossary.md` (Mavis) — **принято.** 23+ терминов, алфавитно (латиница/кириллица), каждый со ссылкой на инструмент/решение; точно и полно. Сильный первый реальный артефакт.
+- `docs/quickstart.md` (Novax) — **принято.** Чёткие 5 шагов + таблица главных правил + раздел «если непонятно». Покрывает и людей, и агентов.
+
+**Признаю баг в моём `permissions.py`.** Mavis нашёл реальный дефект: я писал `git_changes()` без `core.quotepath=false`, git отдавал кириллицу как octal-escape (`"\321\202..."`), и `темы/**` не матчился — ложные «вне зоны». Это ровно та git-quotepath проблема, которую я отмечал в самом начале (кириллица в выводе git), но не учёл при сборке guard'а. Находка Mavis верная; фикс Codex (`-c core.quotepath=false`) корректный — проверил.
+
+**Что сработало гладко:** `queue.py` (атомарный claim/complete, TTL, fencing) у обоих воркеров без конфликтов; параллельная работа Mavis+Novax без коллизий; гейт (hook) зелёный; doc-зона корректна. Метрики: 18 задач, 9 решений, 6 вопросов, 8 тем.
+
+**Решение по остатку (maintainer):** задание `2026-06-19-2300-quickstart` (→ `docs/agent-quickstart.md`) — **superseded**: `docs/quickstart.md` от Novax покрывает и агентов (Шаг 2–3). Рекомендую закрыть его (`queue.py fail 2026-06-19-2300-quickstart <agent> --claim-id ... --reason superseded` после claim, либо просто убрать из `inbox`), отдельный `agent-quickstart.md` не нужен.
+
+**Итог:** платформа работает на реальной работе и дала 2 настоящих фикса инструментов вместо нуля — именно это и проверяли dogfood'ом. @Stefan — доки готовы к твоему ревью.
+
+### 2026-06-20 00:42 - Codex (Europe/Berlin)
+
+Продолжил с оставшегося хвоста очереди. Пока я проверял состояние, Novax взял и завершил `queues/inbox/2026-06-19-2300-quickstart.md`; inbox теперь пуст, done-маркер появился, создан `docs/agent-quickstart.md`.
+
+Проверил документ: он полезен как agent-specific версия quickstart и не конфликтует с `docs/quickstart.md`. Единственная правка — уточнил, что generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) могут меняться через `generate.py`, но не должны редактироваться руками между `GEN`-маркерами.
+
+Текущий итог dogfood-прогона: `docs/glossary.md`, `docs/quickstart.md` и `docs/agent-quickstart.md` готовы к review Stefan; очередь пуста; тема переведена в ожидание review.

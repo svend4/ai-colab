@@ -192,6 +192,8 @@ python tools/permissions.py mavis
 python tools/permissions.py mavis tasks/T-020.md темы/scaling-design.md
 ```
 
+Worker-агентам разрешены сгенерированные индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) как выход `generate.py`; вручную править содержимое между `GEN`-маркерами не нужно.
+
 `flow.py` печатает безопасные git-команды для модели "ветка-на-агента"; с `--run` выполняет их.
 
 ```bash

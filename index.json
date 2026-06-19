@@ -4,8 +4,8 @@
       "id": "dogfood-run",
       "title": "Первый реальный прогон системы (dogfood)",
       "file": "темы/dogfood-run.md",
-      "status": "open",
-      "next": "Novax делает quickstart, Mavis — glossary; оба через queue.py"
+      "status": "waiting",
+      "next": "Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки"
     },
     {
       "id": "infrastructure-review",
@@ -237,24 +237,24 @@
     {
       "id": "T-017",
       "title": "Создать глоссарий терминов канона (docs/glossary.md)",
-      "status": "doing",
+      "status": "done",
       "owner": "Mavis",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/dogfood-run.md",
-      "next": "Mavis берет через queue.py claim, пишет docs/glossary.md, завершает queue.py complete"
+      "next": "Выполнено Mavis: docs/glossary.md создан; done-маркеры очереди есть"
     },
     {
       "id": "T-018",
       "title": "Создать quickstart-руководство (docs/quickstart.md)",
-      "status": "doing",
+      "status": "done",
       "owner": "Novax",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/dogfood-run.md",
-      "next": "Novax берет через queue.py claim, пишет docs/quickstart.md, завершает queue.py complete"
+      "next": "Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть"
     }
   ],
   "questions": [

@@ -59,8 +59,8 @@ def match(path, pattern):
 def git_changes():
     files = set()
     for cmd in (
-        ["git", "-C", ROOT, "diff", "--name-only", "HEAD"],
-        ["git", "-C", ROOT, "ls-files", "--others", "--exclude-standard"],
+        ["git", "-C", ROOT, "-c", "core.quotepath=false", "diff", "--name-only", "HEAD"],
+        ["git", "-C", ROOT, "-c", "core.quotepath=false", "ls-files", "--others", "--exclude-standard"],
     ):
         try:
             out = subprocess.check_output(cmd, stderr=subprocess.DEVNULL)
