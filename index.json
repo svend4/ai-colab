@@ -255,6 +255,17 @@
       "depends_on": "[]",
       "topic": "темы/dogfood-run.md",
       "next": "Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть"
+    },
+    {
+      "id": "T-019",
+      "title": "Эмпирически проверить атомарность claim под реальной гонкой",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-009]",
+      "topic": "темы/dogfood-run.md",
+      "next": "Прогнано вживую на Windows (8 параллельных claim → 1 победитель, 7 RACE/BUSY); tools/race_test.py поддерживает повторы [N] [раунды]"
     }
   ],
   "questions": [

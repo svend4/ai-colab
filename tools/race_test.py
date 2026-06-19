@@ -7,9 +7,13 @@
 проверяет, что побеждает ровно один (гарантия O_CREAT|O_EXCL). Рабочий
 репозиторий не трогает — всё во временной директории системы.
 
-    python tools/race_test.py [N]     # по умолчанию N = 8
+    python tools/race_test.py [N] [RAUNDS]
+        N       — сколько параллельных claim в раунде (по умолчанию 8)
+        RAUNDS  — сколько раундов подряд (по умолчанию 1)
 
-Выход: 0 — атомарность подтверждена (1 победитель, N-1 проигравших); 1 — нарушена.
+Пример: python tools/race_test.py 8 5   # 5 раундов по 8 параллельных claim
+Выход: 0 — все раунды OK (1 победитель, N-1 проигравших); 1 — хоть один FAIL.
+Temp-папку можно задать через COLLAB_RACE_TMP (иначе C:\\tmp при наличии или системный temp).
 """
 import os
 import sys
@@ -40,8 +44,8 @@ def temp_base():
     return tempfile.gettempdir()
 
 
-def main():
-    n = int(sys.argv[1]) if len(sys.argv) > 1 else 8
+def one_round(n):
+    """Один раунд: n параллельных claim на одну задачу. Возвращает (winners, losers)."""
     root = tempfile.mkdtemp(prefix="race_", dir=temp_base())
     try:
         for d in ("inbox", "claimed", "done", "failed"):
@@ -58,18 +62,30 @@ def main():
             for i in range(n)
         ]
         outs = [p.communicate()[0].decode("utf-8", "replace") for p in procs]
-
         winners = sum(1 for o in outs if "claim создан" in o)
         losers = sum(1 for o in outs if ("RACE" in o or "BUSY" in o))
-        print("Параллельных claim: %d" % n)
-        print("Победителей (claim создан): %d" % winners)
-        print("Проигравших (RACE/BUSY):   %d" % losers)
-        ok = winners == 1 and losers == n - 1
-        print("РЕЗУЛЬТАТ: %s — атомарность %s"
-              % ("OK" if ok else "FAIL", "подтверждена" if ok else "НАРУШЕНА"))
-        return 0 if ok else 1
+        return winners, losers
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+def main():
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    n = int(args[0]) if len(args) > 0 else 8
+    rounds = int(args[1]) if len(args) > 1 else 1
+
+    all_ok = True
+    for r in range(1, rounds + 1):
+        winners, losers = one_round(n)
+        ok = winners == 1 and losers == n - 1
+        all_ok = all_ok and ok
+        print("раунд %d/%d: победителей=%d, проигравших=%d, параллельных=%d — %s"
+              % (r, rounds, winners, losers, n, "OK" if ok else "FAIL"))
+
+    print("ИТОГ: %s — атомарность %s (%d раунд(ов), N=%d)"
+          % ("OK" if all_ok else "FAIL",
+             "подтверждена" if all_ok else "НАРУШЕНА", rounds, n))
+    return 0 if all_ok else 1
 
 
 if __name__ == "__main__":
