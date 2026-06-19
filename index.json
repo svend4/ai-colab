@@ -1,6 +1,13 @@
 {
   "topics": [
     {
+      "id": "dogfood-run",
+      "title": "Обкатка платформы 4 агентами (live)",
+      "file": "темы/dogfood-run.md",
+      "status": "open",
+      "next": "Mavis и Novax берут задачи из queues/inbox через queue.py; Codex ревьюит; Claude координирует"
+    },
+    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "темы/infrastructure-review.md",
