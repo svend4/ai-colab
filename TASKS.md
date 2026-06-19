@@ -21,6 +21,6 @@
 | T-005 | Постепенно мигрировать русские имена файлов к ASCII (D-007) | doing | все | `темы/migrate-file-names.md` | При следующей существенной правке файла переименовать в ASCII и обновить ссылки |
 | T-006 | Сделать валидатор целостности Markdown-инфраструктуры | done | Claude | `темы/infrastructure-review.md` | tools/validate.py готов и прогнан на Windows (0 ERROR, commit 572ffa3) |
 | T-007 | Генератор навигации (STATUS/Доска из front-matter) | done | Claude | `темы/infrastructure-review.md` | tools/generate.py + front-matter тем + маркеры GEN; в hook добавлен --check |
-| T-008 | Шардировать реестры (старт: задачи в tasks/) | doing | Claude | `темы/scaling-design.md` | Задачи перенесены в tasks/*.md + генерация TASKS.md; далее questions/decisions (T-009) |
+| T-008 | Шардировать реестры (задачи, вопросы, решения) | done | Claude | `темы/scaling-design.md` | Реестры шардированы; TASKS/QUESTIONS/DECISIONS — генерируемые индексы из tasks|questions|decisions/*.md |
 | T-009 | Очередь 2.0 — атомарный claim (TTL + fencing) и tools/queue.py | done | Claude | `темы/scaling-design.md` | queue.py готов и самопроверен; далее — шардинг questions/decisions или валидатор v2 |
 <!-- GEN:tasks END -->

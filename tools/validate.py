@@ -84,30 +84,27 @@ def table_rows(text, id_prefix):
 
 # ---------- DECISIONS ----------
 def parse_decisions():
+    # Источник правды — decisions/*.md; DECISIONS.md — генерируемый индекс-таблица.
     text = read("DECISIONS.md")
     if text is None:
         err("DECISIONS.md отсутствует")
         return {}
-    text = strip_code_fences(text)
-    sections = re.findall(
-        r"^##\s+(D-\d+)\b[^\n]*\n(.*?)(?=^##\s|\Z)", text, re.M | re.S
-    )
     statuses = {}
     seen = set()
     valid = {"accepted", "proposed", "rejected", "superseded"}
-    for did, body in sections:
+    for cells in table_rows(text, "D-"):
+        did = cells[0]
+        st = cells[2] if len(cells) > 2 else None
         if did in seen:
-            err(f"DECISIONS: дубликат {did}")
+            err("DECISIONS: дубликат %s" % did)
         seen.add(did)
-        m = re.search(r"-\s*Статус:\s*([A-Za-zА-Яа-я]+)", body)
-        st = m.group(1) if m else None
         statuses[did] = st
-        if st is None:
-            err(f"DECISIONS: у {did} нет поля «Статус»")
+        if not st:
+            err("DECISIONS: у %s нет статуса" % did)
         elif st not in valid:
-            warn(f"DECISIONS: у {did} нестандартный статус «{st}»")
+            warn("DECISIONS: %s нестандартный статус %s" % (did, st))
     if statuses:
-        ok(f"DECISIONS: {len(statuses)} решений, id уникальны")
+        ok("DECISIONS: %d решений (индекс), id уникальны" % len(statuses))
     return statuses
 
 

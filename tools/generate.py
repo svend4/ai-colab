@@ -136,6 +136,73 @@ def render_tasks_table(tasks):
     return "\n".join(out)
 
 
+def collect_questions():
+    items = []
+    for path in glob.glob(os.path.join(ROOT, "questions", "*.md")):
+        with open(path, encoding="utf-8") as f:
+            fm = parse_front_matter(f.read())
+        if not fm.get("id") or not fm.get("title"):
+            continue
+        items.append(
+            {
+                "id": fm["id"],
+                "title": fm["title"],
+                "status": fm.get("status", "open"),
+                "asked_by": fm.get("asked_by", "—"),
+                "addressed_to": fm.get("addressed_to", "все"),
+                "where": fm.get("where", ""),
+                "outcome": fm.get("outcome", ""),
+            }
+        )
+    items.sort(key=lambda q: q["id"])
+    return items
+
+
+def render_questions_table(items):
+    out = [
+        "| ID | Вопрос | Статус | Кто задал | Кому адресован | Где обсуждается | Итог |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for q in items:
+        where = "`%s`" % q["where"] if q["where"] else "—"
+        out.append(
+            "| %s | %s | %s | %s | %s | %s | %s |"
+            % (q["id"], q["title"], q["status"], q["asked_by"], q["addressed_to"], where, q["outcome"])
+        )
+    return "\n".join(out)
+
+
+def collect_decisions():
+    items = []
+    for path in glob.glob(os.path.join(ROOT, "decisions", "*.md")):
+        with open(path, encoding="utf-8") as f:
+            fm = parse_front_matter(f.read())
+        if not fm.get("id") or not fm.get("title"):
+            continue
+        rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
+        items.append(
+            {
+                "id": fm["id"],
+                "title": fm["title"],
+                "status": fm.get("status", "proposed"),
+                "date": fm.get("date", ""),
+                "file": rel,
+            }
+        )
+    items.sort(key=lambda d: d["id"])
+    return items
+
+
+def render_decisions_index(items):
+    out = ["| ID | Решение | Статус | Дата | Файл |", "|---|---|---|---|---|"]
+    for d in items:
+        out.append(
+            "| %s | %s | %s | %s | `%s` |"
+            % (d["id"], d["title"], d["status"], d["date"], d["file"])
+        )
+    return "\n".join(out)
+
+
 def replace_block(text, marker, new_inner):
     start = "<!-- GEN:%s START" % marker
     end = "<!-- GEN:%s END -->" % marker
@@ -157,6 +224,8 @@ def main():
         ("STATUS.md", "topics-status", render_status_table(topics)),
         ("Доска.md", "topics-board", render_board_table(topics)),
         ("TASKS.md", "tasks", render_tasks_table(collect_tasks())),
+        ("QUESTIONS.md", "questions", render_questions_table(collect_questions())),
+        ("DECISIONS.md", "decisions", render_decisions_index(collect_decisions())),
     ]
     changed_any = False
     error = False
