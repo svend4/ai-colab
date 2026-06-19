@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Метрики / наблюдаемость канона (пункт 8 из scaling-design).
+
+Сводка по реестрам и очереди — чтобы видеть состояние одним взглядом при многих
+агентах и задачах. Читает front-matter; ничего не меняет.
+
+    python tools/metrics.py            # человекочитаемая сводка
+    python tools/metrics.py --json     # машинный вывод
+"""
+import os
+import re
+import sys
+import json
+import glob
+
+
+def configure_output():
+    for name in ("stdout", "stderr"):
+        s = getattr(sys, name, None)
+        if s is not None and hasattr(s, "reconfigure"):
+            s.reconfigure(encoding="utf-8", errors="replace")
+
+
+configure_output()
+
+ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
+
+
+def parse_fm(text):
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}
+    fm = {}
+    for line in text[3:end].strip().splitlines():
+        if ":" in line:
+            k, v = line.split(":", 1)
+            fm[k.strip()] = v.strip()
+    return fm
+
+
+def load(sub):
+    items = []
+    for path in glob.glob(os.path.join(ROOT, sub, "*.md")):
+        with open(path, encoding="utf-8") as f:
+            fm = parse_fm(f.read())
+        if fm.get("id"):
+            items.append(fm)
+    return items
+
+
+def by_status(items):
+    c = {}
+    for it in items:
+        s = it.get("status", "?")
+        c[s] = c.get(s, 0) + 1
+    return c
+
+
+def count_dir(sub, suffix=".md"):
+    d = os.path.join(ROOT, sub)
+    if not os.path.isdir(d):
+        return 0
+    return sum(1 for f in os.listdir(d) if f.endswith(suffix) and f != "README.md")
+
+
+def ready_blocked(tasks):
+    idx = {t["id"]: t for t in tasks}
+    ready = blocked = 0
+    for t in tasks:
+        if t.get("status") != "todo":
+            continue
+        deps = re.findall(r"T-\d+", t.get("depends_on", ""))
+        if all(idx.get(d, {}).get("status") == "done" for d in deps):
+            ready += 1
+        else:
+            blocked += 1
+    return ready, blocked
+
+
+def build():
+    tasks = load("tasks")
+    questions = load("questions")
+    decisions = load("decisions")
+    topics = load("темы")
+    ready, blocked = ready_blocked(tasks)
+    return {
+        "tasks": {"total": len(tasks), "by_status": by_status(tasks),
+                  "ready": ready, "blocked": blocked},
+        "questions": {"total": len(questions), "by_status": by_status(questions)},
+        "decisions": {"total": len(decisions), "by_status": by_status(decisions)},
+        "topics": {"total": len(topics), "by_status": by_status(topics)},
+        "queue": {"inbox": count_dir("queues/inbox"),
+                  "claimed": count_dir("queues/claimed"),
+                  "done": count_dir("queues/done"),
+                  "failed": count_dir("queues/failed")},
+    }
+
+
+def main():
+    m = build()
+    if "--json" in sys.argv[1:]:
+        print(json.dumps(m, ensure_ascii=False, indent=2))
+        return 0
+
+    def fmt(d):
+        return ", ".join("%s=%d" % (k, v) for k, v in sorted(d.items())) or "—"
+
+    print("=== Метрики канона ===")
+    print("Задачи:   %d (%s) | готовы=%d, заблокированы=%d"
+          % (m["tasks"]["total"], fmt(m["tasks"]["by_status"]),
+             m["tasks"]["ready"], m["tasks"]["blocked"]))
+    print("Вопросы:  %d (%s)" % (m["questions"]["total"], fmt(m["questions"]["by_status"])))
+    print("Решения:  %d (%s)" % (m["decisions"]["total"], fmt(m["decisions"]["by_status"])))
+    print("Темы:     %d (%s)" % (m["topics"]["total"], fmt(m["topics"]["by_status"])))
+    print("Очередь:  inbox=%d, claimed=%d, done=%d, failed=%d"
+          % (m["queue"]["inbox"], m["queue"]["claimed"],
+             m["queue"]["done"], m["queue"]["failed"]))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

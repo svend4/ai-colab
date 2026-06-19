@@ -186,6 +186,39 @@
       "depends_on": "[T-012]",
       "topic": "темы/scaling-design.md",
       "next": "flow.py печатает команды ветка-на-агента + merge-гейт (validate/generate/permissions); --run выполняет"
+    },
+    {
+      "id": "T-014",
+      "title": "Диспетчер задач по DAG (dispatch.py)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "dispatch.py показывает готовые/заблокированные по depends_on; next — топ по приоритету"
+    },
+    {
+      "id": "T-015",
+      "title": "Риск-гейтинг / многоуровневая автономия (risk_gate.py)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "risk_gate.py — low→AUTO, medium→REVIEW, high→HUMAN; чтобы D-006 не стал горлышком"
+    },
+    {
+      "id": "T-016",
+      "title": "Метрики/наблюдаемость канона (metrics.py)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-008]",
+      "topic": "темы/scaling-design.md",
+      "next": "metrics.py — сводка по задачам/вопросам/решениям/темам/очереди; --json"
     }
   ],
   "questions": [

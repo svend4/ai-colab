@@ -27,4 +27,7 @@
 | T-011 | Машинный индекс index.json для агентов | done | Claude | `темы/scaling-design.md` | index.json генерится из front-matter, --check контролирует свежесть; Codex верифицировал и задокументировал |
 | T-012 | Роли и path-права (permissions.py) | done | Claude | `темы/scaling-design.md` | permissions.py + permissions.json проверяют, что агент пишет в свою зону; совещательный guard (не безопасность) |
 | T-013 | Git-flow для агентов (flow.py) | done | Claude | `темы/scaling-design.md` | flow.py печатает команды ветка-на-агента + merge-гейт (validate/generate/permissions); --run выполняет |
+| T-014 | Диспетчер задач по DAG (dispatch.py) | done | Claude | `темы/scaling-design.md` | dispatch.py показывает готовые/заблокированные по depends_on; next — топ по приоритету |
+| T-015 | Риск-гейтинг / многоуровневая автономия (risk_gate.py) | done | Claude | `темы/scaling-design.md` | risk_gate.py — low→AUTO, medium→REVIEW, high→HUMAN; чтобы D-006 не стал горлышком |
+| T-016 | Метрики/наблюдаемость канона (metrics.py) | done | Claude | `темы/scaling-design.md` | metrics.py — сводка по задачам/вопросам/решениям/темам/очереди; --json |
 <!-- GEN:tasks END -->
