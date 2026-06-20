@@ -1,5 +1,5 @@
 {
-  "epoch": 1781964714,
+  "epoch": 1781965661,
   "doing": [
     {
       "id": "T-020",
@@ -24,6 +24,11 @@
     {
       "id": "T-048",
       "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
+      "reason": "depends_on: T-039 blocked"
+    },
+    {
+      "id": "T-051",
+      "title": "Runtime-приёмка repo-runner MCP wrapper после hardening",
       "reason": "depends_on: T-039 blocked"
     }
   ]

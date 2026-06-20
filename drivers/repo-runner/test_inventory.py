@@ -8,8 +8,8 @@ import tempfile
 from pathlib import Path
 
 # Add repo-runner to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from inventory import scan_repo
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from inventory import PathAccessError, scan_repo
 
 
 def test_scan_empty_repo():
@@ -56,9 +56,27 @@ def test_nonexistent_path():
     print("PASS: nonexistent path")
 
 
+def test_max_files_and_allowed_root():
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "a.py").write_text("print('a')\n")
+        (root / "b.py").write_text("print('b')\n")
+        report = scan_repo(".", max_files=1, base_dir=tmp)
+        assert report["summary"]["total_files"] == 1
+        assert report["summary"]["truncated"] is True
+
+        try:
+            scan_repo(str(root.parent), base_dir=tmp)
+            assert False, "base_dir не ограничивает выход за allowed-root"
+        except PathAccessError:
+            pass
+        print("PASS: max files and allowed root")
+
+
 if __name__ == "__main__":
     test_scan_empty_repo()
     test_scan_python_repo()
     test_scan_risk_patterns()
     test_nonexistent_path()
+    test_max_files_and_allowed_root()
     print("\nAll tests passed!")

@@ -1,13 +1,13 @@
 {
-  "epoch": 1781964714,
+  "epoch": 1781965661,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-047",
+      "task": "T-050",
       "progress": 100,
-      "note": "files MCP hardening done; runtime acceptance moved to T-048",
+      "note": "repo-runner MCP hardening done; runtime acceptance moved to T-051",
       "eta": "done",
-      "epoch": 1781964714,
+      "epoch": 1781965661,
       "age_seconds": 0,
       "fresh": true
     },
@@ -18,7 +18,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 11632,
+      "age_seconds": 12579,
       "fresh": false
     }
   ]

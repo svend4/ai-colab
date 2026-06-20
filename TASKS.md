@@ -62,4 +62,8 @@
 | T-046 | Обернуть files driver в настоящий MCP-сервер (stdio) | done | pool | `темы/ai-os-bridge.md` | drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list |
 | T-047 | Усилить безопасность files MCP driver перед дальнейшим использованием | done | Codex | `темы/ai-os-bridge.md` | Выполнено: allowed-root, max_files/max_hits, skip dirs, read redaction; runtime-приёмка вынесена в T-048 |
 | T-048 | Runtime-приёмка files driver и MCP wrapper после восстановления Python | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_files.py, test_inventory.py, MCP handshake/tools-list/call, validate.py и generate.py --check |
+| T-049 | Обернуть repo-runner в MCP-сервер (read-only inventory) | done | pool | `темы/ai-os-bridge.md` | drivers/repo-runner/mcp_server.py на FastMCP — инструменты inspect/summary/risks поверх inventory.scan_repo (read-only, без запуска кода); тест handshake |
+| T-050 | Усилить безопасность repo-runner MCP wrapper | done | Codex | `темы/ai-os-bridge.md` | Выполнено: REPO_RUNNER_BASE, max_files/truncated, allowed-root checks, тестовые проверки; runtime-приёмка вынесена в T-051 |
+| T-051 | Runtime-приёмка repo-runner MCP wrapper после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_inventory.py, MCP handshake/tools-list/repo_summary, validate.py и generate.py --check |
+| T-052 | Реализовать workbench.db (SQLite) по схеме T-031 + тесты | done | pool | `темы/ai-os-bridge.md` | drivers/workbench/workbench.py — init/add_document/query_documents/log/audit по схеме documents+audit_log; тесты на чистой stdlib (sqlite3) |
 <!-- GEN:tasks END -->

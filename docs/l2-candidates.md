@@ -22,7 +22,7 @@
 | Приоритет | Драйвер | Режим | Риск | Почему полезен | Главный риск | Условие старта |
 |---|---|---|---|---|---|---|
 | 1 | `files` | read-only | low | Базовая карта больших папок: пути, типы, размеры, hash, summary; L2-draft engine и MCP-wrapper уже есть (`T-043`, `T-046`, `T-047`) | Python runtime сейчас нестабилен, runtime acceptance заблокирован | Закрыть `T-039`, затем выполнить `T-048` |
-| 2 | `repo-runner` | read-only | medium | Уже есть inventory для репозиториев; полезно для Sven4/local repos | Нельзя переходить к `run/test` без sandbox | Оставить только inspect/summarize/risk-report |
+| 2 | `repo-runner` | read-only | medium | Уже есть inventory и L2-draft MCP wrapper (`T-049`, `T-050`); полезно для Sven4/local repos | Нельзя переходить к `run/test` без sandbox; runtime acceptance ещё не выполнена | Закрыть `T-039`, затем выполнить `T-051` |
 | 3 | `data` | read-only | medium | Нужен для SQLite/CSV/JSON и будущего `workbench.db` | SQL/write/migrations должны быть запрещены | Сначала создать schema `documents` + `audit_log` |
 | 4 | `codex-local` | manual/read-only | medium | Может дать статус рабочей папки, checks, summary изменений | Риск слишком широкого доступа к окружению Codex | Ограничить списком разрешённых команд |
 
@@ -30,7 +30,7 @@
 
 Первый L2 PoC остаётся **`files`**. Кодовая часть уже продвинулась дальше первичного плана: есть engine, MCP-wrapper и hardening. Но статус не должен становиться `ready`, пока не удаётся стабилизировать Python runtime и выполнить `T-048`. Это самый безопасный и универсальный слой: без карты файлов нельзя уверенно строить text extraction, search index, reports и SQLite memory.
 
-Если Python runtime остаётся заблокированным, временный первый L2 PoC можно делать на **`repo-runner`**, потому что у него уже есть рабочий read-only contract и тесты от Novax. Но важно не расширять его до запуска кода.
+`repo-runner` теперь тоже имеет L2-draft wrapper, но остаётся вторым приоритетом после `files`. Важно не расширять его до запуска кода: inspect/summarize/risk-report остаются read-only, а `run/test/install` должны идти только через отдельный L3 sandbox design.
 
 ## Минимальный контракт `files` L2
 
@@ -91,3 +91,9 @@ risk_report(repo_path)
 2. Выполнить `T-048`: `test_files.py`, `test_inventory.py`, MCP handshake/tools-list/call, `validate.py`, `generate.py --check`.
 3. Если всё проходит, закрыть `T-029` и обсудить перевод `drivers/files.md` из `draft`.
 4. Только после этого расширять MCP metadata и подключение к внешним клиентам как стабильный драйвер.
+
+Для `repo-runner` порядок похожий:
+
+1. Оставить `T-049/T-050` как L2-draft.
+2. После `T-039` выполнить `T-051`.
+3. Не добавлять `run/test/install` без отдельного решения, sandbox и audit.

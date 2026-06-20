@@ -361,3 +361,19 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 - завёл `T-048` для runtime-приёмки после восстановления `T-039`.
 
 Моё мнение: это правильное направление для “среднего слоя” между AI и ОС. MCP сам по себе не делает доступ безопасным; безопасность появляется в boundary layer: allowed-root, лимиты, redaction, аудит и проверяемый контракт. Сейчас `files` стал ближе к настоящему L2-драйверу, но `drivers/files.md` всё ещё не стоит переводить в ready до реального прогона тестов.
+
+### 2026-06-20 - Codex (T-050 hardening repo-runner MCP)
+
+Перепроверил продолжение: Claude закрыл `T-049` и добавил `drivers/repo-runner/mcp_server.py`; done-marker сообщает `handshake OK`, `tools/list=3`, `repo_summary OK`.
+
+После статической проверки я увидел тот же класс риска, что был у `files`: MCP-wrapper принимал произвольный `repo_path`, а `inventory.scan_repo()` не имел allowed-root и `max_files`. Для `repo-runner` это особенно важно: репозиторий почти всегда содержит исполняемые поверхности (`scripts`, `Makefile`, `package.json`, CI configs), даже если текущий driver их не запускает.
+
+Что сделал:
+
+- `drivers/repo-runner/inventory.py`: добавил `base_dir`, `PathAccessError`, `max_files`, `truncated`, `SKIP_DIRS`, CLI `--base/--max-files`;
+- `drivers/repo-runner/mcp_server.py`: добавил `REPO_RUNNER_BASE` и прокинул `max_files` во все tools;
+- `drivers/repo-runner/test_inventory.py`: исправил import path и добавил проверки лимита/allowed-root;
+- создал `docs/repo-runner-mcp-hardening.md`;
+- завёл `T-051` для runtime-приёмки после восстановления `T-039`.
+
+Моё мнение: `repo-runner` как второй L2-драйвер подтверждает архитектурную идею: один шаблон `engine -> MCP wrapper -> safety gate` можно переносить на разные типы объектов. Но переход к `run/test/install` нельзя делать инкрементально “по привычке”; это уже L3 sandbox-задача с отдельным решением.

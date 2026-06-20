@@ -9,6 +9,23 @@ import os
 import sys
 from pathlib import Path
 
+DEFAULT_MAX_FILES = 1000
+RISK_READ_MAX_BYTES = 50000
+SKIP_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "node_modules",
+    "venv",
+    ".venv",
+    "target",
+    "build",
+    "dist",
+}
+
 
 SUPPORTED_LANGUAGES = {
     ".py": "Python",
@@ -81,9 +98,32 @@ RISK_PATTERNS = {
 }
 
 
-def scan_repo(repo_path: str) -> dict:
+class PathAccessError(ValueError):
+    pass
+
+
+def _is_relative_to(path: Path, base: Path) -> bool:
+    try:
+        path.relative_to(base)
+        return True
+    except ValueError:
+        return False
+
+
+def _resolve_repo_path(repo_path: str, base_dir: str = None) -> Path:
+    if base_dir is None:
+        return Path(repo_path).expanduser().resolve()
+    base = Path(base_dir).expanduser().resolve()
+    raw_path = Path(repo_path).expanduser()
+    repo = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
+    if not _is_relative_to(repo, base):
+        raise PathAccessError(f"path is outside allowed root: {repo}")
+    return repo
+
+
+def scan_repo(repo_path: str, max_files: int = DEFAULT_MAX_FILES, base_dir: str = None) -> dict:
     """Scan a repository and return inventory report."""
-    repo = Path(repo_path).resolve()
+    repo = _resolve_repo_path(repo_path, base_dir)
     if not repo.exists():
         return {"error": f"Path not found: {repo_path}"}
     if not repo.is_dir():
@@ -97,6 +137,8 @@ def scan_repo(repo_path: str) -> dict:
         "tests": [],
         "risks": [],
         "summary": {},
+        "max_files": max_files,
+        "truncated": False,
     }
 
     total_files = 0
@@ -104,13 +146,18 @@ def scan_repo(repo_path: str) -> dict:
 
     for root, dirs, files in os.walk(repo):
         # skip hidden and common non-source dirs
-        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('node_modules', '__pycache__', 'venv', '.venv', 'target', 'build', 'dist')]
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in SKIP_DIRS]
 
         rel_root = Path(root).relative_to(repo)
         if str(rel_root) == '.':
             rel_root = Path('')
 
         for f in files:
+            if total_files >= max_files:
+                report["truncated"] = True
+                dirs[:] = []
+                break
+
             total_files += 1
             p = Path(root) / f
             try:
@@ -138,7 +185,7 @@ def scan_repo(repo_path: str) -> dict:
                 report["risks"].append({"file": str(rel), "risk": "shell script — execute with caution", "severity": "medium"})
 
             # risk check for network calls in Python
-            if ext == '.py' and size < 50000:
+            if ext == '.py' and size < RISK_READ_MAX_BYTES:
                 try:
                     content = p.read_text(encoding='utf-8', errors='replace')
                     for pattern, desc in RISK_PATTERNS.items():
@@ -148,6 +195,9 @@ def scan_repo(repo_path: str) -> dict:
                 except Exception:
                     pass
 
+        if report["truncated"]:
+            break
+
     report["summary"] = {
         "total_files": total_files,
         "total_size_mb": round(total_size / (1024 * 1024), 2),
@@ -155,6 +205,8 @@ def scan_repo(repo_path: str) -> dict:
         "has_tests": len(report["tests"]) > 0,
         "has_package_files": len(report["package_files"]) > 0,
         "risk_count": len(report["risks"]),
+        "truncated": report["truncated"],
+        "max_files": max_files,
     }
 
     return report
@@ -162,12 +214,21 @@ def scan_repo(repo_path: str) -> dict:
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python inventory.py <repo-path>")
-        print("Example: python inventory.py /path/to/repo")
+        print("Usage: python inventory.py <repo-path> [--base <allowed-root>] [--max-files N]")
+        print("Example: python inventory.py /path/to/repo --max-files 1000")
         sys.exit(1)
 
     repo_path = sys.argv[1]
-    report = scan_repo(repo_path)
+    base_dir = None
+    max_files = DEFAULT_MAX_FILES
+    if "--base" in sys.argv:
+        base_dir = sys.argv[sys.argv.index("--base") + 1]
+    if "--max-files" in sys.argv:
+        max_files = int(sys.argv[sys.argv.index("--max-files") + 1])
+    try:
+        report = scan_repo(repo_path, max_files=max_files, base_dir=base_dir)
+    except Exception as exc:
+        report = {"error": type(exc).__name__, "message": str(exc)}
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 

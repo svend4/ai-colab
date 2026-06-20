@@ -55,3 +55,13 @@ Read-only inventory-драйвер для репозиториев (локаль
 - L1: read-only inventory (сейчас).
 - L2: MCP-инструмент `inspect/summarize` для агента.
 - L3: серверный sandbox-runner для ограниченного `test/run`.
+
+## Текущее состояние реализации
+
+На 2026-06-20 уже есть L2-draft код:
+
+- `drivers/repo-runner/inventory.py` — engine `scan_repo`;
+- `drivers/repo-runner/mcp_server.py` — FastMCP stdio wrapper;
+- `drivers/repo-runner/test_inventory.py` — тесты scanner/hardening.
+
+После `T-050` MCP-wrapper использует allowed-root через `REPO_RUNNER_BASE`, `max_files`, флаг `truncated` и запрет выхода за `base_dir`. Статус манифеста остаётся `ready` как L1/read-only manifest, но L2-runtime требует отдельной приёмки `T-051`.
