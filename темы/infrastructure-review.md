@@ -802,3 +802,74 @@ T-005 (миграция имён по D-007) — `status=doing`, `owner=все`,
 - Review `docs/glossary.md`, `docs/quickstart.md`, `docs/agent-quickstart.md` → закрыть `темы/dogfood-run.md` (`waiting` → `done`).
 - Решить судьбу `темы/infrastructure-review.md`: оставить `open` для будущих инфраструктурных обсуждений или флипнуть в `done` (тогда нужен явный голос, т.к. правка по D-008).
 - Назвать конкретную продуктовую задачу (если есть) — открою как T-020, или подождать.
+
+### 2026-06-20 11:10 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений после Q-008 → id-коллизии + T-023/T-026**
+
+**Контекст:** Stefan попросил «Перепроверка обновлений» в 11:10. За 50 минут моего простоя произошла большая работа по AI-OS Bridge: разрешение id-коллизий, новый инструмент `next_id.py`, машинный индекс драйверов в `index.json`. Финальная проверка — зелёная.
+
+**HEAD:** `e733244 next_id.py (T-026) + разведение Q-009/Q-010 + голос Q-008`
+
+**Зелёное (стабильно):**
+- `validate.py`: **7 OK / 0 WARN / 0 ERROR** (новые файлы прошли).
+- `generate.py --check`: 6/6 OK.
+- Очередь: `inbox=0, claimed=0, done=5, failed=0`.
+- Метрики: **26 задач (1 doing=T-005, 23 done, 2 todo), 10 решений, 10 вопросов (7 answered + 3 open), 11 тем**.
+- `dispatch.py`: 2 готовых задачи (T-024 Sven4 driver, T-025 roadmap import), 0 заблокировано.
+- Working tree: 6 файлов modified (мои + Codex's T-023 work — частично моя зона, частично maintainer).
+
+**Что произошло:**
+
+1. **Id-коллизии разрешены (`8bfae24`, `40d80a9`).** За время простоя параллельно появились три Q-008: мой (manifest schema), Claude (темы → topics), и Novax хотел Q-009 (svend4 location). Codex/Claude развели их по id-пространству:
+   - **Q-008** (мой, manifest schema) — уцелел, статус open.
+   - **Q-009** (Novax) — где физически находятся репозитории svend4 (без этого T-024 невыполним).
+   - **Q-010** (Claude) — переименовать `темы/` → `topics/` (последняя кириллица в путях; Claude рекомендует B сейчас + A позже).
+
+2. **T-026 done (Claude) — `tools/next_id.py`.** Атомарная выдача id по той же технике, что `queue.py` (O_CREAT|O_EXCL). Self-tested: 8 параллельных вызовов → 8 разных id (Q-004…Q-011), ноль дублей. **Этот файл `T-026` выдан самим инструментом (догфуд).** Договорённость для группы: перед созданием нового Q/T/D — сначала `next_id.py`, не выбирать номер вручную.
+
+3. **T-023 done (Codex) — машинный индекс драйверов в `index.json`.** `generate.py` теперь читает `drivers/*.md` с `type: driver`, пропускает `_template.md`, добавляет массив `drivers` в `index.json` (поля: id, title, file, status, level, mode, owner, risk, activation, interfaces, inputs, outputs, sandbox, secrets, related). Записано: «машинная навигация, не валидация схемы. Обязательные поля и расширенная manifest schema остаются предметом Q-008.»
+
+4. **Codex'овский ответ на Q-008 (в entry ai-os-bridge.md):** «согласен с вариантом B, но предлагаю не смешивать это с T-023». То есть мой Q-008 жив и ждёт голоса Stefan'а.
+
+**Текущее состояние (на 11:10):**
+
+| Что | Значение |
+|---|---|
+| HEAD | `e733244` |
+| Tasks | **26** (1 doing=T-005, **23 done**, 2 todo=T-024/T-025) |
+| Decisions | 10 accepted (D-001..D-010) |
+| Questions | 10 (**7 answered** + **3 open**: Q-008 manifest schema / Q-009 svend4 location / Q-010 темы → topics) |
+| Topics | 11 (6 done / 2 open / 1 waiting / 2 archive) |
+| Validator | 7/0/0 |
+| Generator | 6/6 актуально |
+| `drivers/` в `index.json` | 4 черновика: codex-local, data, files, repo-runner |
+| `next_id.py` | готов, догфуд-проверен |
+
+**Открытые вопросы для Stefan:**
+
+1. **Q-008** (manifest schema: минимальный A / расширенный B / полный C). Рекомендация Mavis: B (+ `source_last_verified`, `timeout_seconds`, `max_output_bytes`, `audit`).
+2. **Q-009** (где репозитории svend4 — Novax ждёт). Без ответа T-024 невыполнима.
+3. **Q-010** (`темы/` → `topics/`). Claude рекомендует B сейчас (косметика), A плановой миграцией когда будет «окно» без активной параллельной работы.
+
+**Готовые задачи (dispatcher):**
+
+- **T-024** (high) — Спроектировать read-only repo inventory driver для Sven4. Блокируется Q-009 (нужен доступ к реальным репам или решение работать по generic).
+- **T-025** (normal) — Извлечь MVP из `docs/ai_middle_layer_architecture_ru.md` (3-5 драйверов, skills, индексы, проверки).
+
+**Что я НЕ делаю (по политике):**
+
+- Не перехватываю готовые задачи без явного голоса Stefan (D-006).
+- Не открываю новые Q/T/D, пока висят 3 открытых вопроса.
+- Не правил `темы/` → `topics/` (Q-010 ждёт).
+- Не лезу в maintainer-файлы (`tools/generate.py`, `tools/README.md`) — Codex'овские изменения там только его коммитить.
+
+**Что я могу сделать (если Stefan велит):**
+
+- **Закоммитить Codex's T-023 work** (TASKS.md, index.json, tasks/T-023.md, tools/README.md, tools/generate.py, темы/ai-os-bridge.md) одним коммитом вместе с моим отчётом. Прецедент: коммит `7506489` уже содержал research docs от Codex/Claude + мои изменения.
+- **После Q-008 = B**: открыть `tasks/T-028.md` (свободный id) — расширить `_template.md`, создать `drivers/SCHEMA.md`, обновить `validate.py`.
+- **После Q-009**: помочь Novax с T-024 (read-only driver для найденных репо).
+
+**Моё мнение:**
+
+Канон зрелый, инструменты доказали работу: `next_id.py` (атомарная выдача), `generate.py` (машинный индекс драйверов), валидатор (7/0/0), `queue.py` (race-tested). AI-OS Bridge идёт по D-010 поэтапно: L1-каталог → машинный индекс → сейчас на пороге первого read-only L2 PoC. Открытые вопросы блокируют следующий шаг (особенно Q-009 без которого T-024 невыполнима). Если Stefan разблокирует 1-2 вопроса за следующий час — можно будет двинуться к MVP.

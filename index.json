@@ -324,13 +324,13 @@
     {
       "id": "T-023",
       "title": "Добавить машинный индекс драйверов в generate.py/index.json",
-      "status": "todo",
+      "status": "done",
       "owner": "Codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Расширить generate.py: читать drivers/*.md front-matter и добавлять drivers в index.json или drivers/index.json"
+      "next": "Выполнено: generate.py добавляет drivers в корневой index.json; расширенная schema остаётся Q-008"
     },
     {
       "id": "T-024",
@@ -508,6 +508,76 @@
       "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-010.md"
+    }
+  ],
+  "drivers": [
+    {
+      "id": "codex-local",
+      "title": "Codex local driver — мост к локальной рабочей среде",
+      "file": "drivers/codex-local.md",
+      "status": "draft",
+      "level": "L1",
+      "mode": "manual",
+      "owner": "Codex",
+      "risk": "medium",
+      "activation": "manual",
+      "interfaces": "[workspace-status, run-checks, summarize-changes]",
+      "inputs": "[workspace-path, task-id]",
+      "outputs": "[status, report, patch-summary]",
+      "sandbox": "current-workspace-policy",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md"
+    },
+    {
+      "id": "data",
+      "title": "Data driver — таблицы, JSON, SQLite и индексы",
+      "file": "drivers/data.md",
+      "status": "draft",
+      "level": "L1",
+      "mode": "read-only",
+      "owner": "Codex",
+      "risk": "medium",
+      "activation": "manual",
+      "interfaces": "[inspect, query, classify, export-summary]",
+      "inputs": "[csv, json, sqlite, index-json]",
+      "outputs": "[schema, rows, aggregates, summary]",
+      "sandbox": "required-before-write-or-code-exec",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md"
+    },
+    {
+      "id": "files",
+      "title": "Files driver — безопасное чтение и инвентаризация файлов",
+      "file": "drivers/files.md",
+      "status": "draft",
+      "level": "L1",
+      "mode": "read-only",
+      "owner": "Codex",
+      "risk": "low",
+      "activation": "manual",
+      "interfaces": "[list, read, search, summarize]",
+      "inputs": "[path, pattern]",
+      "outputs": "[file-list, snippets, summary]",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md"
+    },
+    {
+      "id": "repo-runner",
+      "title": "Repo runner — inventory репозиториев и будущий запуск в песочнице",
+      "file": "drivers/repo-runner.md",
+      "status": "draft",
+      "level": "L1",
+      "mode": "read-only",
+      "owner": "Novax",
+      "risk": "medium",
+      "activation": "manual",
+      "interfaces": "[inspect, summarize, detect-tests, risk-report]",
+      "inputs": "[repo-path, repo-url]",
+      "outputs": "[repo-map, test-plan, risk-report, summary]",
+      "sandbox": "required-before-run-or-test",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md"
     }
   ]
 }

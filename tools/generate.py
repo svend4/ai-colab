@@ -197,6 +197,40 @@ def collect_decisions():
     return items
 
 
+def collect_drivers():
+    items = []
+    for path in glob.glob(os.path.join(ROOT, "drivers", "*.md")):
+        name = os.path.basename(path)
+        if name.startswith("_"):
+            continue
+        with open(path, encoding="utf-8") as f:
+            fm = parse_front_matter(f.read())
+        if fm.get("type") != "driver" or not fm.get("id") or not fm.get("title"):
+            continue
+        rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
+        items.append(
+            {
+                "id": fm["id"],
+                "title": fm["title"],
+                "file": rel,
+                "status": fm.get("status", "draft"),
+                "level": fm.get("level", ""),
+                "mode": fm.get("mode", ""),
+                "owner": fm.get("owner", "—"),
+                "risk": fm.get("risk", ""),
+                "activation": fm.get("activation", ""),
+                "interfaces": fm.get("interfaces", ""),
+                "inputs": fm.get("inputs", ""),
+                "outputs": fm.get("outputs", ""),
+                "sandbox": fm.get("sandbox", ""),
+                "secrets": fm.get("secrets", ""),
+                "related": fm.get("related", ""),
+            }
+        )
+    items.sort(key=lambda d: d["id"])
+    return items
+
+
 def render_decisions_index(items):
     out = ["| ID | Решение | Статус | Дата | Файл |", "|---|---|---|---|---|"]
     for d in items:
@@ -245,8 +279,18 @@ def build_index():
          "date": d["date"], "file": d["file"]}
         for d in collect_decisions()
     ]
+    drivers = [
+        {"id": d["id"], "title": d["title"], "file": d["file"],
+         "status": d["status"], "level": d["level"], "mode": d["mode"],
+         "owner": d["owner"], "risk": d["risk"], "activation": d["activation"],
+         "interfaces": d["interfaces"], "inputs": d["inputs"],
+         "outputs": d["outputs"], "sandbox": d["sandbox"],
+         "secrets": d["secrets"], "related": d["related"]}
+        for d in collect_drivers()
+    ]
     return {"topics": topics, "tasks": tasks,
-            "questions": questions, "decisions": decisions}
+            "questions": questions, "decisions": decisions,
+            "drivers": drivers}
 
 
 def main():

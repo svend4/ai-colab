@@ -88,7 +88,7 @@ python tools/generate.py --check  # ничего не писать; exit 1, ес
 
 ## Машинный индекс (`index.json`)
 
-`generate.py` также строит корневой `index.json`: детерминированный машинный снимок канона для агентов и скриптов. Он содержит массивы `topics`, `tasks`, `questions`, `decisions`, собранные из front-matter и сгенерированных источников.
+`generate.py` также строит корневой `index.json`: детерминированный машинный снимок канона для агентов и скриптов. Он содержит массивы `topics`, `tasks`, `questions`, `decisions`, `drivers`, собранные из front-matter и сгенерированных источников.
 
 Зачем: агенту не нужно перечитывать все Markdown-файлы для первичной ориентации. Он может сначала прочитать `index.json`, выбрать релевантные сущности, а уже потом открыть конкретные темы/задачи/решения.
 
@@ -99,6 +99,12 @@ python tools/generate.py --check
 ```
 
 Если `index.json` устарел, команда сообщает `STALE: index.json`; нужно запустить `python tools/generate.py` и добавить обновленный `index.json` в коммит вместе с изменениями канона.
+
+### Драйверы в `index.json` (T-023)
+
+L1-каталог `drivers/` теперь тоже виден агентам через `index.json`. Генератор читает `drivers/*.md` с `type: driver`, пропускает `_template.md` и добавляет массив `drivers` с полями `id`, `title`, `file`, `status`, `level`, `mode`, `owner`, `risk`, `activation`, `interfaces`, `inputs`, `outputs`, `sandbox`, `secrets`, `related`.
+
+Это машинная навигация, не валидация схемы. Обязательные поля и расширенная manifest schema обсуждаются отдельно в Q-008.
 
 ## Шардирование реестра задач (T-008)
 
