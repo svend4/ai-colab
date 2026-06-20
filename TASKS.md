@@ -59,4 +59,5 @@
 | T-043 | Реализовать рабочий read-only files driver + тесты | done | pool | `темы/ai-os-bridge.md` | drivers/files/files_driver.py — list/read/search/summarize (read-only, лимиты по safety-policy) + drivers/files/test_files.py |
 | T-044 | Описать expected inventory для data/fixtures | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/EXPECTED.md создан |
 | T-045 | Checklist принятия D-013 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed |
+| T-046 | Обернуть files driver в настоящий MCP-сервер (stdio) | done | pool | `темы/ai-os-bridge.md` | drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list |
 <!-- GEN:tasks END -->

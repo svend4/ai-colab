@@ -580,6 +580,17 @@
       "depends_on": "[T-042]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed"
+    },
+    {
+      "id": "T-046",
+      "title": "Обернуть files driver в настоящий MCP-сервер (stdio)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-043]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list"
     }
   ],
   "questions": [
