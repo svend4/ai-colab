@@ -507,46 +507,79 @@
     {
       "id": "T-039",
       "title": "Разблокировать Python runtime и закрыть T-029",
-      "status": "todo",
+      "status": "blocked",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Диагностировать зависание python/bundled python, убрать lock/__pycache__, прогнать drivers/files/test_inventory.py, validate.py, generate.py"
+      "next": "Диагностика в docs/runtime-diagnostics.md; нужен внешний перезапуск/разбор зависших процессов, затем повторить Python checks"
     },
     {
       "id": "T-040",
       "title": "Создать data/README.md по data-folder-plan",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-037]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Создать data/README.md с правилами папок и предупреждением не импортировать реальные чувствительные данные без отдельной задачи"
+      "next": "Выполнено: data/README.md создан; теперь можно делать T-041 fixture-корпус"
     },
     {
       "id": "T-041",
       "title": "Создать минимальный безопасный fixture-корпус",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-038, T-040]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "data/fixtures/README.md + 5-10 synthetic файлов для проверки files/text/search/report drivers без персональных данных"
+      "next": "Выполнено: data/fixtures/README.md и 7 synthetic fixture-файлов созданы"
     },
     {
       "id": "T-042",
       "title": "Подготовить D-013 proposal по Q-008 driver schema v1",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Создать proposed decision D-013 или обновить Q-008: принять/отложить driver schema v1; accepted только человек"
+      "next": "Выполнено: decisions/D-013.md создан со статусом proposed; Q-008 обновлён и остаётся open до accepted"
+    },
+    {
+      "id": "T-043",
+      "title": "Реализовать рабочий read-only files driver + тесты",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "drivers/files/files_driver.py — list/read/search/summarize (read-only, лимиты по safety-policy) + drivers/files/test_files.py"
+    },
+    {
+      "id": "T-044",
+      "title": "Описать expected inventory для data/fixtures",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-041]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: data/fixtures/EXPECTED.md создан"
+    },
+    {
+      "id": "T-045",
+      "title": "Checklist принятия D-013 driver schema v1",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-042]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed"
     }
   ],
   "questions": [
@@ -719,6 +752,13 @@
       "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-012.md"
+    },
+    {
+      "id": "D-013",
+      "title": "Driver schema v1 — вариант B как proposed",
+      "status": "proposed",
+      "date": "2026-06-20",
+      "file": "decisions/D-013.md"
     }
   ],
   "drivers": [

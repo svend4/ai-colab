@@ -1,0 +1,9 @@
+Case outline fixture.
+
+1. Collect files.
+2. Extract text.
+3. Build index.
+4. Create report.
+
+This is synthetic test content only.
+

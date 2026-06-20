@@ -52,8 +52,11 @@
 | T-036 | Draft safety policy для драйверов и больших папок | done | pool | `темы/ai-os-bridge.md` | docs/driver-safety-policy.md — read-only-first, dry-run, audit, no secrets, no execute without decision |
 | T-037 | План data/ структуры для workbench-корпуса | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/data-folder-plan.md создан; следующий шаг — data/README.md и fixtures перед реальным импортом |
 | T-038 | План тестового корпуса для драйверов | done | pool | `темы/ai-os-bridge.md` | docs/test-corpus-plan.md — 10-20 безопасных fixture-файлов, сценарии проверки files/text/search/report drivers |
-| T-039 | Разблокировать Python runtime и закрыть T-029 | todo | pool | `темы/ai-os-bridge.md` | Диагностировать зависание python/bundled python, убрать lock/__pycache__, прогнать drivers/files/test_inventory.py, validate.py, generate.py |
-| T-040 | Создать data/README.md по data-folder-plan | todo | pool | `темы/ai-os-bridge.md` | Создать data/README.md с правилами папок и предупреждением не импортировать реальные чувствительные данные без отдельной задачи |
-| T-041 | Создать минимальный безопасный fixture-корпус | todo | pool | `темы/ai-os-bridge.md` | data/fixtures/README.md + 5-10 synthetic файлов для проверки files/text/search/report drivers без персональных данных |
-| T-042 | Подготовить D-013 proposal по Q-008 driver schema v1 | todo | pool | `темы/ai-os-bridge.md` | Создать proposed decision D-013 или обновить Q-008: принять/отложить driver schema v1; accepted только человек |
+| T-039 | Разблокировать Python runtime и закрыть T-029 | blocked | pool | `темы/ai-os-bridge.md` | Диагностика в docs/runtime-diagnostics.md; нужен внешний перезапуск/разбор зависших процессов, затем повторить Python checks |
+| T-040 | Создать data/README.md по data-folder-plan | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/README.md создан; теперь можно делать T-041 fixture-корпус |
+| T-041 | Создать минимальный безопасный fixture-корпус | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/README.md и 7 synthetic fixture-файлов созданы |
+| T-042 | Подготовить D-013 proposal по Q-008 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: decisions/D-013.md создан со статусом proposed; Q-008 обновлён и остаётся open до accepted |
+| T-043 | Реализовать рабочий read-only files driver + тесты | done | pool | `темы/ai-os-bridge.md` | drivers/files/files_driver.py — list/read/search/summarize (read-only, лимиты по safety-policy) + drivers/files/test_files.py |
+| T-044 | Описать expected inventory для data/fixtures | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/EXPECTED.md создан |
+| T-045 | Checklist принятия D-013 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed |
 <!-- GEN:tasks END -->

@@ -1,5 +1,5 @@
 {
-  "epoch": 1781961768,
+  "epoch": 1781963419,
   "agents": [
     {
       "agent": "codex",
@@ -8,8 +8,8 @@
       "note": "T-035/T-037 done; new pool batch T-039..T-042 added",
       "eta": "done",
       "epoch": 1781961768,
-      "age_seconds": 0,
-      "fresh": true
+      "age_seconds": 1651,
+      "fresh": false
     },
     {
       "agent": "mavis",
@@ -18,7 +18,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 8457,
+      "age_seconds": 10337,
       "fresh": false
     }
   ]

@@ -25,6 +25,7 @@ docs/
 - `driver-safety-policy.md` — правила безопасности для драйверов и больших папок.
 - `data-folder-plan.md` — план будущей `data/` структуры для корпуса: inbox/originals/copies/text/chunks/indexes/reports/audit/workbench.db и правила записи.
 - `test-corpus-plan.md` — план маленького безопасного fixture-корпуса для проверки `files`, `text-extract`, `search-index`, `report`.
+- `runtime-diagnostics.md` — диагностика блокировки внешних процессов/Python runtime, которая держит T-029/T-039 blocked.
 - `agent-layer-design.md` — технический разбор слоя драйверов/Treiber/MCP и вариантов L0-L4.
 - `glossary.md` — глоссарий канона проекта.
 - `quickstart.md` и `agent-quickstart.md` — быстрый старт для людей и агентов.

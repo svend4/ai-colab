@@ -1,5 +1,5 @@
 {
-  "epoch": 1781961597,
+  "epoch": 1781963303,
   "doing": [
     {
       "id": "T-020",
@@ -9,26 +9,7 @@
       "lease_epoch": ""
     }
   ],
-  "ready": [
-    {
-      "id": "T-039",
-      "title": "Разблокировать Python runtime и закрыть T-029",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-040",
-      "title": "Создать data/README.md по data-folder-plan",
-      "priority": "normal",
-      "owner": "pool"
-    },
-    {
-      "id": "T-042",
-      "title": "Подготовить D-013 proposal по Q-008 driver schema v1",
-      "priority": "normal",
-      "owner": "pool"
-    }
-  ],
+  "ready": [],
   "blocked": [
     {
       "id": "T-029",
@@ -36,9 +17,9 @@
       "reason": "status: blocked"
     },
     {
-      "id": "T-041",
-      "title": "Создать минимальный безопасный fixture-корпус",
-      "reason": "T-040"
+      "id": "T-039",
+      "title": "Разблокировать Python runtime и закрыть T-029",
+      "reason": "status: blocked"
     }
   ]
 }

@@ -1,0 +1,17 @@
+{
+  "kind": "synthetic-fixture",
+  "version": 1,
+  "items": [
+    {
+      "id": "item-001",
+      "category": "document",
+      "status": "sample"
+    },
+    {
+      "id": "item-002",
+      "category": "report",
+      "status": "sample"
+    }
+  ]
+}
+

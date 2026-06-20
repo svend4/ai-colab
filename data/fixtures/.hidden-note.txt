@@ -1,0 +1,4 @@
+Hidden synthetic fixture.
+
+Default inventory should skip this file unless include_hidden is enabled.
+
