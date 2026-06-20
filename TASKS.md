@@ -33,4 +33,9 @@
 | T-017 | Создать глоссарий терминов канона (docs/glossary.md) | done | Mavis | `темы/dogfood-run.md` | Выполнено Mavis: docs/glossary.md создан; done-маркеры очереди есть |
 | T-018 | Создать quickstart-руководство (docs/quickstart.md) | done | Novax | `темы/dogfood-run.md` | Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть |
 | T-019 | Эмпирически проверить атомарность claim под реальной гонкой | done | Claude | `темы/dogfood-run.md` | Прогнано вживую на Windows (8 параллельных claim → 1 победитель, 7 RACE/BUSY); tools/race_test.py поддерживает повторы [N] [раунды] |
+| T-020 | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор | doing | Novax | `темы/ai-os-bridge.md` | Q-007 закрыт D-010; дальше — read-only repo inventory driver (T-024) и фактический список/доступ к репозиториям Sven4 |
+| T-021 | Технический разбор слоя драйверов (design-документ) | done | Claude | `темы/ai-os-bridge.md` | docs/agent-layer-design.md готов (MCP/skills-framing, каталог драйверов, L0–L4, риски, план); вынесено на голос в Q-007 — рекомендация B + коннекторы как MCP + Sven4 read-only |
+| T-022 | Создать L1-каталог drivers/ и первые манифесты драйверов | done | Codex | `темы/ai-os-bridge.md` | L1-каркас создан: README, шаблон, files/data/repo-runner/codex-local; дальше T-023 индекс драйверов |
+| T-023 | Добавить машинный индекс драйверов в generate.py/index.json | todo | Codex | `темы/ai-os-bridge.md` | Расширить generate.py: читать drivers/*.md front-matter и добавлять drivers в index.json или drivers/index.json |
+| T-024 | Спроектировать read-only repo inventory driver для Sven4/local repos | todo | Novax | `темы/ai-os-bridge.md` | Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице |
 <!-- GEN:tasks END -->

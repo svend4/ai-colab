@@ -8,6 +8,20 @@
       "next": "Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки"
     },
     {
+      "id": "ai-os-bridge",
+      "title": "AI-OS Bridge — прослойка между ОС и AI-агентами",
+      "file": "темы/ai-os-bridge.md",
+      "status": "open",
+      "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
+    },
+    {
+      "id": "information-drivers",
+      "title": "Информационные драйверы (трайберы) — заполнение «пустой зоны» между AI и ОС",
+      "file": "темы/information-drivers.md",
+      "status": "open",
+      "next": "D-010 принят: drivers/ выбран как L1-каталог; дальше T-023 индекс драйверов и T-024 read-only repo inventory"
+    },
+    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "темы/infrastructure-review.md",
@@ -55,6 +69,13 @@
       "file": "темы/scaling-design.md",
       "status": "done",
       "next": "Тема закрыта: все задачи T-008..T-016 выполнены, roadmap реализован полностью. При необходимости масштабирования — создавать новую тему."
+    },
+    {
+      "id": "drivers-layer",
+      "title": "Слой драйверов (Treiber) — СЛИТО в ai-os-bridge",
+      "file": "темы/drivers-layer.md",
+      "status": "archive",
+      "next": "Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md"
     }
   ],
   "tasks": [
@@ -266,6 +287,61 @@
       "depends_on": "[T-009]",
       "topic": "темы/dogfood-run.md",
       "next": "Прогнано вживую на Windows (8 параллельных claim → 1 победитель, 7 RACE/BUSY); tools/race_test.py поддерживает повторы [N] [раунды]"
+    },
+    {
+      "id": "T-020",
+      "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
+      "status": "doing",
+      "owner": "Novax",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Q-007 закрыт D-010; дальше — read-only repo inventory driver (T-024) и фактический список/доступ к репозиториям Sven4"
+    },
+    {
+      "id": "T-021",
+      "title": "Технический разбор слоя драйверов (design-документ)",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "docs/agent-layer-design.md готов (MCP/skills-framing, каталог драйверов, L0–L4, риски, план); вынесено на голос в Q-007 — рекомендация B + коннекторы как MCP + Sven4 read-only"
+    },
+    {
+      "id": "T-022",
+      "title": "Создать L1-каталог drivers/ и первые манифесты драйверов",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-021]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "L1-каркас создан: README, шаблон, files/data/repo-runner/codex-local; дальше T-023 индекс драйверов"
+    },
+    {
+      "id": "T-023",
+      "title": "Добавить машинный индекс драйверов в generate.py/index.json",
+      "status": "todo",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-022]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Расширить generate.py: читать drivers/*.md front-matter и добавлять drivers в index.json или drivers/index.json"
+    },
+    {
+      "id": "T-024",
+      "title": "Спроектировать read-only repo inventory driver для Sven4/local repos",
+      "status": "todo",
+      "owner": "Novax",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-022]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице"
     }
   ],
   "questions": [
@@ -310,6 +386,13 @@
       "status": "answered",
       "where": "темы/q006-agent-onboarding.md",
       "outcome": "Принят вариант A (само-регистрация) на текущем этапе; запланирована эволюция к C. См. D-009."
+    },
+    {
+      "id": "Q-007",
+      "title": "Какой первый вариант реализации «информационных драйверов» выбираем?",
+      "status": "answered",
+      "where": "темы/information-drivers.md",
+      "outcome": "Принят D-010: вариант B с эволюцией к E; каноническая папка drivers/; сначала L1-манифесты, затем один read-only L2/MCP PoC."
     }
   ],
   "decisions": [
@@ -375,6 +458,13 @@
       "status": "accepted",
       "date": "2026-06-19",
       "file": "decisions/D-009.md"
+    },
+    {
+      "id": "D-010",
+      "title": "AI-OS Bridge стартует с L1-каталога драйверов и одного L2 PoC",
+      "status": "accepted",
+      "date": "2026-06-20",
+      "file": "decisions/D-010.md"
     }
   ]
 }
