@@ -18,7 +18,8 @@
     python tools/pipeline.py heartbeat <agent> <T-id> [--progress N] [--note "..."] [--eta "..."]
     python tools/pipeline.py mine   <agent>                  # мои активные задачи
 
-Готовая задача = status:todo + все depends_on done + не занята свежим claim'ом.
+Готовая задача = status:todo + все depends_on done + не занята свежим claim'ом
+и не является placeholder-задачей.
 Отчёты: per-task done-маркер `queues/done/<id>.done.md` (источник правды, без
 конфликтов) + строка в ленте `status`. Источник правды по статусу — tasks/*.md.
 """
@@ -154,11 +155,18 @@ def set_status(path, new):
     return True
 
 
+def is_placeholder_task(t):
+    title = (t.get("title") or "").strip()
+    return title == "(зарезервировано — заполните)"
+
+
 def ready_sorted(tasks):
     done_ids = {t["id"] for t in tasks.values() if t["status"] == "done"}
     ready = []
     for t in tasks.values():
         if t["status"] != "todo":
+            continue
+        if is_placeholder_task(t):
             continue
         if any(d not in done_ids for d in t["deps"]):
             continue
@@ -262,7 +270,13 @@ def build_pipeline_state():
             })
         elif t["status"] == "todo":
             missing = [d for d in t["deps"] if d not in done_ids]
-            if missing or claim_is_fresh(t["id"]):
+            if is_placeholder_task(t):
+                blocked.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "reason": "placeholder task",
+                })
+            elif missing or claim_is_fresh(t["id"]):
                 blocked.append({
                     "id": t["id"],
                     "title": t["title"],
@@ -291,7 +305,7 @@ def render_status_text(state):
     lines.append("\nГОТОВЫ К ВЗЯТИЮ (%d):" % len(state["ready"]))
     for item in state["ready"]:
         lines.append("  %s (%s) %s" % (item["id"], item["priority"], item["title"]))
-    lines.append("\nЗАБЛОКИРОВАНЫ зависимостями/claim (%d):" % len(state["blocked"]))
+    lines.append("\nНЕ ГОТОВЫ / ЗАБЛОКИРОВАНЫ (%d):" % len(state["blocked"]))
     for item in state["blocked"]:
         lines.append("  %s ← %s" % (item["id"], item["reason"]))
     return "\n".join(lines)

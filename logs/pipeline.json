@@ -1,5 +1,5 @@
 {
-  "epoch": 1781968200,
+  "epoch": 1781970159,
   "doing": [
     {
       "id": "T-020",
@@ -7,13 +7,6 @@
       "agent": "?",
       "claim_id": "",
       "lease_epoch": ""
-    },
-    {
-      "id": "T-060",
-      "title": "Workbench.db schema — SQLite для документов и audit_log",
-      "agent": "Novax",
-      "claim_id": "88c738076314",
-      "lease_epoch": "1781970009"
     }
   ],
   "ready": [],
@@ -31,26 +24,46 @@
     {
       "id": "T-048",
       "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
-      "reason": "depends_on: T-039 blocked"
+      "reason": "T-039"
     },
     {
       "id": "T-051",
       "title": "Runtime-приёмка repo-runner MCP wrapper после hardening",
-      "reason": "depends_on: T-039 blocked"
+      "reason": "T-039"
     },
     {
       "id": "T-055",
       "title": "Runtime-приёмка workbench.db driver после hardening",
-      "reason": "depends_on: T-039 blocked"
+      "reason": "T-039"
     },
     {
       "id": "T-057",
       "title": "Runtime-приёмка ingest pipeline после hardening",
-      "reason": "depends_on: T-039 blocked"
+      "reason": "T-039"
     },
     {
       "id": "T-059",
       "title": "File inventory driver — no-deps Python, карта файлов проекта",
+      "reason": "status: blocked"
+    },
+    {
+      "id": "T-062",
+      "title": "(зарезервировано — заполните)",
+      "reason": "placeholder task"
+    },
+    {
+      "id": "T-063",
+      "title": "(зарезервировано — заполните)",
+      "reason": "placeholder task"
+    },
+    {
+      "id": "T-064",
+      "title": "(зарезервировано — заполните)",
+      "reason": "placeholder task"
+    },
+    {
+      "id": "T-067",
+      "title": "Pipeline placeholder gating — не выдавать резервные задачи агентам",
       "reason": "status: blocked"
     }
   ]

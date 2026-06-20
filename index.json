@@ -800,6 +800,28 @@
       "depends_on": "[T-039]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку"
+    },
+    {
+      "id": "T-066",
+      "title": "State reconciliation layer — спецификация контроля дрейфа индексов",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-065]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/state-reconciliation-layer.md создан; после восстановления T-039 можно реализовать tools/reconcile_state.py"
+    },
+    {
+      "id": "T-067",
+      "title": "Pipeline placeholder gating — не выдавать резервные задачи агентам",
+      "status": "blocked",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-039]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot/next и подтвердить, что placeholder-задачи не выдаются агентам"
     }
   ],
   "questions": [

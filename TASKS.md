@@ -79,4 +79,6 @@
 | T-063 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
 | T-064 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
 | T-065 | Подготовить runtime recovery playbook для снятия T-039 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку |
+| T-066 | State reconciliation layer — спецификация контроля дрейфа индексов | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/state-reconciliation-layer.md создан; после восстановления T-039 можно реализовать tools/reconcile_state.py |
+| T-067 | Pipeline placeholder gating — не выдавать резервные задачи агентам | blocked | Codex | `темы/ai-os-bridge.md` | Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot/next и подтвердить, что placeholder-задачи не выдаются агентам |
 <!-- GEN:tasks END -->

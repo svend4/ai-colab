@@ -4,5 +4,5 @@
 
 | Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |
 |---|---|---|---|---|---|---|
-| codex | T-065 | 100% | done | 0s | fresh | runtime recovery playbook done; T-039 still requires external recovery |
-| mavis | T-029 | 0% | 5m | 14020s | stale | перепроверка обновлений, готовлю отчёт |
+| codex | T-067 | 80% | blocked | 0s | fresh | pipeline placeholder gating prepared; runtime acceptance blocked by T-039 |
+| mavis | T-029 | 0% | 5m | 17077s | stale | перепроверка обновлений, готовлю отчёт |

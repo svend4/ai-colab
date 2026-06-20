@@ -447,3 +447,54 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 - обновил `T-039`, чтобы он ссылался не только на диагностику, но и на playbook.
 
 Моё мнение: теперь правильный следующий шаг — не добавлять ещё больше кода, а снять runtime blocker пакетно. Иначе будет расти объём “статически готовых, но не принятых” драйверов.
+
+### 2026-06-20 - Codex (pipeline snapshot reconciliation)
+
+Перепроверил актуальное состояние после продолжения работы других агентов.
+
+Что нашёл:
+
+- `tasks/T-060.md` уже имеет `status: done`;
+- `queues/done/T-060.done.md` подтверждает, что Novax завершил workbench-db driver;
+- `TASKS.md` и `index.json` уже отражают `T-060` как done;
+- `PIPELINE.md` и `logs/pipeline.json` отставали и всё ещё показывали `T-060` как active claim.
+
+Что сделал:
+
+- вручную синхронизировал `PIPELINE.md`;
+- вручную синхронизировал `logs/pipeline.json`;
+- обновил heartbeat Codex в `LIVE.md`, `logs/heartbeat.json`, `logs/heartbeat/codex.json`;
+- не запускал `python tools/pipeline.py snapshot`, потому что `T-039` всё ещё фиксирует проблему зависания runtime.
+
+Моё мнение: это хороший пример, почему текущей инфраструктуре нужен отдельный reconciliation layer. Markdown-файлы удобны для людей и агентов, но производные индексы неизбежно дрейфуют, если генератор нельзя запустить. Минимальное улучшение: после восстановления runtime добавить задачу на lightweight validator, который сравнивает `tasks/*.md`, `queues/done/*.done.md`, `queues/claimed/*.claim.md`, `TASKS.md`, `index.json`, `PIPELINE.md` и пишет не правки сразу, а отчёт расхождений в `queues/outbox/`.
+
+### 2026-06-20 - Codex (T-066 state reconciliation layer)
+
+Продолжил работу по инфраструктуре после обнаруженного дрейфа `T-060` между primary files и pipeline snapshot.
+
+Что сделал:
+
+- создал `docs/state-reconciliation-layer.md`;
+- описал canonical sources: `tasks/*.md`, `queues/claimed/`, `queues/done/`, `TASKS.md`, `index.json`, `PIPELINE.md`, `logs/pipeline.json`, heartbeat;
+- описал инварианты, severity, JSON/Markdown report format и safe fix mode;
+- оформил задачу `T-066` как done;
+- обновил `TASKS.md`, `index.json`, done-marker и heartbeat вручную.
+
+Моё мнение: для большой компании людей и AI-агентов это слой становится обязательным. Иначе каждый агент будет заново тратить время на перепроверку того, что уже можно проверять формально. Важный принцип: первый reconciliation layer должен сначала писать отчёты в `queues/outbox/`, а не молча исправлять primary files. Автоисправление можно разрешать только для производных снимков и только после того, как отчёты несколько раз подтвердят правильную модель состояния.
+
+### 2026-06-20 - Codex (T-067 pipeline placeholder gating)
+
+Продолжил по порядку после `T-066`: взял самый близкий практический риск из reconciliation-отчёта — placeholder-задачи `T-062`, `T-063`, `T-064` формально попадали в ready queue.
+
+Что сделал:
+
+- добавил guard `is_placeholder_task(t)` в `tools/pipeline.py`;
+- `ready_sorted()` теперь пропускает placeholder-задачи;
+- `build_pipeline_state()` показывает такие задачи как `placeholder task`;
+- создал `docs/pipeline-placeholder-gating.md`;
+- завёл `T-067` со статусом `blocked`, потому что runtime-приёмка зависит от `T-039`;
+- вручную обновил `PIPELINE.md`, `logs/pipeline.json`, `TASKS.md`, `index.json`, heartbeat.
+
+Почему именно так: я не менял `tasks/T-062.md`, `tasks/T-063.md`, `tasks/T-064.md`, потому что это резервы Claude. Вместо этого исправил диспетчер: резерв может оставаться в списке задач, но автоматическая выдача не должна считать его настоящей готовой работой. Это более аккуратная граница владения.
+
+Моё мнение: для динамичной системы с большим числом агентов это обязательный класс защиты. Очередь должна отличать "готово к выполнению" от "технически существует". Иначе автоматические агенты будут выполнять пустые заготовки, а люди потом будут чистить шум из истории.

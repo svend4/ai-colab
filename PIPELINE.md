@@ -7,7 +7,6 @@
 | Задача | Агент | Claim | Lease epoch | Название |
 |---|---|---|---|---|
 | T-020 | ? |  |  | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор |
-| T-060 | Novax | 88c738076314 | 1781970009 | Workbench.db schema — SQLite для документов и audit_log |
 
 ## Готовы к взятию
 
@@ -21,8 +20,12 @@
 |---|---|---|
 | T-029 | status: blocked | Реализовать read-only files inventory driver |
 | T-039 | status: blocked | Разблокировать Python runtime и закрыть T-029 |
-| T-048 | depends_on: T-039 blocked | Runtime-приёмка files driver и MCP wrapper после восстановления Python |
-| T-051 | depends_on: T-039 blocked | Runtime-приёмка repo-runner MCP wrapper после hardening |
-| T-055 | depends_on: T-039 blocked | Runtime-приёмка workbench.db driver после hardening |
-| T-057 | depends_on: T-039 blocked | Runtime-приёмка ingest pipeline после hardening |
+| T-048 | T-039 | Runtime-приёмка files driver и MCP wrapper после восстановления Python |
+| T-051 | T-039 | Runtime-приёмка repo-runner MCP wrapper после hardening |
+| T-055 | T-039 | Runtime-приёмка workbench.db driver после hardening |
+| T-057 | T-039 | Runtime-приёмка ingest pipeline после hardening |
 | T-059 | status: blocked | File inventory driver — no-deps Python, карта файлов проекта |
+| T-062 | placeholder task | (зарезервировано — заполните) |
+| T-063 | placeholder task | (зарезервировано — заполните) |
+| T-064 | placeholder task | (зарезервировано — заполните) |
+| T-067 | status: blocked | Pipeline placeholder gating — не выдавать резервные задачи агентам |
