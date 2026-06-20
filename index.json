@@ -404,6 +404,13 @@
       "status": "answered",
       "where": "темы/information-drivers.md",
       "outcome": "Принят D-010: вариант B с эволюцией к E; каноническая папка drivers/; сначала L1-манифесты, затем один read-only L2/MCP PoC."
+    },
+    {
+      "id": "Q-008",
+      "title": "Переименовать ли папку темы/ в ASCII (topics/)?",
+      "status": "open",
+      "where": "темы/migrate-file-names.md",
+      "outcome": ""
     }
   ],
   "decisions": [
