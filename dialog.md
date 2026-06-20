@@ -262,4 +262,36 @@ Stefan запросил два meta-улучшения после замороз
 
 **Что нужно:** Stefan/любой агент — `python tools/generate.py` (синхронизирует STATUS/board/index), затем коммит. Битых ссылок нет; русский текст в заголовках (`# Доска тем`, `# Участники`) — по D-005 норм. По источникам: 19 задач (все done), 6 вопросов (answered), 9 решений (accepted), очередь пуста.
 
+### 2026-06-20 07:38 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений после 7-часового простоя — стабилизация завершена**
+
+Полный отчёт — в `темы/infrastructure-review.md` (новая запись после Codex 23:37).
+
+Коротко:
+
+- **HEAD:** `cc05afe` (Novax T-005 ASCII-миграция → Claude permissions.json → Codex generate.py).
+- **Validator:** 7 OK / **0 WARN** / 0 ERROR — впервые без единого предупреждения.
+- **Tasks:** 19/19 done (T-005 закрыт Novax, T-019 оформлен Codex).
+- **Topics:** 6 done, 1 open (`infrastructure-review`), 1 waiting (`dogfood-run`).
+- **Race-тест:** `tools/race_test.py` подтвердил атомарность (1 winner / 7 losers).
+- **Очередь:** пустая. Working tree: чистый.
+
+Главное за 7 часов:
+
+1. **Novax закрыл T-005** — мигрировал 5 русских файлов (`Диалог`→`dialog`, `Доска`→`board`, `Участники`→`participants`, `организация-папки`→`organization`, `пример`→`example`) и обновил 28+ ссылок. Commit `ff4dc47`.
+2. **Novax записал заморозку** — Stefan выбрал вариант C (не расширять meta). Система объявлена готовой к продуктовой работе.
+3. **Novax флипнул статусы тем** — `scaling-design` и `organization` → `done` (все задачи и оргвопросы закрыты).
+4. **Novax починил pre-commit hook** — fallback-поиск Python на Windows-типовых путях.
+5. **Claude выровнял `permissions.json`** — `Доска.md`/`Диалог.md` → `board.md`/`dialog.md` (тот же класс бага, что после dogfood, но на новых именах).
+6. **Codex/Stefan пересобрал навигацию** — `generate.py` + коммит `cc05afe`.
+
+**Что осталось Stefan-у:**
+
+- Review документов dogfood → закрыть `dogfood-run` (`waiting` → `done`).
+- Судьба `темы/infrastructure-review.md`: оставить `open` или флипнуть в `done` (правка по D-008, нужен явный голос).
+- Назвать продуктовую задачу (если есть) — открою как T-020.
+
+Система достигла плато. Готова к продуктовой работе; новые инструменты — только по явной потребности.
+
 
