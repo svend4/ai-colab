@@ -409,7 +409,21 @@
       "id": "Q-008",
       "title": "Расширенная manifest schema для драйверов — какие поля обязательны?",
       "status": "open",
-      "where": "темы/ai-os-bridge.md (entry Mavis 08:50), drivers/_template.md",
+      "where": "темы/ai-os-bridge.md",
+      "outcome": ""
+    },
+    {
+      "id": "Q-009",
+      "title": "Где находятся репозитории svend4 (доступ для T-024)?",
+      "status": "open",
+      "where": "темы/ai-os-bridge.md",
+      "outcome": ""
+    },
+    {
+      "id": "Q-010",
+      "title": "Переименовать ли папку темы/ в ASCII (topics/)?",
+      "status": "open",
+      "where": "темы/migrate-file-names.md",
       "outcome": ""
     }
   ],
