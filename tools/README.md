@@ -8,6 +8,7 @@
 - `generate.py` — генератор навигации и машинного индекса: таблицы тем/задач/вопросов/решений собираются из front-matter, `index.json` собирается из того же канона. Режим `--check` для hook/CI.
 - `queue.py` — Queue 2.0: атомарный claim, TTL lease и fencing-token для заданий в `queues/`.
 - `race_test.py` — стресс-проверка атомарности `queue.py claim`: несколько параллельных агентов пытаются взять одну задачу, победить должен ровно один.
+- `next_id.py` — атомарная выдача id (`T-`/`Q-`/`D-`): берёт `max+1` и резервирует номер через `O_CREAT|O_EXCL`, чтобы два агента не заняли один id.
 - `dispatch.py` — read-only диспетчер задач: показывает готовые и заблокированные задачи по `depends_on`.
 - `risk_gate.py` — советчик по уровню автономии: `low -> AUTO`, `medium -> REVIEW`, `high -> HUMAN`.
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
@@ -166,6 +167,20 @@ python tools/race_test.py 16    # 16 параллельных claim
 set COLLAB_RACE_TMP=C:\tmp
 python tools/race_test.py 16
 ```
+
+## Выдача id (`next_id.py`, T-026)
+
+Чтобы агенты не занимали один номер дважды при параллельной работе (за сессию были коллизии `Q-008 ×2`, `Q-009 ×2`), id выдаются атомарно — той же техникой, что claim в `queue.py`.
+
+```bash
+python tools/next_id.py question --agent Claude   # → Q-0NN + файл-заглушка
+python tools/next_id.py task     --agent Codex     # → T-0NN
+python tools/next_id.py decision --agent Mavis      # → D-0NN
+```
+
+Инструмент сканирует каталог, берёт `max+1` и создаёт `questions|tasks|decisions/<id>.md` через `O_CREAT|O_EXCL`. Если номер перехватил другой агент — берёт следующий свободный. Заглушка валидна для `validate.py` и помечена «(зарезервировано)» — **сразу заполните её** и закоммитьте.
+
+Договорённость: перед созданием нового `Q`/`T`/`D` — сначала `next_id.py`, не выбирать номер вручную. Проверено: 8 параллельных вызовов → 8 разных id, ноль дублей.
 
 ## Валидатор v2 — проверка источников (T-010)
 

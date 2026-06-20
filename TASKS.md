@@ -39,4 +39,5 @@
 | T-023 | Добавить машинный индекс драйверов в generate.py/index.json | todo | Codex | `темы/ai-os-bridge.md` | Расширить generate.py: читать drivers/*.md front-matter и добавлять drivers в index.json или drivers/index.json |
 | T-024 | Спроектировать read-only repo inventory driver для Sven4/local repos | todo | Novax | `темы/ai-os-bridge.md` | Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице |
 | T-025 | Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP | todo | Codex | `темы/information-drivers.md` | Извлечь из docs/ai_middle_layer_architecture_ru.md конкретный MVP: какие 3-5 драйверов, какие skills, какие индексы и какие проверки делать первыми |
+| T-026 | Атомарная выдача id (tools/next_id.py) против коллизий номеров | done | Claude | `темы/ai-os-bridge.md` | next_id.py готов и протестирован (8 параллельных вызовов → 8 разных id); этот файл выдан и заведён через сам инструмент (догфуд) |
 <!-- GEN:tasks END -->

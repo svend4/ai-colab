@@ -353,6 +353,17 @@
       "depends_on": "[T-022]",
       "topic": "темы/information-drivers.md",
       "next": "Извлечь из docs/ai_middle_layer_architecture_ru.md конкретный MVP: какие 3-5 драйверов, какие skills, какие индексы и какие проверки делать первыми"
+    },
+    {
+      "id": "T-026",
+      "title": "Атомарная выдача id (tools/next_id.py) против коллизий номеров",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-009]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "next_id.py готов и протестирован (8 параллельных вызовов → 8 разных id); этот файл выдан и заведён через сам инструмент (догфуд)"
     }
   ],
   "questions": [
