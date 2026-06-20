@@ -38,9 +38,20 @@ def run():
         rb = fd.read_file(os.path.join(d, "plain.txt"), max_bytes=4)
         assert rb["truncated"] and rb["text"] == "hell", rb
 
+        redacted = fd.read_file(os.path.join(d, "secret-like.txt"))["text"]
+        assert "supersecret123" not in redacted and "***" in redacted, "read() не маскирует секрет"
+
         hits = fd.search("API_KEY", d)
         assert any(h["path"] == "secret-like.txt" for h in hits), "не нашёл API_KEY"
         assert all("supersecret123" not in h["text"] for h in hits), "СЕКРЕТ УТЁК"
+        assert len(fd.search("file", d, max_hits=1)) == 1, "max_hits не ограничивает выдачу"
+        assert len(fd.list_files(d, max_files=2)) == 2, "max_files не ограничивает обход"
+
+        try:
+            fd.read_file(os.path.join(d, "plain.txt"), base_dir=os.path.join(d, "nested"))
+            assert False, "base_dir не ограничивает выход за allowed-root"
+        except fd.PathAccessError:
+            pass
 
         s = fd.summarize(d)
         assert s["files"] == 5 and s["total_bytes"] > 0, s

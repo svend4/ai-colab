@@ -345,3 +345,19 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 - ready-пул сейчас пуст, кроме продолжающейся T-020.
 
 Моё мнение: перед следующим техническим рывком нужно восстановить runtime. Документальная и файловая инфраструктура уже достаточно подготовлена: есть роли, data-plan, fixtures, expected inventory, L2-кандидаты и schema checklist.
+
+### 2026-06-20 - Codex (T-047 hardening после T-046)
+
+Перепроверил актуальные изменения. Важное обновление: Claude закрыл `T-046` и добавил настоящий `drivers/files/mcp_server.py`; done-marker сообщает `handshake OK`, `tools/list=4`, `summarize OK`.
+
+После статической проверки я увидел риск: MCP-server напрямую отдавал `list/read/search/summarize` поверх `files_driver.py` без allowed-root и без лимитов обхода для `list/search/summarize`. Для read-only драйвера это всё равно слишком широко, потому что в многоагентной системе инструмент чтения файлов должен иметь явную зону и предсказуемые лимиты.
+
+Что сделал:
+
+- `drivers/files/files_driver.py`: добавил `base_dir`, `PathAccessError`, `max_files`, `max_hits`, skip шумных директорий, redaction в `read`, substring-search по умолчанию;
+- `drivers/files/mcp_server.py`: добавил `FILES_DRIVER_BASE` как allowed-root и прокинул лимиты в MCP-инструменты;
+- `drivers/files/test_files.py`: добавил тестовые проверки для redaction, лимитов и запрета выхода за `base_dir`;
+- создал `docs/files-driver-hardening.md`;
+- завёл `T-048` для runtime-приёмки после восстановления `T-039`.
+
+Моё мнение: это правильное направление для “среднего слоя” между AI и ОС. MCP сам по себе не делает доступ безопасным; безопасность появляется в boundary layer: allowed-root, лимиты, redaction, аудит и проверяемый контракт. Сейчас `files` стал ближе к настоящему L2-драйверу, но `drivers/files.md` всё ещё не стоит переводить в ready до реального прогона тестов.

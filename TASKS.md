@@ -60,4 +60,6 @@
 | T-044 | Описать expected inventory для data/fixtures | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/EXPECTED.md создан |
 | T-045 | Checklist принятия D-013 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed |
 | T-046 | Обернуть files driver в настоящий MCP-сервер (stdio) | done | pool | `темы/ai-os-bridge.md` | drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list |
+| T-047 | Усилить безопасность files MCP driver перед дальнейшим использованием | done | Codex | `темы/ai-os-bridge.md` | Выполнено: allowed-root, max_files/max_hits, skip dirs, read redaction; runtime-приёмка вынесена в T-048 |
+| T-048 | Runtime-приёмка files driver и MCP wrapper после восстановления Python | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_files.py, test_inventory.py, MCP handshake/tools-list/call, validate.py и generate.py --check |
 <!-- GEN:tasks END -->

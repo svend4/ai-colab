@@ -21,14 +21,14 @@
 
 | Приоритет | Драйвер | Режим | Риск | Почему полезен | Главный риск | Условие старта |
 |---|---|---|---|---|---|---|
-| 1 | `files` | read-only | low | Базовая карта больших папок: пути, типы, размеры, hash, summary | Python runtime сейчас нестабилен, T-029 blocked | Разблокировать Python и прогнать `drivers/files/test_inventory.py` |
+| 1 | `files` | read-only | low | Базовая карта больших папок: пути, типы, размеры, hash, summary; L2-draft engine и MCP-wrapper уже есть (`T-043`, `T-046`, `T-047`) | Python runtime сейчас нестабилен, runtime acceptance заблокирован | Закрыть `T-039`, затем выполнить `T-048` |
 | 2 | `repo-runner` | read-only | medium | Уже есть inventory для репозиториев; полезно для Sven4/local repos | Нельзя переходить к `run/test` без sandbox | Оставить только inspect/summarize/risk-report |
 | 3 | `data` | read-only | medium | Нужен для SQLite/CSV/JSON и будущего `workbench.db` | SQL/write/migrations должны быть запрещены | Сначала создать schema `documents` + `audit_log` |
 | 4 | `codex-local` | manual/read-only | medium | Может дать статус рабочей папки, checks, summary изменений | Риск слишком широкого доступа к окружению Codex | Ограничить списком разрешённых команд |
 
 ## Рекомендация
 
-Первый L2 PoC должен быть **`files`**, если удаётся стабилизировать Python runtime и закрыть T-029. Это самый безопасный и универсальный слой: без карты файлов нельзя уверенно строить text extraction, search index, reports и SQLite memory.
+Первый L2 PoC остаётся **`files`**. Кодовая часть уже продвинулась дальше первичного плана: есть engine, MCP-wrapper и hardening. Но статус не должен становиться `ready`, пока не удаётся стабилизировать Python runtime и выполнить `T-048`. Это самый безопасный и универсальный слой: без карты файлов нельзя уверенно строить text extraction, search index, reports и SQLite memory.
 
 Если Python runtime остаётся заблокированным, временный первый L2 PoC можно делать на **`repo-runner`**, потому что у него уже есть рабочий read-only contract и тесты от Novax. Но важно не расширять его до запуска кода.
 
@@ -87,8 +87,7 @@ risk_report(repo_path)
 
 Практичный порядок:
 
-1. Разблокировать T-029 и подтвердить `files` тестами.
-2. Принять Q-008 или оставить schema v1 как draft, но не расширять MCP metadata раньше времени.
-3. Сделать L2 `files` как локальный tool с JSON stdout.
-4. Только потом решать, нужен ли MCP server wrapper.
-
+1. Разблокировать `T-039`.
+2. Выполнить `T-048`: `test_files.py`, `test_inventory.py`, MCP handshake/tools-list/call, `validate.py`, `generate.py --check`.
+3. Если всё проходит, закрыть `T-029` и обсудить перевод `drivers/files.md` из `draft`.
+4. Только после этого расширять MCP metadata и подключение к внешним клиентам как стабильный драйвер.

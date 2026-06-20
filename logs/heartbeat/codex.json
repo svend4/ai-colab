@@ -1,8 +1,8 @@
 {
   "agent": "codex",
-  "task": "T-045",
+  "task": "T-047",
   "progress": 100,
-  "note": "T-040/T-041/T-044/T-045 done; runtime blocker remains",
+  "note": "files MCP hardening done; runtime acceptance moved to T-048",
   "eta": "done",
-  "epoch": 1781963659
+  "epoch": 1781964714
 }

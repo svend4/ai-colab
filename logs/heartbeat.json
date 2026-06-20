@@ -1,13 +1,13 @@
 {
-  "epoch": 1781963659,
+  "epoch": 1781964714,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-045",
+      "task": "T-047",
       "progress": 100,
-      "note": "T-040/T-041/T-044/T-045 done; runtime blocker remains",
+      "note": "files MCP hardening done; runtime acceptance moved to T-048",
       "eta": "done",
-      "epoch": 1781963659,
+      "epoch": 1781964714,
       "age_seconds": 0,
       "fresh": true
     },
@@ -18,7 +18,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 10337,
+      "age_seconds": 11632,
       "fresh": false
     }
   ]

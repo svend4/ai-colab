@@ -20,3 +20,4 @@
 |---|---|---|
 | T-029 | status: blocked | Реализовать read-only files inventory driver |
 | T-039 | status: blocked | Разблокировать Python runtime и закрыть T-029 |
+| T-048 | depends_on: T-039 blocked | Runtime-приёмка files driver и MCP wrapper после восстановления Python |

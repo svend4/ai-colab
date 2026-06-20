@@ -591,6 +591,28 @@
       "depends_on": "[T-043]",
       "topic": "темы/ai-os-bridge.md",
       "next": "drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list"
+    },
+    {
+      "id": "T-047",
+      "title": "Усилить безопасность files MCP driver перед дальнейшим использованием",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-043, T-046]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: allowed-root, max_files/max_hits, skip dirs, read redaction; runtime-приёмка вынесена в T-048"
+    },
+    {
+      "id": "T-048",
+      "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-039, T-047]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "После восстановления runtime прогнать test_files.py, test_inventory.py, MCP handshake/tools-list/call, validate.py и generate.py --check"
     }
   ],
   "questions": [
