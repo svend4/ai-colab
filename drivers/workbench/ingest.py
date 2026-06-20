@@ -36,6 +36,12 @@ wb = _load("wb_workbench", "workbench", "workbench.py")
 inventory = _load("rr_inventory", "repo-runner", "inventory.py")
 fd = _load("files_driver_mod", "files", "files_driver.py")
 
+# Re-export ошибки workbench как часть публичного контракта ingest.
+# workbench.py грузится через _load под именем "wb_workbench" — это отдельный
+# объект модуля, поэтому его PathAccessError != workbench.PathAccessError при
+# обычном import. Вызывающий код и тесты должны ловить именно ingest.PathAccessError.
+PathAccessError = wb.PathAccessError
+
 
 def configure_output():
     for name in ("stdout", "stderr"):

@@ -52,7 +52,7 @@
 | T-036 | Draft safety policy для драйверов и больших папок | done | pool | `темы/ai-os-bridge.md` | docs/driver-safety-policy.md — read-only-first, dry-run, audit, no secrets, no execute without decision |
 | T-037 | План data/ структуры для workbench-корпуса | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/data-folder-plan.md создан; следующий шаг — data/README.md и fixtures перед реальным импортом |
 | T-038 | План тестового корпуса для драйверов | done | pool | `темы/ai-os-bridge.md` | docs/test-corpus-plan.md — 10-20 безопасных fixture-файлов, сценарии проверки files/text/search/report drivers |
-| T-039 | Разблокировать Python runtime и закрыть T-029 | blocked | pool | `темы/ai-os-bridge.md` | Диагностика в docs/runtime-diagnostics.md; порядок восстановления в docs/runtime-recovery-playbook.md; нужен внешний перезапуск/разбор зависших процессов |
+| T-039 | Разблокировать Python runtime и закрыть T-029 | blocked | pool | `темы/ai-os-bridge.md` | core validation batch прошёл; см. docs/runtime-validation-batch-2026-06-20.md; дальше driver acceptance batch через python |
 | T-040 | Создать data/README.md по data-folder-plan | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/README.md создан; теперь можно делать T-041 fixture-корпус |
 | T-041 | Создать минимальный безопасный fixture-корпус | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/README.md и 7 synthetic fixture-файлов созданы |
 | T-042 | Подготовить D-013 proposal по Q-008 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: decisions/D-013.md создан со статусом proposed; Q-008 обновлён и остаётся open до accepted |
@@ -81,4 +81,10 @@
 | T-065 | Подготовить runtime recovery playbook для снятия T-039 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку |
 | T-066 | State reconciliation layer — спецификация контроля дрейфа индексов | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/state-reconciliation-layer.md создан; после восстановления T-039 можно реализовать tools/reconcile_state.py |
 | T-067 | Pipeline placeholder gating — не выдавать резервные задачи агентам | blocked | Codex | `темы/ai-os-bridge.md` | Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot/next и подтвердить, что placeholder-задачи не выдаются агентам |
+| T-068 | Pipeline orphan doing detection — показывать doing без claim как проблему | blocked | Codex | `темы/ai-os-bridge.md` | Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot и подтвердить T-020 как doing without active claim |
+| T-069 | Зафиксировать отчёт о текущей концептуальной и технической стадии | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/implementation-stage-report-2026-06-20.md и queues/outbox/2026-06-20-implementation-stage-report.md созданы для оценки людьми и агентами |
+| T-070 | Зафиксировать внешний PowerShell runtime check для T-039 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-powershell-check-2026-06-20.md создан; T-039 уточнён, но остаётся blocked до project validation/test batch |
+| T-071 | Зафиксировать PowerShell UTF-8 display issue | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/powershell-utf8-output.md создан; читать Markdown через Get-Content -Encoding UTF8 после chcp 65001 |
+| T-072 | Зафиксировать успешный core runtime validation batch | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-validation-batch-2026-06-20.md создан; следующий шаг — driver acceptance batch через python |
+| T-073 | Подтвердить исправление UTF-8 вывода в PowerShell | done | Codex | `темы/ai-os-bridge.md` | Выполнено: пользователь подтвердил, что chcp 65001 + Get-Content -Encoding UTF8 корректно показывают PIPELINE.md и TASKS.md |
 <!-- GEN:tasks END -->

@@ -513,7 +513,7 @@
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Диагностика в docs/runtime-diagnostics.md; порядок восстановления в docs/runtime-recovery-playbook.md; нужен внешний перезапуск/разбор зависших процессов"
+      "next": "core validation batch прошёл; см. docs/runtime-validation-batch-2026-06-20.md; дальше driver acceptance batch через python"
     },
     {
       "id": "T-040",
@@ -822,6 +822,72 @@
       "depends_on": "[T-039]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot/next и подтвердить, что placeholder-задачи не выдаются агентам"
+    },
+    {
+      "id": "T-068",
+      "title": "Pipeline orphan doing detection — показывать doing без claim как проблему",
+      "status": "blocked",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-039]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot и подтвердить T-020 как doing without active claim"
+    },
+    {
+      "id": "T-069",
+      "title": "Зафиксировать отчёт о текущей концептуальной и технической стадии",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-068]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/implementation-stage-report-2026-06-20.md и queues/outbox/2026-06-20-implementation-stage-report.md созданы для оценки людьми и агентами"
+    },
+    {
+      "id": "T-070",
+      "title": "Зафиксировать внешний PowerShell runtime check для T-039",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-039]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/runtime-powershell-check-2026-06-20.md создан; T-039 уточнён, но остаётся blocked до project validation/test batch"
+    },
+    {
+      "id": "T-071",
+      "title": "Зафиксировать PowerShell UTF-8 display issue",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-070]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/powershell-utf8-output.md создан; читать Markdown через Get-Content -Encoding UTF8 после chcp 65001"
+    },
+    {
+      "id": "T-072",
+      "title": "Зафиксировать успешный core runtime validation batch",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-070]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/runtime-validation-batch-2026-06-20.md создан; следующий шаг — driver acceptance batch через python"
+    },
+    {
+      "id": "T-073",
+      "title": "Подтвердить исправление UTF-8 вывода в PowerShell",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-071]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: пользователь подтвердил, что chcp 65001 + Get-Content -Encoding UTF8 корректно показывают PIPELINE.md и TASKS.md"
     }
   ],
   "questions": [
@@ -1078,6 +1144,23 @@
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
       "related": "темы/ai-os-bridge.md"
+    },
+    {
+      "id": "gateway",
+      "title": "Gateway — единый MCP над files/repo/workbench (композиция)",
+      "file": "drivers/gateway.md",
+      "status": "draft",
+      "level": "L2",
+      "mode": "read-only",
+      "owner": "Claude",
+      "risk": "medium",
+      "activation": "mcp",
+      "interfaces": "[files_list, files_read, files_search, files_summarize, repo_inspect, memory_query]",
+      "inputs": "[path, repo-path, query]",
+      "outputs": "[listing, content, search-hits, repo-summary, memory-hits]",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md"
     },
     {
       "id": "repo-runner",

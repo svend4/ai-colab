@@ -255,13 +255,26 @@ def build_pipeline_state():
     for t in sorted(tasks.values(), key=lambda x: x["id"]):
         if t["status"] == "doing":
             h = claim_holder(t["id"]) or {}
-            doing.append({
-                "id": t["id"],
-                "title": t["title"],
-                "agent": h.get("agent", "?"),
-                "claim_id": h.get("claim_id", ""),
-                "lease_epoch": h.get("lease_epoch", ""),
-            })
+            if not h:
+                blocked.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "reason": "doing without active claim",
+                })
+            elif not claim_is_fresh(t["id"]):
+                blocked.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "reason": "doing with stale claim",
+                })
+            else:
+                doing.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "agent": h.get("agent", "?"),
+                    "claim_id": h.get("claim_id", ""),
+                    "lease_epoch": h.get("lease_epoch", ""),
+                })
         elif t["status"] == "blocked":
             blocked.append({
                 "id": t["id"],

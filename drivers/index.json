@@ -45,6 +45,17 @@
       "activation": "manual"
     },
     {
+      "id": "gateway",
+      "title": "Gateway — единый MCP над files/repo/workbench (композиция)",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "draft",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "activation": "mcp"
+    },
+    {
       "id": "repo-runner",
       "title": "Repo runner — inventory репозиториев и будущий запуск в песочнице",
       "level": "L1",

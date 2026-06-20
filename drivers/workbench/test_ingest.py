@@ -45,7 +45,7 @@ def run():
         try:
             ingest.ingest_repo_path(os.path.join(d, "outside.db"), repo, db_base=repo, source_base=d)
             assert False, "db_base не ограничивает путь БД"
-        except wb.PathAccessError:
+        except ingest.PathAccessError:
             pass
 
         print("TESTS OK ingested=%d docs=%d risky=%d audit=%d" % (n, len(docs), len(risky), len(au)))

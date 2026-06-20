@@ -554,3 +554,144 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 Остаток (тот же `T-039`-батч): (1) `python drivers/mcp_handshake_test.py` — приёмка трёх новых MCP-серверов (тест уже написан); (2) решить, заносить ли `gateway` в каталог (тогда `drivers/gateway.md` + регенерация) или оставить как L7-узел-композицию вне каталога.
 
 Голос по порядку: согласен с Codex, добавляю в шаг 2 прогон handshake. Сначала снять runtime и принять уже созданное; новые функции — потом. В этот ход исполнение недоступно (Desktop Commander/bash/PowerShell — все три), поэтому мой вклад только ревью+документация, генерируемые индексы не трогал, чтобы не сломать `--check`.
+
+### 2026-06-20 - Claude (handshake пройден — остаток закрыт)
+
+Max прогнал `python drivers/mcp_handshake_test.py` на Windows. Результат:
+
+- `data` — tools=4 (`columns`, `head`, `list_tables`, `summarize`);
+- `codex-local` — tools=2 (`codex_available`, `codex_info`);
+- `gateway` — tools=6 (`files_list`, `files_read`, `files_search`, `files_summarize`, `memory_query`, `repo_inspect`);
+- `RESULT OK`.
+
+Тем самым MCP-handshake закрыт для **всех** серверов среза: `files`, `repo-runner` (ранее) + `data`, `codex-local`, `gateway` (сейчас). Вертикальный срез AI-OS Bridge зелёный end-to-end. Тест и ревью закоммичены (3 files changed).
+
+Осталось по этому слою:
+
+1. Открытое решение: заносить ли `gateway` в каталог драйверов или оставить как L7-узел-композицию вне `drivers/` (жду голос Max/группы).
+2. Формальные статусы драйверов (`data`/`codex-local` draft→ready) и регенерацию `drivers/index.json`/`CATALOG.md` делать на рабочем runtime — у Max он есть.
+
+Подчёркиваю: handshake подтверждает `initialize` + `tools/list`, это smoke-уровень приёмки (как и был у `repo-runner`), а не полный прогон приёмочных наборов `T-048/T-051/...`.
+
+### 2026-06-20 - Claude (gateway внесён в каталог как L2-композиция)
+
+По директиве Max («зафиксировать правильно, по техническим требованиям всей инфраструктуры») внёс `gateway` в каталог драйверов строго по схеме v1 (D-013):
+
+- создал `drivers/gateway.md` — полный front-matter: `level: L2`, `mode: read-only`, `risk: medium` → `audit: true`, `activation: mcp`, `interfaces` = 6 инструментов, `sandbox: not-required-for-read-only`, `secrets: forbidden-in-repo`, `timeout_seconds`/`max_output_bytes`, `source_last_verified: 2026-06-20`;
+- внёс запись в `drivers/index.json` и `drivers/CATALOG.md` вручную, точно в формат `tools/drivers_catalog.py` (runtime у меня недоступен, поэтому не регенерировал, а синхронизировал руками — как делал Codex при заблокированном генераторе).
+
+Почему **L2, а не L7**: поле `level` в схеме v1 допускает только `L1/L2/L3`. `gateway` — локальный MCP, поэтому `L2`; его природа «композиция/мост» (концептуальный L7 из `docs/agent-layer-design.md`) зафиксирована в заголовке манифеста и отдельным разделом, чтобы не путать с leaf-драйверами `L2`.
+
+Статус оставил `draft` (как у `files`): handshake — smoke-приёмка, не полный прогон `call_tool`. Перевод в `ready` — после приёмочных тестов, решает человек (D-006).
+
+Просьба к тому, у кого рабочий runtime: прогнать `python tools/drivers_catalog.py` для официальной регенерации (мои ручные правки должны дать «актуален» по обоим файлам) и `python tools/validate.py`. Каталог драйверов теперь: 7 записей.
+
+### 2026-06-20 - Claude (перепроверка батареи: index.json regen + фикс test_ingest)
+
+Max прогнал батарею ручной проверки на рабочем runtime. Итог: gateway в каталоге подтверждён генератором (7 драйверов, `validate` = 8 OK / 0 ERROR), 9 из 10 тест-сетов и MCP-handshake зелёные. Поймано два места:
+
+1. `generate.py --check` → `STALE: index.json`: корневой `index.json` включает драйверы, а `gateway.md` добавлен без прогона генератора (runtime тогда был недоступен). Лечится `python tools/generate.py`.
+2. `test_ingest.py` падал трейсбэком на негативной проверке. **Важно: сам контроль безопасности работает** — `PathAccessError` корректно заблокировал запись БД вне allowed-root. Баг был в тесте/контракте: `ingest.py` грузит `workbench.py` через `_load` под именем `wb_workbench`, поэтому `wb.PathAccessError` в тесте (обычный import) и реально брошенный класс — разные объекты, и `except` не ловил.
+
+Что сделал:
+
+- `ingest.py`: добавил re-export `PathAccessError = wb.PathAccessError` (публичный символ контракта ingest);
+- `test_ingest.py`: ловлю `except ingest.PathAccessError`.
+
+После `python tools/generate.py` и повторного `python drivers/workbench/test_ingest.py` оба места становятся зелёными. Это smoke+unit уровень; полная приёмочная стадия (`call_tool` по каждому инструменту, статусы `draft→ready`) — следующий шаг, и теперь её ничто не блокирует: runtime подтверждён рабочим этой же батареей, то есть фактическая предпосылка `T-039` снята.
+
+### 2026-06-20 - Claude (перепроверка обновлений)
+
+Bash вернулся — свёл параллельные изменения и прогнал валидаторы над всем рабочим деревом.
+
+Что сделал Codex параллельно: T-068 (orphan doing detection), T-069 (stage report), **T-070..T-073 — runtime-валидация**: внешний PowerShell-чек, фикс UTF-8 вывода (`chcp 65001` + `Get-Content -Encoding UTF8`), core validation batch (validate 8/0/0, drivers_catalog = 7, handshake `RESULT OK`), подтверждение UTF-8. `T-039` уточнён (core runtime работает, остаётся `blocked` до driver acceptance batch) — статус не перехвачен, корректно по `owner: pool`. Плюс много нового в `dialog.md`, `docs/runtime-*`, `tools/pipeline.py`.
+
+Сверка консистентности:
+
+- `validate.py` = `OK=8 / 0 ERROR`, 73 задачи, 7 драйверов, 14 решений, 12 вопросов — канон чистый; моя работа по gateway согласуется с прогоном Codex (оба видят 7 драйверов);
+- нашёл дрейф производных: корневой `index.json` не содержал `gateway` (он индексирует и драйверы), `drivers/index.json`/`CATALOG.md` тоже разошлись с генератором. **Регенерировал тремя инструментами → все `--check` снова зелёные**;
+- мой фикс `test_ingest.py` подтверждён прогоном: `TESTS OK ingested=2 docs=2 risky=1 audit=1`.
+
+Операционный риск (не содержательный): в дереве большой пул незакоммиченной работы от нескольких агентов + присутствует `.git/index.lock` (в песочнице снять нельзя — «Operation not permitted»). Вероятно, именно lock держит коммиты, поэтому работа копится. Нужно: убедиться, что нет зависшего git-процесса, удалить stale `.git/index.lock`, затем закоммитить.
+
+Вывод: по существу всё согласовано и зелёно; проблема чисто операционная (git-lock + накопленные коммиты). Следующий шаг не изменился — **driver acceptance batch (`call_tool`)**, и теперь его ничто не блокирует.
+
+### 2026-06-20 - Codex (T-070 external PowerShell runtime check)
+
+Пользователь прислал результат ручной проверки Windows PowerShell.
+
+Что стало ясно:
+
+- команда `python` работает и отвечает `Python 3.11.15`;
+- `python` импортирует `json` и `sqlite3`;
+- активный `python` идёт из `C:\Users\stefan\AppData\Local\hermes\hermes-agent\venv\Scripts\python.exe`;
+- `py --version` уходит в timeout;
+- в системе есть долгоживущие Python-процессы, некоторые с очень большим CPU time;
+- PowerShell helper нужно поправить: `Stop-Job -Force` не поддерживается, надо `Stop-Job $job`.
+
+Что сделал:
+
+- создал `docs/runtime-powershell-check-2026-06-20.md`;
+- дополнил `docs/runtime-diagnostics.md`;
+- уточнил `tasks/T-039.md`;
+- оформил `T-070` как done;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Моё мнение: это существенный прогресс по `T-039`, но ещё не закрытие. Теперь проблема стала уже: не "Python совсем не работает", а "использовать `python`, не `py`, и прогнать project validation/test batch; отдельно диагностировать долгоживущие процессы". Следующий быстрый шаг — запуск короткого пакета `pipeline status`, `validate`, `drivers_catalog`, `mcp_handshake_test` через `python`.
+
+### 2026-06-20 - Codex (T-071 PowerShell UTF-8 display)
+
+Пользователь прислал вывод `Get-Content .\PIPELINE.md` из Windows PowerShell. Русский текст отобразился как mojibake (`Ð...`, `Ñ...`, `â€”`), но JSON-проверки прошли успешно, а чтение `PIPELINE.md` как UTF-8 показывает, что файл не повреждён.
+
+Что сделал:
+
+- создал `docs/powershell-utf8-output.md`;
+- оформил `T-071` как done;
+- создал done-marker `queues/done/T-071.done.md`;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Практический вывод: перед ручной проверкой русскоязычных Markdown-файлов в Windows PowerShell нужно включить UTF-8 (`chcp 65001`, `Get-Content -Encoding UTF8`). Иначе человек может принять проблему отображения за повреждение репозитория.
+
+### 2026-06-20 - Codex (T-072 core runtime validation batch)
+
+Пользователь прогнал через Windows PowerShell первый рабочий пакет проектных runtime-проверок.
+
+Результаты:
+
+- `python tools\pipeline.py status` выполнился и показал ожидаемое состояние: ready=0, `T-020` как `doing without active claim`, `T-062..T-064` как `placeholder task`;
+- `python tools\validate.py` прошёл: `OK=8 WARN=0 ERROR=0`;
+- `python tools\drivers_catalog.py` подтвердил, что `drivers/index.json` и `drivers/CATALOG.md` актуальны, драйверов в каталоге 7;
+- `python drivers\mcp_handshake_test.py` завершился `RESULT OK` для `data`, `codex-local`, `gateway`.
+
+Что сделал:
+
+- создал `docs/runtime-validation-batch-2026-06-20.md`;
+- создал `queues/outbox/2026-06-20-runtime-validation-batch.md`;
+- обновил `docs/runtime-diagnostics.md`;
+- уточнил `tasks/T-039.md`;
+- оформил `T-072` как done;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Моё мнение: это переломный момент по `T-039`. Базовый Python/project runtime уже работает. Но закрывать `T-039` полностью пока рано: следующий слой — driver acceptance tests (`files`, `repo-runner`, `workbench`, `workbench-db`, `file-inventory`). После него можно будет закрывать зависимые runtime-задачи пакетно.
+
+### 2026-06-20 - Codex (T-073 PowerShell UTF-8 confirmed)
+
+Пользователь подтвердил, что процедура из `docs/powershell-utf8-output.md` работает:
+
+- `chcp 65001`;
+- `[Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)`;
+- `[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)`;
+- `$OutputEncoding = [Console]::OutputEncoding`;
+- `Get-Content -Encoding UTF8 -LiteralPath ".\PIPELINE.md"`;
+- `Get-Content -Encoding UTF8 -LiteralPath ".\TASKS.md"`.
+
+Результат: `PIPELINE.md` и `TASKS.md` читаются нормально на русском. Это подтверждает, что mojibake был проблемой отображения PowerShell, а не повреждением репозитория.
+
+Что сделал:
+
+- дополнил `docs/powershell-utf8-output.md`;
+- оформил `T-073` как done;
+- создал done-marker `queues/done/T-073.done.md`;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Практический вывод: дальнейшие ручные проверки Markdown в Windows PowerShell нужно выполнять только после включения UTF-8 или через `Get-Content -Encoding UTF8`.

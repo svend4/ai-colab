@@ -6,7 +6,7 @@
 
 | Задача | Агент | Claim | Lease epoch | Название |
 |---|---|---|---|---|
-| T-020 | ? |  |  | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор |
+| — | — | — | — | — |
 
 ## Готовы к взятию
 
@@ -18,6 +18,7 @@
 
 | Задача | Причина | Название |
 |---|---|---|
+| T-020 | doing without active claim | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор |
 | T-029 | status: blocked | Реализовать read-only files inventory driver |
 | T-039 | status: blocked | Разблокировать Python runtime и закрыть T-029 |
 | T-048 | T-039 | Runtime-приёмка files driver и MCP wrapper после восстановления Python |
@@ -29,3 +30,4 @@
 | T-063 | placeholder task | (зарезервировано — заполните) |
 | T-064 | placeholder task | (зарезервировано — заполните) |
 | T-067 | status: blocked | Pipeline placeholder gating — не выдавать резервные задачи агентам |
+| T-068 | status: blocked | Pipeline orphan doing detection — показывать doing без claim как проблему |

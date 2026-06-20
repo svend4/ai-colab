@@ -48,3 +48,31 @@ python tools\generate.py --check
 
 5. Если проверки проходят, закрыть T-029 и перевести `drivers/files.md` в `ready`.
 
+## Update 2026-06-20 - external PowerShell check
+
+Пользователь выполнил проверку в отдельном Windows PowerShell.
+
+Уточнённый результат:
+
+- `python --version` отвечает: `Python 3.11.15`;
+- `python -c "import sys, json, sqlite3; ..."` отвечает;
+- активный `python` указывает на `C:\Users\stefan\AppData\Local\hermes\hermes-agent\venv\Scripts\python.exe`;
+- `sqlite3` доступен (`3.53.1`);
+- `py --version` уходит в timeout;
+- в системе есть долгоживущие Python-процессы с большим CPU time;
+- `Stop-Job -Force` не поддерживается текущим Windows PowerShell, нужна форма `Stop-Job $job`.
+
+Вывод: блокер `T-039` уточнён. Команда `python` уже пригодна для следующего пакета проверок, но `py` launcher и долгоживущие процессы требуют осторожной диагностики. `T-039` остаётся `blocked` до прохождения project validation/test batch.
+
+Подробности: `docs/runtime-powershell-check-2026-06-20.md`.
+
+## Update 2026-06-20 - core runtime validation batch
+
+Пользователь выполнил core runtime validation через `python`:
+
+- `python tools\pipeline.py status` — выполнено;
+- `python tools\validate.py` — `OK=8 WARN=0 ERROR=0`;
+- `python tools\drivers_catalog.py` — каталог актуален, 7 драйверов;
+- `python drivers\mcp_handshake_test.py` — `RESULT OK`.
+
+Вывод: проектный runtime частично восстановлен. Дальше нужно прогнать driver acceptance batch. Подробности: `docs/runtime-validation-batch-2026-06-20.md`.

@@ -8,5 +8,6 @@
 | data | Data driver — таблицы, JSON, SQLite и индексы | L1 | read-only | medium | draft |
 | file-inventory | File inventory driver — project file map with metadata and risk flags | L2 | read-only | low | draft |
 | files | Files driver — безопасное чтение и инвентаризация файлов | L1 | read-only | low | draft |
+| gateway | Gateway — единый MCP над files/repo/workbench (композиция) | L2 | read-only | medium | draft |
 | repo-runner | Repo runner — inventory репозиториев и будущий запуск в песочнице | L1 | read-only | medium | ready |
 | workbench | Workbench DB driver — SQLite-память корпуса и audit log | L2 | safe-write | medium | draft |

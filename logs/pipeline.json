@@ -1,16 +1,13 @@
 {
-  "epoch": 1781970159,
-  "doing": [
+  "epoch": 1781971556,
+  "doing": [],
+  "ready": [],
+  "blocked": [
     {
       "id": "T-020",
       "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
-      "agent": "?",
-      "claim_id": "",
-      "lease_epoch": ""
-    }
-  ],
-  "ready": [],
-  "blocked": [
+      "reason": "doing without active claim"
+    },
     {
       "id": "T-029",
       "title": "Реализовать read-only files inventory driver",
@@ -64,6 +61,11 @@
     {
       "id": "T-067",
       "title": "Pipeline placeholder gating — не выдавать резервные задачи агентам",
+      "reason": "status: blocked"
+    },
+    {
+      "id": "T-068",
+      "title": "Pipeline orphan doing detection — показывать doing без claim как проблему",
       "reason": "status: blocked"
     }
   ]

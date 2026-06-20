@@ -1,13 +1,13 @@
 {
-  "epoch": 1781970159,
+  "epoch": 1781977586,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-067",
-      "progress": 80,
-      "note": "pipeline placeholder gating prepared; runtime acceptance blocked by T-039",
-      "eta": "blocked",
-      "epoch": 1781970159,
+      "task": "T-073",
+      "progress": 100,
+      "note": "PowerShell UTF-8 display fix confirmed by user",
+      "eta": "done",
+      "epoch": 1781977586,
       "age_seconds": 0,
       "fresh": true
     },
@@ -18,7 +18,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 17077,
+      "age_seconds": 24504,
       "fresh": false
     }
   ]
