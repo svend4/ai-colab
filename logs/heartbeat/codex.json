@@ -1,8 +1,8 @@
 {
   "agent": "codex",
-  "task": "T-054",
-  "progress": 100,
-  "note": "workbench hardening and manifest done; runtime acceptance moved to T-055",
-  "eta": "done",
-  "epoch": 1781966530
+  "task": "T-059",
+  "progress": 80,
+  "note": "file-inventory code ready; runtime/demo scan blocked by T-039",
+  "eta": "blocked",
+  "epoch": 1781967700
 }

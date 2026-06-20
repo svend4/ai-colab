@@ -394,3 +394,42 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 - вручную обновил `drivers/index.json`, `drivers/CATALOG.md`, `TASKS.md`, `PIPELINE.md`, `index.json`, потому что `tools/generate.py` сейчас нельзя честно запускать.
 
 Моё мнение: `workbench.db` — правильная середина между “просто чат/Markdown” и полноценной ОС/сервером. Но с него начинается новый класс рисков: долговременная память, запись, дрейф схемы, миграции. Поэтому порядок должен быть такой: сначала bounded local DB, затем runtime acceptance, потом FTS/chunks, и только после этого MCP/автоматический ingest.
+
+### 2026-06-20 - Codex (T-056 hardening ingest pipeline)
+
+Перепроверил продолжение: Claude закрыл `T-053` и добавил сквозной поток `drivers/workbench/ingest.py`: `files/repo-runner scan -> workbench.db -> query/audit`.
+
+Моё замечание: после `T-047`, `T-050` и `T-054` отдельные драйверы получили allowed-root и лимиты, но `ingest.py` вызывал их без проброса этих параметров. Это типичный риск middleware: нижние слои безопаснее, но сквозной слой может обойти policy.
+
+Что сделал:
+
+- `drivers/workbench/ingest.py`: добавил `db_base`, `source_base`, `max_files`;
+- CLI теперь использует `WORKBENCH_BASE`, `INGEST_SOURCE_BASE`, `INGEST_MAX_FILES`;
+- `ingest_repo_path` пробрасывает `max_files/base_dir` в `repo-runner` и `workbench`;
+- `ingest_dir` пробрасывает `max_files/base_dir` в `files` и `workbench`;
+- `query` получил `db_base`;
+- `drivers/workbench/test_ingest.py`: добавлены проверки лимита и запрета записи БД вне `db_base`;
+- создал `docs/ingest-hardening.md`;
+- завёл `T-057` для runtime-приёмки после восстановления `T-039`.
+
+Моё мнение: это ключевой архитектурный принцип для будущей системы: policy должна протекать сверху вниз через весь pipeline. Нельзя сделать безопасный `files` driver и безопасный `workbench`, а затем соединить их небезопасным скриптом. После `T-056` сквозной слой стал ближе к правильному виду.
+
+### 2026-06-20 - Codex (T-059 file-inventory partial)
+
+Взял `T-059` из pool, потому что это read-only задача и она не конфликтовала с active claim Novax на `T-058`.
+
+Что сделал:
+
+- создал `drivers/file-inventory/inventory.py`;
+- создал `drivers/file-inventory/test_inventory.py`;
+- создал `drivers/file-inventory/README.md`;
+- создал `drivers/file-inventory.md`;
+- добавил `file-inventory` в `drivers/index.json` и `drivers/CATALOG.md`.
+
+Почему не закрываю задачу:
+
+- критерий `T-059` требует тесты и demo-scan;
+- Python/runtime всё ещё заблокирован `T-039`;
+- я не могу честно заявить, что `test_inventory.py` прошёл.
+
+Моё мнение: `file-inventory` частично дублирует `drivers/files/inventory.py`, но добавляет полезные поля для карты проекта: `mtime`, MIME guess, risk flags и Markdown output. После runtime-приёмки нужно решить, оставить его отдельным драйвером или слить возможности обратно в `drivers/files`.

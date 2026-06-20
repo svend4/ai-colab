@@ -1,0 +1,260 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+File inventory driver (T-059) — no-deps read-only project file map.
+
+Does not write to the scanned folder, does not execute files, and does not use
+network access. Output goes to stdout as JSON or Markdown.
+
+CLI:
+    python inventory.py <path>
+    python inventory.py <path> --hash
+    python inventory.py <path> --markdown
+    python inventory.py <path> --max-files 1000 --base <allowed-root>
+"""
+import argparse
+import datetime
+import hashlib
+import json
+import mimetypes
+import os
+import stat
+import sys
+from pathlib import Path
+
+DEFAULT_MAX_FILES = 1000
+DEFAULT_MAX_HASH_BYTES = 10 * 1024 * 1024
+
+SKIP_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "node_modules",
+    "venv",
+    ".venv",
+    "target",
+    "build",
+    "dist",
+}
+
+EXECUTABLE_EXTS = {".exe", ".dll", ".msi", ".bat", ".cmd", ".com"}
+SHELL_EXTS = {".sh", ".ps1", ".bash", ".zsh", ".fish"}
+CODE_EXTS = {".py", ".js", ".ts", ".rs", ".go", ".java", ".c", ".cpp", ".h"}
+TEXT_EXTS = {".txt", ".md", ".json", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".csv", ".html", ".css", ".sql"}
+
+
+class PathAccessError(ValueError):
+    pass
+
+
+def configure_output():
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        if stream is not None and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
+configure_output()
+
+
+def _is_relative_to(path, base):
+    try:
+        path.relative_to(base)
+        return True
+    except ValueError:
+        return False
+
+
+def resolve_root(root_path, base_dir=None):
+    if base_dir is None:
+        root = Path(root_path).expanduser().resolve()
+    else:
+        base = Path(base_dir).expanduser().resolve()
+        raw = Path(root_path).expanduser()
+        root = (raw if raw.is_absolute() else base / raw).resolve()
+        if not _is_relative_to(root, base):
+            raise PathAccessError(f"path is outside allowed root: {root}")
+    if not root.exists():
+        raise FileNotFoundError(str(root))
+    if not root.is_dir():
+        raise NotADirectoryError(str(root))
+    return root
+
+
+def classify_type(path):
+    ext = path.suffix.lower()
+    if ext in TEXT_EXTS:
+        return "text"
+    if ext in CODE_EXTS:
+        return "code"
+    if ext in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".tiff"}:
+        return "image"
+    if ext == ".pdf":
+        return "pdf"
+    if ext in {".zip", ".7z", ".rar", ".tar", ".gz"}:
+        return "archive"
+    if ext in EXECUTABLE_EXTS:
+        return "executable"
+    return "unknown"
+
+
+def risk_flags(path, mode):
+    ext = path.suffix.lower()
+    flags = []
+    if ext in EXECUTABLE_EXTS:
+        flags.append("executable-extension")
+    if ext in SHELL_EXTS:
+        flags.append("shell-script")
+    if mode & stat.S_IXUSR:
+        flags.append("executable-bit")
+    if ext in {".pem", ".key", ".env"} or path.name.lower() in {".env", "id_rsa"}:
+        flags.append("secret-like-name")
+    return flags
+
+
+def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
+    if path.stat().st_size > max_bytes:
+        return None
+    digest = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
+         hash_files=False, max_hash_bytes=DEFAULT_MAX_HASH_BYTES, base_dir=None):
+    root = resolve_root(root_path, base_dir=base_dir)
+    files = []
+    summary = {
+        "total_files": 0,
+        "total_size_bytes": 0,
+        "by_extension": {},
+        "by_type": {},
+        "risk_flags": {},
+    }
+    truncated = False
+
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [
+            name for name in dirnames
+            if name not in SKIP_DIRS and (include_hidden or not name.startswith("."))
+        ]
+        for filename in filenames:
+            if not include_hidden and filename.startswith("."):
+                continue
+            if len(files) >= max_files:
+                truncated = True
+                dirnames[:] = []
+                break
+            path = Path(dirpath) / filename
+            rel = path.relative_to(root).as_posix()
+            try:
+                st = path.stat()
+            except OSError as exc:
+                files.append({"path": rel, "error": str(exc)})
+                continue
+
+            ext = path.suffix.lower() or "(none)"
+            kind = classify_type(path)
+            mime, _encoding = mimetypes.guess_type(str(path))
+            flags = risk_flags(path, st.st_mode)
+            item = {
+                "path": rel,
+                "size_bytes": st.st_size,
+                "mtime": datetime.datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds"),
+                "extension": ext,
+                "type": kind,
+                "mime": mime or "",
+                "risk_flags": flags,
+            }
+            if hash_files:
+                digest = sha256_file(path, max_bytes=max_hash_bytes)
+                item["sha256"] = digest
+                if digest is None:
+                    item["hash_skipped"] = True
+
+            files.append(item)
+            summary["total_files"] += 1
+            summary["total_size_bytes"] += st.st_size
+            summary["by_extension"][ext] = summary["by_extension"].get(ext, 0) + 1
+            summary["by_type"][kind] = summary["by_type"].get(kind, 0) + 1
+            for flag in flags:
+                summary["risk_flags"][flag] = summary["risk_flags"].get(flag, 0) + 1
+
+        if truncated:
+            break
+
+    return {
+        "path": str(root),
+        "mode": "read-only",
+        "max_files": max_files,
+        "include_hidden": include_hidden,
+        "hash_files": hash_files,
+        "truncated": truncated,
+        "summary": summary,
+        "files": files,
+    }
+
+
+def render_markdown(report):
+    lines = [
+        "# File inventory",
+        "",
+        f"Path: `{report['path']}`",
+        f"Files: {report['summary']['total_files']}",
+        f"Truncated: {report['truncated']}",
+        "",
+        "| Path | Size | Type | MIME | Risk |",
+        "|---|---:|---|---|---|",
+    ]
+    for item in report["files"]:
+        if "error" in item:
+            lines.append(f"| `{item['path']}` | — | error | — | {item['error']} |")
+            continue
+        risk = ", ".join(item["risk_flags"]) if item["risk_flags"] else ""
+        lines.append("| `%s` | %s | %s | %s | %s |" % (
+            item["path"], item["size_bytes"], item["type"], item["mime"], risk
+        ))
+    return "\n".join(lines) + "\n"
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(prog="inventory.py")
+    parser.add_argument("path")
+    parser.add_argument("--base")
+    parser.add_argument("--max-files", type=int, default=DEFAULT_MAX_FILES)
+    parser.add_argument("--include-hidden", action="store_true")
+    parser.add_argument("--hash", action="store_true", dest="hash_files")
+    parser.add_argument("--max-hash-bytes", type=int, default=DEFAULT_MAX_HASH_BYTES)
+    parser.add_argument("--markdown", action="store_true")
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv or sys.argv[1:])
+    try:
+        report = scan(
+            args.path,
+            max_files=args.max_files,
+            include_hidden=args.include_hidden,
+            hash_files=args.hash_files,
+            max_hash_bytes=args.max_hash_bytes,
+            base_dir=args.base,
+        )
+    except Exception as exc:
+        print(json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False))
+        return 1
+
+    if args.markdown:
+        print(render_markdown(report), end="")
+    else:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

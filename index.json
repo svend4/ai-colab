@@ -690,6 +690,105 @@
       "depends_on": "[T-039, T-054]",
       "topic": "темы/ai-os-bridge.md",
       "next": "После восстановления runtime прогнать test_workbench.py, validate.py, generate.py --check и CLI init/list/audit с WORKBENCH_BASE"
+    },
+    {
+      "id": "T-056",
+      "title": "Усилить безопасность ingest pipeline после T-053",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-053, T-054]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: WORKBENCH_BASE, INGEST_SOURCE_BASE, INGEST_MAX_FILES, db_base/source_base propagation; runtime-приёмка вынесена в T-057"
+    },
+    {
+      "id": "T-057",
+      "title": "Runtime-приёмка ingest pipeline после hardening",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-039, T-056]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "После восстановления runtime прогнать test_ingest.py, test_workbench.py, validate.py, generate.py --check и CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE"
+    },
+    {
+      "id": "T-058",
+      "title": "Driver schema v1 — валидатор и генератор каталога драйверов",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создать валидатор drivers/ и генератор CATALOG.md + index.json"
+    },
+    {
+      "id": "T-059",
+      "title": "File inventory driver — no-deps Python, карта файлов проекта",
+      "status": "blocked",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Код, тесты и манифест созданы; заблокировано T-039 — нужно запустить test_inventory.py, demo scan и генераторы"
+    },
+    {
+      "id": "T-060",
+      "title": "Workbench.db schema — SQLite для документов и audit_log",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Спроектировать схему, создать init-скрипт, тесты, манифест"
+    },
+    {
+      "id": "T-061",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-062",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-063",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-064",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [
@@ -745,9 +844,9 @@
     {
       "id": "Q-008",
       "title": "Расширенная manifest schema для драйверов — какие поля обязательны?",
-      "status": "open",
+      "status": "answered",
       "where": "темы/ai-os-bridge.md",
-      "outcome": ""
+      "outcome": "Принят вариант B (driver schema v1) — обязательные поля манифеста зафиксированы. См. D-013."
     },
     {
       "id": "Q-009",
@@ -866,9 +965,16 @@
     {
       "id": "D-013",
       "title": "Driver schema v1 — вариант B как proposed",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-013.md"
+    },
+    {
+      "id": "D-014",
+      "title": "(зарезервировано — заполните)",
+      "status": "proposed",
+      "date": "2026-06-20",
+      "file": "decisions/D-014.md"
     }
   ],
   "drivers": [
@@ -905,6 +1011,23 @@
       "sandbox": "required-before-write-or-code-exec",
       "secrets": "forbidden-in-repo",
       "related": "темы/ai-os-bridge.md"
+    },
+    {
+      "id": "file-inventory",
+      "title": "File inventory driver — project file map with metadata and risk flags",
+      "file": "drivers/file-inventory.md",
+      "status": "draft",
+      "level": "L2",
+      "mode": "read-only",
+      "owner": "Codex",
+      "risk": "low",
+      "activation": "manual",
+      "interfaces": "[scan, render_markdown]",
+      "inputs": "[path, base, max-files, include-hidden, hash]",
+      "outputs": "[file-list, summary, json, markdown]",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md, tasks/T-059.md"
     },
     {
       "id": "files",

@@ -37,6 +37,17 @@ def run():
         conn.close()
         assert au and au[0]["action"] == "ingest_repo", "audit потока не записан"
 
+        db2 = "limited.db"
+        n2 = ingest.ingest_repo_path(db2, repo, agent="test", db_base=d, source_base=d, max_files=1)
+        assert n2 == 1, "max_files не ограничивает ingest_repo_path"
+        assert len(ingest.query(db2, db_base=d)) == 1, "query с db_base не читает ограниченную базу"
+
+        try:
+            ingest.ingest_repo_path(os.path.join(d, "outside.db"), repo, db_base=repo, source_base=d)
+            assert False, "db_base не ограничивает путь БД"
+        except wb.PathAccessError:
+            pass
+
         print("TESTS OK ingested=%d docs=%d risky=%d audit=%d" % (n, len(docs), len(risky), len(au)))
     except AssertionError as e:
         ok = False

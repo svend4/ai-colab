@@ -1,13 +1,13 @@
 {
-  "epoch": 1781966530,
+  "epoch": 1781967700,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-054",
-      "progress": 100,
-      "note": "workbench hardening and manifest done; runtime acceptance moved to T-055",
-      "eta": "done",
-      "epoch": 1781966530,
+      "task": "T-059",
+      "progress": 80,
+      "note": "file-inventory code ready; runtime/demo scan blocked by T-039",
+      "eta": "blocked",
+      "epoch": 1781967700,
       "age_seconds": 0,
       "fresh": true
     },
@@ -18,7 +18,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 13448,
+      "age_seconds": 14020,
       "fresh": false
     }
   ]

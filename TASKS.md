@@ -69,4 +69,13 @@
 | T-053 | Сквозной поток драйвер→workbench→поиск (ingest pipeline) | done | pool | `темы/ai-os-bridge.md` | drivers/workbench/ingest.py — scan (files/repo-runner) → workbench.add_document/ingest_repo → query; тест end-to-end на фикстуре |
 | T-054 | Усилить безопасность workbench.db driver и добавить манифест | done | Codex | `темы/ai-os-bridge.md` | Выполнено: allowed-root для DB, suffix check, query/ingest limits, drivers/workbench.md; runtime-приёмка вынесена в T-055 |
 | T-055 | Runtime-приёмка workbench.db driver после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_workbench.py, validate.py, generate.py --check и CLI init/list/audit с WORKBENCH_BASE |
+| T-056 | Усилить безопасность ingest pipeline после T-053 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: WORKBENCH_BASE, INGEST_SOURCE_BASE, INGEST_MAX_FILES, db_base/source_base propagation; runtime-приёмка вынесена в T-057 |
+| T-057 | Runtime-приёмка ingest pipeline после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_ingest.py, test_workbench.py, validate.py, generate.py --check и CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE |
+| T-058 | Driver schema v1 — валидатор и генератор каталога драйверов | done | pool | `темы/ai-os-bridge.md` | Создать валидатор drivers/ и генератор CATALOG.md + index.json |
+| T-059 | File inventory driver — no-deps Python, карта файлов проекта | blocked | pool | `темы/ai-os-bridge.md` | Код, тесты и манифест созданы; заблокировано T-039 — нужно запустить test_inventory.py, demo scan и генераторы |
+| T-060 | Workbench.db schema — SQLite для документов и audit_log | doing | pool | `темы/ai-os-bridge.md` | Спроектировать схему, создать init-скрипт, тесты, манифест |
+| T-061 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-062 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-063 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-064 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
 <!-- GEN:tasks END -->

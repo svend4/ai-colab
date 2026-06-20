@@ -23,6 +23,17 @@
       "activation": "manual"
     },
     {
+      "id": "file-inventory",
+      "title": "File inventory driver — project file map with metadata and risk flags",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "low",
+      "status": "draft",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "activation": "manual"
+    },
+    {
       "id": "files",
       "title": "Files driver — безопасное чтение и инвентаризация файлов",
       "level": "L1",
