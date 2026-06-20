@@ -1,13 +1,13 @@
 {
-  "epoch": 1781967700,
+  "epoch": 1781968801,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-059",
-      "progress": 80,
-      "note": "file-inventory code ready; runtime/demo scan blocked by T-039",
-      "eta": "blocked",
-      "epoch": 1781967700,
+      "task": "T-065",
+      "progress": 100,
+      "note": "runtime recovery playbook done; T-039 still requires external recovery",
+      "eta": "done",
+      "epoch": 1781968801,
       "age_seconds": 0,
       "fresh": true
     },

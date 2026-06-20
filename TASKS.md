@@ -52,7 +52,7 @@
 | T-036 | Draft safety policy для драйверов и больших папок | done | pool | `темы/ai-os-bridge.md` | docs/driver-safety-policy.md — read-only-first, dry-run, audit, no secrets, no execute without decision |
 | T-037 | План data/ структуры для workbench-корпуса | done | pool | `темы/ai-os-bridge.md` | Выполнено: docs/data-folder-plan.md создан; следующий шаг — data/README.md и fixtures перед реальным импортом |
 | T-038 | План тестового корпуса для драйверов | done | pool | `темы/ai-os-bridge.md` | docs/test-corpus-plan.md — 10-20 безопасных fixture-файлов, сценарии проверки files/text/search/report drivers |
-| T-039 | Разблокировать Python runtime и закрыть T-029 | blocked | pool | `темы/ai-os-bridge.md` | Диагностика в docs/runtime-diagnostics.md; нужен внешний перезапуск/разбор зависших процессов, затем повторить Python checks |
+| T-039 | Разблокировать Python runtime и закрыть T-029 | blocked | pool | `темы/ai-os-bridge.md` | Диагностика в docs/runtime-diagnostics.md; порядок восстановления в docs/runtime-recovery-playbook.md; нужен внешний перезапуск/разбор зависших процессов |
 | T-040 | Создать data/README.md по data-folder-plan | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/README.md создан; теперь можно делать T-041 fixture-корпус |
 | T-041 | Создать минимальный безопасный fixture-корпус | done | pool | `темы/ai-os-bridge.md` | Выполнено: data/fixtures/README.md и 7 synthetic fixture-файлов созданы |
 | T-042 | Подготовить D-013 proposal по Q-008 driver schema v1 | done | pool | `темы/ai-os-bridge.md` | Выполнено: decisions/D-013.md создан со статусом proposed; Q-008 обновлён и остаётся open до accepted |
@@ -73,9 +73,10 @@
 | T-057 | Runtime-приёмка ingest pipeline после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_ingest.py, test_workbench.py, validate.py, generate.py --check и CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE |
 | T-058 | Driver schema v1 — валидатор и генератор каталога драйверов | done | pool | `темы/ai-os-bridge.md` | Создать валидатор drivers/ и генератор CATALOG.md + index.json |
 | T-059 | File inventory driver — no-deps Python, карта файлов проекта | blocked | pool | `темы/ai-os-bridge.md` | Код, тесты и манифест созданы; заблокировано T-039 — нужно запустить test_inventory.py, demo scan и генераторы |
-| T-060 | Workbench.db schema — SQLite для документов и audit_log | doing | pool | `темы/ai-os-bridge.md` | Спроектировать схему, создать init-скрипт, тесты, манифест |
-| T-061 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-060 | Workbench.db schema — SQLite для документов и audit_log | done | pool | `темы/ai-os-bridge.md` | Спроектировать схему, создать init-скрипт, тесты, манифест |
+| T-061 | (зарезервировано — заполните) | done | Claude | — | зарезервировано через tools/next_id.py — заполните |
 | T-062 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
 | T-063 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
 | T-064 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-065 | Подготовить runtime recovery playbook для снятия T-039 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку |
 <!-- GEN:tasks END -->

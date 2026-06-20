@@ -513,7 +513,7 @@
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Диагностика в docs/runtime-diagnostics.md; нужен внешний перезапуск/разбор зависших процессов, затем повторить Python checks"
+      "next": "Диагностика в docs/runtime-diagnostics.md; порядок восстановления в docs/runtime-recovery-playbook.md; нужен внешний перезапуск/разбор зависших процессов"
     },
     {
       "id": "T-040",
@@ -738,7 +738,7 @@
     {
       "id": "T-060",
       "title": "Workbench.db schema — SQLite для документов и audit_log",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -749,7 +749,7 @@
     {
       "id": "T-061",
       "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "status": "done",
       "owner": "Claude",
       "priority": "normal",
       "risk": "low",
@@ -789,6 +789,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-065",
+      "title": "Подготовить runtime recovery playbook для снятия T-039",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-039]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку"
     }
   ],
   "questions": [

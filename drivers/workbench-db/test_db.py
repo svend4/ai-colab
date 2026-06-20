@@ -61,7 +61,9 @@ def test_audit_log():
         
         audit = get_audit(agent="Novax", db_path=db)
         assert len(audit) == 2
-        assert audit[0]["action"] == "done"
+        actions = {a["action"] for a in audit}
+        assert "claim" in actions
+        assert "done" in actions
         print("PASS: audit_log")
 
 

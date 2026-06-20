@@ -4,5 +4,5 @@
 
 | Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |
 |---|---|---|---|---|---|---|
-| codex | T-059 | 80% | blocked | 0s | fresh | file-inventory code ready; runtime/demo scan blocked by T-039 |
+| codex | T-065 | 100% | done | 0s | fresh | runtime recovery playbook done; T-039 still requires external recovery |
 | mavis | T-029 | 0% | 5m | 14020s | stale | перепроверка обновлений, готовлю отчёт |
