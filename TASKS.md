@@ -38,4 +38,5 @@
 | T-022 | Создать L1-каталог drivers/ и первые манифесты драйверов | done | Codex | `темы/ai-os-bridge.md` | L1-каркас создан: README, шаблон, files/data/repo-runner/codex-local; дальше T-023 индекс драйверов |
 | T-023 | Добавить машинный индекс драйверов в generate.py/index.json | todo | Codex | `темы/ai-os-bridge.md` | Расширить generate.py: читать drivers/*.md front-matter и добавлять drivers в index.json или drivers/index.json |
 | T-024 | Спроектировать read-only repo inventory driver для Sven4/local repos | todo | Novax | `темы/ai-os-bridge.md` | Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице |
+| T-025 | Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP | todo | Codex | `темы/information-drivers.md` | Извлечь из docs/ai_middle_layer_architecture_ru.md конкретный MVP: какие 3-5 драйверов, какие skills, какие индексы и какие проверки делать первыми |
 <!-- GEN:tasks END -->

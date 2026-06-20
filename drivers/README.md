@@ -33,3 +33,20 @@
 | `codex-local` | мост к локальной рабочей среде Codex | manual/read-only сначала | medium |
 
 Следующий технический шаг — T-023: добавить машинный индекс драйверов в `generate.py`/`index.json`.
+
+## Backlog из `docs/ai_middle_layer_architecture_ru.md`
+
+Импортированный документ предлагает более широкий набор практических драйверов. Не создаём их все сразу, но используем как backlog:
+
+- `file_inventory_driver` — карта файлов, hash, типы, размеры.
+- `copy_driver` — безопасное копирование без изменения оригиналов.
+- `text_extract_driver` — извлечение текста из PDF/DOCX/HTML.
+- `classification_driver` — классификация документов и тем.
+- `dedupe_driver` — поиск дублей.
+- `report_driver` — генерация Markdown/CSV/HTML-отчётов.
+- `ocr_driver` — OCR для сканов.
+- `anonymization_driver` — обезличивание копий, не оригиналов.
+- `search_driver` — SQLite FTS/BM25, позже embeddings.
+- `github_repo_driver` — инвентаризация репозиториев.
+
+Правило D-010 остаётся прежним: сначала L1-манифесты и read-only PoC, потом MCP/сервер только при реальной необходимости.

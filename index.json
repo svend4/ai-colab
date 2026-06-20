@@ -15,13 +15,6 @@
       "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
     },
     {
-      "id": "information-drivers",
-      "title": "Информационные драйверы (трайберы) — заполнение «пустой зоны» между AI и ОС",
-      "file": "темы/information-drivers.md",
-      "status": "open",
-      "next": "D-010 принят: drivers/ выбран как L1-каталог; дальше T-023 индекс драйверов и T-024 read-only repo inventory"
-    },
-    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "темы/infrastructure-review.md",
@@ -76,6 +69,13 @@
       "file": "темы/drivers-layer.md",
       "status": "archive",
       "next": "Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md"
+    },
+    {
+      "id": "information-drivers",
+      "title": "Информационные драйверы (трайберы) — СЛИТО в ai-os-bridge",
+      "file": "темы/information-drivers.md",
+      "status": "archive",
+      "next": "Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
     }
   ],
   "tasks": [
@@ -342,6 +342,17 @@
       "depends_on": "[T-022]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице"
+    },
+    {
+      "id": "T-025",
+      "title": "Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP",
+      "status": "todo",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-022]",
+      "topic": "темы/information-drivers.md",
+      "next": "Извлечь из docs/ai_middle_layer_architecture_ru.md конкретный MVP: какие 3-5 драйверов, какие skills, какие индексы и какие проверки делать первыми"
     }
   ],
   "questions": [
