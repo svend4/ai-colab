@@ -1,0 +1,386 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Конвейер задач (pipeline.py, T-027) — «общий котёл».
+
+Агент атомарно берёт следующую готовую задачу, делает, отчитывается, берёт
+следующую. Несколько агентов работают параллельно через один конвейер — гонку
+за одну задачу снимает атомарный claim (O_CREAT|O_EXCL, как в queue.py).
+
+Объединяет dispatch.py (готовность по DAG) и queue.py (атомарный захват) в одну
+операцию pull-next: между «увидел задачу» и «занял» нет окна для перехвата.
+
+    python tools/pipeline.py next   <agent>                 # атомарно занять след. готовую задачу
+    python tools/pipeline.py done   <agent> <T-id> [--report "..."]
+    python tools/pipeline.py fail   <agent> <T-id> [--reason "..."]
+    python tools/pipeline.py status                          # лента конвейера (одна форма)
+    python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
+    python tools/pipeline.py mine   <agent>                  # мои активные задачи
+
+Готовая задача = status:todo + все depends_on done + не занята свежим claim'ом.
+Отчёты: per-task done-маркер `queues/done/<id>.done.md` (источник правды, без
+конфликтов) + строка в ленте `status`. Источник правды по статусу — tasks/*.md.
+"""
+import os
+import re
+import sys
+import time
+import uuid
+import json
+
+
+def configure_output():
+    for name in ("stdout", "stderr"):
+        s = getattr(sys, name, None)
+        if s is not None and hasattr(s, "reconfigure"):
+            s.reconfigure(encoding="utf-8", errors="replace")
+
+
+configure_output()
+
+ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TASKS = os.path.join(ROOT, "tasks")
+CLAIMED = os.path.join(ROOT, "queues", "claimed")
+DONE = os.path.join(ROOT, "queues", "done")
+FAILED = os.path.join(ROOT, "queues", "failed")
+LOGS = os.path.join(ROOT, "logs")
+PIPELINE_MD = os.path.join(ROOT, "PIPELINE.md")
+PIPELINE_JSON = os.path.join(LOGS, "pipeline.json")
+PRANK = {"high": 0, "normal": 1, "low": 2, "": 1}
+DEFAULT_TTL_MIN = 30
+
+
+def parse_fm(text):
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}
+    fm = {}
+    for line in text[3:end].strip().splitlines():
+        if ":" in line:
+            k, v = line.split(":", 1)
+            fm[k.strip()] = v.strip()
+    return fm
+
+
+def collect_tasks():
+    out = {}
+    if not os.path.isdir(TASKS):
+        return out
+    for fn in os.listdir(TASKS):
+        if not fn.endswith(".md") or fn == "README.md":
+            continue
+        path = os.path.join(TASKS, fn)
+        with open(path, encoding="utf-8") as f:
+            fm = parse_fm(f.read())
+        tid = fm.get("id")
+        if not tid:
+            continue
+        out[tid] = {
+            "id": tid,
+            "title": fm.get("title", ""),
+            "status": fm.get("status", "todo"),
+            "priority": fm.get("priority", "normal"),
+            "owner": fm.get("owner", "—"),
+            "deps": re.findall(r"T-\d+", fm.get("depends_on", "")),
+            "path": path,
+        }
+    return out
+
+
+def claim_path(tid):
+    return os.path.join(CLAIMED, "%s.claim.md" % tid)
+
+
+def claim_is_fresh(tid):
+    p = claim_path(tid)
+    if not os.path.exists(p):
+        return False
+    try:
+        with open(p, encoding="utf-8") as f:
+            fm = parse_fm(f.read())
+        return int(fm.get("lease_epoch", "0")) > int(time.time())
+    except Exception:
+        return False
+
+
+def claim_holder(tid):
+    p = claim_path(tid)
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as f:
+        return parse_fm(f.read())
+
+
+def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
+    """Атомарно занять задачу. Возвращает claim_id или None (занято свежим claim'ом)."""
+    os.makedirs(CLAIMED, exist_ok=True)
+    p = claim_path(tid)
+    cid = uuid.uuid4().hex[:12]
+    lease = int(time.time()) + ttl_min * 60
+    body = ("---\ntask: %s\nagent: %s\nclaim_id: %s\nlease_epoch: %d\n---\n"
+            % (tid, agent, cid, lease))
+    try:
+        fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except FileExistsError:
+        if claim_is_fresh(tid):
+            return None  # занято живым агентом
+        # протух — перехватываем
+        with open(p, "w", encoding="utf-8", newline="\n") as f:
+            f.write(body)
+        return cid
+    with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
+        f.write(body)
+    return cid
+
+
+def set_status(path, new):
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    if not text.startswith("---"):
+        return False
+    end = text.find("\n---", 3)
+    if end == -1:
+        return False
+    head, rest = text[:end], text[end:]
+    head2 = re.sub(r"(?m)^status:.*$", "status: " + new, head, count=1)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(head2 + rest)
+    return True
+
+
+def ready_sorted(tasks):
+    done_ids = {t["id"] for t in tasks.values() if t["status"] == "done"}
+    ready = []
+    for t in tasks.values():
+        if t["status"] != "todo":
+            continue
+        if any(d not in done_ids for d in t["deps"]):
+            continue
+        if claim_is_fresh(t["id"]):
+            continue
+        ready.append(t)
+    ready.sort(key=lambda t: (PRANK.get(t["priority"], 1), t["id"]))
+    return ready
+
+
+def cmd_next(agent):
+    tasks = collect_tasks()
+    for t in ready_sorted(tasks):
+        cid = try_claim(t["id"], agent)
+        if cid:
+            set_status(t["path"], "doing")
+            print("ЗАНЯЛ: %s — %s" % (t["id"], t["title"]))
+            print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, t["id"]))
+            print("Сделай задачу, затем: python tools/pipeline.py done %s %s --report \"...\"" % (agent, t["id"]))
+            return 0
+    print("КОТЁЛ ПУСТ: готовых задач нет (всё done / занято / заблокировано зависимостями).")
+    return 0
+
+
+def _release(tid):
+    p = claim_path(tid)
+    if os.path.exists(p):
+        os.remove(p)
+
+
+def _marker(dirpath, tid, suffix, agent, text):
+    os.makedirs(dirpath, exist_ok=True)
+    p = os.path.join(dirpath, "%s.%s.md" % (tid, suffix))
+    with open(p, "w", encoding="utf-8", newline="\n") as f:
+        f.write("---\ntask: %s\nagent: %s\nepoch: %d\n---\n\n%s\n" % (tid, agent, int(time.time()), text))
+
+
+def cmd_done(agent, tid, report):
+    tasks = collect_tasks()
+    if tid not in tasks:
+        print("ОШИБКА: задачи %s нет" % tid)
+        return 1
+    h = claim_holder(tid)
+    if h and h.get("agent") not in (agent, None):
+        print("ОШИБКА: задача %s занята агентом %s, не тобой (%s)" % (tid, h.get("agent"), agent))
+        return 1
+    set_status(tasks[tid]["path"], "done")
+    _marker(DONE, tid, "done", agent, report or "done")
+    _release(tid)
+    print("ГОТОВО: %s → done (%s). Бери следующую: python tools/pipeline.py next %s" % (tid, agent, agent))
+    return 0
+
+
+def cmd_fail(agent, tid, reason):
+    tasks = collect_tasks()
+    if tid not in tasks:
+        print("ОШИБКА: задачи %s нет" % tid)
+        return 1
+    set_status(tasks[tid]["path"], "blocked")
+    _marker(FAILED, tid, "failed", agent, reason or "failed")
+    _release(tid)
+    print("НЕ ВЫШЛО: %s → blocked (%s): %s" % (tid, agent, reason or ""))
+    return 0
+
+
+def cmd_mine(agent):
+    n = 0
+    if os.path.isdir(CLAIMED):
+        for fn in sorted(os.listdir(CLAIMED)):
+            if not fn.endswith(".claim.md"):
+                continue
+            fm = claim_holder(fn[:-len(".claim.md")]) or {}
+            if fm.get("agent") == agent:
+                fresh = "свежий" if int(fm.get("lease_epoch", "0")) > int(time.time()) else "протух"
+                print("%s — claim_id=%s (%s)" % (fm.get("task"), fm.get("claim_id"), fresh))
+                n += 1
+    if not n:
+        print("У %s нет активных задач." % agent)
+    return 0
+
+
+def build_pipeline_state():
+    tasks = collect_tasks()
+    done_ids = {t["id"] for t in tasks.values() if t["status"] == "done"}
+    doing, ready, blocked = [], [], []
+    for t in sorted(tasks.values(), key=lambda x: x["id"]):
+        if t["status"] == "doing":
+            h = claim_holder(t["id"]) or {}
+            doing.append({
+                "id": t["id"],
+                "title": t["title"],
+                "agent": h.get("agent", "?"),
+                "claim_id": h.get("claim_id", ""),
+                "lease_epoch": h.get("lease_epoch", ""),
+            })
+        elif t["status"] == "todo":
+            missing = [d for d in t["deps"] if d not in done_ids]
+            if missing or claim_is_fresh(t["id"]):
+                blocked.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "reason": ", ".join(missing) or "занято",
+                })
+            else:
+                ready.append({
+                    "id": t["id"],
+                    "title": t["title"],
+                    "priority": t["priority"],
+                    "owner": t["owner"],
+                })
+    return {
+        "epoch": int(time.time()),
+        "doing": doing,
+        "ready": ready,
+        "blocked": blocked,
+    }
+
+
+def render_status_text(state):
+    lines = ["=== КОНВЕЙЕР ==="]
+    lines.append("\nВ РАБОТЕ (%d):" % len(state["doing"]))
+    for item in state["doing"]:
+        lines.append("  %s [%s] %s" % (item["id"], item["agent"], item["title"]))
+    lines.append("\nГОТОВЫ К ВЗЯТИЮ (%d):" % len(state["ready"]))
+    for item in state["ready"]:
+        lines.append("  %s (%s) %s" % (item["id"], item["priority"], item["title"]))
+    lines.append("\nЗАБЛОКИРОВАНЫ зависимостями/claim (%d):" % len(state["blocked"]))
+    for item in state["blocked"]:
+        lines.append("  %s ← %s" % (item["id"], item["reason"]))
+    return "\n".join(lines)
+
+
+def render_pipeline_md(state):
+    lines = [
+        "# PIPELINE",
+        "",
+        "Автоматический снимок конвейера. Генерируется командой `python tools/pipeline.py snapshot`.",
+        "",
+        "## В работе",
+        "",
+        "| Задача | Агент | Claim | Lease epoch | Название |",
+        "|---|---|---|---|---|",
+    ]
+    if state["doing"]:
+        for item in state["doing"]:
+            lines.append("| %s | %s | %s | %s | %s |" % (
+                item["id"], item["agent"], item["claim_id"], item["lease_epoch"], item["title"]))
+    else:
+        lines.append("| — | — | — | — | — |")
+    lines += [
+        "",
+        "## Готовы к взятию",
+        "",
+        "| Задача | Приоритет | Owner | Название |",
+        "|---|---|---|---|",
+    ]
+    if state["ready"]:
+        for item in state["ready"]:
+            lines.append("| %s | %s | %s | %s |" % (
+                item["id"], item["priority"], item["owner"], item["title"]))
+    else:
+        lines.append("| — | — | — | — |")
+    lines += [
+        "",
+        "## Заблокированы",
+        "",
+        "| Задача | Причина | Название |",
+        "|---|---|---|",
+    ]
+    if state["blocked"]:
+        for item in state["blocked"]:
+            lines.append("| %s | %s | %s |" % (item["id"], item["reason"], item["title"]))
+    else:
+        lines.append("| — | — | — |")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def cmd_status():
+    print(render_status_text(build_pipeline_state()))
+    return 0
+
+
+def cmd_snapshot():
+    state = build_pipeline_state()
+    os.makedirs(LOGS, exist_ok=True)
+    with open(PIPELINE_JSON, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(state, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    with open(PIPELINE_MD, "w", encoding="utf-8", newline="\n") as f:
+        f.write(render_pipeline_md(state))
+    print("SNAPSHOT: PIPELINE.md + logs/pipeline.json обновлены")
+    return 0
+
+
+def main():
+    a = sys.argv[1:]
+    flags = {}
+    pos = []
+    i = 0
+    while i < len(a):
+        if a[i] == "--report" and i + 1 < len(a):
+            flags["report"] = a[i + 1]; i += 2
+        elif a[i] == "--reason" and i + 1 < len(a):
+            flags["reason"] = a[i + 1]; i += 2
+        else:
+            pos.append(a[i]); i += 1
+    if not pos:
+        print(__doc__)
+        return 2
+    cmd = pos[0]
+    if cmd == "next" and len(pos) >= 2:
+        return cmd_next(pos[1])
+    if cmd == "done" and len(pos) >= 3:
+        return cmd_done(pos[1], pos[2], flags.get("report"))
+    if cmd == "fail" and len(pos) >= 3:
+        return cmd_fail(pos[1], pos[2], flags.get("reason"))
+    if cmd == "mine" and len(pos) >= 2:
+        return cmd_mine(pos[1])
+    if cmd == "status":
+        return cmd_status()
+    if cmd == "snapshot":
+        return cmd_snapshot()
+    print(__doc__)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())

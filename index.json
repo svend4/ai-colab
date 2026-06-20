@@ -8,6 +8,13 @@
       "next": "Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки"
     },
     {
+      "id": "agent-pipeline",
+      "title": "Динамический конвейер агентов — управляемая разработка",
+      "file": "темы/agent-pipeline.md",
+      "status": "open",
+      "next": "D-011 принят, T-027 первая версия готова; обсудить heartbeat/live-room и правила использования pipeline.py"
+    },
+    {
       "id": "ai-os-bridge",
       "title": "AI-OS Bridge — прослойка между ОС и AI-агентами",
       "file": "темы/ai-os-bridge.md",
@@ -364,6 +371,17 @@
       "depends_on": "[T-009]",
       "topic": "темы/ai-os-bridge.md",
       "next": "next_id.py готов и протестирован (8 параллельных вызовов → 8 разных id); этот файл выдан и заведён через сам инструмент (догфуд)"
+    },
+    {
+      "id": "T-027",
+      "title": "Конвейер задач (tools/pipeline.py) — динамичный pull-next для агентов",
+      "status": "done",
+      "owner": "Claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-009, T-014, T-026]",
+      "topic": "темы/agent-pipeline.md",
+      "next": "pipeline.py готов; Codex добавил snapshot → PIPELINE.md + logs/pipeline.json; следующий слой — heartbeat/live-room отдельной задачей"
     }
   ],
   "questions": [
@@ -435,6 +453,20 @@
       "title": "Переименовать ли папку темы/ в ASCII (topics/)?",
       "status": "open",
       "where": "темы/migrate-file-names.md",
+      "outcome": ""
+    },
+    {
+      "id": "Q-011",
+      "title": "Как сделать динамический конвейер агентов для управляемой разработки?",
+      "status": "answered",
+      "where": "темы/agent-pipeline.md",
+      "outcome": "Принят D-011: комбинированный конвейер A+B+C — pipeline.py как pull-next/status/done/fail, PIPELINE.md для людей, logs/pipeline.json для агентов."
+    },
+    {
+      "id": "Q-012",
+      "title": "Делать ли обязательный heartbeat/live-room для агентов?",
+      "status": "open",
+      "where": "темы/agent-pipeline.md",
       "outcome": ""
     }
   ],
@@ -508,6 +540,13 @@
       "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-010.md"
+    },
+    {
+      "id": "D-011",
+      "title": "Динамический конвейер агентов поверх tasks/queue/index",
+      "status": "accepted",
+      "date": "2026-06-20",
+      "file": "decisions/D-011.md"
     }
   ],
   "drivers": [

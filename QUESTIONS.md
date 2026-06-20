@@ -24,4 +24,6 @@
 | Q-008 | Расширенная manifest schema для драйверов — какие поля обязательны? | open | Mavis | Stefan, Codex, Claude, Novax | `темы/ai-os-bridge.md` |  |
 | Q-009 | Где находятся репозитории svend4 (доступ для T-024)? | open | Novax | Stefan | `темы/ai-os-bridge.md` |  |
 | Q-010 | Переименовать ли папку темы/ в ASCII (topics/)? | open | Claude | все | `темы/migrate-file-names.md` |  |
+| Q-011 | Как сделать динамический конвейер агентов для управляемой разработки? | answered | Stefan (через Novax) | все | `темы/agent-pipeline.md` | Принят D-011: комбинированный конвейер A+B+C — pipeline.py как pull-next/status/done/fail, PIPELINE.md для людей, logs/pipeline.json для агентов. |
+| Q-012 | Делать ли обязательный heartbeat/live-room для агентов? | open | Codex | Stefan, Claude, Mavis, Novax | `темы/agent-pipeline.md` |  |
 <!-- GEN:questions END -->

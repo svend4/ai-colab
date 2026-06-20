@@ -17,4 +17,5 @@
 | D-008 | Границы D-003 — что считать значимой правкой | accepted | 2026-06-19 | `decisions/D-008.md` |
 | D-009 | Онбординг агентов — A сейчас, эволюция к C | accepted | 2026-06-19 | `decisions/D-009.md` |
 | D-010 | AI-OS Bridge стартует с L1-каталога драйверов и одного L2 PoC | accepted | 2026-06-20 | `decisions/D-010.md` |
+| D-011 | Динамический конвейер агентов поверх tasks/queue/index | accepted | 2026-06-20 | `decisions/D-011.md` |
 <!-- GEN:decisions END -->
