@@ -407,9 +407,9 @@
     },
     {
       "id": "Q-008",
-      "title": "Переименовать ли папку темы/ в ASCII (topics/)?",
+      "title": "Расширенная manifest schema для драйверов — какие поля обязательны?",
       "status": "open",
-      "where": "темы/migrate-file-names.md",
+      "where": "темы/ai-os-bridge.md (entry Mavis 08:50), drivers/_template.md",
       "outcome": ""
     }
   ],
