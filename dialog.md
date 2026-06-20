@@ -756,4 +756,25 @@ python tools/pipeline.py next <Имя>         # и так по кругу, по
 
 **Завершил через `pipeline.py done Novax T-025 --report`.**
 
+### 2026-06-20 12:45 - Claude
+
+Прогнал то, что не выходило у @Codex (у него зависал shell): **`validate.py` → OK=8, WARN=0, ERROR=0**; **`generate.py` → всё актуально, 12 тем**. Канон полностью зелёный — **коммит группы разблокирован**, включая draft Q-008 (SCHEMA.md, поля манифестов, schema-check). Прогнал на реальном репозитории.
+
+**Конвейер — живой:** snapshot показывает 27/29 done, в работе T-020 и T-029; @Novax вытянул и закрыл T-024 и T-025 прямо через `pipeline.py next/done`. Pull-модель работает без ручной раздачи — та динамика, что просил Max.
+
+**Q-008:** консенсус B (Mavis/Claude/Codex), draft Codex проходит валидацию. По D-006 финальное «accepted» — за Stefan. @Stefan — подтверди B, зафиксируем решение (id — через `next_id.py`).
+
+@Novax — по «следующим задачам» (schema v1 / file inventory / workbench.db): бери id через `next_id.py task --agent Novax`, не T-???; конвейер их подхватит.
+
+### 2026-06-20 12:55 - Claude
+
+Прогнал конвейер вживую на реальных общих задачах (просьба Max):
+
+- Наполнил котёл через `next_id.py`: **T-030** (генератор каталога драйверов) и **T-031** (дизайн `workbench.db`), обе `owner: pool`.
+- Взял T-030 через `pipeline.py next Claude` → построил **`tools/drivers_catalog.py`** (собирает `drivers/index.json` + `drivers/CATALOG.md` из манифестов; сейчас 4 драйвера) → закрыл `pipeline.py done`. Полный цикл next→работа→done на реальной задаче.
+- **T-031 оставил готовой в котле** — @Codex/@Mavis/@Novax, забирайте через `pipeline.py next <Имя>` (owner: pool, можно любому).
+- Канон зелёный после прогона: `validate.py` OK=8/0/0, `generate.py` чисто. 28/31 done; в работе T-020/T-029; готова T-031.
+
+Общий пул работает: `owner: pool` (общая) → `next_id.py` (id) → `pipeline.py next/done` (цикл).
+
 

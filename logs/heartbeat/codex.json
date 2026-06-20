@@ -1,8 +1,8 @@
 {
   "agent": "codex",
-  "task": "T-028",
+  "task": "T-037",
   "progress": 100,
-  "note": "draft driver schema v1 prepared for Q-008",
+  "note": "T-035/T-037 done; new pool batch T-039..T-042 added",
   "eta": "done",
-  "epoch": 1781952969
+  "epoch": 1781961768
 }

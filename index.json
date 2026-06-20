@@ -397,13 +397,156 @@
     {
       "id": "T-029",
       "title": "Реализовать read-only files inventory driver",
-      "status": "doing",
+      "status": "blocked",
       "owner": "Codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022, T-025]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Создать no-deps Python inventory для files driver, тесты и документацию; затем прогнать validate/generate"
+      "next": "Реализация создана; заблокировано проверкой — Python runtime зависает даже на print('ok'), нужно повторить drivers/files/test_inventory.py и validate/generate"
+    },
+    {
+      "id": "T-030",
+      "title": "Генератор каталога драйверов (drivers/index.json + CATALOG.md)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "tools/drivers_catalog.py — собрать drivers/index.json + CATALOG.md из drivers/*.md front-matter"
+    },
+    {
+      "id": "T-031",
+      "title": "Спроектировать workbench.db schema (SQLite documents + audit_log)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Схема SQLite — таблицы documents (id, path, type, summary, source_last_verified) и audit_log (ts, agent, action, target); только дизайн + обоснование, без кода"
+    },
+    {
+      "id": "T-032",
+      "title": "Карта покрытия слоёв L0–L8 (docs/layers-coverage.md)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "docs/layers-coverage.md — таблица: какой слой L0–L8 чем покрыт в проекте и что не хватает"
+    },
+    {
+      "id": "T-033",
+      "title": "Список L2-кандидатов — первые MCP-драйверы (docs/l2-candidates.md)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/l2-candidates.md создан; рекомендация — files первым L2 PoC после разблокировки T-029, repo-runner как fallback"
+    },
+    {
+      "id": "T-034",
+      "title": "Написать operator guide для pipeline/live-room",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/agent-pipeline.md",
+      "next": "docs/pipeline-operator-guide.md — короткий порядок next/done/fail/snapshot/heartbeat и правила, когда брать новую задачу"
+    },
+    {
+      "id": "T-035",
+      "title": "Матрица ролей агентов и границ ответственности",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/agent-roles-matrix.md создан; использовать вместе с AGENTS.md и tools/permissions.json"
+    },
+    {
+      "id": "T-036",
+      "title": "Draft safety policy для драйверов и больших папок",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "docs/driver-safety-policy.md — read-only-first, dry-run, audit, no secrets, no execute without decision"
+    },
+    {
+      "id": "T-037",
+      "title": "План data/ структуры для workbench-корпуса",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/data-folder-plan.md создан; следующий шаг — data/README.md и fixtures перед реальным импортом"
+    },
+    {
+      "id": "T-038",
+      "title": "План тестового корпуса для драйверов",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "docs/test-corpus-plan.md — 10-20 безопасных fixture-файлов, сценарии проверки files/text/search/report drivers"
+    },
+    {
+      "id": "T-039",
+      "title": "Разблокировать Python runtime и закрыть T-029",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Диагностировать зависание python/bundled python, убрать lock/__pycache__, прогнать drivers/files/test_inventory.py, validate.py, generate.py"
+    },
+    {
+      "id": "T-040",
+      "title": "Создать data/README.md по data-folder-plan",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-037]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создать data/README.md с правилами папок и предупреждением не импортировать реальные чувствительные данные без отдельной задачи"
+    },
+    {
+      "id": "T-041",
+      "title": "Создать минимальный безопасный fixture-корпус",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-038, T-040]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "data/fixtures/README.md + 5-10 synthetic файлов для проверки files/text/search/report drivers без персональных данных"
+    },
+    {
+      "id": "T-042",
+      "title": "Подготовить D-013 proposal по Q-008 driver schema v1",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создать proposed decision D-013 или обновить Q-008: принять/отложить driver schema v1; accepted только человек"
     }
   ],
   "questions": [

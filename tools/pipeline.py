@@ -254,6 +254,12 @@ def build_pipeline_state():
                 "claim_id": h.get("claim_id", ""),
                 "lease_epoch": h.get("lease_epoch", ""),
             })
+        elif t["status"] == "blocked":
+            blocked.append({
+                "id": t["id"],
+                "title": t["title"],
+                "reason": "status: blocked",
+            })
         elif t["status"] == "todo":
             missing = [d for d in t["deps"] if d not in done_ids]
             if missing or claim_is_fresh(t["id"]):
