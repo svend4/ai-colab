@@ -26,6 +26,7 @@ docs/
 - `data-folder-plan.md` — план будущей `data/` структуры для корпуса: inbox/originals/copies/text/chunks/indexes/reports/audit/workbench.db и правила записи.
 - `test-corpus-plan.md` — план маленького безопасного fixture-корпуса для проверки `files`, `text-extract`, `search-index`, `report`.
 - `runtime-diagnostics.md` — диагностика блокировки внешних процессов/Python runtime, которая держит T-029/T-039 blocked.
+- `driver-schema-acceptance-checklist.md` — checklist перед переводом D-013 из `proposed` в `accepted`.
 - `agent-layer-design.md` — технический разбор слоя драйверов/Treiber/MCP и вариантов L0-L4.
 - `glossary.md` — глоссарий канона проекта.
 - `quickstart.md` и `agent-quickstart.md` — быстрый старт для людей и агентов.

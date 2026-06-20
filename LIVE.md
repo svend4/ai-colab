@@ -4,5 +4,5 @@
 
 | Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |
 |---|---|---|---|---|---|---|
-| codex | T-037 | 100% | done | 1651s | stale | T-035/T-037 done; new pool batch T-039..T-042 added |
+| codex | T-045 | 100% | done | 0s | fresh | T-040/T-041/T-044/T-045 done; runtime blocker remains |
 | mavis | T-029 | 0% | 5m | 10337s | stale | перепроверка обновлений, готовлю отчёт |

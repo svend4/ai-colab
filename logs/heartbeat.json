@@ -1,15 +1,15 @@
 {
-  "epoch": 1781963419,
+  "epoch": 1781963659,
   "agents": [
     {
       "agent": "codex",
-      "task": "T-037",
+      "task": "T-045",
       "progress": 100,
-      "note": "T-035/T-037 done; new pool batch T-039..T-042 added",
+      "note": "T-040/T-041/T-044/T-045 done; runtime blocker remains",
       "eta": "done",
-      "epoch": 1781961768,
-      "age_seconds": 1651,
-      "fresh": false
+      "epoch": 1781963659,
+      "age_seconds": 0,
+      "fresh": true
     },
     {
       "agent": "mavis",
