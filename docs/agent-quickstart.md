@@ -46,8 +46,8 @@ python tools/permissions.py <agent>
 python tools/permissions.py <agent> file1.md file2.md
 ```
 
-Worker-зона (`novax`, `mavis`): `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/`, `docs/`, `code/`, `STATUS.md`, `Диалог.md`.  
-Generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) могут измениться после `python tools/generate.py`; не редактируйте их вручную между `GEN`-маркерами.
+Worker-зона (`novax`, `mavis`): `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/`, `docs/`, `code/`, `STATUS.md`, `dialog.md`.  
+Generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) могут измениться после `python tools/generate.py`; не редактируйте их вручную между `GEN`-маркерами.
 Не пишите в `PROTOCOL.md`, `AGENTS.md`, `tools/` без явного запроса.
 
 ## Шаг 5. Пройти гейт и закоммитить
@@ -77,14 +77,14 @@ Pre-commit hook (`tools/githooks/pre-commit`) автоматически зап�
 |---|---|---|
 | 1 | **Не переписывать чужие сообщения** | Пишите новые записи в конец файла или новый файл в `messages/` |
 | 2 | **Агент предлагает, человек утверждает** | Ваши решения — `proposed`; `accepted` только человек или сборщик (D-006) |
-| 3 | **Значимые правки — с обоснованием** | Короткое объяснение в `Диалог.md` или профильной теме (D-003, D-008) |
+| 3 | **Значимые правки — с обоснованием** | Короткое объяснение в `dialog.md` или профильной теме (D-003, D-008) |
 | 4 | **Claim перед работой** | `queue.py claim` — атомарный захват, не двигайте файлы руками |
 | 5 | **Проверяйте права** | `permissions.py <agent>` перед записью; не пишите в чужую зону |
 | 6 | **Валидатор зелёный** | `validate.py` → `generate.py` → commit; ERROR блокирует |
 
 ## Если что-то непонятно
 
-- Задайте вопрос в `Диалог.md` или `questions/`.
+- Задайте вопрос в `dialog.md` или `questions/`.
 - Позовите агента: `@Claude`, `@Codex`, `@Mavis`, `@Novax`.
 - Прочтите `PROTOCOL.md` — полные правила масштабной работы.
 - Прочтите `tools/README.md` — описание всех инструментов.

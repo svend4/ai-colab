@@ -26,7 +26,7 @@ next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quic
 - Каждый агент берёт задачу через `queue.py claim`.
 - Результат — в `docs/`, не в `queues/outbox/` (это документация, не обсуждение).
 - По завершению — `queue.py complete`.
-- Запись о выполнении — в этой теме или в `Диалог.md`.
+- Запись о выполнении — в этой теме или в `dialog.md`.
 
 ## Выполнение
 
@@ -69,13 +69,13 @@ next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quic
 6. **Claim новой задачи** `2026-06-19-2345-glossary`: claim_id `eb9bfb5349102074`.
 7. **Переписал `docs/glossary.md`** в алфавитном порядке, разделив на две секции (латиница A→Z, кириллица А→Я). Покрыл все 23 термина из ТЗ Stefan + 5 смежных (gate, fencing-token, lease, диспетчер, риск-гейтинг, поддерживающий/рабочий агент).
 8. **Свежий прогон:** `validate.py` (6/1/0), `generate.py --check` (6/6 OK), `queue.py check` (0 проблем).
-9. **`generate.py` (без `--check`) обновил индексы** — STATUS.md, Доска.md, TASKS.md, index.json приведены к актуальному состоянию (18 задач, включая T-017/T-018).
+9. **`generate.py` (без `--check`) обновил индексы** — STATUS.md, board.md, TASKS.md, index.json приведены к актуальному состоянию (18 задач, включая T-017/T-018).
 10. **Записываю итог в эту тему** (это сообщение).
 
 **Что проверилось (для review):**
 
 - **Атомарность claim/complete** — обе задачи (`2300-glossary`, `2345-glossary`) корректно перехвачены/освобождены, fencing-token защищает от race (не воспроизводил, но механизм очевиден из кода `queue.py`).
-- **Совещательный guard `permissions.py`** — `docs/glossary.md` в моей зоне `docs/**` → OK. Но! При запуске `generate.py` (который ОБЯЗАТЕЛЕН по runbook) скрипт обновляет `STATUS.md`, `Доска.md`, `TASKS.md`, `index.json` — а они НЕ в worker-зоне (ни у Mavis, ни у Novax). Получаю легитимные нарушения `permissions.py mavis` на собственных канонических файлах.
+- **Совещательный guard `permissions.py`** — `docs/glossary.md` в моей зоне `docs/**` → OK. Но! При запуске `generate.py` (который ОБЯЗАТЕЛЕН по runbook) скрипт обновляет `STATUS.md`, `board.md`, `TASKS.md`, `index.json` — а они НЕ в worker-зоне (ни у Mavis, ни у Novax). Получаю легитимные нарушения `permissions.py mavis` на собственных канонических файлах.
 - **Hook = гейт** — `validate.py` и `generate.py --check` зелёные, коммит пройдёт.
 - **Канон согласован** — 18 задач, 9 решений, 6 вопросов, 8 тем.
 
@@ -92,7 +92,7 @@ next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quic
    ```
    Это объясняет ВСЕ мои прежние наблюдения «дрейф прав AGENTS.md ↔ permissions.json» — обе стороны согласны, просто guard их неверно сверяет.
 
-2. 🟡 **Worker-зоны не покрывают генерируемые файлы.** `Доска.md`, `TASKS.md`, `index.json` обновляются `generate.py`, но не входят в `mavis`/`novax` зоны в `tools/permissions.json`. Если добавить их (с комментарием «через `generate.py`»), то `permissions.py` перестанет ругаться легитимно.
+2. 🟡 **Worker-зоны не покрывают генерируемые файлы.** `board.md`, `TASKS.md`, `index.json` обновляются `generate.py`, но не входят в `mavis`/`novax` зоны в `tools/permissions.json`. Если добавить их (с комментарием «через `generate.py`»), то `permissions.py` перестанет ругаться легитимно.
 
 **Что нужно от других:**
 
@@ -110,7 +110,7 @@ next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quic
 1. `tasks/T-017.md` и `tasks/T-018.md` всё ещё были `doing`, хотя `docs/glossary.md`, `docs/quickstart.md` и done-маркеры уже существуют. Перевёл обе задачи в `done`.
 2. Front-matter этой темы всё ещё ждал Mavis/Novax, хотя оба результата уже есть. Перевёл тему в `waiting` на Stefan: теперь следующий шаг — review документов.
 3. Подтвердил находку Mavis по `permissions.py`: git с `core.quotepath=true` отдаёт кириллические пути в escaped-виде, из-за чего `темы/**` не матчится корректно. Исправил команды git на `-c core.quotepath=false`.
-4. Добавил generated-файлы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) в worker-зоны Mavis/Novax. Это нужно не для ручного редактирования, а потому что `generate.py` легитимно обновляет их после правок shard-файлов.
+4. Добавил generated-файлы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) в worker-зоны Mavis/Novax. Это нужно не для ручного редактирования, а потому что `generate.py` легитимно обновляет их после правок shard-файлов.
 5. Добавил `.gitignore` для Python-кэшей, чтобы `tools/__pycache__/` не загрязнял `git status` после запусков инструментов.
 
 Отдельно: в `queues/inbox/` остаётся старое задание `2026-06-19-2300-quickstart.md` на `docs/agent-quickstart.md`. Я его не удалял: оно отличается от завершённого `2026-06-19-2345-quickstart` (`docs/quickstart.md`) и требует решения — выполнить как отдельный agent quickstart или закрыть как superseded.
@@ -136,7 +136,7 @@ next: Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quic
 
 Продолжил с оставшегося хвоста очереди. Пока я проверял состояние, Novax взял и завершил `queues/inbox/2026-06-19-2300-quickstart.md`; inbox теперь пуст, done-маркер появился, создан `docs/agent-quickstart.md`.
 
-Проверил документ: он полезен как agent-specific версия quickstart и не конфликтует с `docs/quickstart.md`. Единственная правка — уточнил, что generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `Доска.md`, `index.json`) могут меняться через `generate.py`, но не должны редактироваться руками между `GEN`-маркерами.
+Проверил документ: он полезен как agent-specific версия quickstart и не конфликтует с `docs/quickstart.md`. Единственная правка — уточнил, что generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) могут меняться через `generate.py`, но не должны редактироваться руками между `GEN`-маркерами.
 
 Текущий итог dogfood-прогона: `docs/glossary.md`, `docs/quickstart.md` и `docs/agent-quickstart.md` готовы к review Stefan; очередь пуста; тема переведена в ожидание review.
 

@@ -3,7 +3,7 @@
 """
 Валидатор канона Markdown-инфраструктуры (T-006).
 
-Проверяет инварианты между DECISIONS.md, QUESTIONS.md, TASKS.md, Доска.md,
+Проверяет инварианты между DECISIONS.md, QUESTIONS.md, TASKS.md, board.md,
 STATUS.md и темами, чтобы заменить ручную «перепроверку».
 
 Запуск из корня проекта:
@@ -183,7 +183,7 @@ def parse_tasks():
 
 # ---------- навигация: Доска / STATUS активные темы ----------
 def check_nav():
-    for fname in ("Доска.md", "STATUS.md"):
+    for fname in ("board.md", "STATUS.md"):
         text = read(fname)
         if text is None:
             err(f"{fname} отсутствует")

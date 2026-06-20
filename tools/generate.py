@@ -3,7 +3,7 @@
 """
 Генератор навигации (T-007).
 
-Собирает таблицы тем в `STATUS.md` («Активные темы») и `Доска.md` («Темы»)
+Собирает таблицы тем в `STATUS.md` («Активные темы») и `board.md` («Темы»)
 из YAML-front-matter каждого файла `темы/*.md`. Один источник правды на тему —
 нет ручной синхронизации двух таблиц, значит нет класса дрейфа между ними.
 
@@ -254,7 +254,7 @@ def main():
     topics = collect_topics()
     targets = [
         ("STATUS.md", "topics-status", render_status_table(topics)),
-        ("Доска.md", "topics-board", render_board_table(topics)),
+        ("board.md", "topics-board", render_board_table(topics)),
         ("TASKS.md", "tasks", render_tasks_table(collect_tasks())),
         ("QUESTIONS.md", "questions", render_questions_table(collect_questions())),
         ("DECISIONS.md", "decisions", render_decisions_index(collect_decisions())),
