@@ -66,4 +66,7 @@
 | T-050 | Усилить безопасность repo-runner MCP wrapper | done | Codex | `темы/ai-os-bridge.md` | Выполнено: REPO_RUNNER_BASE, max_files/truncated, allowed-root checks, тестовые проверки; runtime-приёмка вынесена в T-051 |
 | T-051 | Runtime-приёмка repo-runner MCP wrapper после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_inventory.py, MCP handshake/tools-list/repo_summary, validate.py и generate.py --check |
 | T-052 | Реализовать workbench.db (SQLite) по схеме T-031 + тесты | done | pool | `темы/ai-os-bridge.md` | drivers/workbench/workbench.py — init/add_document/query_documents/log/audit по схеме documents+audit_log; тесты на чистой stdlib (sqlite3) |
+| T-053 | Сквозной поток драйвер→workbench→поиск (ingest pipeline) | done | pool | `темы/ai-os-bridge.md` | drivers/workbench/ingest.py — scan (files/repo-runner) → workbench.add_document/ingest_repo → query; тест end-to-end на фикстуре |
+| T-054 | Усилить безопасность workbench.db driver и добавить манифест | done | Codex | `темы/ai-os-bridge.md` | Выполнено: allowed-root для DB, suffix check, query/ingest limits, drivers/workbench.md; runtime-приёмка вынесена в T-055 |
+| T-055 | Runtime-приёмка workbench.db driver после hardening | todo | pool | `темы/ai-os-bridge.md` | После восстановления runtime прогнать test_workbench.py, validate.py, generate.py --check и CLI init/list/audit с WORKBENCH_BASE |
 <!-- GEN:tasks END -->

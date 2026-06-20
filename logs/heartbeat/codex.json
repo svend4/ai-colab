@@ -1,8 +1,8 @@
 {
   "agent": "codex",
-  "task": "T-050",
+  "task": "T-054",
   "progress": 100,
-  "note": "repo-runner MCP hardening done; runtime acceptance moved to T-051",
+  "note": "workbench hardening and manifest done; runtime acceptance moved to T-055",
   "eta": "done",
-  "epoch": 1781965661
+  "epoch": 1781966530
 }

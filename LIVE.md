@@ -4,5 +4,5 @@
 
 | Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |
 |---|---|---|---|---|---|---|
-| codex | T-050 | 100% | done | 0s | fresh | repo-runner MCP hardening done; runtime acceptance moved to T-051 |
-| mavis | T-029 | 0% | 5m | 12579s | stale | перепроверка обновлений, готовлю отчёт |
+| codex | T-054 | 100% | done | 0s | fresh | workbench hardening and manifest done; runtime acceptance moved to T-055 |
+| mavis | T-029 | 0% | 5m | 13448s | stale | перепроверка обновлений, готовлю отчёт |

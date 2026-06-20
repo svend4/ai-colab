@@ -26,6 +26,7 @@ def run():
         assert len(wb.query_documents(conn)) == 2, "ожидалось 2 документа"
         assert wb.query_documents(conn, risk="high")[0]["path"] == "a.py", "upsert не обновил risk"
         assert len(wb.query_documents(conn, text="b.txt")) == 1, "поиск по тексту не работает"
+        assert len(wb.query_documents(conn, limit=5000)) == 2, "limit cap сломал выборку"
 
         wb.log(conn, "Claude", "done", "T-052", "ok")
         au = wb.audit(conn, agent="Claude")
@@ -36,6 +37,22 @@ def run():
         n = wb.ingest_repo(conn, rep, source="repo1")
         assert n == 2, "ingest_repo не занёс файлы"
         assert wb.query_documents(conn, risk="medium")[0]["path"].endswith("y.sh"), "риск из отчёта не перенёсся"
+
+        rep_big = {"structure": ["a", "b", "c"], "risks": []}
+        assert wb.ingest_repo(conn, rep_big, source="repo2", max_documents=2) == 2, "max_documents не ограничивает ingest"
+
+        inside = wb.resolve_db_path("inside.db", base_dir=d)
+        assert str(inside).startswith(d), "relative db path не резолвится внутри base_dir"
+        try:
+            wb.resolve_db_path(os.path.join(os.path.dirname(d), "outside.db"), base_dir=d)
+            assert False, "base_dir не ограничивает путь БД"
+        except wb.PathAccessError:
+            pass
+        try:
+            wb.resolve_db_path("not-db.txt", base_dir=d)
+            assert False, "suffix check не сработал"
+        except ValueError:
+            pass
 
         print("TESTS OK docs=%d audit=%d ingested=%d" % (len(wb.query_documents(conn)), len(au), n))
     except AssertionError as e:

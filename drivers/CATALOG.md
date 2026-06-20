@@ -8,3 +8,4 @@
 | data | Data driver — таблицы, JSON, SQLite и индексы | L1 | read-only | medium | draft |
 | files | Files driver — безопасное чтение и инвентаризация файлов | L1 | read-only | low | draft |
 | repo-runner | Repo runner — inventory репозиториев и будущий запуск в песочнице | L1 | read-only | medium | ready |
+| workbench | Workbench DB driver — SQLite-память корпуса и audit log | L2 | safe-write | medium | draft |

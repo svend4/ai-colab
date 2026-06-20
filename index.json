@@ -657,6 +657,39 @@
       "depends_on": "[T-031]",
       "topic": "темы/ai-os-bridge.md",
       "next": "drivers/workbench/workbench.py — init/add_document/query_documents/log/audit по схеме documents+audit_log; тесты на чистой stdlib (sqlite3)"
+    },
+    {
+      "id": "T-053",
+      "title": "Сквозной поток драйвер→workbench→поиск (ingest pipeline)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-043, T-049, T-052]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "drivers/workbench/ingest.py — scan (files/repo-runner) → workbench.add_document/ingest_repo → query; тест end-to-end на фикстуре"
+    },
+    {
+      "id": "T-054",
+      "title": "Усилить безопасность workbench.db driver и добавить манифест",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-052]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: allowed-root для DB, suffix check, query/ingest limits, drivers/workbench.md; runtime-приёмка вынесена в T-055"
+    },
+    {
+      "id": "T-055",
+      "title": "Runtime-приёмка workbench.db driver после hardening",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-039, T-054]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "После восстановления runtime прогнать test_workbench.py, validate.py, generate.py --check и CLI init/list/audit с WORKBENCH_BASE"
     }
   ],
   "questions": [
@@ -906,6 +939,23 @@
       "sandbox": "required-before-run-or-test",
       "secrets": "forbidden-in-repo",
       "related": "темы/ai-os-bridge.md, tasks/T-024.md"
+    },
+    {
+      "id": "workbench",
+      "title": "Workbench DB driver — SQLite-память корпуса и audit log",
+      "file": "drivers/workbench.md",
+      "status": "draft",
+      "level": "L2",
+      "mode": "safe-write",
+      "owner": "Codex",
+      "risk": "medium",
+      "activation": "manual",
+      "interfaces": "[init, add_document, query_documents, log, audit, ingest_repo]",
+      "inputs": "[db-path, document-record, repo-scan-report]",
+      "outputs": "[sqlite-db, document-list, audit-list]",
+      "sandbox": "workspace-write-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md, tasks/T-052.md, tasks/T-054.md"
     }
   ]
 }

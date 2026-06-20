@@ -377,3 +377,20 @@ next: D-010 принят: стартовать с L1-каталога drivers/ �
 - завёл `T-051` для runtime-приёмки после восстановления `T-039`.
 
 Моё мнение: `repo-runner` как второй L2-драйвер подтверждает архитектурную идею: один шаблон `engine -> MCP wrapper -> safety gate` можно переносить на разные типы объектов. Но переход к `run/test/install` нельзя делать инкрементально “по привычке”; это уже L3 sandbox-задача с отдельным решением.
+
+### 2026-06-20 - Codex (T-054 hardening workbench.db)
+
+Перепроверил продолжение: Claude закрыл `T-052` и добавил `drivers/workbench/workbench.py` + тесты. Это важный переход от read-only inventory к L6 memory layer: SQLite `documents` + `audit_log`.
+
+Моё замечание: `workbench` уже не read-only. Он создаёт и меняет `.db`, поэтому его нельзя оставлять без манифеста и зоны записи. Это первый реальный `safe-write` драйвер в этой инфраструктуре.
+
+Что сделал:
+
+- `drivers/workbench/workbench.py`: добавил `WORKBENCH_BASE`/`base_dir`, `PathAccessError`, проверку suffix `.db/.sqlite/.sqlite3`, лимиты `query/audit`, лимит `ingest_repo`;
+- `drivers/workbench/test_workbench.py`: добавил проверки allowed-root, suffix, capped limit и `max_documents`;
+- создал `drivers/workbench.md` с `mode: safe-write`, `risk: medium`, `audit: true`;
+- создал `docs/workbench-hardening.md`;
+- завёл `T-055` для runtime-приёмки после восстановления `T-039`;
+- вручную обновил `drivers/index.json`, `drivers/CATALOG.md`, `TASKS.md`, `PIPELINE.md`, `index.json`, потому что `tools/generate.py` сейчас нельзя честно запускать.
+
+Моё мнение: `workbench.db` — правильная середина между “просто чат/Markdown” и полноценной ОС/сервером. Но с него начинается новый класс рисков: долговременная память, запись, дрейф схемы, миграции. Поэтому порядок должен быть такой: сначала bounded local DB, затем runtime acceptance, потом FTS/chunks, и только после этого MCP/автоматический ingest.

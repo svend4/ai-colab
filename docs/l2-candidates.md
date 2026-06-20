@@ -23,8 +23,9 @@
 |---|---|---|---|---|---|---|
 | 1 | `files` | read-only | low | Базовая карта больших папок: пути, типы, размеры, hash, summary; L2-draft engine и MCP-wrapper уже есть (`T-043`, `T-046`, `T-047`) | Python runtime сейчас нестабилен, runtime acceptance заблокирован | Закрыть `T-039`, затем выполнить `T-048` |
 | 2 | `repo-runner` | read-only | medium | Уже есть inventory и L2-draft MCP wrapper (`T-049`, `T-050`); полезно для Sven4/local repos | Нельзя переходить к `run/test` без sandbox; runtime acceptance ещё не выполнена | Закрыть `T-039`, затем выполнить `T-051` |
-| 3 | `data` | read-only | medium | Нужен для SQLite/CSV/JSON и будущего `workbench.db` | SQL/write/migrations должны быть запрещены | Сначала создать schema `documents` + `audit_log` |
-| 4 | `codex-local` | manual/read-only | medium | Может дать статус рабочей папки, checks, summary изменений | Риск слишком широкого доступа к окружению Codex | Ограничить списком разрешённых команд |
+| 3 | `workbench` | safe-write | medium | Уже есть SQLite memory layer (`T-052`, `T-054`) для documents/audit_log | Пишет DB-файл; runtime acceptance ещё не выполнена | Закрыть `T-039`, затем выполнить `T-055` |
+| 4 | `data` | read-only | medium | Нужен для SQLite/CSV/JSON и будущих индексов | SQL/write/migrations должны быть запрещены без отдельного решения | Определить read-only data inspect поверх workbench |
+| 5 | `codex-local` | manual/read-only | medium | Может дать статус рабочей папки, checks, summary изменений | Риск слишком широкого доступа к окружению Codex | Ограничить списком разрешённых команд |
 
 ## Рекомендация
 

@@ -17,6 +17,11 @@ import sys
 import json
 import sqlite3
 import datetime
+from pathlib import Path
+
+DEFAULT_MAX_QUERY_LIMIT = 1000
+DEFAULT_MAX_INGEST_DOCUMENTS = 1000
+ALLOWED_DB_SUFFIXES = {".db", ".sqlite", ".sqlite3"}
 
 
 def configure_output():
@@ -57,18 +62,52 @@ CREATE INDEX IF NOT EXISTS idx_audit_agent ON audit_log(agent);
 """
 
 
+class PathAccessError(ValueError):
+    pass
+
+
 def _now():
     return datetime.datetime.now().isoformat(timespec="seconds")
 
 
-def connect(db_path):
-    conn = sqlite3.connect(db_path)
+def _is_relative_to(path: Path, base: Path) -> bool:
+    try:
+        path.relative_to(base)
+        return True
+    except ValueError:
+        return False
+
+
+def resolve_db_path(db_path, base_dir=None):
+    if base_dir is None:
+        resolved = Path(db_path).expanduser().resolve()
+    else:
+        base = Path(base_dir).expanduser().resolve()
+        raw_path = Path(db_path).expanduser()
+        resolved = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
+        if not _is_relative_to(resolved, base):
+            raise PathAccessError(f"db path is outside allowed root: {resolved}")
+    if resolved.suffix.lower() not in ALLOWED_DB_SUFFIXES:
+        raise ValueError(f"unsupported db suffix: {resolved.suffix}")
+    return resolved
+
+
+def _bounded_limit(limit, max_limit=DEFAULT_MAX_QUERY_LIMIT):
+    value = int(limit)
+    if value <= 0:
+        raise ValueError("limit must be positive")
+    return min(value, max_limit)
+
+
+def connect(db_path, base_dir=None):
+    resolved = resolve_db_path(db_path, base_dir=base_dir)
+    conn = sqlite3.connect(str(resolved))
     conn.row_factory = sqlite3.Row
     return conn
 
 
-def init(db_path):
-    conn = connect(db_path)
+def init(db_path, base_dir=None):
+    conn = connect(db_path, base_dir=base_dir)
     conn.executescript(SCHEMA)
     conn.commit()
     return conn
@@ -91,6 +130,7 @@ def add_document(conn, source, path, type=None, lang=None, summary=None,
 
 
 def query_documents(conn, type=None, risk=None, text=None, limit=100):
+    limit = _bounded_limit(limit)
     q = "SELECT * FROM documents WHERE 1=1"
     p = []
     if type:
@@ -110,6 +150,7 @@ def log(conn, agent, action, target=None, detail=None):
 
 
 def audit(conn, agent=None, limit=50):
+    limit = _bounded_limit(limit)
     if agent:
         rows = conn.execute("SELECT * FROM audit_log WHERE agent=? ORDER BY id DESC LIMIT ?", (agent, limit)).fetchall()
     else:
@@ -117,11 +158,14 @@ def audit(conn, agent=None, limit=50):
     return [dict(r) for r in rows]
 
 
-def ingest_repo(conn, scan_report, source="repo", verified=None):
+def ingest_repo(conn, scan_report, source="repo", verified=None, max_documents=DEFAULT_MAX_INGEST_DOCUMENTS):
     """Занести файлы из отчёта repo-runner.scan_repo в documents (по риску из отчёта)."""
+    max_documents = _bounded_limit(max_documents, DEFAULT_MAX_INGEST_DOCUMENTS)
     risks = {r.get("file"): r.get("severity", "medium") for r in scan_report.get("risks", [])}
     n = 0
     for rel in scan_report.get("structure", []):
+        if n >= max_documents:
+            break
         add_document(conn, source, source + ":" + rel, type="file",
                      lang=os.path.splitext(rel)[1], risk=risks.get(rel, "low"),
                      source_last_verified=verified)
@@ -135,21 +179,28 @@ def main():
         print(__doc__)
         return 2
     cmd, db = a[0], a[1]
+    base_dir = os.environ.get("WORKBENCH_BASE") or os.getcwd()
 
     def opt(name):
         return a[a.index(name) + 1] if name in a and a.index(name) + 1 < len(a) else None
 
-    conn = init(db)
-    if cmd == "init":
-        print(json.dumps({"db": db, "ok": True}))
-        return 0
-    if cmd == "list":
-        print(json.dumps(query_documents(conn, type=opt("--type"), risk=opt("--risk"), text=opt("--text")),
-                         ensure_ascii=False, indent=2))
-        return 0
-    if cmd == "audit":
-        print(json.dumps(audit(conn, agent=opt("--agent")), ensure_ascii=False, indent=2))
-        return 0
+    try:
+        conn = init(db, base_dir=base_dir)
+        if cmd == "init":
+            print(json.dumps({"db": str(resolve_db_path(db, base_dir=base_dir)), "ok": True}))
+            return 0
+        if cmd == "list":
+            print(json.dumps(query_documents(conn, type=opt("--type"), risk=opt("--risk"),
+                                             text=opt("--text"), limit=opt("--limit") or 100),
+                             ensure_ascii=False, indent=2))
+            return 0
+        if cmd == "audit":
+            print(json.dumps(audit(conn, agent=opt("--agent"), limit=opt("--limit") or 50),
+                             ensure_ascii=False, indent=2))
+            return 0
+    except Exception as exc:
+        print(json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False))
+        return 1
     print(__doc__)
     return 2
 

@@ -43,6 +43,17 @@
       "sandbox": "required-before-run-or-test",
       "secrets": "forbidden-in-repo",
       "activation": "manual"
+    },
+    {
+      "id": "workbench",
+      "title": "Workbench DB driver — SQLite-память корпуса и audit log",
+      "level": "L2",
+      "mode": "safe-write",
+      "risk": "medium",
+      "status": "draft",
+      "sandbox": "workspace-write-only",
+      "secrets": "forbidden-in-repo",
+      "activation": "manual"
     }
   ]
 }
