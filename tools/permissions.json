@@ -13,9 +13,9 @@
     "TASKS.md",
     "QUESTIONS.md",
     "DECISIONS.md",
-    "Доска.md",
+    "board.md",
     "index.json",
-    "Диалог.md"
+    "dialog.md"
   ],
   "novax": [
     "tasks/**",
@@ -29,8 +29,8 @@
     "TASKS.md",
     "QUESTIONS.md",
     "DECISIONS.md",
-    "Доска.md",
+    "board.md",
     "index.json",
-    "Диалог.md"
+    "dialog.md"
   ]
 }

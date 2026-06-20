@@ -11,6 +11,7 @@
 # На Windows 'python3' часто — нерабочий App-Execution-Alias (заглушка Microsoft Store):
 # он есть в PATH, но печатает "Python" и падает. Поэтому проверяем, что интерпретатор
 # реально запускается и это Python 3, а не просто присутствует в PATH.
+# Дополнительно ищем по типовым Windows-путям, если PATH не содержит Python.
 PY=""
 for cand in python python3 py; do
   if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
@@ -19,8 +20,25 @@ for cand in python python3 py; do
   fi
 done
 
+# Fallback: типовые Windows-пути (Git Bash, Python 3.12)
+if [ -z "$PY" ]; then
+  for cand in \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python312/python.exe" \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python311/python.exe" \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python310/python.exe" \
+    "/c/Program Files/Python312/python.exe" \
+    "/c/Program Files/Python311/python.exe" \
+    "/c/Program Files/Python310/python.exe"; do
+    if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
+      PY="$cand"
+      break
+    fi
+  done
+fi
+
 if [ -z "$PY" ]; then
   echo "pre-commit: рабочий Python 3 не найден — валидация пропущена."
+  echo "Установите Python 3 или добавьте в PATH. Проверка отключена, но НЕ рекомендуется."
   exit 0
 fi
 
