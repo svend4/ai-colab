@@ -12,8 +12,7 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-024 | high | Novax | Спроектировать read-only repo inventory driver для Sven4/local repos |
-| T-025 | normal | Codex | Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP |
+| — | — | — | — |
 
 ## Заблокированы
 

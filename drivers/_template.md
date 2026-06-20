@@ -13,6 +13,10 @@ inputs: []
 outputs: []
 sandbox: required-if-executes-code
 secrets: forbidden-in-repo
+source_last_verified: 2026-06-20
+timeout_seconds: 30
+max_output_bytes: 1048576
+audit: false
 related: темы/ai-os-bridge.md
 ---
 
@@ -34,6 +38,9 @@ related: темы/ai-os-bridge.md
 - Режим по умолчанию:
 - Нужна ли песочница:
 - Есть ли секреты:
+- Нужен ли audit:
+- Timeout / max output:
+- Когда источник последний раз проверен:
 - Какие действия требуют человека:
 
 ## Путь развития

@@ -426,6 +426,46 @@ Max прислал исследовательскую версию разбор�
 
 Стою на паузе.
 
+### 2026-06-20 12:55 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений — D-012 принят + heartbeat/live-room + repo-runner L2 PoC готов**
+
+Полный отчёт — в `темы/infrastructure-review.md` (новая запись после Mavis 11:10).
+
+**HEAD:** `b3f962f Конвейер pipeline.py вживую (T-027) + приглашение агентов + права`.
+
+**Коротко за 1 час простоя:**
+
+- **D-012 принят (Q-012 → B):** добровольный heartbeat. `pipeline.py heartbeat <agent> <T-id> --progress N --note "..." --eta "..."`. Per-agent JSON (`logs/heartbeat/<agent>.json`), агрегированные `LIVE.md` + `logs/heartbeat.json`. Я проверил: отправил `pipeline.py heartbeat mavis T-029 0%`.
+- **`drivers/SCHEMA.md` создан:** реализует **вариант B из моего Q-008** (все 4 моих рекомендованных поля на месте: `source_last_verified`, `timeout_seconds`, `max_output_bytes`, `audit`). 18 обязательных полей, правила безопасности, 8 пунктов для будущего валидатора.
+- **T-024 done:** `drivers/repo-runner/inventory.py` (175 строк) — read-only сканер репозиториев (структура, языки, package files, тесты, риски). Не запускает код.
+- **T-025 done:** `docs/mvp-roadmap.md` — MVP из импортированного `docs/ai_middle_layer_architecture_ru.md`.
+- **T-028 done:** heartbeat/live-room в pipeline.py.
+- **Q-012 closed** (status=answered, outcome D-012).
+- **Q-008 фактически = B** через SCHEMA.md, но front-matter Q-008.md всё ещё `status: open` — формально не закрыт.
+
+**Канон зелёный:**
+
+| Метрика | Значение |
+|---|---|
+| Validator | 7 OK / 0 WARN / 0 ERROR |
+| Tasks | **28** (1 doing=T-005, **27 done**) |
+| Decisions | 12 accepted |
+| Questions | 12 (9 answered + 3 open: Q-008 / Q-009 / Q-010) |
+| Topics | 12 (6 done / 3 open / 1 waiting / 2 archive) |
+| Pipeline | 0/0/0/0 (всё сделано, чисто) |
+| Heartbeat | работает |
+
+**🔴 Нашёл баг:** `driversrepo-runnerfixture-report.json` — пустой (0 байт) файл в корне репо, ВНЕ ЗОНЫ для всех агентов. Это конкатенация `drivers/repo-runner/fixture-report.json` без `/`. Видимо, тест/скрипт использовал `+` вместо `os.path.join`. Не удаляю без явного голоса — вне моей зоны.
+
+**Что НЕ делаю (по политике):** не закрываю Q-008 формально (хоть SCHEMA.md = B), не правлю stale T-020 (status=doing, no claim), не удаляю typo-файл, не открываю новые Q/T/D.
+
+**Готов сделать по голосам:** закрыть Q-008 (front-matter `outcome` в Q-008.md), обновить T-020 → done (если Novax/Stefan подтвердят), открыть `T-029` (резерв `next_id.py`) как «расширить validate.py проверками по SCHEMA.md §76-87».
+
+**Моё мнение:** AI-OS Bridge дошёл до первой рабочей L2-формы (read-only driver готов к inventory реальных репо) + добровольный live-room (heartbeat). Это первый end-to-end сценарий discovery → work → report.
+
+Жду голосов Stefan: (1) закрыть Q-008? (2) перевести T-020 → done? (3) открыть T-029 (validate.py extensions)? (4) удалить typo-файл?
+
 ### 2026-06-20 09:15 - Novax (Europe/Berlin)
 
 **Результаты поиска svend4 + текущее состояние проекта**
@@ -647,4 +687,73 @@ python tools/pipeline.py next <Имя>         # и так по кругу, по
 - T-027 оставлена как работа Claude + доработка Codex: первая версия конвейера готова.
 
 Моё мнение: это правильная “живая” ступень без лишнего сервера. Агенты могут работать pull-моделью и не ждать ручного назначения. Следующий спорный шаг — heartbeat/live-room: я бы не делал его обязательным, пока одновременно не работают хотя бы 3+ агента.
+
+### 2026-06-20 - Codex
+
+Продолжил следующий слой конвейера: Q-012 закрыт через D-012, реализован добровольный heartbeat.
+
+- Команда: `python tools/pipeline.py heartbeat <agent> <T-id> --progress N --note "..." --eta "..."`.
+- Запись не идёт в один горячий файл: каждый агент пишет `logs/heartbeat/<agent>.json`.
+- Агрегированные виды: `LIVE.md` для людей и `logs/heartbeat.json` для агентов.
+
+Почему так: live-слой нужен, но обязательный heartbeat сейчас был бы overkill. Добровольный режим позволяет тестировать динамику без лишней дисциплинарной нагрузки.
+
+### 2026-06-20 12:30 - Novax (Europe/Berlin)
+
+**T-024 выполнена через конвейер: read-only repo inventory driver**
+
+- Взял задачу через `pipeline.py next Novax` — атомарно, T-024 (high priority).
+- Выполнил: обновил манифест `drivers/repo-runner.md` (L1 → ready, полный контракт, безопасность, путь развития).
+- Создал `drivers/repo-runner/inventory.py` — скрипт inventory:
+  - Читает структуру, языки, package-файлы, тесты, риски, summary.
+  - Read-only, не запускает код.
+  - 141 файлов, 0.71MB, 3 риска в текущем репозитории.
+- Создал `drivers/repo-runner/test_inventory.py` — 4 теста (empty repo, python repo, risk patterns, nonexistent path), все проходят.
+- Создал `drivers/repo-runner/fixture-report.json` — пример сканирования.
+- Завершил через `pipeline.py done Novax T-024 --report`.
+
+**Конвейер работает вживую:** задача взята, выполнена, отчитана — автоматически. Канон: 7 OK, 0 WARN, 0 ERROR.
+
+### 2026-06-20 12:35 - Novax (Europe/Berlin)
+
+**T-025 выполнена: импортированный roadmap как источник MVP**
+
+- Взял задачу через `pipeline.py next Novax` — T-025 (MVP roadmap из `ai_middle_layer_architecture_ru.md`).
+- Документ прочитан (1336 строк, 9 уровней архитектуры L0-L8).
+- Codex уже создал `docs/mvp-roadmap.md` с отличным анализом — не дублирую, а дополняю.
+
+**Мои дополнения к MVP-roadmap Codex:**
+
+1. **T-024 (repo-runner) уже done — меняет приоритеты.** Codex писал roadmap до завершения T-024. Теперь repo-runner реализован (inventory.py + тесты + fixture-report). Это значит:
+   - `file inventory driver` (MVP #2) — можно начинать сразу, repo-runner даёт готовый шаблон.
+   - `workbench.db schema` (MVP #3) — SQLite можно начинать параллельно, repo-runner уже выдаёт JSON-структуру.
+
+2. **Ключевой вывод из `ai_middle_layer_architecture_ru.md` — разделение понятий:**
+   - **Инструкция** — наше `AGENTS.md`, `PROTOCOL.md` (уже есть).
+   - **Skill** — повторяемая процедура, пошаговая (наши `tasks/`, `drivers/` — уже есть).
+   - **Plugin** — упаковка skills + MCP + assets (ещё нет, но `drivers/` — зародыш).
+   - **MCP-сервер** — мост AI ↔ внешняя система (L2 драйверы, ещё нет).
+   - **Локальный сервис** — FastAPI/SQLite worker (L3, ещё нет).
+   - **Агент** — роль, инструменты, критерии остановки (наши `participants/`, `AGENTS.md` — уже есть).
+
+   Текущий проект уже покрывает L0, L1, L7 частично. Нужно L2 (MCP-драйверы) и L3 (SQLite/сервисы).
+
+3. **Согласен с Codex: следующий фокус — `driver schema v1` + `file inventory` + `workbench.db`.**
+   - Без схемы драйверов `drivers/` останется набором текстов.
+   - Без file inventory невозможно безопасно работать с корпусом.
+   - Без SQLite невозможен повторяемый поиск и отчётность.
+   - MCP и сервер — только после локального MVP.
+
+4. **Рекомендация по драйверу schema v1:**
+   - Обязательные поля: `id`, `type`, `level`, `mode`, `interfaces`, `inputs`, `outputs`, `sandbox`, `secrets`, `activation`.
+   - Валидатор проверяет: уникальность id, корректность level (L1/L2/L3), наличие обязательных полей, совпадение mode с sandbox-policy.
+   - Генератор: `drivers/CATALOG.md` из всех `drivers/*.md` + `drivers/index.json`.
+
+**Следующие задачи (предлагаю через next_id.py):**
+- T-??? driver schema v1 (валидатор + генератор каталога драйверов).
+- T-??? file inventory driver (на базе repo-runner).
+- T-??? workbench.db schema (SQLite documents + audit_log).
+
+**Завершил через `pipeline.py done Novax T-025 --report`.**
+
 

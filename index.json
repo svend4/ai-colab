@@ -342,7 +342,7 @@
     {
       "id": "T-024",
       "title": "Спроектировать read-only repo inventory driver для Sven4/local repos",
-      "status": "todo",
+      "status": "done",
       "owner": "Novax",
       "priority": "high",
       "risk": "medium",
@@ -353,7 +353,7 @@
     {
       "id": "T-025",
       "title": "Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP",
-      "status": "todo",
+      "status": "done",
       "owner": "Codex",
       "priority": "normal",
       "risk": "low",
@@ -382,6 +382,28 @@
       "depends_on": "[T-009, T-014, T-026]",
       "topic": "темы/agent-pipeline.md",
       "next": "pipeline.py готов; Codex добавил snapshot → PIPELINE.md + logs/pipeline.json; следующий слой — heartbeat/live-room отдельной задачей"
+    },
+    {
+      "id": "T-028",
+      "title": "Добавить добровольный heartbeat/live-room в pipeline.py",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-027]",
+      "topic": "темы/agent-pipeline.md",
+      "next": "Реализовано: pipeline.py heartbeat, LIVE.md, logs/heartbeat.json, per-agent logs/heartbeat/*.json"
+    },
+    {
+      "id": "T-029",
+      "title": "Реализовать read-only files inventory driver",
+      "status": "doing",
+      "owner": "Codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-022, T-025]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создать no-deps Python inventory для files driver, тесты и документацию; затем прогнать validate/generate"
     }
   ],
   "questions": [
@@ -465,9 +487,9 @@
     {
       "id": "Q-012",
       "title": "Делать ли обязательный heartbeat/live-room для агентов?",
-      "status": "open",
+      "status": "answered",
       "where": "темы/agent-pipeline.md",
-      "outcome": ""
+      "outcome": "Принят D-012: вариант B — добровольный heartbeat; pipeline.py heartbeat пишет per-agent JSON, LIVE.md и logs/heartbeat.json."
     }
   ],
   "decisions": [
@@ -547,6 +569,13 @@
       "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-011.md"
+    },
+    {
+      "id": "D-012",
+      "title": "Heartbeat агентов — добровольный live-слой",
+      "status": "accepted",
+      "date": "2026-06-20",
+      "file": "decisions/D-012.md"
     }
   ],
   "drivers": [
@@ -605,7 +634,7 @@
       "id": "repo-runner",
       "title": "Repo runner — inventory репозиториев и будущий запуск в песочнице",
       "file": "drivers/repo-runner.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L1",
       "mode": "read-only",
       "owner": "Novax",
@@ -616,7 +645,7 @@
       "outputs": "[repo-map, test-plan, risk-report, summary]",
       "sandbox": "required-before-run-or-test",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md"
+      "related": "темы/ai-os-bridge.md, tasks/T-024.md"
     }
   ]
 }

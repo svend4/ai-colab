@@ -4,7 +4,7 @@
 
 ## Состав
 
-- `validate.py` — валидатор канона. Проверяет инварианты между `DECISIONS.md`, `QUESTIONS.md`, `TASKS.md`, `board.md`, `STATUS.md` и темами. Заменяет ручную «перепроварку».
+- `validate.py` — валидатор канона. Проверяет инварианты между `DECISIONS.md`, `QUESTIONS.md`, `TASKS.md`, `board.md`, `STATUS.md`, темами и draft schema драйверов из `drivers/SCHEMA.md`. Заменяет ручную «перепроверку».
 - `generate.py` — генератор навигации и машинного индекса: таблицы тем/задач/вопросов/решений собираются из front-matter, `index.json` собирается из того же канона. Режим `--check` для hook/CI.
 - `queue.py` — Queue 2.0: атомарный claim, TTL lease и fencing-token для заданий в `queues/`.
 - `race_test.py` — стресс-проверка атомарности `queue.py claim`: несколько параллельных агентов пытаются взять одну задачу, победить должен ровно один.
@@ -151,7 +151,9 @@ python tools/queue.py release  <task> <agent> --claim-id ID
 python tools/queue.py check                                 # claim без задания/без done
 ```
 
-`<task>` — имя файла из `queues/inbox/<task>.md` (без `.md`). Гарантии:
+`<task>` — имя файла из `queues/inbox/<task>.md` (без `.md`). Для pipeline-claim `check`
+также признаёт `tasks/<task>.md`, потому что `tools/pipeline.py next` занимает задачи из
+канонического каталога задач, а не из `queues/inbox/`. Гарантии:
 
 - **Атомарность:** claim создаётся через `O_CREAT|O_EXCL` — два агента не возьмут задачу одновременно (второй получит `BUSY`).
 - **TTL:** claim «свежий», пока lease в будущем; протухший (упавший агент) можно перехватить.
@@ -221,6 +223,7 @@ python tools/pipeline.py done   Claude T-027 --report "сделал X"
 python tools/pipeline.py fail   Claude T-031 --reason "нужен доступ"
 python tools/pipeline.py status                          # лента: в работе / готовы / заблокированы
 python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
+python tools/pipeline.py heartbeat Claude T-027 --progress 40 --note "пишу тест" --eta "10m"
 python tools/pipeline.py mine   Claude                   # мои активные задачи
 ```
 
@@ -234,6 +237,7 @@ next → (делаю задачу) → done --report → next → … → "КО�
 - **Готовая задача** = `status:todo` + все `depends_on` done + не занята свежим claim'ом. Заблокированные зависимостями в `next` не попадают.
 - **Отчёт — без «горячего файла».** `done` пишет per-task маркер `queues/done/<id>.done.md` (источник правды, без конфликтов слияния) и переводит задачу в `done`. Единый вид ленты — `pipeline.py status` (генерируется на лету, как индексы), а не общий файл с параллельными дописываниями (это был бы тот самый конфликт записи из D-002).
 - **Snapshot для людей и агентов.** `snapshot` пишет `PIPELINE.md` как человекочитаемую доску и `logs/pipeline.json` как машинный срез для быстрых агентных циклов.
+- **Добровольный heartbeat.** `heartbeat` пишет `logs/heartbeat/<agent>.json`, обновляет `logs/heartbeat.json` и `LIVE.md`. Это live-слой по D-012: полезен для долгих задач и параллельной работы, но не обязателен для каждого действия.
 - Источник правды по статусу задачи — `tasks/*.md`; после прогона запусти `generate.py`, чтобы обновить индексы.
 
 ## Риск-гейтинг (`risk_gate.py`, T-015)

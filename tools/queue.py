@@ -15,6 +15,7 @@
     python tools/queue.py check
 
 Где <task> — имя файла задания в `queues/inbox/<task>.md` (без .md).
+Для pipeline-режима check также признаёт claim на `tasks/<task>.md`.
 
 Гарантии:
 - Атомарность: новый claim создаётся через O_CREAT|O_EXCL (атомарно на одной ФС) —
@@ -64,6 +65,10 @@ def claim_path(task):
 
 def inbox_path(task):
     return os.path.join(Q, "inbox", task + ".md")
+
+
+def task_source_path(task):
+    return os.path.join(ROOT, "tasks", task + ".md")
 
 
 def parse_fm(text):
@@ -244,7 +249,10 @@ def cmd_check(a):
                 continue
             task = f[: -len(".claim.md")]
             done = os.path.join(Q, "done", task + ".done.md")
-            if not os.path.exists(inbox_path(task)) and not os.path.exists(done):
+            has_inbox = os.path.exists(inbox_path(task))
+            has_task_source = os.path.exists(task_source_path(task))
+            has_done = os.path.exists(done)
+            if not has_inbox and not has_task_source and not has_done:
                 print("WARN: claim без задания и без done: %s" % task)
                 problems += 1
     print("check: проблем %d" % problems)

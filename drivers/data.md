@@ -13,6 +13,10 @@ inputs: [csv, json, sqlite, index-json]
 outputs: [schema, rows, aggregates, summary]
 sandbox: required-before-write-or-code-exec
 secrets: forbidden-in-repo
+source_last_verified: 2026-06-20
+timeout_seconds: 30
+max_output_bytes: 1048576
+audit: true
 related: темы/ai-os-bridge.md
 ---
 

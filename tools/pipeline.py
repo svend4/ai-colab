@@ -15,6 +15,7 @@
     python tools/pipeline.py fail   <agent> <T-id> [--reason "..."]
     python tools/pipeline.py status                          # лента конвейера (одна форма)
     python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
+    python tools/pipeline.py heartbeat <agent> <T-id> [--progress N] [--note "..."] [--eta "..."]
     python tools/pipeline.py mine   <agent>                  # мои активные задачи
 
 Готовая задача = status:todo + все depends_on done + не занята свежим claim'ом.
@@ -44,8 +45,11 @@ CLAIMED = os.path.join(ROOT, "queues", "claimed")
 DONE = os.path.join(ROOT, "queues", "done")
 FAILED = os.path.join(ROOT, "queues", "failed")
 LOGS = os.path.join(ROOT, "logs")
+HEARTBEAT_DIR = os.path.join(LOGS, "heartbeat")
 PIPELINE_MD = os.path.join(ROOT, "PIPELINE.md")
 PIPELINE_JSON = os.path.join(LOGS, "pipeline.json")
+LIVE_MD = os.path.join(ROOT, "LIVE.md")
+HEARTBEAT_JSON = os.path.join(LOGS, "heartbeat.json")
 PRANK = {"high": 0, "normal": 1, "low": 2, "": 1}
 DEFAULT_TTL_MIN = 30
 
@@ -346,7 +350,94 @@ def cmd_snapshot():
         f.write("\n")
     with open(PIPELINE_MD, "w", encoding="utf-8", newline="\n") as f:
         f.write(render_pipeline_md(state))
+    write_heartbeat_views()
     print("SNAPSHOT: PIPELINE.md + logs/pipeline.json обновлены")
+    return 0
+
+
+def safe_agent_name(agent):
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", agent.strip()) or "unknown"
+
+
+def collect_heartbeats():
+    items = []
+    if not os.path.isdir(HEARTBEAT_DIR):
+        return items
+    now = int(time.time())
+    for fn in sorted(os.listdir(HEARTBEAT_DIR)):
+        if not fn.endswith(".json"):
+            continue
+        path = os.path.join(HEARTBEAT_DIR, fn)
+        try:
+            with open(path, encoding="utf-8") as f:
+                item = json.load(f)
+        except Exception:
+            continue
+        item["age_seconds"] = max(0, now - int(item.get("epoch", 0)))
+        item["fresh"] = item["age_seconds"] <= 15 * 60
+        items.append(item)
+    items.sort(key=lambda x: x.get("agent", ""))
+    return items
+
+
+def render_live_md(items):
+    lines = [
+        "# LIVE",
+        "",
+        "Добровольный heartbeat агентов. Обновляется командой `python tools/pipeline.py heartbeat ...` или `snapshot`.",
+        "",
+        "| Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    if not items:
+        lines.append("| — | — | — | — | — | — | — |")
+    for item in items:
+        status = "fresh" if item.get("fresh") else "stale"
+        lines.append("| %s | %s | %s%% | %s | %ss | %s | %s |" % (
+            item.get("agent", "—"),
+            item.get("task", "—"),
+            item.get("progress", 0),
+            item.get("eta", ""),
+            item.get("age_seconds", ""),
+            status,
+            str(item.get("note", "")).replace("|", "/"),
+        ))
+    lines.append("")
+    return "\n".join(lines)
+
+
+def write_heartbeat_views():
+    items = collect_heartbeats()
+    os.makedirs(LOGS, exist_ok=True)
+    with open(HEARTBEAT_JSON, "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"epoch": int(time.time()), "agents": items}, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    with open(LIVE_MD, "w", encoding="utf-8", newline="\n") as f:
+        f.write(render_live_md(items))
+
+
+def cmd_heartbeat(agent, tid, progress, note, eta):
+    os.makedirs(HEARTBEAT_DIR, exist_ok=True)
+    try:
+        progress_i = max(0, min(100, int(progress or 0)))
+    except ValueError:
+        progress_i = 0
+    item = {
+        "agent": agent,
+        "task": tid,
+        "progress": progress_i,
+        "note": note or "",
+        "eta": eta or "",
+        "epoch": int(time.time()),
+    }
+    path = os.path.join(HEARTBEAT_DIR, "%s.json" % safe_agent_name(agent))
+    tmp = path + ".tmp.%s" % uuid.uuid4().hex[:8]
+    with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(item, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    os.replace(tmp, path)
+    write_heartbeat_views()
+    print("HEARTBEAT: %s %s %s%%" % (agent, tid, progress_i))
     return 0
 
 
@@ -360,6 +451,12 @@ def main():
             flags["report"] = a[i + 1]; i += 2
         elif a[i] == "--reason" and i + 1 < len(a):
             flags["reason"] = a[i + 1]; i += 2
+        elif a[i] == "--progress" and i + 1 < len(a):
+            flags["progress"] = a[i + 1]; i += 2
+        elif a[i] == "--note" and i + 1 < len(a):
+            flags["note"] = a[i + 1]; i += 2
+        elif a[i] == "--eta" and i + 1 < len(a):
+            flags["eta"] = a[i + 1]; i += 2
         else:
             pos.append(a[i]); i += 1
     if not pos:
@@ -378,6 +475,8 @@ def main():
         return cmd_status()
     if cmd == "snapshot":
         return cmd_snapshot()
+    if cmd == "heartbeat" and len(pos) >= 3:
+        return cmd_heartbeat(pos[1], pos[2], flags.get("progress"), flags.get("note"), flags.get("eta"))
     print(__doc__)
     return 2
 

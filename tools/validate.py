@@ -270,11 +270,91 @@ def check_sources():
     ok("sources: tasks/questions/decisions проверены (front-matter, id, статусы, depends_on)")
 
 
+def check_drivers():
+    drivers_dir = os.path.join(ROOT, "drivers")
+    if not os.path.isdir(drivers_dir):
+        return
+    required = [
+        "id",
+        "type",
+        "title",
+        "status",
+        "level",
+        "mode",
+        "owner",
+        "risk",
+        "activation",
+        "interfaces",
+        "inputs",
+        "outputs",
+        "sandbox",
+        "secrets",
+        "source_last_verified",
+        "timeout_seconds",
+        "max_output_bytes",
+        "audit",
+        "related",
+    ]
+    valid_status = {"draft", "ready", "deprecated"}
+    valid_level = {"L1", "L2", "L3"}
+    valid_mode = {"read-only", "manual", "safe-write", "execute"}
+    valid_risk = {"low", "medium", "high"}
+    valid_activation = {"manual", "pipeline", "mcp", "scheduled"}
+    checked = 0
+    seen = set()
+    for fn in sorted(os.listdir(drivers_dir)):
+        if not fn.endswith(".md") or fn in {"README.md", "SCHEMA.md"} or fn.startswith("_"):
+            continue
+        rel = "drivers/%s" % fn
+        text = read(rel)
+        if text is None:
+            continue
+        fm = parse_front_matter(text)
+        if fm.get("type") != "driver":
+            continue
+        checked += 1
+        did = fm.get("id", "")
+        if did in seen:
+            err("drivers: дубликат id %s" % did)
+        seen.add(did)
+        for field in required:
+            if not fm.get(field):
+                err("%s: нет front-matter %s" % (rel, field))
+        if fm.get("status") and fm["status"] not in valid_status:
+            warn("%s: нестандартный status «%s»" % (rel, fm["status"]))
+        if fm.get("level") and fm["level"] not in valid_level:
+            warn("%s: нестандартный level «%s»" % (rel, fm["level"]))
+        if fm.get("mode") and fm["mode"] not in valid_mode:
+            warn("%s: нестандартный mode «%s»" % (rel, fm["mode"]))
+        if fm.get("risk") and fm["risk"] not in valid_risk:
+            warn("%s: нестандартный risk «%s»" % (rel, fm["risk"]))
+        if fm.get("activation") and fm["activation"] not in valid_activation:
+            warn("%s: нестандартный activation «%s»" % (rel, fm["activation"]))
+        if fm.get("source_last_verified") and not re.match(
+            r"^\d{4}-\d{2}-\d{2}$", fm["source_last_verified"]
+        ):
+            err("%s: source_last_verified должен быть YYYY-MM-DD" % rel)
+        for field in ("timeout_seconds", "max_output_bytes"):
+            if fm.get(field):
+                try:
+                    if int(fm[field]) <= 0:
+                        err("%s: %s должен быть положительным числом" % (rel, field))
+                except ValueError:
+                    err("%s: %s должен быть числом" % (rel, field))
+        if fm.get("risk") in {"medium", "high"} and fm.get("audit") != "true":
+            err("%s: risk %s требует audit: true" % (rel, fm.get("risk")))
+        if fm.get("mode") == "execute":
+            warn("%s: mode execute требует отдельного accepted-решения и sandbox" % rel)
+    if checked:
+        ok("drivers: %d манифестов проверены по draft schema v1" % checked)
+
+
 def main():
     decisions = parse_decisions()
     parse_questions(decisions)
     parse_tasks()
     check_sources()
+    check_drivers()
     check_nav()
     check_naming()
 

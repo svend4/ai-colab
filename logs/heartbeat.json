@@ -1,0 +1,25 @@
+{
+  "epoch": 1781953082,
+  "agents": [
+    {
+      "agent": "codex",
+      "task": "T-028",
+      "progress": 100,
+      "note": "draft driver schema v1 prepared for Q-008",
+      "eta": "done",
+      "epoch": 1781952969,
+      "age_seconds": 113,
+      "fresh": true
+    },
+    {
+      "agent": "mavis",
+      "task": "T-029",
+      "progress": 0,
+      "note": "перепроверка обновлений, готовлю отчёт",
+      "eta": "5m",
+      "epoch": 1781953082,
+      "age_seconds": 0,
+      "fresh": true
+    }
+  ]
+}

@@ -873,3 +873,92 @@ T-005 (миграция имён по D-007) — `status=doing`, `owner=все`,
 **Моё мнение:**
 
 Канон зрелый, инструменты доказали работу: `next_id.py` (атомарная выдача), `generate.py` (машинный индекс драйверов), валидатор (7/0/0), `queue.py` (race-tested). AI-OS Bridge идёт по D-010 поэтапно: L1-каталог → машинный индекс → сейчас на пороге первого read-only L2 PoC. Открытые вопросы блокируют следующий шаг (особенно Q-009 без которого T-024 невыполнима). Если Stefan разблокирует 1-2 вопроса за следующий час — можно будет двинуться к MVP.
+
+### 2026-06-20 12:55 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений — D-012 + heartbeat/live-room + repo-runner + SCHEMA v1**
+
+**Контекст:** Stefan попросил «Перепроверка обновлений» в 12:53. За 1 час моего простоя произошла большая работа: heartbeat/live-room (D-012), реальный read-only driver для репозиториев (T-024), MVP roadmap из импортированной архитектуры (T-025), добровольный heartbeat в pipeline.py (T-028), и фактически закрытие Q-008 через `drivers/SCHEMA.md`. Канон зелёный.
+
+**HEAD:** `b3f962f Конвейер pipeline.py вживую (T-027) + приглашение агентов + права`
+
+**Зелёное (стабильно):**
+- `validate.py`: **7 OK / 0 WARN / 0 ERROR** (после regenerate — все 12 тем и 28 задач в каноне).
+- `generate.py --check`: STALE (после моего `generate.py` — STALE).
+- `pipeline.py status`: 0 в работе / 0 готовы / 0 заблокировано (всё доехало).
+- `pipeline.py heartbeat` работает: проверил на себе (`mavis T-029 0%`).
+- Очередь: `inbox=0, claimed=0, done=7, failed=0` (прибавилось +2 done от T-024/T-025).
+- Метрики: **28 задач (1 doing=T-005, 27 done)**, 12 решений (D-001..D-012 все accepted), 12 вопросов (9 answered + 3 open: Q-008 manifest schema / Q-009 svend4 location / Q-010 темы → topics), 12 тем.
+
+**Что произошло (за 1 час простоя):**
+
+1. **D-012 принят** (Codex/Stefan). Heartbeat = вариант B из Q-012: добровольный, per-agent JSON (`logs/heartbeat/<agent>.json`), агрегированный снимок (`LIVE.md` + `logs/heartbeat.json`). Реализация T-028: `pipeline.py heartbeat <agent> <T-id> --progress N --note "..." --eta "10m"`. Per-agent файлы — против горячего файла записи (важный архитектурный выбор).
+
+2. **`drivers/SCHEMA.md` создан** (Codex, статус `draft`). Реализует **вариант B из моего Q-008** (расширенный manifest): все 4 моих рекомендованных поля на месте — `source_last_verified` (детекция дрейфа), `timeout_seconds` (защита от runaway), `max_output_bytes` (защита от memory blow-up), `audit` (логирование для risk: medium|high). Плюс 14 обязательных полей (id, type, title, status, level, mode, owner, risk, activation, interfaces, inputs, outputs, sandbox, secrets, related) и правила безопасности (audit обязателен для risk: medium|high; mode: execute запрещён без sandbox; secrets не in-repo). SCHEMA.md §76-87 уже описывает 8 правил для будущего `validate.py`-расширения.
+
+3. **`drivers/repo-runner/inventory.py` создан** (175 строк). Read-only сканер репозиториев: собирает структуру, языки (по расширениям: py/js/ts/rs/go/...), package files (package.json/pyproject.toml/Cargo.toml/...), test indicators, риски (eval/exec/subprocess/network). Не запускает код — только инспектирует. Это T-024 done.
+
+4. **`docs/mvp-roadmap.md` создан** (T-025 done). Извлечён MVP из импортированного `docs/ai_middle_layer_architecture_ru.md`: 3-5 драйверов, skills, индексы, проверки — на 2-3 дня. Реальная дорожная карта для следующего этапа.
+
+5. **`LIVE.md` пишется автоматически**: таблица с агентом/задачей/прогрессом/ETA/возрастом/статусом/заметкой. Я отправил первый heartbeat от mavis.
+
+6. **Q-012 закрыт** (status=answered, outcome D-012).
+
+7. **Q-008 фактически = B** через `drivers/SCHEMA.md`, но front-matter Q-008.md всё ещё `status: open` (формально не закрыт). Содержательно это закрытие моего предложения, но требует явного `outcome` в Q-008.md. Не правлю без голоса Stefan.
+
+**Текущее состояние (на 12:55):**
+
+| Что | Значение |
+|---|---|
+| HEAD | `b3f962f` |
+| Tasks | **28** (1 doing=T-005 миграция имён, 27 done) |
+| Decisions | 12 accepted (D-001..D-012) |
+| Questions | 12 (9 answered + **3 open**: Q-008 manifest schema / Q-009 svend4 / Q-010 темы → topics) |
+| Topics | 12 (6 done / 3 open / 1 waiting / 2 archive) |
+| Validator | 7 OK / 0 WARN / 0 ERROR |
+| Generator | STALE → fixed by my `generate.py` |
+| Pipeline | пусто (0 ready, 0 doing, 0 blocked) — все готовые задачи выполнены |
+| Heartbeat | per-agent JSON работает, LIVE.md обновляется |
+| Drivers | 4 черновика в `drivers/` + `SCHEMA.md` v1 + `repo-runner/inventory.py` |
+
+**🔴 Найден баг: stray empty file `driversrepo-runnerfixture-report.json`**
+
+В корне репозитория лежит пустой (0 байт) файл `driversrepo-runnerfixture-report.json` — без `/` разделителя. Это конкатенация `drivers/` + `repo-runner/` + `fixture-report.json`. Видимо, какой-то тест или скрипт использовал `+` или некорректное `os.path.join`. Файл ВНЕ ЗОНЫ для всех агентов, не должен быть в репо.
+
+- `git status` показывает `?? driversrepo-runnerfixture-report.json` (untracked).
+- Правильный файл лежит в `drivers/repo-runner/fixture-report.json` (per T-024 output).
+- Действие: Stefan/maintainer должен удалить через `mavis-trash`. Я не удаляю без явного голоса, поскольку файл не в моей зоне и я не уверен в его происхождении (может быть, artifact отладки).
+
+**T-020 stale** (наблюдение, не правка)
+
+`pipeline.py status` показывает T-020 в работе с `[?]` (агент не определён), хотя `queues/claimed/` пуст. Front-matter T-020.md `status: doing`, owner: Novax. Содержательно T-020 закрыт через D-010 (вариант принят) + T-024 (read-only driver сделан). Дальнейшая работа переехала в T-024 (Novax). Рекомендую Novax или Stefan: `set_status("done")` или `release` claim — но без явного голоса не делаю.
+
+**Что я делаю сейчас:**
+
+1. ✅ `pipeline.py heartbeat mavis T-029 0%` — проверил работу heartbeat.
+2. ✅ `python tools/generate.py` — убрал STALE (TASKS.md и index.json).
+3. ✅ Тест `pipeline.py status` — корректно показывает пустой конвейер.
+4. ⏳ Этот отчёт в `темы/infrastructure-review.md`.
+5. ⏳ Указатель в `dialog.md`.
+6. ⏳ Единый коммит: мои правки + Codex/Claude'овский рабочий слой (heartbeat, drivers/SCHEMA, repo-runner, MVP roadmap).
+
+**Что я НЕ делаю (по политике):**
+
+- Не закрываю Q-008 формально (фронт-маттер) — хоть SCHEMA.md и реализует вариант B, формальное закрытие через `outcome` — это голос Stefan'а.
+- Не правлю T-020 status — без явного голоса Novax/Stefan.
+- Не удаляю typo-файл `driversrepo-runnerfixture-report.json` — вне моей зоны, пусть Stefan/maintainer решит.
+- Не открываю новые Q/T/D — три открыты.
+- Не перехватываю готовые задачи — pipeline пуст.
+
+**Моё мнение (финальное по стабилизации после heartbeat):**
+
+AI-OS Bridge дошёл до **первой рабочей L2-формы**: read-only driver `repo-runner/inventory.py` готов к использованию (можно сканировать реальные репо), heartbeat работает (агенты могут писать статус), live-room отображает всё в `LIVE.md`. Это **первый end-to-end сценарий** от discovery («есть готовая задача») до report («готово, отчёт сохранён»).
+
+Дальнейшее движение:
+1. **Закрыть Q-008 формально** (вариант B уже реализован в SCHEMA.md).
+2. **Решить Q-009** (где svend4) — чтобы T-024 получил реальные данные для inventory.
+3. **Q-010 (`темы/` → `topics/`)** — когда будет окно.
+4. **T-028 done, T-024 done, T-025 done** — backlog чист.
+5. **Очередной candidate:** `T-029` (резерв `next_id.py`). Логично открыть как «расширить `validate.py` проверками по SCHEMA.md §76-87» — это естественное продолжение. Но без явного голоса — не делаю.
+
+Стою на паузе.

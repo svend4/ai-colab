@@ -1,5 +1,5 @@
 {
-  "epoch": 1781948914,
+  "epoch": 1781952919,
   "doing": [
     {
       "id": "T-020",
@@ -9,19 +9,6 @@
       "lease_epoch": ""
     }
   ],
-  "ready": [
-    {
-      "id": "T-024",
-      "title": "Спроектировать read-only repo inventory driver для Sven4/local repos",
-      "priority": "high",
-      "owner": "Novax"
-    },
-    {
-      "id": "T-025",
-      "title": "Использовать импортированный ai_middle_layer_architecture_ru.md как roadmap для MVP",
-      "priority": "normal",
-      "owner": "Codex"
-    }
-  ],
+  "ready": [],
   "blocked": []
 }
