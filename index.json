@@ -1170,6 +1170,39 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализовано docs/bridge-usage.md — операционный гайд: демо, драйверы, подключение gateway к AI-клиенту (MCP config), безопасность, приёмка, что работает/в работе"
+    },
+    {
+      "id": "T-099",
+      "title": "Codex review/integration for bridge usage guide",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-098]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверки пройдены; закрыть через pipeline done после generate/snapshot"
+    },
+    {
+      "id": "T-100",
+      "title": "Sync MCP tools/call acceptance for read-only drivers",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-087, T-096]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Sync acceptance 19/19 оформлена; закрыть через pipeline done после validate/generate/snapshot"
+    },
+    {
+      "id": "T-101",
+      "title": "Переносимая sync MCP tools/call-приёмка всех драйверов (шаг 2/4)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-078, T-087]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализовано drivers/mcp_sync_acceptance.py поверх SyncMcpClient (T-087, Codex) — initialize+tools/list+tools/call по 19 инструментам 5 серверов; прогон pass=19 fail=0 RESULT OK, переносимо между средами (обходит WinError 5)"
     }
   ],
   "questions": [
@@ -1450,6 +1483,23 @@
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
       "related": "темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md"
+    },
+    {
+      "id": "git-log",
+      "title": "Git-log driver — read-only история git (коммиты, авторы, история файла)",
+      "file": "drivers/git-log.md",
+      "status": "draft",
+      "level": "L2",
+      "mode": "read-only",
+      "owner": "Claude",
+      "risk": "medium",
+      "activation": "mcp",
+      "interfaces": "[recent_commits, author_stats, file_history, repo_summary]",
+      "inputs": "[repo-path, file-path, n]",
+      "outputs": "[commit-list, author-stats, file-history, summary]",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md, drivers/repo-runner.md"
     },
     {
       "id": "repo-runner",

@@ -851,3 +851,32 @@ PowerShell снова показал `NativeCommandError`, но это связ�
 Почему: этот файл назначен каноническим источником нумерации L0-L7, но таблица покрытия отставала от фактов. L2 уже имеет driver/MCP tools-list контур (`files`, `data`, `repo-runner`, `codex-local`, `gateway`), а L6 уже имеет SQLite workbench/ingest/search. При этом оба слоя всё ещё не “готовая платформа”: нужны `tools/call` acceptance, knowledge workflow и песочница для execute.
 
 Моё мнение: это переводит статус проекта из “теоретическая карта” в “рабочий read-only прототип среднего слоя с понятными следующими ограничителями”.
+
+### 2026-06-21 - Codex (T-099 bridge usage review)
+
+Проверил `docs/bridge-usage.md`, созданный в T-098 как операционный гайд среднего слоя.
+
+Проверки прошли:
+
+- `python tools\demo_bridge.py`;
+- `python drivers\mcp_sync_probe.py gateway --timeout 60`;
+- `python drivers\gateway\test_gateway.py`;
+- `python tools\validate.py`.
+
+Моё мнение: `bridge-usage.md` стоит держать как быстрый вход для людей и агентов. Концептуальные документы отвечают “зачем и как устроено”, а этот файл отвечает “как запустить, подключить и проверить”.
+
+### 2026-06-21 - Codex (T-100 sync MCP tools/call acceptance)
+
+Оформил и прогнал синхронную MCP `tools/call` приёмку:
+
+```text
+python drivers\mcp_sync_acceptance.py --timeout 90
+SYNC ACCEPTANCE pass=19 fail=0
+RESULT OK
+```
+
+Покрыты `files`, `repo-runner`, `data`, `codex-local`, `gateway`: всего 19 реальных вызовов инструментов.
+
+Почему это важно: раньше sync path подтверждал только `initialize/tools-list`. Теперь read-only L2 контур проверяется через реальные tool calls без зависимости от проблемного Windows `asyncio` stdio path.
+
+Моё мнение: это сильный шаг вперёд для “живости” среднего слоя. Но формулировка должна оставаться честной: это переносимая sync acceptance, а не доказательство, что официальный async MCP клиент работает в любой Windows-среде.

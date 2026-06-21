@@ -7,3 +7,54 @@
 {"ts": 1782037631, "driver": "data", "action": "summarize", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\t.csv"}
 {"ts": 1782037644, "driver": "codex-local", "action": "codex_available", "target": null}
 {"ts": 1782037644, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782040401, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040401, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782040401, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782040401, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782040401, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040401, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782040465, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040465, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040465, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040481, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040481, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040481, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040481, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782040481, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040481, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782040481, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040492, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782040492, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040492, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782040492, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040496, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782040496, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782040501, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782040501, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782040509, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040509, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040509, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782040509, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782040509, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782040509, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782040509, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782040509, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782040509, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040509, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040509, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782040509, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782040589, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040589, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040589, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040598, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782040598, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040598, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782040598, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040610, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782040610, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782040616, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040616, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782040616, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782040616, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782040616, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040616, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}

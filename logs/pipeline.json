@@ -1,6 +1,14 @@
 {
-  "epoch": 1782040029,
-  "doing": [],
+  "epoch": 1782040674,
+  "doing": [
+    {
+      "id": "T-100",
+      "title": "Sync MCP tools/call acceptance for read-only drivers",
+      "agent": "codex",
+      "claim_id": "2ce2e6e74bcc",
+      "lease_epoch": "1782042366"
+    }
+  ],
   "ready": [],
   "blocked": [
     {
