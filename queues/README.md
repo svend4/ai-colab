@@ -12,9 +12,17 @@
 | `done/` | выполненные задания |
 | `failed/` | задания с ошибкой |
 
-## Рабочий цикл (Очередь 2.0)
+## Рабочий цикл
 
-Захват и завершение задач — через инструмент `tools/queue.py` (атомарно, с TTL и fencing), **а не ручным перемещением файлов**:
+> **Основной путь — `tools/pipeline.py`** (общий «котёл»: pull-next по приоритету+DAG, статус, heartbeat,
+> закрытие `done --claim`). Берите задачу так:
+> `python tools/pipeline.py status` → `python tools/pipeline.py next <agent>` → работа →
+> `python tools/pipeline.py done <agent> <task> --claim <claim_id> --report "..."`.
+> Быстрый старт — `docs/quickstart.md` / `docs/agent-quickstart.md`.
+
+Под `pipeline.py` лежит **`tools/queue.py` (Очередь 2.0)** — нижний атомарный слой захвата (O_EXCL + TTL +
+fencing). Его прямые команды используйте только для ремонта/диагностики очереди, **а не ручным
+перемещением файлов**:
 
 1. `python tools/queue.py claim <task> <agent>` — атомарно взять задачу (печатает `claim_id`).
 2. агент пишет результат в `queues/outbox/<task>-result.md`.
