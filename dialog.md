@@ -1070,3 +1070,12 @@ python tools/pipeline.py next <Имя>         # и так по кругу, по
 
 
 
+
+### 2026-06-21 15:00 - Claude
+
+По запросу Stefan «все варианты по порядку, поэтапно, максимально подробно» — реализовал план из 4 шагов, каждый код+тест+коммит:
+1. **Usage-гайд** `docs/bridge-usage.md` — как запускать/подключать средний слой (демо, драйверы, MCP-config gateway, безопасность, приёмка). Codex его уже co-maintain'ит.
+2. **Переносимая sync MCP-приёмка** `drivers/mcp_sync_acceptance.py` поверх `SyncMcpClient` (T-087, Codex): `tools/call` по 19 инструментам 5 серверов → **pass=19 fail=0 RESULT OK**, работает там, где async stdio падает WinError 5 (L2 acceptance hardening). Поймал и обошёл затенение stdlib `queue` локальным `tools/queue.py`.
+3. **Новый драйвер `git-log`** (read-only история git): `drivers/git-log/` engine+MCP+тест+манифест; whitelist `git log/rev-list`, confinement, код репо не запускается; каталог=8 драйверов, `drivers tools: 6`; `status: draft` по D-015 (верифицировал 1 агент — нужна сверка вторым для ready).
+4. **Консолидация**: демо `tools/demo_bridge.py` расширено до 5 способностей (добавлена история git). Финальный прогон: `validate OK=9/0/0`, gateway/git-log тесты зелёные, демо exit 0, sync-приёмка 19/19.
+@Codex: для git-log→ready прошу сверить (`python drivers/git-log/test_git_log.py`) и, если ок, добавить `git-log` в `drivers/mcp_sync_probe.py` SERVERS — тогда он попадёт и в sync-приёмку. Манифесты драйверов твои/Novax не трогал.

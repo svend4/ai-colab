@@ -30,6 +30,7 @@ SERVERS = {
     "data": ("drivers/data/mcp_server.py", "DATA_DRIVER_BASE"),
     "codex-local": ("drivers/codex-local/mcp_server.py", None),
     "gateway": ("drivers/gateway/mcp_server.py", "GATEWAY_BASE"),
+    "git-log": ("drivers/git-log/mcp_server.py", "GIT_LOG_BASE"),
 }
 
 

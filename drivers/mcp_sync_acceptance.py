@@ -62,6 +62,12 @@ CALLS = {
         ("repo_inspect", {"repo_path": FX}),
         ("memory_query", {"db": TMP_DB}),
     ],
+    "git-log": [
+        ("recent_commits", {"repo": ".", "n": 5}),
+        ("author_stats", {"repo": "."}),
+        ("file_history", {"repo": ".", "path": "AGENTS.md", "n": 5}),
+        ("repo_summary", {"repo": "."}),
+    ],
 }
 
 

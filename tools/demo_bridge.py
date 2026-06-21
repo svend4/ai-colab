@@ -48,6 +48,7 @@ def main():
     fd = _load("demo_files", "files", "files_driver.py")
     inv = _load("demo_inv", "repo-runner", "inventory.py")
     wb = _load("demo_wb", "workbench", "workbench.py")
+    gl = _load("demo_gl", "git-log", "git_log.py")
 
     line = "=" * 64
     print(line)
@@ -110,8 +111,21 @@ def main():
         if os.path.exists(tmp):
             os.remove(tmp)
 
+    # 6) git-log: история репозитория (если target — git; иначе показываем сам репозиторий)
+    git_target = target if os.path.isdir(os.path.join(target, ".git")) else ROOT
+    note = "" if git_target == target else "  (target не git — показываю сам репозиторий)"
+    print("\n[6] git-log — история репозитория%s" % note)
+    try:
+        gs = gl.summary(git_target, base_dir=os.path.dirname(git_target))
+        print("    ветка: %s | всего коммитов: %s | авторов: %s"
+              % (gs.get("branch"), gs.get("total_commits"), gs.get("authors")))
+        for c in gl.recent_commits(git_target, n=3, base_dir=os.path.dirname(git_target)):
+            print("    %s %s %s — %s" % (c["hash"], c["date"], c["author"], c["subject"][:48]))
+    except Exception as exc:
+        print("    (git-log недоступен: %s)" % exc)
+
     print("\n" + line)
-    print("Итог: один allowed-root + четыре способности (файлы/поиск/инвентаризация/память),")
+    print("Итог: один allowed-root + пять способностей (файлы/поиск/инвентаризация/память/история),")
     print("read-only и без запуска кода — это и есть «средний слой», который gateway отдаёт")
     print("AI-агенту за одним MCP-разъёмом. svend4 (запуск чужого кода) — отдельный слой + песочница.")
     print(line)

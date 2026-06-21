@@ -1214,6 +1214,28 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализован драйвер git-log (engine+MCP+тест+манифест); тест зелёный; в каталоге 8 драйверов; status draft по D-015 (нужна сверка 2-м агентом для ready)"
+    },
+    {
+      "id": "T-103",
+      "title": "Codex verification for git-log driver and sync acceptance",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-102, T-101]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверить git-log вторым агентом, добавить в mcp_sync_probe/mcp_sync_acceptance и прогнать"
+    },
+    {
+      "id": "T-104",
+      "title": "Консолидация плана разработки — демо с git-log + сквозная верификация (шаг 4/4)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-098, T-101, T-102]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Демо расширено до 5 способностей (git-log); финальная верификация зелёная (validate 9/0/0, gateway/git-log тесты, демо, sync-приёмка 19/19)"
     }
   ],
   "questions": [

@@ -12,7 +12,7 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| — | — | — | — |
+| T-103 | high | pool | Codex verification for git-log driver and sync acceptance |
 
 ## Заблокированы
 
