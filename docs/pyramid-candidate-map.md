@@ -86,3 +86,9 @@ L2 без доменного спора (legal/social откладываем д�
 `workflows.md`, `sources.md`. Это не закрывает Q4 окончательно: `tools/portal.py` пока работает с
 `data/portals/example`, а `portals/example` — clean present-tense слой со ссылками. Вопрос location
 model вынесен в `streams/portal-location/20260621-1931-claude/STREAM.md`.
+
+## Update 2026-06-21 — core-export mechanism acceptance
+
+Stage 4 механизм core-export проверен: `core/engine-manifest.md` + `tools/promote.py export` +
+`tools/test_promote_export.py`. Это доказывает безопасный copy-export путь для первого L1-кандидата,
+но не закрывает Q2 окончательно: состав L1 остаётся `proposed` до collective review.

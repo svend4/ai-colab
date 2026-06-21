@@ -1642,6 +1642,17 @@
       "depends_on": "[]",
       "topic": "docs/pyramid-candidate-map.md",
       "next": "Оформить portals/example как чистовой L2 scaffold; не менять portal.py до синтеза portal-location."
+    },
+    {
+      "id": "T-140",
+      "title": "Core export acceptance — проверить promote.py export и engine-manifest",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/pyramid-candidate-map.md",
+      "next": "Проверить core/engine-manifest.md + tools/promote.py export; исправить Windows temp в test_promote_export; записать результат."
     }
   ],
   "questions": [

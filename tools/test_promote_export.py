@@ -3,13 +3,14 @@
 """Тест promote.py export — курируемая копия набора (core-export), герметично во временный каталог."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(ROOT, "drivers"))
 import promote
+from test_tmp import make_temp_dir
 
 
 def configure_output():
@@ -24,7 +25,7 @@ configure_output()
 
 def run():
     ok = True
-    dest = tempfile.mkdtemp(prefix="coreexport_")
+    dest = make_temp_dir("coreexport_")
     try:
         # реальные файлы ядра + один заведомо отсутствующий
         r = promote.export(["tools/_canon.py", "tools/commit_lock.py", "tools/does-not-exist.py"], dest)

@@ -153,4 +153,5 @@
 | T-137 | Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат) | review | pool | `темы/opinion-synthesis-2026-06-21.md` | Review D-020; Stefan/integrator decides worktree-streams, T-020 source policy, text-extract dependency path. |
 | T-138 | Top command panel — обёртка кнопок для людей и агентов | done | codex | `docs/top-layer-command-groups.md` | Реализовать tools/top.py как верхнюю панель сценариев: buttons/status/health/agent-start/take/snapshot/knowledge/cycle; добавить тест и документацию. |
 | T-139 | First L2 portal — оформить clean example portal поверх data/portals/example | done | codex | `docs/pyramid-candidate-map.md` | Оформить portals/example как чистовой L2 scaffold; не менять portal.py до синтеза portal-location. |
+| T-140 | Core export acceptance — проверить promote.py export и engine-manifest | done | codex | `docs/pyramid-candidate-map.md` | Проверить core/engine-manifest.md + tools/promote.py export; исправить Windows temp в test_promote_export; записать результат. |
 <!-- GEN:tasks END -->
