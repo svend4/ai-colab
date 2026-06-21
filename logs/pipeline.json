@@ -1,7 +1,26 @@
 {
-  "epoch": 1782042560,
+  "epoch": 1782043176,
   "doing": [],
-  "ready": [],
+  "ready": [
+    {
+      "id": "T-112",
+      "title": "Safe knowledge corpus expansion — добавить маленький локальный корпус",
+      "priority": "normal",
+      "owner": "pool"
+    },
+    {
+      "id": "T-113",
+      "title": "Project skills packaging guide — как переносить skills в другие среды",
+      "priority": "normal",
+      "owner": "pool"
+    },
+    {
+      "id": "T-114",
+      "title": "Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода",
+      "priority": "high",
+      "owner": "pool"
+    }
+  ],
   "blocked": [
     {
       "id": "T-020",

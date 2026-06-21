@@ -1302,6 +1302,61 @@
       "depends_on": "[T-100, T-103, T-107, T-109]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Reconciliation внесён; закрыть через pipeline done после validate/generate/snapshot"
+    },
+    {
+      "id": "T-111",
+      "title": "Knowledge report artifacts — сохранять L6 отчёты в reports/",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-107, T-110]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто — T-112 может расширять corpus на основе reports/ workflow"
+    },
+    {
+      "id": "T-112",
+      "title": "Safe knowledge corpus expansion — добавить маленький локальный корпус",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-111]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Добавить безопасный corpus в data/knowledge-corpus и прогнать knowledge report"
+    },
+    {
+      "id": "T-113",
+      "title": "Project skills packaging guide — как переносить skills в другие среды",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-109]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Описать packaging/usage для skills без создания полноценного plugin"
+    },
+    {
+      "id": "T-114",
+      "title": "Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-110]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Составить preflight-план песочницы для execute/svend4 без включения mode: execute"
+    },
+    {
+      "id": "T-115",
+      "title": "L6 — полнотекстовый поиск FTS5 в knowledge workflow (направление 3)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-108]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Добавлен FTS5-индекс + ранжированный поиск (bm25) в tools/knowledge.py: build строит kn_fts, команда search и report используют fts_search с fallback на LIKE; тест расширен, зелёный"
     }
   ],
   "questions": [

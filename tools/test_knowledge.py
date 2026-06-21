@@ -34,9 +34,12 @@ def run():
                 # redaction: секрет из первой строки b.txt не должен попасть в summary
                 joined = " ".join((d.get("summary") or "") for d in docs)
                 assert "SUPERSECRETXYZ" not in joined, "секрет утёк в summary: %r" % joined
-                # запрос по тексту
+                # запрос по тексту (LIKE)
                 hits = kn.wb.query_documents(conn, text="Заголовок", limit=10)
                 assert any(h["type"] == "md" for h in hits), hits
+                # FTS5 ранжированный поиск (build уже построил kn_fts)
+                fts = kn.fts_search(conn, "Заголовок", limit=5)
+                assert any(h["type"] == "md" for h in fts), "FTS5 не нашёл md: %s" % fts
             finally:
                 conn.close()
 
