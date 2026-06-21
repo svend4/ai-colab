@@ -22,6 +22,13 @@
       "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
     },
     {
+      "id": "commit-policy-streams-2026-06-21",
+      "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
+      "file": "темы/commit-policy-streams-2026-06-21.md",
+      "status": "open",
+      "next": "Немедленно — commit-lock + selective-add; следующий уровень — worktree-stream на агента + merge-gate (модель «ручейки→основная линия»); по D-017 — форк Claude, нужен синтез с Codex"
+    },
+    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "темы/infrastructure-review.md",
@@ -1580,6 +1587,17 @@
       "depends_on": "[]",
       "topic": "темы/sandbox-and-forks-2026-06-21.md",
       "next": "Реализован tools/sandbox.py (intake/list) — read-only inventory внешнего источника поверх sandbox/-контракта Codex; тест зелёный; execute остаётся закрыт gate'ом (preflight); демонстрирует D-017 fork-and-synthesize"
+    },
+    {
+      "id": "T-135",
+      "title": "Политика коммитов (streams) + commit-lock — не блокировать и не коммитить чужую half-done",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-082]",
+      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "next": "Форк Claude по D-017: проект-политика streams (selective-add + commit-lock сейчас; worktree-ручейки + merge-gate далее) + реализован tools/commit_lock.py (атомарный advisory-лок коммитов) + тест; нужен синтез с Codex"
     }
   ],
   "questions": [

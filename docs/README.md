@@ -26,6 +26,7 @@ docs/
 - `pipeline-operator-guide.md` — практический порядок работы с pipeline/live-room.
 - `agent-roles-matrix.md` — матрица ролей людей, AI-агентов и скриптов: зоны записи, запреты, типовые задачи, эскалация и цикл pool-задачи.
 - `commit-stream-policy.md` — политика commit/streams: как не коммитить чужую half-done работу и как вести параллельные варианты перед mainline.
+- `workspace-pyramid-levels.md` — модель 4 уровней папок: `core/` как переносимое ядро, `portals/` как чистовые специализированные области, `collab/` как история/полилог, `sandbox/` как входной хаос.
 - `driver-safety-policy.md` — правила безопасности для драйверов и больших папок.
 - `external-code-sandbox.md` — универсальная схема `sandbox/` для внешнего кода и старых долгов вроде `svend4`: intake, quarantine, read-only inventory, workspaces, reports, execute gate.
 - `data-folder-plan.md` — план будущей `data/` структуры для корпуса: inbox/originals/copies/text/chunks/indexes/reports/audit/workbench.db и правила записи.
