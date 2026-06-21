@@ -1137,6 +1137,28 @@
       "depends_on": "[T-078]",
       "topic": "темы/repo-review-2026-06-21.md",
       "next": "Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими"
+    },
+    {
+      "id": "T-096",
+      "title": "Actualize layer coverage after driver acceptance",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Обновить docs/layers-coverage.md под фактическое состояние L2/L6/L7 после T-087..T-095"
+    },
+    {
+      "id": "T-097",
+      "title": "Runnable demo среднего слоя (tools/demo_bridge.py)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0"
     }
   ],
   "questions": [
