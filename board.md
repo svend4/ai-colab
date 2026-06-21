@@ -15,6 +15,7 @@
 <!-- GEN:topics-board START — генерируется tools/generate.py, не править вручную -->
 | Тема | Файл или папка | Статус | Ждем ответ от | Следующий шаг |
 |---|---|---|---|---|
+| Котёл-пакет для коллективного решения — 7 открытых пунктов | `темы/kotel-decision-material-2026-06-21.md` | needs-decision | Stefan/integrator | Использовать как независимую перепроверку D-020/T-137; решения переносить только через accepted decision |
 | Первый реальный прогон системы (dogfood) | `темы/dogfood-run.md` | waiting | Stefan | Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки |
 | Динамический конвейер агентов — управляемая разработка | `темы/agent-pipeline.md` | open | все | D-011 принят, T-027 первая версия готова; обсудить heartbeat/live-room и правила использования pipeline.py |
 | AI-OS Bridge — прослойка между ОС и AI-агентами | `темы/ai-os-bridge.md` | open | все | D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024 |

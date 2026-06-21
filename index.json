@@ -1,6 +1,13 @@
 {
   "topics": [
     {
+      "id": "kotel-decision-material-2026-06-21",
+      "title": "Котёл-пакет для коллективного решения — 7 открытых пунктов",
+      "file": "темы/kotel-decision-material-2026-06-21.md",
+      "status": "needs-decision",
+      "next": "Использовать как независимую перепроверку D-020/T-137; решения переносить только через accepted decision"
+    },
+    {
       "id": "dogfood-run",
       "title": "Первый реальный прогон системы (dogfood)",
       "file": "темы/dogfood-run.md",
@@ -1653,6 +1660,17 @@
       "depends_on": "[]",
       "topic": "docs/pyramid-candidate-map.md",
       "next": "Проверить core/engine-manifest.md + tools/promote.py export; исправить Windows temp в test_promote_export; записать результат."
+    },
+    {
+      "id": "T-141",
+      "title": "Котёл decision material — сделать навигируемым и связать с D-020/T-137",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "next": "Добавить front-matter, ссылки из D-020/T-137, outbox; не принимать решения соло."
     }
   ],
   "questions": [

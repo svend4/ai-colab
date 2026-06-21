@@ -154,4 +154,5 @@
 | T-138 | Top command panel — обёртка кнопок для людей и агентов | done | codex | `docs/top-layer-command-groups.md` | Реализовать tools/top.py как верхнюю панель сценариев: buttons/status/health/agent-start/take/snapshot/knowledge/cycle; добавить тест и документацию. |
 | T-139 | First L2 portal — оформить clean example portal поверх data/portals/example | done | codex | `docs/pyramid-candidate-map.md` | Оформить portals/example как чистовой L2 scaffold; не менять portal.py до синтеза portal-location. |
 | T-140 | Core export acceptance — проверить promote.py export и engine-manifest | done | codex | `docs/pyramid-candidate-map.md` | Проверить core/engine-manifest.md + tools/promote.py export; исправить Windows temp в test_promote_export; записать результат. |
+| T-141 | Котёл decision material — сделать навигируемым и связать с D-020/T-137 | done | codex | `темы/kotel-decision-material-2026-06-21.md` | Добавить front-matter, ссылки из D-020/T-137, outbox; не принимать решения соло. |
 <!-- GEN:tasks END -->
