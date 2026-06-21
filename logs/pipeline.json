@@ -1,13 +1,7 @@
 {
-  "epoch": 1782043364,
+  "epoch": 1782043671,
   "doing": [],
   "ready": [
-    {
-      "id": "T-112",
-      "title": "Safe knowledge corpus expansion — добавить маленький локальный корпус",
-      "priority": "normal",
-      "owner": "pool"
-    },
     {
       "id": "T-113",
       "title": "Project skills packaging guide — как переносить skills в другие среды",

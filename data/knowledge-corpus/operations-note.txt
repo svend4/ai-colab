@@ -1,0 +1,9 @@
+Operations note for the synthetic bridge corpus.
+
+Expected behavior:
+- ingest should read Markdown, TXT, JSON, and CSV files;
+- report should count file types;
+- query "bridge" should return several matches;
+- no local database should be committed.
+
+This file is safe test data.

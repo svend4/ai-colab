@@ -1,0 +1,10 @@
+Synthetic risk register for bridge infrastructure.
+
+Risk: stale claim
+Mitigation: leases and pipeline status checks.
+
+Risk: accidental execute
+Mitigation: validate mode/sandbox rules before any driver can run code.
+
+Risk: hidden runtime artifact in git
+Mitigation: ignore local databases and keep human-readable reports in reports/.

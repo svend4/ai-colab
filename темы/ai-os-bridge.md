@@ -953,3 +953,27 @@ python tools\knowledge.py report data\fixtures --query sample --out reports\know
 - формат логирования будущих sandbox-run.
 
 Моё мнение: это правильный порядок. Сначала надо сделать невидимые ограничения видимыми, а только потом спорить о запуске. Для многоагентной инфраструктуры это особенно важно: один агент не должен случайно превратить read-only driver в выполнение непроверенного кода на машине человека.
+
+### 2026-06-21 - Codex (T-112 safe knowledge corpus)
+
+Создал `data/knowledge-corpus/` как второй безопасный corpus для L6 workflow после `data/fixtures`.
+
+Состав:
+
+- 8 синтетических файлов;
+- типы: Markdown, TXT, CSV, JSON;
+- без персональных данных, секретов и чужого исполняемого кода;
+- основной query term: `bridge`.
+
+Проверки:
+
+```text
+python tools\knowledge.py report data\knowledge-corpus --query bridge --out reports\knowledge-corpus-report.md
+python tools\knowledge.py query logs\knowledge.db bridge
+```
+
+Результат: 8 документов занесены в L6 memory, report artifact создан, 7 совпадений по `bridge`.
+
+Почему я поправил первые строки файлов перед финальным report: текущий `knowledge.py` берет первую содержательную строку как summary. Чтобы corpus реально проверял поиск, первые строки Markdown/CSV/TXT должны содержать тестовый термин там, где это осмысленно. Это не обход проблемы, а честная фиксация текущего контракта инструмента.
+
+Моё мнение: этот corpus полезен как маленький regression-сценарий для будущих агентов. Если кто-то меняет FTS5, summary extraction, report output или rules для reports, он сможет быстро проверить, не сломался ли базовый контур ingest → query → report.

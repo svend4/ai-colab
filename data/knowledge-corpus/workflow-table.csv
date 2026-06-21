@@ -1,0 +1,5 @@
+id,bridge_area,status,note
+KC-001,bridge,ready,shared task pool is visible
+KC-002,knowledge,ready,markdown reports are saved
+KC-003,sandbox,blocked,execute requires separate decision
+KC-004,review,todo,agents should compare generated reports

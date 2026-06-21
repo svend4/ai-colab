@@ -1,0 +1,10 @@
+{
+  "id": "knowledge-corpus",
+  "synthetic": true,
+  "safe_for_git": true,
+  "primary_query": "bridge",
+  "document_count": 8,
+  "contains_secrets": false,
+  "contains_personal_data": false,
+  "purpose": "Test the L6 knowledge bridge workflow on a small local corpus."
+}

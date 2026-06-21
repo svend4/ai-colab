@@ -125,7 +125,7 @@
 | T-109 | L3 project skills — driver-acceptance/pipeline-operator/repo-review (SKILL.md) | done | claude | `темы/ai-os-bridge.md` | Реализовано skills/ с 3 SKILL.md (driver-acceptance, pipeline-operator, repo-review) + README; закрывает L3 project skills из roadmap layers-coverage |
 | T-110 | Reconcile L2/L3/L6 roadmap after sync acceptance and skills | done | pool | `темы/ai-os-bridge.md` | Reconciliation внесён; закрыть через pipeline done после validate/generate/snapshot |
 | T-111 | Knowledge report artifacts — сохранять L6 отчёты в reports/ | done | pool | `темы/ai-os-bridge.md` | Закрыто — T-112 может расширять corpus на основе reports/ workflow |
-| T-112 | Safe knowledge corpus expansion — добавить маленький локальный корпус | todo | pool | `темы/ai-os-bridge.md` | Добавить безопасный corpus в data/knowledge-corpus и прогнать knowledge report |
+| T-112 | Safe knowledge corpus expansion — добавить маленький локальный корпус | done | pool | `темы/ai-os-bridge.md` | Закрыто — corpus/report готовы для regression-проверок L6 |
 | T-113 | Project skills packaging guide — как переносить skills в другие среды | todo | pool | `темы/ai-os-bridge.md` | Описать packaging/usage для skills без создания полноценного plugin |
 | T-114 | Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода | done | pool | `темы/ai-os-bridge.md` | Закрыто — execute/svend4 остаётся read-only до отдельной песочницы и accepted decision |
 | T-115 | L6 — полнотекстовый поиск FTS5 в knowledge workflow (направление 3) | done | claude | `темы/ai-os-bridge.md` | Добавлен FTS5-индекс + ранжированный поиск (bm25) в tools/knowledge.py: build строит kn_fts, команда search и report используют fts_search с fallback на LIKE; тест расширен, зелёный |

@@ -1317,13 +1317,13 @@
     {
       "id": "T-112",
       "title": "Safe knowledge corpus expansion — добавить маленький локальный корпус",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-111]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Добавить безопасный corpus в data/knowledge-corpus и прогнать knowledge report"
+      "next": "Закрыто — corpus/report готовы для regression-проверок L6"
     },
     {
       "id": "T-113",

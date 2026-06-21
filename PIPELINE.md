@@ -12,7 +12,6 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-112 | normal | pool | Safe knowledge corpus expansion — добавить маленький локальный корпус |
 | T-113 | normal | pool | Project skills packaging guide — как переносить skills в другие среды |
 
 ## Заблокированы
