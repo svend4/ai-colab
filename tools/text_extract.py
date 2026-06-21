@@ -3,8 +3,8 @@
 """
 Generic text extract (T-133) — read-only stdlib extraction for core/portals.
 
-Supported now: .md, .markdown, .txt, .text, .html, .htm.
-No PDF/DOCX here yet: those need an explicit dependency decision.
+Supported now: .md, .markdown, .txt, .text, .html, .htm, .docx (DOCX via stdlib zipfile — no dependency).
+.pdf still needs an explicit dependency decision (pypdf) and stays gated until then.
 
 CLI:
     python tools/text_extract.py extract <file> [--base ROOT]
@@ -14,6 +14,8 @@ import os
 import sys
 import re
 import json
+import html
+import zipfile
 from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,8 +23,11 @@ DRIVERS = os.path.join(ROOT, "drivers")
 if DRIVERS not in sys.path:
     sys.path.insert(0, DRIVERS)
 from files.files_driver import read_file, PathAccessError
+from redaction import redact  # канонический redaction для бинарного docx-пути
 
-SUPPORTED = {".md", ".markdown", ".txt", ".text", ".html", ".htm"}
+# .docx читается stdlib-зипом (без внешней зависимости — котёл-пункт 5, agree с Codex);
+# .pdf по-прежнему требует осознанного решения о зависимости (pypdf) и сюда не входит.
+SUPPORTED = {".md", ".markdown", ".txt", ".text", ".html", ".htm", ".docx"}
 MAX_EXTRACT_CHARS = 20000
 MAX_MEMORY_CHARS = 4000
 MAX_SUMMARY_CHARS = 240
@@ -86,28 +91,57 @@ def _strip_markdown_noise(text):
     return text
 
 
+def _docx_read(path, base_dir):
+    """Извлечь текст .docx чистой stdlib (zipfile + word/document.xml), с confinement и redaction.
+
+    .docx — бинарный Open XML, поэтому идёт мимо read_file (тот читает текст). Confinement к
+    base_dir (allowed-root) и маскирование секретов делаем здесь явно, как и read_file(redact=True)."""
+    raw = path if os.path.isabs(str(path)) else os.path.join(base_dir, str(path))
+    real = os.path.realpath(raw)
+    base_real = os.path.realpath(base_dir)
+    try:
+        inside = os.path.commonpath([real, base_real]) == base_real
+    except ValueError:  # разные диски (Windows) — точно вне корня
+        inside = False
+    if not inside:
+        raise PathAccessError("path outside allowed root: %s" % path)
+    try:
+        with zipfile.ZipFile(real) as zf:
+            xml = zf.read("word/document.xml").decode("utf-8", errors="replace")
+    except (zipfile.BadZipFile, KeyError) as exc:
+        raise ValueError("not a valid .docx (Open XML): %s" % exc)
+    xml = re.sub(r"</w:p>", "\n", xml)   # границы абзацев -> переводы строк
+    xml = re.sub(r"<[^>]+>", "", xml)    # снять все теги
+    return real, redact(html.unescape(xml))
+
+
 def extract(path, base_dir=ROOT, max_chars=MAX_EXTRACT_CHARS):
     ext = os.path.splitext(str(path))[1].lower()
     supported = ext in SUPPORTED
-    data = read_file(path, base_dir=base_dir, redact=True)
-    raw = data.get("text", "")
-    if ext in {".html", ".htm"}:
-        parser = _HTMLText()
-        parser.feed(raw)
-        text = parser.text()
-    elif ext in {".md", ".markdown"}:
-        text = _strip_markdown_noise(raw)
+    if ext == ".docx":
+        real, text = _docx_read(path, base_dir)
+        data_path, data_truncated = real, False
     else:
-        text = raw
+        data = read_file(path, base_dir=base_dir, redact=True)
+        raw = data.get("text", "")
+        if ext in {".html", ".htm"}:
+            parser = _HTMLText()
+            parser.feed(raw)
+            text = parser.text()
+        elif ext in {".md", ".markdown"}:
+            text = _strip_markdown_noise(raw)
+        else:
+            text = raw
+        data_path, data_truncated = data.get("path"), bool(data.get("truncated"))
     text = _normalize(text)
     truncated = len(text) > max_chars
     return {
-        "path": data.get("path"),
+        "path": data_path,
         "type": ext.lstrip(".") or "file",
         "supported": supported,
         "text": text[:max_chars],
         "chars": min(len(text), max_chars),
-        "truncated": truncated or bool(data.get("truncated")),
+        "truncated": truncated or data_truncated,
     }
 
 
