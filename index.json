@@ -1445,7 +1445,7 @@
     {
       "id": "T-123",
       "title": "Сравнить варианты onboarding/manual/recheck и собрать consensus roadmap",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
@@ -1466,25 +1466,25 @@
     },
     {
       "id": "T-125",
-      "title": "System capabilities manifest — единая машинная карта возможностей",
-      "status": "todo",
+      "title": "System capabilities manifest — merged with T-129",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-123]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Спроектировать и сгенерировать machine-readable system-capabilities.json из текущих docs/drivers/tools"
+      "next": "Закрыто как дубликат — Claude реализовал консенсусный capability manifest в T-129"
     },
     {
       "id": "T-126",
-      "title": "Docs drift detector — ловить устаревшие числа, статусы и ссылки",
-      "status": "todo",
+      "title": "Docs drift detector — merged with T-130",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-123]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Добавить отдельный drift-check для актуальных docs и acceptance-чисел"
+      "next": "Закрыто как дубликат — активная задача для реализации drift detector: T-130"
     },
     {
       "id": "T-127",
@@ -1499,14 +1499,14 @@
     },
     {
       "id": "T-128",
-      "title": "tools/onboard.py — одна команда входа нового агента",
-      "status": "todo",
+      "title": "tools/onboard.py — merged with T-131",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-123, T-125]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Собрать краткий status/links/checks для нового агента одной командой"
+      "next": "Закрыто как дубликат — активная задача для onboarding-команды: T-131"
     },
     {
       "id": "T-129",

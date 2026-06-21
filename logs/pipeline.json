@@ -1,7 +1,32 @@
 {
-  "epoch": 1782047116,
+  "epoch": 1782048239,
   "doing": [],
-  "ready": [],
+  "ready": [
+    {
+      "id": "T-124",
+      "title": "Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-127",
+      "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
+      "priority": "normal",
+      "owner": "pool"
+    },
+    {
+      "id": "T-130",
+      "title": "C2 drift detector — tools/drift_check.py (консенсус)",
+      "priority": "normal",
+      "owner": "pool"
+    },
+    {
+      "id": "T-131",
+      "title": "C3 onboard-команда — tools/onboard.py (консенсус)",
+      "priority": "normal",
+      "owner": "pool"
+    }
+  ],
   "blocked": [
     {
       "id": "T-020",
