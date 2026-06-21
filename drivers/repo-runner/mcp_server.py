@@ -25,7 +25,9 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # drivers/ — общие хелперы
 import inventory
+from audit import audit  # аудит вызовов: risk=medium (driver-safety-policy, ревью T-078 E)
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("repo-runner")
@@ -35,12 +37,14 @@ BASE_DIR = os.environ.get("REPO_RUNNER_BASE") or os.getcwd()
 @mcp.tool()
 def inspect_repo(repo_path: str, max_files: int = 1000) -> dict:
     """Полный read-only inventory репозитория: структура, языки, package-файлы, тесты, риски. Код не запускается."""
+    audit("repo-runner", "inspect_repo", repo_path, max_files=max_files)
     return inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
 
 
 @mcp.tool()
 def repo_summary(repo_path: str, max_files: int = 1000) -> dict:
     """Краткая сводка: число файлов, размер, языки, наличие тестов, число рисков."""
+    audit("repo-runner", "repo_summary", repo_path, max_files=max_files)
     report = inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
     return report.get("summary", report)
 
@@ -48,6 +52,7 @@ def repo_summary(repo_path: str, max_files: int = 1000) -> dict:
 @mcp.tool()
 def repo_risks(repo_path: str, max_files: int = 1000) -> list:
     """Список потенциально опасных файлов/паттернов (shell, eval/exec, сеть) — только пометка, без запуска."""
+    audit("repo-runner", "repo_risks", repo_path, max_files=max_files)
     report = inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
     return report.get("risks", [])
 

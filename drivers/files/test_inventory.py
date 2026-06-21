@@ -5,22 +5,20 @@ import json
 import os
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from inventory import inventory
+from test_tmp import temp_dir
 
 
-def temp_dir():
-    base = os.environ.get("COLLAB_TEST_TMP")
-    if base is None and os.path.isdir("C:\\tmp"):
-        base = "C:\\tmp"
-    return tempfile.TemporaryDirectory(dir=base)
+def inventory_temp_dir():
+    return temp_dir("files_inventory_")
 
 
 def test_empty_directory():
-    with temp_dir() as tmp:
+    with inventory_temp_dir() as tmp:
         report = inventory(tmp)
         assert report["summary"]["total_files"] == 0
         assert report["summary"]["total_size_bytes"] == 0
@@ -29,7 +27,7 @@ def test_empty_directory():
 
 
 def test_basic_inventory_and_kinds():
-    with temp_dir() as tmp:
+    with inventory_temp_dir() as tmp:
         root = Path(tmp)
         (root / "README.md").write_text("# Hello\n", encoding="utf-8")
         (root / "data.json").write_text('{"a": 1}\n', encoding="utf-8")
@@ -48,7 +46,7 @@ def test_basic_inventory_and_kinds():
 
 
 def test_skips_hidden_and_common_dirs_by_default():
-    with temp_dir() as tmp:
+    with inventory_temp_dir() as tmp:
         root = Path(tmp)
         (root / ".secret").write_text("hidden\n", encoding="utf-8")
         (root / ".git").mkdir()
@@ -65,7 +63,7 @@ def test_skips_hidden_and_common_dirs_by_default():
 
 
 def test_hash_and_truncation():
-    with temp_dir() as tmp:
+    with inventory_temp_dir() as tmp:
         root = Path(tmp)
         (root / "a.txt").write_text("aaa", encoding="utf-8")
         (root / "b.txt").write_text("bbb", encoding="utf-8")
@@ -78,7 +76,7 @@ def test_hash_and_truncation():
 
 
 def test_cli_json():
-    with temp_dir() as tmp:
+    with inventory_temp_dir() as tmp:
         root = Path(tmp)
         (root / "a.txt").write_text("aaa", encoding="utf-8")
         script = Path(__file__).with_name("inventory.py")

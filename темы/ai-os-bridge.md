@@ -695,3 +695,127 @@ Bash вернулся — свёл параллельные изменения �
 - обновил `TASKS.md`, `index.json`, heartbeat.
 
 Практический вывод: дальнейшие ручные проверки Markdown в Windows PowerShell нужно выполнять только после включения UTF-8 или через `Get-Content -Encoding UTF8`.
+
+### 2026-06-21 - Codex (T-074 driver acceptance batch checklist)
+
+Продолжил после перепроверки обновлений. Core runtime validation уже прошёл, но зависимые runtime-задачи ещё нельзя закрыть без driver acceptance batch.
+
+Что сделал:
+
+- создал `docs/driver-acceptance-batch-2026-06-21.md`;
+- создал `queues/outbox/2026-06-21-driver-acceptance-batch.md`;
+- оформил `T-074` как done;
+- создал done-marker `queues/done/T-074.done.md`;
+- уточнил `tasks/T-039.md`: следующий шаг — прогнать подготовленный batch через `python`;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Содержание batch:
+
+- `validate.py` и `drivers_catalog.py` как core sanity repeat;
+- driver tests для `files`, `repo-runner`, `workbench`, `workbench-db`, `file-inventory`;
+- pipeline guards для `T-067` и `T-068`;
+- MCP smoke для `data`, `codex-local`, `gateway`.
+
+Моё мнение: это правильный следующий шаг перед закрытием `T-039`-зависимостей. Нужно сначала получить полный вывод driver acceptance, а потом пакетно переводить `T-048`, `T-051`, `T-055`, `T-057`, `T-059`, `T-067`, `T-068` в `done` или создавать точечные bug tasks.
+
+### 2026-06-21 - Codex (T-075 MCP handshake RESULT OK)
+
+Пользователь прогнал Batch D из `docs/driver-acceptance-batch-2026-06-21.md`:
+
+```powershell
+python drivers\mcp_handshake_test.py
+```
+
+Результат:
+
+- `data` — OK, 4 tools: `columns`, `head`, `list_tables`, `summarize`;
+- `codex-local` — OK, 2 tools: `codex_available`, `codex_info`;
+- `gateway` — OK, 6 tools: `files_list`, `files_read`, `files_search`, `files_summarize`, `memory_query`, `repo_inspect`;
+- итоговая строка: `RESULT OK`.
+
+PowerShell снова показал `NativeCommandError`, но это связано со stderr-логами MCP/FastMCP. Так как итог `RESULT OK`, smoke-handshake считается пройденным.
+
+Что сделал:
+
+- создал `docs/mcp-handshake-result-2026-06-21.md`;
+- создал `queues/outbox/2026-06-21-mcp-handshake-result.md`;
+- дополнил `docs/driver-acceptance-batch-2026-06-21.md`;
+- оформил `T-075` как done;
+- обновил `T-039`, `TASKS.md`, `index.json`, heartbeat.
+
+Моё мнение: это закрывает только MCP smoke / Batch D. Для закрытия `T-039`-зависимостей всё ещё нужны Batch B/C: driver tests и pipeline guards.
+
+### 2026-06-21 - Codex (T-076 Batch B driver tests passed)
+
+Пользователь записал вывод driver acceptance в `queues/inbox/2026-06-21-driver-acceptance-output.txt`. Файл оказался смешанной кодировки: заголовок UTF-8, далее UTF-16LE от PowerShell/Tee-Object. Я декодировал вывод и сделал нормализованную расшифровку в `docs/driver-tests-result-2026-06-21.md`.
+
+Результаты Batch B:
+
+- `files tests` — passed;
+- `repo-runner tests` — passed;
+- `workbench tests` — passed;
+- `workbench-db tests` — passed;
+- `file-inventory tests` — passed.
+
+Что сделал:
+
+- создал `docs/driver-tests-result-2026-06-21.md`;
+- создал `queues/outbox/2026-06-21-driver-tests-result.md`;
+- дополнил `docs/driver-acceptance-batch-2026-06-21.md`;
+- оформил `T-076` как done;
+- уточнил `next` у `T-039`, `T-048`, `T-051`, `T-055`, `T-057`, `T-059`;
+- обновил `TASKS.md`, `index.json`, heartbeat.
+
+Моё мнение: это сильный прогресс. Unit/integration слой драйверов зелёный. Но я не закрываю runtime-задачи преждевременно: для `T-048/T-051/T-055/T-057/T-059` ещё остались отдельные acceptance-пункты вроде MCP call/CLI/generate/demo scan, а для `T-067/T-068` нужен Batch C pipeline guards.
+
+### 2026-06-20 - Claude (driver acceptance batch — зелёный 19/19)
+
+Выполнил приёмочный батч (следующий шаг по консенсусу и по `next` у `T-039`): не handshake, а реальные `call_tool` по КАЖДОМУ инструменту каждого сервера на временном фикстуре. Тест — `drivers/mcp_acceptance_test.py`; проверяет факты, а не только отсутствие ошибки: поиск находит строку, `read_file` маскирует секрет, repo помечает risk, `memory_query` возвращает занесённый документ.
+
+Результат (Linux-песочница, python 3.10, пакет `mcp`):
+
+- `files` 4/4 (включая redaction `api_key`→`***`), `repo-runner` 3/3, `data` 4/4, `codex-local` 2/2, `gateway` 6/6 — итого **19/19, RESULT OK**.
+
+Побочно тест поймал нюанс: redaction в `files_driver.py` маскирует значения только после `api_key|token|secret|password|passwd`. `aws_key`/AWS-ключи `AKIA…` не покрыты — это **не блокер** приёмки (драйвер работает по своему контракту), но предлагаю отдельным шагом расширить `SECRET_RE` (`aws_key|secret_key|access_key` + паттерн `AKIA[0-9A-Z]{16}`).
+
+Что это значит: read-only L2-драйверы (`files`, `repo-runner`, `data`, `codex-local`) и композиция `gateway` прошли функциональную приёмку. Теперь по D-006 можно переводить их `draft→ready` — это утверждение человека. Подтверждение среды на Windows: `python drivers\mcp_acceptance_test.py`.
+
+### 2026-06-20 - Claude (по порядку: статусы draft→ready + усиление redaction)
+
+По команде Max «по порядку» (утверждение по D-006):
+
+**Шаг 1 — статусы `draft→ready`.** После зелёной приёмки 19/19 перевёл `files`, `data`, `codex-local`, `gateway` в `ready` (`repo-runner` уже был ready). `file-inventory` и `workbench` оставил `draft` — у них нет отдельной MCP-приёмки (`file-inventory` дублирует `files`; `workbench` доступен через `gateway.memory_query`). Перегенерировал `drivers/index.json`, `drivers/CATALOG.md`, корневой `index.json`. В каталоге теперь 5 ready / 2 draft из 7.
+
+**Шаг 2 — усиление redaction (`files_driver.py`).** Расширил `SECRET_RE`: добавил `secret_key|access_key|aws_key`; добавил отдельный паттерн `AWS_KEY_RE = AKIA[0-9A-Z]{16}` для «голых» AWS access key id. `_redact` теперь делает два прохода. Это закрывает наблюдение из приёмочного отчёта.
+
+Прогон (на рабочем runtime — у меня песочница зависла на старом процессе): `python drivers\files\test_files.py`, `python drivers\mcp_acceptance_test.py`, `python tools\validate.py`, `python tools\drivers_catalog.py --check`. Жду подтверждения, дальше — коммит.
+
+### 2026-06-21 - Codex (T-077 Batch C pipeline guards passed)
+
+Прочитал `queues/inbox/documentoutput.md`, который пользователь добавил как большой PowerShell transcript вместо вставки в чат.
+
+Ключевые строки:
+
+```text
+===== pipeline ready_sorted no-write =====
+[]
+```
+
+Также `pipeline status` показывает:
+
+- `T-020` как `doing without active claim`;
+- `T-062`, `T-063`, `T-064` как `placeholder task`;
+- готовых к взятию задач: `0`;
+- задач в работе: `0`.
+
+Что сделал:
+
+- создал `docs/pipeline-guards-result-2026-06-21.md`;
+- создал `queues/outbox/2026-06-21-pipeline-guards-result.md`;
+- создал audit-задачу `T-077`;
+- перевёл `T-067` и `T-068` в `done`;
+- обновил `TASKS.md`, `index.json`, `PIPELINE.md`, `logs/pipeline.json`, heartbeat и `queues/done/`.
+
+Почему именно так: это не новое архитектурное решение, а фиксация уже выполненной runtime-приёмки. `ready_sorted() == []` в текущем состоянии означает, что общий котёл задач не отдаёт агентам резервные placeholder-задачи. `T-020` как `doing without active claim` означает, что pipeline не скрывает потерянную работу, а выводит её как проблему.
+
+Моё мнение: для многолюдного и многоагентного процесса это правильная защита. Лучше временно получить пустую очередь, чем случайно выдать агентам фиктивные задачи или незаметно продолжать orphan-work без владельца. Следующий практический шаг — разбирать остатки `T-039`: отдельно `T-020`, `T-029` и acceptance items у `T-048`, `T-051`, `T-055`, `T-057`, `T-059`.

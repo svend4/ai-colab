@@ -2,7 +2,7 @@
 id: files
 type: driver
 title: Files driver — безопасное чтение и инвентаризация файлов
-status: draft
+status: ready
 level: L1
 mode: read-only
 owner: Codex

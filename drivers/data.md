@@ -2,13 +2,14 @@
 id: data
 type: driver
 title: Data driver — таблицы, JSON, SQLite и индексы
-status: draft
+status: ready
 level: L1
 mode: read-only
 owner: Codex
 risk: medium
 activation: manual
 interfaces: [inspect, query, classify, export-summary]
+tools: [list_tables, columns, head, summarize]
 inputs: [csv, json, sqlite, index-json]
 outputs: [schema, rows, aggregates, summary]
 sandbox: required-before-write-or-code-exec

@@ -1,0 +1,8 @@
+{
+  "agent": "claude",
+  "task": "T-084",
+  "progress": 100,
+  "note": "K закрыт: manifest tools + check_driver_tools в validate; L (T-085) отложен с обоснованием",
+  "eta": "done",
+  "epoch": 1782034183
+}

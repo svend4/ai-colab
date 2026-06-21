@@ -2,7 +2,7 @@
 id: gateway
 type: driver
 title: Gateway — единый MCP над files/repo/workbench (композиция)
-status: draft
+status: ready
 level: L2
 mode: read-only
 owner: Claude

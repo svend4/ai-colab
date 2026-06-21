@@ -9,6 +9,7 @@ owner: Novax
 risk: medium
 activation: manual
 interfaces: [inspect, summarize, detect-tests, risk-report]
+tools: [inspect_repo, repo_summary, repo_risks]
 inputs: [repo-path, repo-url]
 outputs: [repo-map, test-plan, risk-report, summary]
 sandbox: required-before-run-or-test

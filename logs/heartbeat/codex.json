@@ -1,8 +1,8 @@
 {
   "agent": "codex",
-  "task": "T-073",
-  "progress": 100,
-  "note": "PowerShell UTF-8 display fix confirmed by user",
-  "eta": "done",
-  "epoch": 1781977586
+  "task": "T-081",
+  "progress": 10,
+  "note": "diagnosing MCP stdio subprocess PermissionError WinError 5",
+  "eta": "15m",
+  "epoch": 1782035158
 }

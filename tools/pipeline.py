@@ -11,8 +11,8 @@
 операцию pull-next: между «увидел задачу» и «занял» нет окна для перехвата.
 
     python tools/pipeline.py next   <agent>                 # атомарно занять след. готовую задачу
-    python tools/pipeline.py done   <agent> <T-id> [--report "..."]
-    python tools/pipeline.py fail   <agent> <T-id> [--reason "..."]
+    python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."]
+    python tools/pipeline.py fail   <agent> <T-id> [--claim ID] [--reason "..."]
     python tools/pipeline.py status                          # лента конвейера (одна форма)
     python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
     python tools/pipeline.py heartbeat <agent> <T-id> [--progress N] [--note "..."] [--eta "..."]
@@ -119,7 +119,15 @@ def claim_holder(tid):
 
 
 def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
-    """Атомарно занять задачу. Возвращает claim_id или None (занято свежим claim'ом)."""
+    """Атомарно занять задачу. Возвращает claim_id или None (занято свежим claim'ом).
+
+    Перехват протухшего claim тоже атомарен (T-082, ревью T-078 находка I): гейтится
+    эксклюзивным lock-файлом, имя которого выведено из claim_id ПРОТУХШЕГО claim. Два
+    агента, увидевшие один и тот же протухший claim, вычислят одинаковое имя lock'а, и
+    `O_CREAT|O_EXCL` отдаст победу ровно одному; победитель подменяет claim атомарно через
+    временный файл + `os.replace`. (Замечание: при падении победителя между взятием lock и
+    заменой lock может остаться — разрешается через reconcile_state/ручную чистку.)
+    """
     os.makedirs(CLAIMED, exist_ok=True)
     p = claim_path(tid)
     cid = uuid.uuid4().hex[:12]
@@ -129,12 +137,29 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
     try:
         fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
-        if claim_is_fresh(tid):
+        old = claim_holder(tid)
+        if old is None:
+            return None  # claim исчез между проверками — возьмёт следующий проход
+        if int(old.get("lease_epoch", "0")) > int(time.time()):
             return None  # занято живым агентом
-        # протух — перехватываем
-        with open(p, "w", encoding="utf-8", newline="\n") as f:
-            f.write(body)
-        return cid
+        # протух — атомарный перехват под эксклюзивным lock'ом по старому claim_id
+        lock = "%s.take.%s" % (p, old.get("claim_id") or "none")
+        try:
+            lfd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            return None  # другой агент уже перехватывает этот же протухший claim
+        try:
+            os.close(lfd)
+            tmp = "%s.tmp.%s" % (p, cid)
+            with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+                f.write(body)
+            os.replace(tmp, p)  # атомарная подмена протухшего claim новым
+            return cid
+        finally:
+            try:
+                os.remove(lock)
+            except OSError:
+                pass
     with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
         f.write(body)
     return cid
@@ -185,7 +210,8 @@ def cmd_next(agent):
             set_status(t["path"], "doing")
             print("ЗАНЯЛ: %s — %s" % (t["id"], t["title"]))
             print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, t["id"]))
-            print("Сделай задачу, затем: python tools/pipeline.py done %s %s --report \"...\"" % (agent, t["id"]))
+            print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\""
+                  % (agent, t["id"], cid))
             return 0
     print("КОТЁЛ ПУСТ: готовых задач нет (всё done / занято / заблокировано зависимостями).")
     return 0
@@ -204,14 +230,31 @@ def _marker(dirpath, tid, suffix, agent, text):
         f.write("---\ntask: %s\nagent: %s\nepoch: %d\n---\n\n%s\n" % (tid, agent, int(time.time()), text))
 
 
-def cmd_done(agent, tid, report):
+def _check_holder(tid, agent, claim_id):
+    """Совещательная проверка держателя claim перед завершением задачи.
+
+    Возвращает None если ок, иначе строку с ошибкой. Имя агента проверяется всегда
+    (как раньше); claim_id (fencing-token) — только если он передан: тогда обязан
+    совпасть с текущим держателем, иначе агент с перехваченным/протухшим claim не
+    сможет завершить чужую/устаревшую работу (T-082, ревью T-078 находка H).
+    """
+    h = claim_holder(tid)
+    if h and h.get("agent") not in (agent, None):
+        return "задача %s занята агентом %s, не тобой (%s)" % (tid, h.get("agent"), agent)
+    if claim_id is not None and (not h or h.get("claim_id") != claim_id):
+        return ("claim_id не совпадает (перехвачен/протух): задача %s, держатель %s, передан %s"
+                % (tid, (h or {}).get("claim_id"), claim_id))
+    return None
+
+
+def cmd_done(agent, tid, report, claim_id=None):
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
         return 1
-    h = claim_holder(tid)
-    if h and h.get("agent") not in (agent, None):
-        print("ОШИБКА: задача %s занята агентом %s, не тобой (%s)" % (tid, h.get("agent"), agent))
+    err = _check_holder(tid, agent, claim_id)
+    if err:
+        print("ОШИБКА: " + err)
         return 1
     set_status(tasks[tid]["path"], "done")
     _marker(DONE, tid, "done", agent, report or "done")
@@ -220,10 +263,14 @@ def cmd_done(agent, tid, report):
     return 0
 
 
-def cmd_fail(agent, tid, reason):
+def cmd_fail(agent, tid, reason, claim_id=None):
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
+        return 1
+    err = _check_holder(tid, agent, claim_id)
+    if err:
+        print("ОШИБКА: " + err)
         return 1
     set_status(tasks[tid]["path"], "blocked")
     _marker(FAILED, tid, "failed", agent, reason or "failed")
@@ -490,6 +537,8 @@ def main():
             flags["note"] = a[i + 1]; i += 2
         elif a[i] == "--eta" and i + 1 < len(a):
             flags["eta"] = a[i + 1]; i += 2
+        elif a[i] == "--claim" and i + 1 < len(a):
+            flags["claim"] = a[i + 1]; i += 2
         else:
             pos.append(a[i]); i += 1
     if not pos:
@@ -499,9 +548,9 @@ def main():
     if cmd == "next" and len(pos) >= 2:
         return cmd_next(pos[1])
     if cmd == "done" and len(pos) >= 3:
-        return cmd_done(pos[1], pos[2], flags.get("report"))
+        return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"))
     if cmd == "fail" and len(pos) >= 3:
-        return cmd_fail(pos[1], pos[2], flags.get("reason"))
+        return cmd_fail(pos[1], pos[2], flags.get("reason"), flags.get("claim"))
     if cmd == "mine" and len(pos) >= 2:
         return cmd_mine(pos[1])
     if cmd == "status":

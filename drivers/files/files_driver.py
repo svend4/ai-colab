@@ -47,11 +47,17 @@ SKIP_DIRS = {
     "build",
     "dist",
 }
-SECRET_RE = re.compile(r"(?i)\b(api[_-]?key|token|secret|password|passwd)\b(\s*[=:]\s*)(\S+)")
+SECRET_RE = re.compile(
+    r"(?i)\b(api[_-]?key|secret[_-]?key|access[_-]?key|aws[_-]?key|token|secret|password|passwd)"
+    r"\b(\s*[=:]\s*)(\S+)"
+)
+# Отдельный паттерн для «голых» AWS access key id (AKIA + 16 символов), без key=value.
+AWS_KEY_RE = re.compile(r"\bAKIA[0-9A-Z]{16}\b")
 
 
 def _redact(line):
-    return SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + "***", line)
+    line = SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + "***", line)
+    return AWS_KEY_RE.sub("***", line)
 
 
 class PathAccessError(ValueError):

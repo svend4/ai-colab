@@ -19,7 +19,15 @@ import csv
 import json
 from pathlib import Path
 
+# Канонический redaction-хелпер (drivers/redaction.py) — общий для драйверов,
+# чтобы не плодить копии SECRET_RE (ревью T-078, находка L).
+_DRIVERS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _DRIVERS_DIR not in sys.path:
+    sys.path.insert(0, _DRIVERS_DIR)
+from redaction import redact
+
 DEFAULT_MAX_ROWS = 1000
+MAX_OUTPUT_BYTES = 1_048_576  # совпадает с max_output_bytes в drivers/data.md
 TABLE_EXT = {".csv", ".tsv"}
 
 
@@ -70,16 +78,24 @@ def columns(path, base_dir=None):
         return next(csv.reader(f, delimiter=_delim(p)), [])
 
 
-def head(path, n=10, base_dir=None):
+def head(path, n=10, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
     p = _resolve(path, base_dir)
     n = max(0, min(int(n), DEFAULT_MAX_ROWS))
     rows = []
+    used = 0
     with p.open(encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f, delimiter=_delim(p))
         for i, row in enumerate(reader):
             if i >= n:
                 break
-            rows.append(dict(row))
+            # маскировка секретов в значениях ячеек + байтовый лимит выдачи
+            # (CSV — типичный носитель PII/секретов; safety-policy, ревью T-078 находка F)
+            red = {k: redact(v) for k, v in row.items()}
+            size = sum(len(str(k)) + len(str(v)) for k, v in red.items())
+            if rows and used + size > max_bytes:
+                break
+            rows.append(red)
+            used += size
     return rows
 
 

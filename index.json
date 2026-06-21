@@ -29,6 +29,13 @@
       "next": "Обсудить предложения; выбрать следующий инженерный шаг"
     },
     {
+      "id": "repo-review-2026-06-21",
+      "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
+      "file": "темы/repo-review-2026-06-21.md",
+      "status": "open",
+      "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
+    },
+    {
       "id": "d003-scope",
       "title": "Границы D-003 (Q-005)",
       "file": "темы/d003-scope.md",
@@ -397,13 +404,13 @@
     {
       "id": "T-029",
       "title": "Реализовать read-only files inventory driver",
-      "status": "blocked",
+      "status": "done",
       "owner": "Codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022, T-025]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Реализация создана; заблокировано проверкой — Python runtime зависает даже на print('ok'), нужно повторить drivers/files/test_inventory.py и validate/generate"
+      "next": "Выполнено: files inventory driver проверен Batch B; L2 MCP-приёмка продолжается отдельно в T-048"
     },
     {
       "id": "T-030",
@@ -507,13 +514,13 @@
     {
       "id": "T-039",
       "title": "Разблокировать Python runtime и закрыть T-029",
-      "status": "blocked",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "core validation batch прошёл; см. docs/runtime-validation-batch-2026-06-20.md; дальше driver acceptance batch через python"
+      "next": "Выполнено: runtime-блокер снят; T-029 закрыта; acceptance-задачи T-048/T-051/T-055/T-057/T-059 возвращены в пул"
     },
     {
       "id": "T-040",
@@ -606,13 +613,13 @@
     {
       "id": "T-048",
       "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
-      "status": "todo",
+      "status": "blocked",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039, T-047]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "После восстановления runtime прогнать test_files.py, test_inventory.py, MCP handshake/tools-list/call, validate.py и generate.py --check"
+      "next": "Blocked by runtime: files unit/inventory tests pass, but MCP stdio depends on asyncio subprocess pipe, which fails with PermissionError WinError 5 in this environment"
     },
     {
       "id": "T-049",
@@ -639,13 +646,13 @@
     {
       "id": "T-051",
       "title": "Runtime-приёмка repo-runner MCP wrapper после hardening",
-      "status": "todo",
+      "status": "blocked",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039, T-050]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "После восстановления runtime прогнать test_inventory.py, MCP handshake/tools-list/repo_summary, validate.py и generate.py --check"
+      "next": "Blocked by runtime: repo-runner unit test passed, but MCP stdio acceptance depends on asyncio subprocess pipe; see docs/mcp-stdio-windows-pipe-diagnostics-2026-06-21.md"
     },
     {
       "id": "T-052",
@@ -689,7 +696,7 @@
       "risk": "medium",
       "depends_on": "[T-039, T-054]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "После восстановления runtime прогнать test_workbench.py, validate.py, generate.py --check и CLI init/list/audit с WORKBENCH_BASE"
+      "next": "Готово к взятию: workbench/workbench-db tests прошли в Batch B; осталось CLI init/list/audit с WORKBENCH_BASE и generate.py --check при необходимости"
     },
     {
       "id": "T-056",
@@ -711,7 +718,7 @@
       "risk": "medium",
       "depends_on": "[T-039, T-056]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "После восстановления runtime прогнать test_ingest.py, test_workbench.py, validate.py, generate.py --check и CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE"
+      "next": "Готово к взятию: test_ingest/test_workbench/test_search прошли в Batch B; осталось CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE и generate.py --check при необходимости"
     },
     {
       "id": "T-058",
@@ -727,13 +734,13 @@
     {
       "id": "T-059",
       "title": "File inventory driver — no-deps Python, карта файлов проекта",
-      "status": "blocked",
+      "status": "todo",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Код, тесты и манифест созданы; заблокировано T-039 — нужно запустить test_inventory.py, demo scan и генераторы"
+      "next": "Готово к взятию: file-inventory tests прошли в Batch B; осталось demo scan/fixture-report и final generator/check pass"
     },
     {
       "id": "T-060",
@@ -815,24 +822,24 @@
     {
       "id": "T-067",
       "title": "Pipeline placeholder gating — не выдавать резервные задачи агентам",
-      "status": "blocked",
+      "status": "done",
       "owner": "Codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot/next и подтвердить, что placeholder-задачи не выдаются агентам"
+      "next": "Выполнено: Batch C подтвердил ready_sorted() == []; placeholder-задачи не выдаются агентам"
     },
     {
       "id": "T-068",
       "title": "Pipeline orphan doing detection — показывать doing без claim как проблему",
-      "status": "blocked",
+      "status": "done",
       "owner": "Codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Код и документация подготовлены; после восстановления T-039 запустить pipeline status/snapshot и подтвердить T-020 как doing without active claim"
+      "next": "Выполнено: Batch C подтвердил T-020 как doing without active claim"
     },
     {
       "id": "T-069",
@@ -888,6 +895,138 @@
       "depends_on": "[T-071]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Выполнено: пользователь подтвердил, что chcp 65001 + Get-Content -Encoding UTF8 корректно показывают PIPELINE.md и TASKS.md"
+    },
+    {
+      "id": "T-074",
+      "title": "Подготовить driver acceptance batch для снятия T-039-зависимостей",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-072]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/driver-acceptance-batch-2026-06-21.md создан; нужно запустить batch и вернуть вывод"
+    },
+    {
+      "id": "T-075",
+      "title": "Зафиксировать MCP handshake RESULT OK от 2026-06-21",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-074]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/mcp-handshake-result-2026-06-21.md создан; Batch D пройден, нужны Batch B/C driver tests и pipeline guards"
+    },
+    {
+      "id": "T-076",
+      "title": "Зафиксировать успешный Batch B driver tests от 2026-06-21",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-074]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/driver-tests-result-2026-06-21.md создан; Batch B пройден, Batch C pipeline guards ещё нужен"
+    },
+    {
+      "id": "T-077",
+      "title": "Зафиксировать успешный Batch C pipeline guards от 2026-06-21",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-074, T-067, T-068]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: docs/pipeline-guards-result-2026-06-21.md создан; T-067 и T-068 закрыты"
+    },
+    {
+      "id": "T-078",
+      "title": "Перепроверка репозитория и независимое ревью (Claude) — плюсы/минусы/рекомендации",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Прогнаны валидаторы и runtime-тесты драйверов; найден дрейф index.json и фантомный блокер T-039; отчёт — queues/outbox/2026-06-21-claude-repo-review.md и темы/repo-review-2026-06-21.md"
+    },
+    {
+      "id": "T-079",
+      "title": "Снять фантомный runtime-блокер T-039 и вернуть acceptance-задачи в пул",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Выполнено: T-029/T-039 закрыты, T-059 разблокирована, pipeline снова содержит ready-задачи"
+    },
+    {
+      "id": "T-080",
+      "title": "data-драйвер — redaction секретов и байтовый лимит вывода (P1 security, находка F)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Реализовано: drivers/redaction.py (канонический хелпер) + redaction значений ячеек и max_output_bytes в data_driver.head; test_data расширен (AWS-ключ и token-значение маскируются); тест зелёный"
+    },
+    {
+      "id": "T-081",
+      "title": "Разблокировать MCP stdio subprocess на Windows для driver acceptance",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Диагностика выполнена: plain subprocess works, asyncio subprocess pipe fails with PermissionError WinError 5; MCP acceptance needs external runtime or sync subprocess workaround"
+    },
+    {
+      "id": "T-082",
+      "title": "pipeline.py — fencing в done/fail и атомарный перехват claim (P1, находки H/I)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Реализовано backward-compatible: опц. --claim ID + сверка claim_id в done/fail, проверка держателя в fail, атомарный takeover протухшего claim через эксклюзивный lock; тест tools/test_pipeline_fencing.py зелёный, race_test регрессия ок"
+    },
+    {
+      "id": "T-083",
+      "title": "Аудит-логирование вызовов в MCP-драйверах risk>=medium (P1 security, находка E)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Re-home из T-081 (коллизия id с задачей Codex про MCP-stdio). Реализовано: drivers/audit.py + обвязка data/repo-runner/codex-local MCP; тест drivers/test_audit.py + e2e зелёные"
+    },
+    {
+      "id": "T-084",
+      "title": "Валидатор tools↔@mcp.tool() — машинная сверка манифеста с сервером (P1, находка K)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Реализовано: опц. поле manifest `tools` + check_driver_tools() в validate.py (ERROR при расхождении); поля проставлены для data/repo-runner/codex-local; SCHEMA.md дополнен; validate OK=9/0/0"
+    },
+    {
+      "id": "T-085",
+      "title": "Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Отложено сознательно (высокий blast radius): вынести parse_front_matter в tools/_canon.py и заменить 8 копий (validate/generate/queue/pipeline/dispatch/metrics/risk_gate/drivers_catalog) одним импортом; сделать в выделенном PR с прогоном всех инструментов"
     }
   ],
   "questions": [
@@ -1081,7 +1220,7 @@
       "id": "codex-local",
       "title": "Codex local driver — мост к локальной рабочей среде",
       "file": "drivers/codex-local.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L1",
       "mode": "manual",
       "owner": "Codex",
@@ -1098,7 +1237,7 @@
       "id": "data",
       "title": "Data driver — таблицы, JSON, SQLite и индексы",
       "file": "drivers/data.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L1",
       "mode": "read-only",
       "owner": "Codex",
@@ -1132,7 +1271,7 @@
       "id": "files",
       "title": "Files driver — безопасное чтение и инвентаризация файлов",
       "file": "drivers/files.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L1",
       "mode": "read-only",
       "owner": "Codex",
@@ -1149,7 +1288,7 @@
       "id": "gateway",
       "title": "Gateway — единый MCP над files/repo/workbench (композиция)",
       "file": "drivers/gateway.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L2",
       "mode": "read-only",
       "owner": "Claude",

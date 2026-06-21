@@ -349,12 +349,73 @@ def check_drivers():
         ok("drivers: %d манифестов проверены по draft schema v1" % checked)
 
 
+def _parse_inline_list(value):
+    """`[a, b, c]` (как хранит наивный парсер front-matter) → ['a','b','c']."""
+    s = (value or "").strip()
+    if s.startswith("[") and s.endswith("]"):
+        s = s[1:-1]
+    return [x.strip() for x in s.split(",") if x.strip()]
+
+
+def _mcp_tool_names(server_text):
+    """Имена функций, задекорированных @mcp.tool(), из текста mcp_server.py."""
+    names = []
+    lines = server_text.splitlines()
+    for i, line in enumerate(lines):
+        if line.strip().startswith("@mcp.tool("):
+            for j in range(i + 1, min(i + 4, len(lines))):
+                m = re.match(r"\s*def\s+(\w+)\s*\(", lines[j])
+                if m:
+                    names.append(m.group(1))
+                    break
+    return names
+
+
+def check_driver_tools():
+    """Сверка манифестного поля `tools:` с реально зарегистрированными @mcp.tool().
+
+    Опционально: проверяется только для драйверов, у которых поле `tools:` объявлено
+    (закрывает дрейф «interfaces ≠ tools», ревью T-078 находка K). `interfaces` —
+    концептуальное поле и здесь не проверяется.
+    """
+    drivers_dir = os.path.join(ROOT, "drivers")
+    if not os.path.isdir(drivers_dir):
+        return
+    checked = 0
+    for fn in sorted(os.listdir(drivers_dir)):
+        if not fn.endswith(".md") or fn in {"README.md", "SCHEMA.md"} or fn.startswith("_"):
+            continue
+        rel = "drivers/%s" % fn
+        text = read(rel)
+        if text is None:
+            continue
+        fm = parse_front_matter(text)
+        if fm.get("type") != "driver" or not fm.get("tools"):
+            continue
+        want = set(_parse_inline_list(fm.get("tools")))
+        name = fn[:-3]
+        server = os.path.join(drivers_dir, name, "mcp_server.py")
+        if not os.path.exists(server):
+            err("%s: объявлено поле tools, но нет %s/mcp_server.py" % (rel, name))
+            continue
+        with open(server, encoding="utf-8") as f:
+            got = set(_mcp_tool_names(f.read()))
+        if want != got:
+            err("%s: tools манифеста %s ≠ реальные @mcp.tool() %s"
+                % (rel, sorted(want), sorted(got)))
+        else:
+            checked += 1
+    if checked:
+        ok("drivers tools: %d манифестов сверены с @mcp.tool() серверов" % checked)
+
+
 def main():
     decisions = parse_decisions()
     parse_questions(decisions)
     parse_tasks()
     check_sources()
     check_drivers()
+    check_driver_tools()
     check_nav()
     check_naming()
 

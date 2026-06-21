@@ -37,6 +37,12 @@ related: questions/Q-008.md, темы/ai-os-bridge.md, docs/mvp-roadmap.md
 | `audit` | `true`, `false` | Нужно ли журналировать вызовы. |
 | `related` | `темы/ai-os-bridge.md` | Связанные темы, задачи, решения. |
 
+## Опциональные поля
+
+| Поле | Пример | Назначение |
+|---|---|---|
+| `tools` | `[list_tables, columns, head, summarize]` | Фактические имена `@mcp.tool()`, зарегистрированные MCP-сервером драйвера. В отличие от концептуального `interfaces`, это машинно-проверяемый контракт: `tools/validate.py` сверяет его с реальными декораторами в `drivers/<id>/mcp_server.py` и выдаёт ERROR при расхождении (борьба с дрейфом «interfaces ≠ tools», ревью T-078 находка K). Поле опционально: проверка включается только если `tools` объявлено. |
+
 ## Рекомендуемые значения
 
 `status`:
@@ -85,6 +91,7 @@ related: questions/Q-008.md, темы/ai-os-bridge.md, docs/mvp-roadmap.md
 6. `max_output_bytes` — положительное число.
 7. `source_last_verified` имеет формат `YYYY-MM-DD`.
 8. `mode: execute` выдаёт ERROR, если нет принятого решения и sandbox-поля.
+9. (реализовано, T-084) Опциональное поле `tools` сверяется с реальными `@mcp.tool()` в `drivers/<id>/mcp_server.py`; расхождение — ERROR.
 
 ## Мнение Codex
 

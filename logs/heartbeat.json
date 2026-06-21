@@ -1,14 +1,24 @@
 {
-  "epoch": 1781977586,
+  "epoch": 1782035662,
   "agents": [
     {
-      "agent": "codex",
-      "task": "T-073",
+      "agent": "claude",
+      "task": "T-084",
       "progress": 100,
-      "note": "PowerShell UTF-8 display fix confirmed by user",
+      "note": "K закрыт: manifest tools + check_driver_tools в validate; L (T-085) отложен с обоснованием",
       "eta": "done",
-      "epoch": 1781977586,
-      "age_seconds": 0,
+      "epoch": 1782034183,
+      "age_seconds": 1479,
+      "fresh": false
+    },
+    {
+      "agent": "codex",
+      "task": "T-081",
+      "progress": 10,
+      "note": "diagnosing MCP stdio subprocess PermissionError WinError 5",
+      "eta": "15m",
+      "epoch": 1782035158,
+      "age_seconds": 504,
       "fresh": true
     },
     {
@@ -18,7 +28,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 24504,
+      "age_seconds": 82580,
       "fresh": false
     }
   ]

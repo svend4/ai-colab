@@ -3,15 +3,16 @@
 """Тесты files driver (read-only) на маленьком безопасном корпусе — T-043."""
 import os
 import sys
-import tempfile
 import shutil
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import files_driver as fd
+from test_tmp import make_temp_dir
 
 
 def make_corpus():
-    d = tempfile.mkdtemp(prefix="files_test_")
+    d = make_temp_dir("files_test_")
     with open(os.path.join(d, "plain.txt"), "w", encoding="utf-8") as f:
         f.write("hello world\n")
     with open(os.path.join(d, "unicode.txt"), "w", encoding="utf-8") as f:

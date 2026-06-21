@@ -1,7 +1,32 @@
 {
-  "epoch": 1781971556,
+  "epoch": 1782035661,
   "doing": [],
-  "ready": [],
+  "ready": [
+    {
+      "id": "T-055",
+      "title": "Runtime-приёмка workbench.db driver после hardening",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-057",
+      "title": "Runtime-приёмка ingest pipeline после hardening",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-059",
+      "title": "File inventory driver — no-deps Python, карта файлов проекта",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-085",
+      "title": "Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L)",
+      "priority": "normal",
+      "owner": "pool"
+    }
+  ],
   "blocked": [
     {
       "id": "T-020",
@@ -9,38 +34,13 @@
       "reason": "doing without active claim"
     },
     {
-      "id": "T-029",
-      "title": "Реализовать read-only files inventory driver",
-      "reason": "status: blocked"
-    },
-    {
-      "id": "T-039",
-      "title": "Разблокировать Python runtime и закрыть T-029",
-      "reason": "status: blocked"
-    },
-    {
       "id": "T-048",
       "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
-      "reason": "T-039"
+      "reason": "status: blocked"
     },
     {
       "id": "T-051",
       "title": "Runtime-приёмка repo-runner MCP wrapper после hardening",
-      "reason": "T-039"
-    },
-    {
-      "id": "T-055",
-      "title": "Runtime-приёмка workbench.db driver после hardening",
-      "reason": "T-039"
-    },
-    {
-      "id": "T-057",
-      "title": "Runtime-приёмка ingest pipeline после hardening",
-      "reason": "T-039"
-    },
-    {
-      "id": "T-059",
-      "title": "File inventory driver — no-deps Python, карта файлов проекта",
       "reason": "status: blocked"
     },
     {
@@ -57,16 +57,6 @@
       "id": "T-064",
       "title": "(зарезервировано — заполните)",
       "reason": "placeholder task"
-    },
-    {
-      "id": "T-067",
-      "title": "Pipeline placeholder gating — не выдавать резервные задачи агентам",
-      "reason": "status: blocked"
-    },
-    {
-      "id": "T-068",
-      "title": "Pipeline orphan doing detection — показывать doing без claim как проблему",
-      "reason": "status: blocked"
     }
   ]
 }

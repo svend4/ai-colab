@@ -6,7 +6,7 @@
       "level": "L1",
       "mode": "manual",
       "risk": "medium",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "current-workspace-policy",
       "secrets": "forbidden-in-repo",
       "activation": "manual"
@@ -17,7 +17,7 @@
       "level": "L1",
       "mode": "read-only",
       "risk": "medium",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "required-before-write-or-code-exec",
       "secrets": "forbidden-in-repo",
       "activation": "manual"
@@ -39,7 +39,7 @@
       "level": "L1",
       "mode": "read-only",
       "risk": "low",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
       "activation": "manual"
@@ -50,7 +50,7 @@
       "level": "L2",
       "mode": "read-only",
       "risk": "medium",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
       "activation": "mcp"

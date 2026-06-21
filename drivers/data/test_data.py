@@ -3,6 +3,7 @@
 """Тесты data driver (read-only CSV/TSV)."""
 import os
 import sys
+import json
 import tempfile
 import shutil
 
@@ -32,6 +33,16 @@ def run():
         s = dd.summarize(csvp)
         assert s["rows"] == 2, s
         assert s["non_empty"]["age"] == 1, "пустая ячейка age не учтена"  # Bob age пуст
+
+        # redaction секретов в значениях ячеек (T-080, ревью T-078 находка F)
+        secp = os.path.join(d, "s.csv")
+        with open(secp, "w", encoding="utf-8", newline="") as f:
+            f.write("user,note\nbob,AKIA1234567890ABCD12\nsue,token=supersecretvalue\n")
+        hs = dd.head(secp, n=2)
+        joined = json.dumps(hs, ensure_ascii=False)
+        assert "AKIA1234567890ABCD12" not in joined, "AWS-ключ не замаскирован в head"
+        assert "supersecretvalue" not in joined, "token-значение не замаскировано в head"
+        assert "***" in joined, "нет маркера маскировки в head"
 
         try:
             dd.columns(csvp, base_dir=os.path.join(d, "sub"))

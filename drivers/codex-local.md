@@ -2,13 +2,14 @@
 id: codex-local
 type: driver
 title: Codex local driver — мост к локальной рабочей среде
-status: draft
+status: ready
 level: L1
 mode: manual
 owner: Codex
 risk: medium
 activation: manual
 interfaces: [workspace-status, run-checks, summarize-changes]
+tools: [codex_available, codex_info]
 inputs: [workspace-path, task-id]
 outputs: [status, report, patch-summary]
 sandbox: current-workspace-policy
