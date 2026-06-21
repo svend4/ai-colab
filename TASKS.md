@@ -120,4 +120,6 @@
 | T-104 | Консолидация плана разработки — демо с git-log + сквозная верификация (шаг 4/4) | done | claude | `темы/ai-os-bridge.md` | Демо расширено до 5 способностей (git-log); финальная верификация зелёная (validate 9/0/0, gateway/git-log тесты, демо, sync-приёмка 19/19) |
 | T-105 | Фикс git-log MCP tools/call hang (stdin=DEVNULL) + git-log → ready | done | claude | `темы/ai-os-bridge.md` | Исправлено: git-вызовы с stdin=DEVNULL (устранён Windows-дедлок наследования stdin-пайпа MCP-сервера); git-log sync-приёмка pass=4 fail=0; статус git-log → ready по D-015 |
 | T-106 | Не версионировать runtime-артефакты драйверов (.gitignore audit-лог/temp-БД) | done | claude | `темы/ai-os-bridge.md` | Выполнено: logs/driver-audit.jsonl (+ demo/sync temp-БД) в .gitignore и убраны из индекса (git rm --cached); дерево больше не дрейфит от прогонов |
+| T-107 | Knowledge workflow L6 — ingest/query/report | todo | pool | `темы/ai-os-bridge.md` | Проверить и оформить tools/knowledge.py как L6 knowledge workflow без vector/RAG |
+| T-108 | L6 knowledge workflow — ingest→query→report (tools/knowledge.py) | done | claude | `темы/ai-os-bridge.md` | Реализовано tools/knowledge.py (build/report/query) поверх workbench-памяти + files; тест зелёный (redaction в summary); roadmap L6 knowledge workflow закрыт |
 <!-- GEN:tasks END -->

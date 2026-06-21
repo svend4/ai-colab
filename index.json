@@ -1258,6 +1258,28 @@
       "depends_on": "[T-083]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Выполнено: logs/driver-audit.jsonl (+ demo/sync temp-БД) в .gitignore и убраны из индекса (git rm --cached); дерево больше не дрейфит от прогонов"
+    },
+    {
+      "id": "T-107",
+      "title": "Knowledge workflow L6 — ingest/query/report",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-096, T-099]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверить и оформить tools/knowledge.py как L6 knowledge workflow без vector/RAG"
+    },
+    {
+      "id": "T-108",
+      "title": "L6 knowledge workflow — ingest→query→report (tools/knowledge.py)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализовано tools/knowledge.py (build/report/query) поверх workbench-памяти + files; тест зелёный (redaction в summary); roadmap L6 knowledge workflow закрыт"
     }
   ],
   "questions": [

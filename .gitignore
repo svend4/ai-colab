@@ -7,3 +7,6 @@ tmp-work/
 logs/driver-audit.jsonl
 logs/demo_bridge.db
 logs/_sync_acc.db
+logs/knowledge.db
+logs/knowledge.db
+logs/_kn_test*.db
