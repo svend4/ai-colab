@@ -1,14 +1,6 @@
 {
-  "epoch": 1782037989,
-  "doing": [
-    {
-      "id": "T-087",
-      "title": "Реализовать sync MCP stdio probe без asyncio для acceptance",
-      "agent": "codex",
-      "claim_id": "b8a2ddb43c0b",
-      "lease_epoch": "1782039542"
-    }
-  ],
+  "epoch": 1782038103,
+  "doing": [],
   "ready": [
     {
       "id": "T-088",

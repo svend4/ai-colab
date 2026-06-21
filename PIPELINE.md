@@ -6,7 +6,7 @@
 
 | Задача | Агент | Claim | Lease epoch | Название |
 |---|---|---|---|---|
-| T-087 | codex | b8a2ddb43c0b | 1782039542 | Реализовать sync MCP stdio probe без asyncio для acceptance |
+| — | — | — | — | — |
 
 ## Готовы к взятию
 

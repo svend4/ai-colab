@@ -1042,18 +1042,18 @@
     {
       "id": "T-087",
       "title": "Реализовать sync MCP stdio probe без asyncio для acceptance",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-081]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Проверить, можно ли заменить падающий asyncio MCP stdio acceptance на subprocess.Popen JSON-RPC probe"
+      "next": "Выполнено: sync subprocess JSON-RPC probe проходит initialize/tools-list для data/codex-local/files/repo-runner/gateway"
     },
     {
       "id": "T-088",
       "title": "Gateway driver cleanup — audit, tools manifest, status policy",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -1075,7 +1075,7 @@
     {
       "id": "T-090",
       "title": "Driver status reconciliation — draft/ready матрица после acceptance",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",

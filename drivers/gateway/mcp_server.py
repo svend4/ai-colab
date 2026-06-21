@@ -42,6 +42,8 @@ fd = _load("files_driver_mod", "files", "files_driver.py")
 inv = _load("rr_inventory", "repo-runner", "inventory.py")
 wb = _load("wb_workbench", "workbench", "workbench.py")
 
+sys.path.insert(0, DRIVERS)  # для общего audit-хелпера (drivers/audit.py)
+from audit import audit  # аудит вызовов: gateway risk=medium (policy, ревью T-078 E, D-015)
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("ai-os-bridge")
@@ -52,24 +54,28 @@ BASE = os.environ.get("GATEWAY_BASE") or os.getcwd()
 @mcp.tool()
 def files_list(directory: str, max_files: int = 1000) -> list:
     """files: рекурсивный список файлов в allowed-root (read-only)."""
+    audit("gateway", "files_list", directory, max_files=max_files)
     return fd.list_files(directory, max_files=max_files, base_dir=BASE)
 
 
 @mcp.tool()
 def files_read(path: str, max_bytes: int = 1000000) -> dict:
     """files: прочитать файл (read-only, усечение, маскировка секретов)."""
+    audit("gateway", "files_read", path)
     return fd.read_file(path, max_bytes, base_dir=BASE, redact=True)
 
 
 @mcp.tool()
 def files_search(pattern: str, directory: str, max_hits: int = 1000) -> list:
     """files: поиск строки в файлах (read-only, секреты маскируются)."""
+    audit("gateway", "files_search", directory)
     return fd.search(pattern, directory, max_hits=max_hits, base_dir=BASE, regex=False)
 
 
 @mcp.tool()
 def files_summarize(directory: str) -> dict:
     """files: сводка по папке (файлы, размер, расширения)."""
+    audit("gateway", "files_summarize", directory)
     return fd.summarize(directory, base_dir=BASE)
 
 
@@ -77,6 +83,7 @@ def files_summarize(directory: str) -> dict:
 @mcp.tool()
 def repo_inspect(repo_path: str, max_files: int = 1000) -> dict:
     """repo-runner: read-only inventory репозитория (структура/языки/тесты/риски; код не запускается)."""
+    audit("gateway", "repo_inspect", repo_path, max_files=max_files)
     return inv.scan_repo(repo_path, max_files=max_files, base_dir=BASE)
 
 
@@ -85,6 +92,7 @@ def repo_inspect(repo_path: str, max_files: int = 1000) -> dict:
 def memory_query(db: str, type: Optional[str] = None, risk: Optional[str] = None,
                  text: Optional[str] = None, limit: int = 100) -> list:
     """workbench: поиск по памяти (documents) по типу/риску/тексту."""
+    audit("gateway", "memory_query", db, type=type, risk=risk)
     conn = wb.init(db, base_dir=BASE)
     try:
         return wb.query_documents(conn, type=type, risk=risk, text=text, limit=limit)
