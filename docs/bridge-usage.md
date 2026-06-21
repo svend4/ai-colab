@@ -63,6 +63,7 @@ python drivers/mcp_handshake_test.py             # MCP handshake (async stdio)
 python drivers/mcp_acceptance_test.py            # MCP call_tool 19/19 (async stdio)
 python drivers/mcp_sync_probe.py gateway         # MCP через sync subprocess (обход WinError 5)
 python drivers/mcp_sync_acceptance.py            # MCP tools/call 19/19 через sync subprocess
+python tools/knowledge.py report data/fixtures --query sample
 ```
 
 **Замечание по среде:** официальный async MCP stdio-клиент на части Windows-сред падает с
@@ -71,9 +72,9 @@ python drivers/mcp_sync_acceptance.py            # MCP tools/call 19/19 чере
 
 ## 6. Что сегодня работает / что в работе
 
-- ✅ Работает: read-only драйверы (files/repo-runner/data/codex-local), gateway-композиция,
-  workbench-память, демо, in-process тесты, manifest↔tools сверка, аудит, sync `tools/call`
-  MCP-приёмка 19/19.
+- ✅ Работает: read-only драйверы (files/repo-runner/data/codex-local/git-log), gateway-композиция,
+  workbench-память, knowledge workflow, демо, in-process тесты, manifest↔tools сверка, аудит,
+  sync `tools/call` MCP-приёмка.
 - 🟡 В работе: reconciliation старых blocker-формулировок, official async stdio path в проблемных
   Windows-средах, knowledge workflow (corpora→ingest→query report), переносимые project skills (L3).
 - ⛔ Отдельно (с песочницей): запуск непроверенного кода (svend4) — требует контейнера/изоляции,

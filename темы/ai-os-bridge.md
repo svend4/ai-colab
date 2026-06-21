@@ -892,3 +892,20 @@ RESULT OK
 - полный `python drivers\mcp_sync_acceptance.py --timeout 90` теперь даёт `SYNC ACCEPTANCE pass=23 fail=0`.
 
 Важная техническая находка: MCP `tools/call` для `git-log` зависал, пока `git` subprocess наследовал stdin stdio-сервера. Fix: `stdin=subprocess.DEVNULL` в `drivers/git-log/git_log.py`. После этого `git-log` можно считать `ready` как read-only L2 driver.
+
+### 2026-06-21 - Codex (T-107 knowledge workflow)
+
+Проверил и оформил `tools/knowledge.py` как L6 workflow `ingest → query → report`.
+
+Команды:
+
+```text
+python tools\knowledge.py report data\fixtures --query sample
+python tools\knowledge.py query logs\knowledge.db sample
+```
+
+Результат: 8 документов занесены в SQLite-память, запрос `sample` даёт 4 совпадения, повторный report не плодит дубли.
+
+Что важно: `logs/knowledge.db` добавлен в `.gitignore`, потому что это runtime-БД. В git должен идти код workflow и отчёт, а не локальная база.
+
+Моё мнение: это правильный L6-шаг перед vector/RAG. Сначала нужен простой проверяемый контур памяти, затем можно расширять его на большие корпуса.

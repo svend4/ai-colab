@@ -17,7 +17,7 @@
 | **L3 Skills** | пассивные навыки, грузятся по требованию | Правила, manifest-подход и docs есть; переносимые проектные `.codex/skills/*/SKILL.md` ещё не оформлены | 🟡 | выделить повторяемые workflow в 2-3 проектных skill-папки (`driver-acceptance`, `pipeline-operator`, `repo-review`) |
 | **L4 Агенты/субагенты** | исполнители с ролью и контекстом | `participants/` (Claude/Codex/Mavis/Novax), `AGENTS.md` | ✅ | — |
 | **L5 Plugins/Marketplaces** | упаковка навыков+MCP в пакет | `drivers/` — зародыш | ❌ | позже, когда появятся MCP-драйверы |
-| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance и `gateway.memory_query` есть | 🟡 | добавить нормальный knowledge workflow: corpora → ingest → query report; vector/RAG оставить позже |
+| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance, `gateway.memory_query` и `tools/knowledge.py` workflow есть | 🟡 | расширить knowledge workflow на реальные корпуса и отчёты; vector/RAG оставить позже |
 | **L7 Оркестрация** | правила + конвейер + наблюдаемость | `AGENTS.md`, `PROTOCOL.md`, `pipeline.py`, `queue`, `dispatch`, `generate`/`validate`, `next_id` | ✅ | — |
 | **Вершина: клиент-хост** | дирижёр (Cowork/Codex/Claude) | агенты в своих сессиях | ✅ | — |
 
@@ -27,7 +27,7 @@
 
 **Рекомендуемый порядок (right-size, по D-010):**
 1. **L2 — reconciliation hardening:** убрать старые blocker-формулировки из done-задач и оставить явную разницу между sync acceptance и официальным async stdio client.
-2. **L6 — knowledge workflow:** зафиксировать практический сценарий `ingest → query → report` на безопасном локальном корпусе, без vector/RAG до реального спроса.
+2. **L6 — knowledge workflow next:** применить `tools/knowledge.py` к большему безопасному корпусу и сделать сохраняемый report artifact.
 3. **L3 — project skills:** вынести повторяемые процедуры (`driver acceptance`, `pipeline operation`, `repo review`) в переносимые `SKILL.md`.
 4. **L1 — WSL2+Docker** только когда дойдём до запуска непроверенного кода Sven4 или другого внешнего кода (песочница).
 

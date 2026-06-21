@@ -1262,7 +1262,7 @@
     {
       "id": "T-107",
       "title": "Knowledge workflow L6 — ingest/query/report",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -1280,6 +1280,17 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализовано tools/knowledge.py (build/report/query) поверх workbench-памяти + files; тест зелёный (redaction в summary); roadmap L6 knowledge workflow закрыт"
+    },
+    {
+      "id": "T-109",
+      "title": "L3 project skills — driver-acceptance/pipeline-operator/repo-review (SKILL.md)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализовано skills/ с 3 SKILL.md (driver-acceptance, pipeline-operator, repo-review) + README; закрывает L3 project skills из roadmap layers-coverage"
     }
   ],
   "questions": [
