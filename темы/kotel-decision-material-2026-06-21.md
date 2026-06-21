@@ -14,7 +14,7 @@ next: Использовать как независимую перепрове�
 >
 > **Двойной чек (D-018):** для каждого пункта приведены технический и гуманитарный чек.
 >
-> **Сверка с живым состоянием репозитория (read-only):** T-137 = review; T-136 = blocked; D-020 = proposed; T-020 = `blocked` (честный, не orphan-doing); `tools/text_extract.py` SUPPORTED = `.md/.markdown/.txt/.text/.html/.htm` (DOCX/PDF исключены явно, строка 7 — точка решения); `core/engine-manifest.md` и `portals/example/portal.md` существуют. Заявления синтезов подтверждаются файлами.
+> **Сверка с живым состоянием репозитория (read-only):** T-137 = review; T-136 = blocked; D-020 = proposed; T-020 = `blocked` (честный, не orphan-doing); `tools/text_extract.py` после T-142 поддерживает `.md/.markdown/.txt/.text/.html/.htm/.docx`; PDF остаётся исключён явно и требует отдельного dependency decision; `core/engine-manifest.md` и `portals/example/portal.md` существуют. Заявления синтезов подтверждаются файлами.
 
 ---
 
@@ -100,12 +100,15 @@ next: Использовать как независимую перепрове�
 - *Stefan (`темы/text-extract-deps-evidence-2026-06-21.md`)*: DOCX = ZIP-контейнер Open XML, текст в `word/document.xml` извлекается stdlib; PDF на stdlib невозможен. DOCX — сейчас; PDF — отдельно; при отсутствии `pypdf` — мягкий отказ (`supported=False`), не падение.
 - *Codex (D-020 §6)*: text-extract инкрементален; DOCX — «next low-risk no-dependency step»; PDF — отдельное решение после реального корпуса.
 
-**Доказательная рекомендация:** включить DOCX сейчас через stdlib (`zipfile`, ~20-30 строк + один тест); PDF гейтить до реального спроса (T-127 или корпус Stefan). Поведение без `pypdf` — мягкий отказ (graceful degradation: индексируем остальное). DOCX — часть генерик-ядра (D-016), служебные документы чаще `.docx`, чем `.pdf`. PDF остаётся первой осознанной зависимостью — решается отдельно.
+**Доказательная рекомендация:** включить DOCX сейчас через stdlib (`zipfile` + `ElementTree`, без внешних зависимостей + один тест); PDF гейтить до реального спроса (T-127 или корпус Stefan). Поведение без `pypdf` — мягкий отказ (graceful degradation: индексируем остальное). DOCX — часть генерик-ядра (D-016), служебные документы чаще `.docx`, чем `.pdf`. PDF остаётся первой осознанной зависимостью — решается отдельно.
 
-**Технический чек:** DOCX = валидированный стандартом ECMA-376 ZIP; `zipfile` + regex (stdlib), gracefully обрабатывает некорректный файл; контракт `extract()` не меняется (те же поля path/type/supported/text/chars/truncated); redaction уже встроена в `read_file()`. Подтверждено чтением `tools/text_extract.py`: SUPPORTED не включает DOCX/PDF — это точка решения, не препятствие.
+**Технический чек:** DOCX = валидированный стандартом ECMA-376 ZIP; `zipfile` + `ElementTree` (stdlib), gracefully обрабатывает некорректный файл; контракт `extract()` не меняется (те же поля path/type/supported/text/chars/truncated); redaction уже встроена в `read_file()`. Подтверждено чтением `tools/text_extract.py`: SUPPORTED не включает DOCX/PDF — это точка решения, не препятствие.
 **Гуманитарный чек:** реальные (особенно юридические/социальные) порталы работают с `.docx` чаще; нет нового вектора риска (читаем текст, не исполняем макросы); меньше friction («работает» вместо «unsupported»); для тех, кому DOCX не нужен — нулевая цена.
 
 **Кросс-чек vs Codex: partial.** Codex в D-020 предложил DOCX как «next low-risk step», но без деталей и без конкретного «сейчас vs позже». Stefan дал полный технический разбор и предложил «сейчас». Независимое чтение кода подтверждает: структура `extract()` позволяет добавить DOCX без breaking changes, мягкий отказ PDF реалистичен. Вывод согласен со Stefan и уточняет Codex.
+### Implementation follow-up — T-142 / Codex
+
+DOCX low-risk path реализован как `tools/text_extract.py` + тест `tools/test_text_extract.py`. Реализация использует stdlib `zipfile` и `xml.etree.ElementTree`, читает только `word/document.xml`, применяет canonical redaction и не добавляет PDF-зависимость. Отчёт: `docs/docx-text-extract-result-2026-06-21.md`.
 **Уверенность: высокая.**
 
 ---

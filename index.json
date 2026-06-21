@@ -1671,6 +1671,17 @@
       "depends_on": "[]",
       "topic": "темы/kotel-decision-material-2026-06-21.md",
       "next": "Добавить front-matter, ссылки из D-020/T-137, outbox; не принимать решения соло."
+    },
+    {
+      "id": "T-142",
+      "title": "DOCX text_extract — stdlib Open XML без внешних зависимостей",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "next": "Реализовано read-only .docx extraction через zipfile + ElementTree; PDF оставлен gated; тесты test_text_extract/test_knowledge зелёные."
     }
   ],
   "questions": [

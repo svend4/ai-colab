@@ -14,8 +14,8 @@ import os
 import sys
 import re
 import json
-import html
 import zipfile
+import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,6 +31,7 @@ SUPPORTED = {".md", ".markdown", ".txt", ".text", ".html", ".htm", ".docx"}
 MAX_EXTRACT_CHARS = 20000
 MAX_MEMORY_CHARS = 4000
 MAX_SUMMARY_CHARS = 240
+W_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 
 
 def configure_output():
@@ -92,7 +93,7 @@ def _strip_markdown_noise(text):
 
 
 def _docx_read(path, base_dir):
-    """Извлечь текст .docx чистой stdlib (zipfile + word/document.xml), с confinement и redaction.
+    """Извлечь текст .docx чистой stdlib (zipfile + WordprocessingML), с confinement и redaction.
 
     .docx — бинарный Open XML, поэтому идёт мимо read_file (тот читает текст). Confinement к
     base_dir (allowed-root) и маскирование секретов делаем здесь явно, как и read_file(redact=True)."""
@@ -107,12 +108,31 @@ def _docx_read(path, base_dir):
         raise PathAccessError("path outside allowed root: %s" % path)
     try:
         with zipfile.ZipFile(real) as zf:
-            xml = zf.read("word/document.xml").decode("utf-8", errors="replace")
+            xml = zf.read("word/document.xml")
     except (zipfile.BadZipFile, KeyError) as exc:
         raise ValueError("not a valid .docx (Open XML): %s" % exc)
-    xml = re.sub(r"</w:p>", "\n", xml)   # границы абзацев -> переводы строк
-    xml = re.sub(r"<[^>]+>", "", xml)    # снять все теги
-    return real, redact(html.unescape(xml))
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as exc:
+        raise ValueError("not a valid .docx document.xml: %s" % exc)
+
+    paragraphs = []
+    for paragraph in root.iter(W_NS + "p"):
+        parts = []
+        for node in paragraph.iter():
+            if node.tag == W_NS + "t" and node.text:
+                parts.append(node.text)
+            elif node.tag == W_NS + "tab":
+                parts.append("\t")
+            elif node.tag in {W_NS + "br", W_NS + "cr"}:
+                parts.append("\n")
+        text = "".join(parts).strip()
+        if text:
+            paragraphs.append(text)
+
+    if not paragraphs:
+        paragraphs = [node.text for node in root.iter(W_NS + "t") if node.text]
+    return real, redact("\n".join(paragraphs))
 
 
 def extract(path, base_dir=ROOT, max_chars=MAX_EXTRACT_CHARS):

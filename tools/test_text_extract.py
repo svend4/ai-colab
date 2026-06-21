@@ -3,6 +3,7 @@
 """Tests for tools/text_extract.py (T-133)."""
 import os
 import sys
+import zipfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -19,6 +20,7 @@ def run():
             md = os.path.join(d, "doc.md")
             html = os.path.join(d, "page.html")
             txt = os.path.join(d, "secret.txt")
+            docx = os.path.join(d, "word.docx")
             with open(md, "w", encoding="utf-8") as f:
                 f.write("---\ntitle: Hidden Meta\n---\n# Title\n\nIntro line\n\nDeepNeedle in body\n")
             with open(html, "w", encoding="utf-8") as f:
@@ -26,6 +28,19 @@ def run():
                         "<body><h1>Heading</h1><p>Visible HTML Text</p></body></html>")
             with open(txt, "w", encoding="utf-8") as f:
                 f.write("token=SUPERSECRETXYZ\nPlain body\n")
+            with zipfile.ZipFile(docx, "w") as zf:
+                zf.writestr("[Content_Types].xml", """<?xml version="1.0" encoding="UTF-8"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>""")
+                zf.writestr("word/document.xml", """<?xml version="1.0" encoding="UTF-8"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    <w:p><w:r><w:t>DocxNeedle</w:t></w:r><w:r><w:tab/><w:t>after-tab</w:t></w:r></w:p>
+    <w:p><w:r><w:t>token=SUPERSECRETXYZ</w:t></w:r><w:r><w:br/><w:t>SecondLine</w:t></w:r></w:p>
+  </w:body>
+</w:document>""")
 
             md_item = tx.extract(md, base_dir=ROOT)
             assert md_item["supported"] is True, md_item
@@ -41,7 +56,14 @@ def run():
             assert "SUPERSECRETXYZ" not in txt_item["text"], txt_item
             assert "Plain body" in txt_item["text"], txt_item
 
-            print("TESTS OK text_extract: md/txt/html redacted normalized")
+            docx_item = tx.extract(docx, base_dir=ROOT)
+            assert docx_item["supported"] is True, docx_item
+            assert "DocxNeedle after-tab" in docx_item["text"], docx_item
+            assert "SecondLine" in docx_item["text"], docx_item
+            assert "SUPERSECRETXYZ" not in docx_item["text"], docx_item
+            assert docx_item["type"] == "docx", docx_item
+
+            print("TESTS OK text_extract: md/txt/html/docx redacted normalized")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

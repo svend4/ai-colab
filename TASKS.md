@@ -155,4 +155,5 @@
 | T-139 | First L2 portal — оформить clean example portal поверх data/portals/example | done | codex | `docs/pyramid-candidate-map.md` | Оформить portals/example как чистовой L2 scaffold; не менять portal.py до синтеза portal-location. |
 | T-140 | Core export acceptance — проверить promote.py export и engine-manifest | done | codex | `docs/pyramid-candidate-map.md` | Проверить core/engine-manifest.md + tools/promote.py export; исправить Windows temp в test_promote_export; записать результат. |
 | T-141 | Котёл decision material — сделать навигируемым и связать с D-020/T-137 | done | codex | `темы/kotel-decision-material-2026-06-21.md` | Добавить front-matter, ссылки из D-020/T-137, outbox; не принимать решения соло. |
+| T-142 | DOCX text_extract — stdlib Open XML без внешних зависимостей | done | codex | `темы/kotel-decision-material-2026-06-21.md` | Реализовано read-only .docx extraction через zipfile + ElementTree; PDF оставлен gated; тесты test_text_extract/test_knowledge зелёные. |
 <!-- GEN:tasks END -->
