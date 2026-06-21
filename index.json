@@ -1602,7 +1602,7 @@
     {
       "id": "T-136",
       "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
-      "status": "todo",
+      "status": "blocked",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -1848,6 +1848,13 @@
       "status": "accepted",
       "date": "2026-06-21",
       "file": "decisions/D-018.md"
+    },
+    {
+      "id": "D-019",
+      "title": "Commit streams policy — Level 0 now, worktree-streams as proposed Level 1",
+      "status": "proposed",
+      "date": "2026-06-21",
+      "file": "decisions/D-019.md"
     }
   ],
   "drivers": [

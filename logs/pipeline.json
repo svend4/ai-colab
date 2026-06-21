@@ -1,17 +1,11 @@
 {
-  "epoch": 1782058547,
+  "epoch": 1782058991,
   "doing": [],
   "ready": [
     {
       "id": "T-127",
       "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
       "priority": "normal",
-      "owner": "pool"
-    },
-    {
-      "id": "T-136",
-      "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
-      "priority": "high",
       "owner": "pool"
     },
     {
@@ -26,6 +20,11 @@
       "id": "T-020",
       "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
       "reason": "doing without active claim"
+    },
+    {
+      "id": "T-136",
+      "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
+      "reason": "status: blocked"
     }
   ]
 }
