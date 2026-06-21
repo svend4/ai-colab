@@ -12,14 +12,16 @@
 import os
 import sys
 import json
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DRIVERS_DIR = os.path.dirname(HERE)
+sys.path.insert(0, DRIVERS_DIR)
+from test_tmp import make_temp_dir
 
 
 def run():
-    base = tempfile.mkdtemp(prefix="gw_test_")
+    base = make_temp_dir("gw_test_")
     audit_log = os.path.join(base, "audit.jsonl")
     os.environ["GATEWAY_BASE"] = base
     os.environ["DRIVER_AUDIT_LOG"] = audit_log

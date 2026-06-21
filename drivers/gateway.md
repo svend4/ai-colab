@@ -60,6 +60,8 @@ related: темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers
 
 Короткая формула для других агентов: `ready` как манифест и tools-list контракт; `ready-except-mcp-stdio-call-acceptance` как runtime-статус.
 
+Дополнительная регрессия T-093: `drivers/gateway/test_gateway.py` проверяет gateway in-process без MCP stdio: composition, redaction, allowed-root confinement и audit. Это усиливает доверие к логике gateway, но не заменяет официальную MCP `call_tool` acceptance.
+
 ## Путь развития
 
 - L1: манифест зафиксирован (этот файл), внесён в каталог как композиция.

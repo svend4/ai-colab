@@ -838,7 +838,7 @@ PowerShell снова показал `NativeCommandError`, но это связ�
 Очистил часть шума конвейера без касания `svend4`:
 
 - `T-062`, `T-063`, `T-064` закрыты как retired placeholders;
-- `T-093` тоже закрыт как новый пустой retired placeholder, появившийся после snapshot;
+- `T-093` сначала выглядел как placeholder, но после обнаружения `drivers/gateway/test_gateway.py` восстановлен как отдельная реальная done-задача;
 - добавлена политика `docs/stale-work-cleanup-policy-2026-06-21.md`;
 - `T-020` оставлен без изменения, потому что это задача другого владельца и зависит от `svend4`.
 

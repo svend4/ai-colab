@@ -106,6 +106,7 @@
 | T-090 | Driver status reconciliation — draft/ready матрица после acceptance | done | pool | `темы/repo-review-2026-06-21.md` | Составить матрицу статусов драйверов и предложить честные draft/ready/blocked формулировки |
 | T-091 | Очистить placeholder/stale-work слой без svend4 | done | pool | `темы/ai-os-bridge.md` | Placeholder retirement и stale-work policy записаны; закрыть через pipeline done после snapshot/validate |
 | T-092 | Enforce execute-sandbox gate в validate.py (P1 security, находка G) | done | claude | `темы/repo-review-2026-06-21.md` | Реализовано: mode:execute без реальной изоляции (container/nsjail/...) → ERROR в validate.py; SCHEMA пункт 8 обновлён; validate OK=9/0/0 (ни один драйвер не execute — без регрессии) |
-| T-093 | Retired placeholder — no task assigned | done | claude | — | закрыто как retired placeholder по политике T-091; для новых задач используйте новый id |
+| T-093 | Retired placeholder — no task assigned | done | claude | — | закрыто как retired placeholder по политике T-091; реальная gateway-test задача перенесена в T-094 |
 | T-094 | Unit-тест gateway-композиции (in-process, без stdio) — покрытие находки M | done | claude | `темы/repo-review-2026-06-21.md` | Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный |
+| T-095 | Канонизировать нумерацию слоёв L0-L7 (P1, находка J) | done | claude | `темы/repo-review-2026-06-21.md` | Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими |
 <!-- GEN:tasks END -->

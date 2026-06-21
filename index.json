@@ -1114,7 +1114,7 @@
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "закрыто как retired placeholder по политике T-091; для новых задач используйте новый id"
+      "next": "закрыто как retired placeholder по политике T-091; реальная gateway-test задача перенесена в T-094"
     },
     {
       "id": "T-094",
@@ -1126,6 +1126,17 @@
       "depends_on": "[T-078]",
       "topic": "темы/repo-review-2026-06-21.md",
       "next": "Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный"
+    },
+    {
+      "id": "T-095",
+      "title": "Канонизировать нумерацию слоёв L0-L7 (P1, находка J)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими"
     }
   ],
   "questions": [
