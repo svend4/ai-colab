@@ -1368,6 +1368,39 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализован драйвер sqlite (engine+MCP+тест+манифест), тест зелёный, каталог=9; status draft по D-015 (нужна сверка 2-м агентом через sync-приёмку с фикстурой-БД)"
+    },
+    {
+      "id": "T-117",
+      "title": "SQLite driver second-agent acceptance — перевести draft→ready по D-015",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-116]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто — sqlite driver ready по D-015, полный sync acceptance pass=27 fail=0"
+    },
+    {
+      "id": "T-118",
+      "title": "Roadmap/usage refresh — синхронизировать документы после T-112..T-117",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-112, T-113, T-114, T-115, T-117]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто — quick-start docs синхронизированы с sqlite/FTS5/reports/skills/preflight"
+    },
+    {
+      "id": "T-119",
+      "title": "Knowledge report regression — покрыть --out и safe path тестом",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-111, T-112, T-115]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто — report --out regression и write-path safety покрыты тестом"
     }
   ],
   "questions": [
@@ -1687,7 +1720,7 @@
       "id": "sqlite",
       "title": "SQLite driver — read-only инспекция и запрос SQLite-БД",
       "file": "drivers/sqlite.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L2",
       "mode": "read-only",
       "owner": "Claude",

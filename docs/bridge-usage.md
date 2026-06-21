@@ -25,6 +25,8 @@ python tools/demo_bridge.py <папка>    # на своей папке (allowe
 | `repo-runner` | inventory репозитория (структура/языки/тесты/риски), **код не запускается** | read-only | `inspect_repo, repo_summary, repo_risks` |
 | `data` | таблицы CSV/TSV: список/колонки/срез/сводка, redaction | read-only | `list_tables, columns, head, summarize` |
 | `codex-local` | наличие/версия локального Codex | manual | `codex_available, codex_info` |
+| `git-log` | история git: commits, authors, file history, repo summary | read-only | `recent_commits, author_stats, file_history, repo_summary` |
+| `sqlite` | read-only инспекция SQLite-БД внутри allowed-root | read-only | `list_tables, table_schema, table_head, query` |
 | `workbench` | SQLite-память корпуса (`documents`+`audit_log`), запрос | safe-write | (через `gateway.memory_query`) |
 | `gateway` | **композиция** — один MCP-сервер над files/repo/workbench | read-only | `files_*, repo_inspect, memory_query` |
 
@@ -49,7 +51,9 @@ env = { GATEWAY_BASE = "<allowed-root>" }
 
 - **allowed-root confinement**: выход за `*_BASE` → `PathAccessError` (`resolve()+relative_to`).
 - **redaction секретов** в выдаче файлов (`api_key=`/`AKIA…` → `***`) через общий `drivers/redaction.py`.
-- **аудит** вызовов risk≥medium-драйверов (`data`/`repo-runner`/`codex-local`/`gateway`) в
+- **SQLite read-only**: `sqlite` открывает БД через `mode=ro`, принимает только одиночный `SELECT/WITH`,
+  ограничен allowed-root и лимитом строк.
+- **аудит** вызовов risk≥medium-драйверов (`data`/`repo-runner`/`codex-local`/`gateway`/`git-log`/`sqlite`) в
   `logs/driver-audit.jsonl` через `drivers/audit.py` (`python drivers/audit.py tail`).
 - **лимиты**: `max_files`/`max_hits`/`max_output_bytes`; **read-only** — код репозиториев не запускается.
 - **execute-гард**: `mode: execute` без реальной изоляции (container/nsjail/...) — ERROR валидатора (D-015/находка G).
@@ -60,10 +64,13 @@ env = { GATEWAY_BASE = "<allowed-root>" }
 python tools/validate.py                         # канон + манифесты + tools↔сервер
 python drivers/gateway/test_gateway.py           # gateway in-process (быстро, любая среда)
 python drivers/mcp_handshake_test.py             # MCP handshake (async stdio)
-python drivers/mcp_acceptance_test.py            # MCP call_tool 19/19 (async stdio)
+python drivers/mcp_acceptance_test.py            # legacy async call_tool batch; зависит от Windows stdio runtime
 python drivers/mcp_sync_probe.py gateway         # MCP через sync subprocess (обход WinError 5)
-python drivers/mcp_sync_acceptance.py            # MCP tools/call 19/19 через sync subprocess
-python tools/knowledge.py report data/fixtures --query sample
+python drivers/mcp_sync_acceptance.py            # MCP tools/call 27/27 через sync subprocess
+python drivers/mcp_sync_acceptance.py sqlite     # sqlite-only acceptance 4/4
+python tools/knowledge.py report data/fixtures --query sample --out reports/knowledge-fixtures-report.md
+python tools/knowledge.py report data/knowledge-corpus --query bridge --out reports/knowledge-corpus-report.md
+python tools/knowledge.py search logs/knowledge.db bridge
 ```
 
 **Замечание по среде:** официальный async MCP stdio-клиент на части Windows-сред падает с
@@ -72,11 +79,12 @@ python tools/knowledge.py report data/fixtures --query sample
 
 ## 6. Что сегодня работает / что в работе
 
-- ✅ Работает: read-only драйверы (files/repo-runner/data/codex-local/git-log), gateway-композиция,
-  workbench-память, knowledge workflow, демо, in-process тесты, manifest↔tools сверка, аудит,
-  sync `tools/call` MCP-приёмка.
-- 🟡 В работе: reconciliation старых blocker-формулировок, official async stdio path в проблемных
-  Windows-средах, knowledge workflow (corpora→ingest→query report), переносимые project skills (L3).
+- ✅ Работает: read-only драйверы (files/repo-runner/data/codex-local/git-log/sqlite), gateway-композиция,
+  workbench-память, knowledge workflow с FTS5/search/report `--out`, `reports/`, безопасный
+  `data/knowledge-corpus/`, демо, in-process тесты, manifest↔tools сверка, аудит,
+  sync `tools/call` MCP-приёмка 27/27, переносимые project skills (L3) и `docs/skills-usage.md`.
+- 🟡 В работе: regression-тест для `knowledge.py report --out`, official async stdio path в проблемных
+  Windows-средах только по необходимости.
 - ⛔ Отдельно (с песочницей): запуск непроверенного кода (svend4) — требует контейнера/изоляции,
   `mode: execute` закрыт гардом до её реализации.
 

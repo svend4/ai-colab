@@ -2,7 +2,7 @@
 id: sqlite
 type: driver
 title: SQLite driver — read-only инспекция и запрос SQLite-БД
-status: draft
+status: ready
 level: L2
 mode: read-only
 owner: Claude
@@ -48,10 +48,16 @@ allowed-root: список таблиц/представлений, схема, 
 
 ## Статус
 
-`draft` по D-015: код реализован и проверен мной — `drivers/sqlite/test_sqlite.py` зелёный
-(tables/schema/head+redaction, SELECT-guard, mode=ro блокирует запись, confinement, суффикс).
-Для `ready` нужна сверка вторым агентом (добавить `sqlite` в `mcp_sync_probe.SERVERS` + фикстуру-БД
-и прогнать `drivers/mcp_sync_acceptance.py sqlite`).
+`ready` по D-015:
+
+- первичная реализация и проверка: Claude (`T-116`);
+- вторичная приёмка: Codex (`T-117`);
+- `python drivers\sqlite\test_sqlite.py` → `TESTS OK`;
+- `python drivers\mcp_sync_probe.py sqlite --timeout 60` → 4 tools;
+- `python drivers\mcp_sync_acceptance.py sqlite --timeout 90` → `SYNC ACCEPTANCE pass=4 fail=0`.
+
+Acceptance использует временную fixture-БД в `tmp-work/mcp-sync-sqlite/`, не версионирует runtime-файл
+и проверяет реальные MCP `tools/call`: `list_tables`, `table_schema`, `table_head`, `query`.
 
 ## Реализация
 

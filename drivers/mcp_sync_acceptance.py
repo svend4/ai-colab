@@ -16,11 +16,14 @@ async stdio-клиента (который на части Windows-сред па
 `tools/queue.py` затеняет stdlib `queue`, на котором держится `mcp_sync_probe`.
 
 Запуск:
-    python drivers/mcp_sync_acceptance.py                 # все 5 серверов
+    python drivers/mcp_sync_acceptance.py                 # все серверы
     python drivers/mcp_sync_acceptance.py gateway         # только gateway
+    python drivers/mcp_sync_acceptance.py sqlite          # только sqlite
 """
 import argparse
 import os
+import shutil
+import sqlite3
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +33,8 @@ FX = "data/fixtures"
 CSV = "data/fixtures/sample-table.csv"
 DOC = "data/fixtures/README.md"
 TMP_DB = "logs/_sync_acc.db"
+SQLITE_TMP_DIR = "tmp-work/mcp-sync-sqlite"
+SQLITE_DB = SQLITE_TMP_DIR + "/app.db"
 
 # server -> [(tool, arguments), ...]; пути относительны allowed-root (= repo root)
 CALLS = {
@@ -68,6 +73,12 @@ CALLS = {
         ("file_history", {"repo": ".", "path": "AGENTS.md", "n": 5}),
         ("repo_summary", {"repo": "."}),
     ],
+    "sqlite": [
+        ("list_tables", {"db": SQLITE_DB}),
+        ("table_schema", {"db": SQLITE_DB, "table": "users"}),
+        ("table_head", {"db": SQLITE_DB, "table": "users", "n": 5}),
+        ("query", {"db": SQLITE_DB, "sql": "SELECT name FROM users ORDER BY id"}),
+    ],
 }
 
 
@@ -84,6 +95,26 @@ configure_output()
 def _is_ok(result):
     # FastMCP: успешный вызов → dict с content и без isError; ошибка → isError True.
     return isinstance(result, dict) and not result.get("isError")
+
+
+def prepare_sqlite_fixture():
+    d = os.path.join(ROOT, SQLITE_TMP_DIR)
+    os.makedirs(d, exist_ok=True)
+    db = os.path.join(ROOT, SQLITE_DB)
+    if os.path.exists(db):
+        os.remove(db)
+    conn = sqlite3.connect(db)
+    try:
+        conn.execute("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, secret TEXT)")
+        conn.execute("INSERT INTO users(name, secret) VALUES (?, ?)", ("alice", "token=SYNCSECRET"))
+        conn.execute("INSERT INTO users(name, secret) VALUES (?, ?)", ("bob", "ok"))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def cleanup_sqlite_fixture():
+    shutil.rmtree(os.path.join(ROOT, SQLITE_TMP_DIR), ignore_errors=True)
 
 
 def accept(server, timeout):
@@ -126,6 +157,8 @@ def main(argv=None):
             print("FAIL %s: unknown server" % server)
             total_f += 1
             continue
+        if server == "sqlite":
+            prepare_sqlite_fixture()
         try:
             p, f = accept(server, timeout=args.timeout)
         except Exception as exc:
@@ -140,6 +173,7 @@ def main(argv=None):
             os.remove(dbp)
         except OSError:
             pass
+    cleanup_sqlite_fixture()
 
     print("-" * 50)
     print("SYNC ACCEPTANCE pass=%d fail=%d" % (total_p, total_f))

@@ -130,4 +130,7 @@
 | T-114 | Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода | done | pool | `темы/ai-os-bridge.md` | Закрыто — execute/svend4 остаётся read-only до отдельной песочницы и accepted decision |
 | T-115 | L6 — полнотекстовый поиск FTS5 в knowledge workflow (направление 3) | done | claude | `темы/ai-os-bridge.md` | Добавлен FTS5-индекс + ранжированный поиск (bm25) в tools/knowledge.py: build строит kn_fts, команда search и report используют fts_search с fallback на LIKE; тест расширен, зелёный |
 | T-116 | Новый read-only L2-драйвер sqlite (инспекция/запрос SQLite-БД) (направление 2) | done | claude | `темы/ai-os-bridge.md` | Реализован драйвер sqlite (engine+MCP+тест+манифест), тест зелёный, каталог=9; status draft по D-015 (нужна сверка 2-м агентом через sync-приёмку с фикстурой-БД) |
+| T-117 | SQLite driver second-agent acceptance — перевести draft→ready по D-015 | done | pool | `темы/ai-os-bridge.md` | Закрыто — sqlite driver ready по D-015, полный sync acceptance pass=27 fail=0 |
+| T-118 | Roadmap/usage refresh — синхронизировать документы после T-112..T-117 | done | pool | `темы/ai-os-bridge.md` | Закрыто — quick-start docs синхронизированы с sqlite/FTS5/reports/skills/preflight |
+| T-119 | Knowledge report regression — покрыть --out и safe path тестом | done | pool | `темы/ai-os-bridge.md` | Закрыто — report --out regression и write-path safety покрыты тестом |
 <!-- GEN:tasks END -->

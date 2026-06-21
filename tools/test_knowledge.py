@@ -3,6 +3,7 @@
 """Тест L6 knowledge workflow (tools/knowledge.py): ingest → query + redaction в summary."""
 import os
 import sys
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -46,8 +47,30 @@ def run():
             # отчёт строится без ошибок
             rep = kn.report(corpus, db=os.path.join("logs", "_kn_test2.db"), query_text="текст")
             assert "Knowledge report" in rep and "Состав по типам" in rep, rep[:200]
+            assert isinstance(rep, str) and rep.startswith("# Knowledge report"), rep[:80]
 
-            print("TESTS OK knowledge: docs=%d types=%s redaction ok" % (n, sorted(types)))
+            # report --out: запись в repo-local Markdown не меняет строковый report/stdout-контракт
+            out_path = os.path.join(corpus, "knowledge-report-test.md")
+            written = kn.write_report(rep, out_path)
+            assert written == Path(out_path).resolve(), written
+            saved = Path(out_path).read_text(encoding="utf-8")
+            assert saved == rep + "\n", saved[:120]
+
+            # write-path safety: нельзя писать вне repo root и нельзя писать не-Markdown artifact
+            outside = Path(ROOT).resolve().parent / "knowledge-report-outside.md"
+            try:
+                kn.write_report(rep, outside)
+                assert False, "write_report разрешил путь вне repo root"
+            except ValueError as exc:
+                assert "outside repo root" in str(exc), exc
+
+            try:
+                kn.write_report(rep, os.path.join(corpus, "knowledge-report.txt"))
+                assert False, "write_report разрешил не-Markdown расширение"
+            except ValueError as exc:
+                assert "unsupported report suffix" in str(exc), exc
+
+            print("TESTS OK knowledge: docs=%d types=%s redaction/report-out ok" % (n, sorted(types)))
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

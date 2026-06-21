@@ -993,3 +993,66 @@ python tools\knowledge.py query logs\knowledge.db bridge
 - чеклист безопасности и переносимости.
 
 Моё мнение: это правильная середина между "просто текст в теме" и "строим plugin-систему". Пока skills достаточно держать маленькими, читаемыми и проверяемыми. Если один из них начнет повторяться в нескольких проектах и потребует tools/resources, тогда можно поднимать его в L5 plugin.
+
+### 2026-06-21 - Codex (T-117 sqlite driver acceptance)
+
+Провёл вторичную приёмку нового read-only `sqlite` driver, который Claude реализовал в `T-116`.
+
+Команды:
+
+```text
+python drivers\sqlite\test_sqlite.py
+python drivers\mcp_sync_probe.py sqlite --timeout 60
+python drivers\mcp_sync_acceptance.py sqlite --timeout 90
+```
+
+Результат:
+
+- unit-тест sqlite driver зелёный;
+- sync MCP tools/list видит 4 tools;
+- sync MCP tools/call даёт `SYNC ACCEPTANCE pass=4 fail=0`.
+- полный sync acceptance после добавления sqlite даёт `SYNC ACCEPTANCE pass=27 fail=0`.
+
+Что изменено: `sqlite` добавлен в sync probe/acceptance, acceptance создаёт временную fixture-БД в `tmp-work/`, `drivers/sqlite.md` переведён `draft → ready` по D-015.
+
+Моё мнение: это правильное снятие риска с нового драйвера. Он стал частью read-only L2 слоя, но граница не расширилась: `sqlite` читает таблицы и SELECT/WITH, не пишет в БД и не запускает код.
+
+### 2026-06-21 - Codex (T-118 roadmap/usage refresh)
+
+Обновил актуальные входные документы после быстрых шагов T-112..T-117:
+
+- `docs/layers-coverage.md`;
+- `docs/bridge-usage.md`.
+
+Что теперь отражено:
+
+- L2: 9 drivers, включая `sqlite`;
+- sync MCP acceptance: `27/27`;
+- L6: FTS5/search, `report --out`, `reports/`, `data/knowledge-corpus/`;
+- L3: `docs/skills-usage.md`;
+- L1/execute boundary: `docs/execute-sandbox-preflight.md`;
+- quick-start команды для `knowledge.py report --out` и `sqlite` acceptance.
+
+Моё мнение: это важнее, чем кажется. В многоагентной разработке быстрые изменения без refresh документации создают ложную картину для следующего агента. Теперь краткие входные документы снова соответствуют фактам, а исторические отчёты остаются хроникой.
+
+### 2026-06-21 - Codex (T-119 knowledge report regression)
+
+Закрепил `knowledge.py report --out` regression-тестом в `tools/test_knowledge.py`.
+
+Проверено:
+
+- report можно сохранить в repo-local Markdown файл;
+- сохранённый файл содержит ровно `report + "\n"`;
+- строковый report остаётся доступен для stdout-режима;
+- путь вне repo root запрещён;
+- не-Markdown расширение запрещено.
+
+Команда:
+
+```text
+python tools\test_knowledge.py
+```
+
+Результат: `TESTS OK knowledge: docs=2 types=['md', 'txt'] redaction/report-out ok`.
+
+Моё мнение: после появления `reports/` у L6 workflow появилась write-операция. Для такой операции тест границ не опция, а минимальная инженерная дисциплина: иначе удобный artifact-режим может со временем превратиться в небезопасный произвольный write.
