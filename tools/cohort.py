@@ -229,22 +229,27 @@ def gate(agent):
 
 # ---------------------------------------------------------------- ship
 
-def ship(agent, files, do_run=False):
-    """Коммит под commit_lock + selective-add (политика Уровень 0): не блокируем других, не тащим чужое."""
+def ship(agent, files, message=None, do_run=False):
+    """Полный безопасный цикл коммита в общем дереве (политика Уровень 0):
+    commit_lock (сериализация) → selective-add (только свои файлы) → regenerate (чтобы pre-commit hook
+    не падал на устарелости от чужих незакоммиченных правок) → commit → release. Индексы regenerate
+    оставляем не-staged — их закоммитит владелец изменивших источников."""
     if not files:
         print("ship: укажи файлы (selective-add; никогда git add -A в общем дереве)")
         return 2
+    msg = message or "ship(%s): %s" % (agent, ", ".join(files))
     plan_cmds = [
-        ("взять commit-lock (сериализация коммитов)", [sys.executable, "tools/commit_lock.py", "acquire", agent]),
+        ("взять commit-lock (сериализация)", [sys.executable, "tools/commit_lock.py", "acquire", agent]),
         ("добавить ТОЛЬКО свои файлы", ["git", "add", *files]),
-        ("коммит", ["git", "commit", "-m", "<сообщение>"]),
+        ("обновить индексы (hook не упадёт на чужой устарелости)", [sys.executable, "tools/generate.py"]),
+        ("коммит", ["git", "commit", "-m", msg]),
         ("освободить lock", [sys.executable, "tools/commit_lock.py", "release", agent]),
     ]
-    print("SHIP (%s): %d файл(ов) под commit_lock + selective-add" % (agent, len(files)))
+    print("SHIP (%s): %d файл(ов) — commit_lock + selective-add + regenerate" % (agent, len(files)))
     for desc, cmd in plan_cmds:
         print("  - %s\n      $ %s" % (desc, " ".join(cmd)))
     if not do_run:
-        print("\n(печать; добавь --run и реальное -m сообщение, чтобы выполнить)")
+        print("\n(печать; добавь --run [--message \"...\"], чтобы выполнить)")
         return 0
     rc, _ = _run("commit_lock.py", "acquire", agent)
     if rc != 0:
@@ -252,8 +257,11 @@ def ship(agent, files, do_run=False):
         return rc
     try:
         rc1, _o = _git("add", *files)
-        rc2, _o2 = _git("commit", "-m", "ship(%s): %s" % (agent, ", ".join(files)))
+        _run("generate.py")  # обновить производные индексы (не-staged) — hook увидит свежее дерево
+        rc2, out2 = _git("commit", "-m", msg)
         print("git add rc=%d, commit rc=%d" % (rc1, rc2))
+        if rc2 != 0:
+            print((out2.strip()[-300:]) or "(commit не прошёл — см. hook)")
     finally:
         _run("commit_lock.py", "release", agent)
     return 0
@@ -331,8 +339,17 @@ def main():
             return turn(pos[0], do_run=do_run)
         if cmd == "gate" and pos:
             return gate(pos[0])
-        if cmd == "ship" and len(pos) >= 2:
-            return ship(pos[0], pos[1:], do_run=do_run)
+        if cmd == "ship":
+            r = list(rest)
+            msg = None
+            if "--message" in r:
+                i = r.index("--message")
+                msg = r[i + 1] if i + 1 < len(r) else None
+                del r[i:i + 2]  # убрать флаг + значение, чтобы оно не попало в файлы
+            p = [x for x in r if not x.startswith("--")]
+            if len(p) >= 2:
+                return ship(p[0], p[1:], message=msg, do_run=do_run)
+            return ship(p[0] if p else "", [], message=msg, do_run=do_run)
         if cmd == "self":
             return self_host(as_json=as_json)
     except Exception as exc:  # noqa: BLE001 — единая точка, понятная ошибка вместо трейсбэка

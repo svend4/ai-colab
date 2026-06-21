@@ -54,11 +54,16 @@ def run():
         _, out = _run("turn", "claude")
         assert "печать" in out, "turn должен быть dry без --run"
 
-        # ship БЕЗ --run: dry, и без файлов — подсказка
+        # ship БЕЗ --run: dry-план включает commit_lock + selective-add + regenerate
         _, out = _run("ship", "claude", "tools/cohort.py")
         assert "печать" in out, "ship должен быть dry без --run"
+        assert "generate" in out, "ship-план должен включать regenerate (чтобы hook не падал)"
+        # ship --message не утекает в список файлов (dry)
+        _, out = _run("ship", "claude", "tools/cohort.py", "--message", "test msg")
+        assert "печать" in out and "test msg" in out, "ship --message должен попасть в план коммита"
+        # ship без файлов — подсказка
         _, out = _run("ship", "claude")
-        assert "selective-add" in out or "укажи файлы" in out, "ship без файлов — подсказка"
+        assert "укажи файлы" in out, "ship без файлов — подсказка"
 
         print("TESTS OK cohort: board/self/plan --json валидны; turn/ship dry-by-default")
     except (AssertionError, ValueError) as e:
