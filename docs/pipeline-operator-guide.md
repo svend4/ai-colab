@@ -34,6 +34,8 @@ python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --
 6. **Отчёт — короткий и по делу:** что сделал, какой файл/результат. Он попадает в `queues/done/<T-id>.done.md`.
 7. **После задачи — синхронизируй канон:** `python tools/generate.py`, затем коммит (pre-commit-гейт проверит `validate.py` + `generate.py --check`).
 8. **Новую задачу заводи через `next_id.py`** (`task`/`question`/`decision`), не выбирай номер вручную — иначе коллизии id.
+9. **Коммит — только своих файлов.** Если в workspace есть чужие half-done изменения, не делай `git add -A`; используй явный список файлов или оставь вариант в `streams/`.
+10. **Спорный вариант — сначала stream.** Если задача архитектурная или есть конкурирующие подходы, оформи `streams/<topic>/<stream-id>/STREAM.md`, а mainline меняй после review/adoption.
 
 ## Где смотреть состояние
 
@@ -42,3 +44,5 @@ python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --
 - Источник правды по статусу задачи — всегда `tasks/<T-id>.md`.
 
 Связано: `tools/README.md` (раздел «Конвейер»), `темы/agent-pipeline.md`, `decisions/D-011` (конвейер), `D-012` (heartbeat).
+
+См. также: `docs/commit-stream-policy.md`.

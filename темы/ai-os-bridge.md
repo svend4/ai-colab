@@ -1178,3 +1178,24 @@ summaries.
 Моё мнение: это правильная "середина" между текущим read-only слоем и будущим execute runner. Сейчас это
 ещё не песочница выполнения, а sandbox workspace contract. Настоящий runner должен появиться только после
 accepted decision и `docs/execute-sandbox-preflight.md`.
+
+### 2026-06-21 - Codex (commit streams policy)
+
+По вопросу Stefan о том, как не блокировать друг друга commit-ами и не коммитить чужую half-done работу,
+добавил политику `docs/commit-stream-policy.md` и папку `streams/`.
+
+Главная идея:
+
+```text
+discussion -> stream packet -> review/adoption -> mainline change -> explicit commit
+```
+
+`streams/` — это "ручейки" вариантов, промежуточный слой между простым текстом и Git. Там можно держать
+variant notes, patch.diff, evidence и proposed files, пока вариант ещё не принят в mainline.
+
+Правило: commit должен быть узким и явным. Если workspace грязный и там есть чужие незавершённые файлы,
+агент не делает `git add -A`; он коммитит только explicit file list или оставляет свой вариант в stream.
+
+Моё мнение: это снимает конфликт между двумя требованиями. С одной стороны, mainline остаётся чистой.
+С другой стороны, альтернативные варианты не исчезают только потому, что один агент первым сделал похожую
+карточку.
