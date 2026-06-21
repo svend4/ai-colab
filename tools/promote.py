@@ -15,11 +15,17 @@ CLI:
     python tools/promote.py check --artifact <path>
     python tools/promote.py move --artifact <path> --from L4 --to L3 \\
         [--reviewed-by NAME] [--decision-ref D-NNN] [--root DIR]
+    python tools/promote.py export --to DIR --files a,b,c   # core-export: курируемая КОПИЯ набора
+    python tools/promote.py export --to DIR --manifest core/engine-manifest.md  # files: из манифеста
 
 --root DIR переопределяет корень пирамиды (для герметичных тестов / временных пирамид).
+
+`export` — для L1 core-export: материализует переносимый набор файлов в отдельный каталог
+(копия, НЕ move — живой `tools/` остаётся mainline). Доказывает переносимость ядра, не ломая ссылки.
 """
 import os
 import sys
+import shutil
 import datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -267,6 +273,31 @@ def move(artifact, frm, to, reviewed_by="unspecified", decision_ref="",
     return {"from_path": src, "to_path": new_path, "from": frm, "to": to, "stamp": stamp}
 
 
+def export(files, to, root=None, readme=None):
+    """Курируемая КОПИЯ списка файлов в target-каталог (core-export), с сохранением repo-relative
+    структуры. НЕ move: исходные файлы остаются. Возвращает {to, copied, missing}."""
+    base = _root(root)
+    dest_root = os.path.abspath(to)
+    copied, missing = [], []
+    for rel in files:
+        rel = rel.replace("\\", "/").strip()
+        src = os.path.join(base, rel)
+        if not os.path.isfile(src):
+            missing.append(rel)
+            continue
+        dst = os.path.join(dest_root, rel)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy2(src, dst)
+        copied.append(rel)
+    os.makedirs(dest_root, exist_ok=True)
+    with open(os.path.join(dest_root, "EXPORT.md"), "w", encoding="utf-8", newline="\n") as f:
+        f.write((readme or "Экспортированный переносимый набор (core-export).") + "\n\n")
+        f.write("Файлы (%d):\n" % len(copied))
+        for c in copied:
+            f.write("- %s\n" % c)
+    return {"to": dest_root, "copied": copied, "missing": missing}
+
+
 def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
 
@@ -301,6 +332,20 @@ def main():
                      root=root, dest=_arg(a, "--dest"), force=("--force" in a))
             print("moved %s -> %s (%s->%s)" % (r["from_path"], r["to_path"], r["from"], r["to"]))
             return 0
+        if cmd == "export" and "--to" in a:
+            files = [x for x in (_arg(a, "--files", "") or "").split(",") if x.strip()]
+            manifest = _arg(a, "--manifest")
+            if manifest and not files:
+                files = _list_field(_read_fm(os.path.join(_root(root), manifest)).get("files"))
+            if not files:
+                print("export: нужны --files a,b,... или --manifest с полем files:")
+                return 2
+            r = export(files, _arg(a, "--to"), root=root)
+            print("export -> %s: скопировано %d, отсутствует %d" %
+                  (r["to"], len(r["copied"]), len(r["missing"])))
+            for m in r["missing"]:
+                print("  MISSING: %s" % m)
+            return 0 if not r["missing"] else 1
     except Exception as exc:
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1
