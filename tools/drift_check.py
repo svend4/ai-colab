@@ -35,16 +35,31 @@ def _run(script, *args):
     return p.returncode, (p.stdout or "") + (p.stderr or "")
 
 
+# Маркеры строки, которая лишь *объясняет* дрейф L0-L8 (а не использует его как канон).
+_LAYER_META = ("L0-L7", "L0–L7", "канон", "вместо", "находк", "расход", "9 уровн", "9 levels")
+# Датированный отчёт/снимок — историческая запись, не живой канон; нумерацию слоёв в нём не сканируем.
+_DATED = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
 def scan_layer_drift(docs_dir):
-    """Файлы docs/*.md с нумерацией L0-L8 (канон — L0-L7, ревью T-078 находка J)."""
+    """Живые docs/*.md, использующие L0-L8 как нумерацию слоёв (канон — L0-L7, ревью T-078 находка J).
+
+    Пропускаем: (1) датированные архивные отчёты (имя файла со YYYY-MM-DD); (2) строки, которые лишь
+    упоминают L0-L8, объясняя сам дрейф (есть L0-L7/канон/вместо/находка/«9 уровней») — чтобы онбординг
+    и манифесты, перечисляющие дрейф как пример, не давали ложных срабатываний (см. заметку T-130)."""
     out = []
     for f in sorted(glob.glob(os.path.join(docs_dir, "*.md"))):
+        base = os.path.basename(f)
+        if _DATED.search(base):
+            continue
         try:
             txt = open(f, encoding="utf-8", errors="replace").read()
         except OSError:
             continue
-        if re.search(r"L0[-–]L8", txt):
-            out.append(os.path.basename(f))
+        for line in txt.splitlines():
+            if re.search(r"L0[-–]L8", line) and not any(m in line for m in _LAYER_META):
+                out.append(base)
+                break
     return out
 
 
