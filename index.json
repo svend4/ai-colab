@@ -1159,6 +1159,17 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0"
+    },
+    {
+      "id": "T-098",
+      "title": "Usage-гайд среднего слоя (docs/bridge-usage.md)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализовано docs/bridge-usage.md — операционный гайд: демо, драйверы, подключение gateway к AI-клиенту (MCP config), безопасность, приёмка, что работает/в работе"
     }
   ],
   "questions": [

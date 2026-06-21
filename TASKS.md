@@ -111,4 +111,5 @@
 | T-095 | Канонизировать нумерацию слоёв L0-L7 (P1, находка J) | done | claude | `темы/repo-review-2026-06-21.md` | Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими |
 | T-096 | Actualize layer coverage after driver acceptance | done | pool | `темы/ai-os-bridge.md` | Карта обновлена; закрыть через pipeline done после validate/generate/snapshot |
 | T-097 | Runnable demo среднего слоя (tools/demo_bridge.py) | done | claude | `темы/ai-os-bridge.md` | Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0 |
+| T-098 | Usage-гайд среднего слоя (docs/bridge-usage.md) | done | claude | `темы/ai-os-bridge.md` | Реализовано docs/bridge-usage.md — операционный гайд: демо, драйверы, подключение gateway к AI-клиенту (MCP config), безопасность, приёмка, что работает/в работе |
 <!-- GEN:tasks END -->
