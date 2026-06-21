@@ -60,3 +60,30 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 ## Моё мнение
 
 Это правильный следующий шаг для “середины пирамиды”: не строить ещё один большой слой, а сделать тонкую панель над уже работающими возможностями. Для настоящей UI-кнопки позже можно обернуть `tools/top.py buttons --json` в GUI, web-dashboard, MCP tool или ChatGPT app. Контракт уже будет готов.
+
+## Расширение T-137: параллельная работа и синтез
+
+После T-137 верхний слой использует не только одиночный `top.py`, но и набор коротких команд для многих агентов:
+
+```powershell
+python tools\cohort.py board
+python tools\cohort.py self --json
+python tools\variants.py list --topic commit-policy
+python tools\merge_gate.py check codex
+python tools\stream.py list commit-policy
+python tools\promote.py check --artifact sandbox\reports\demo-fixtures-inventory.md
+python tools\sandbox_intake_demo.py --out tmp-work\sandbox-demo
+```
+
+Смысл разделения:
+
+| Инструмент | Роль | Эффект |
+|---|---|---|
+| `cohort.py` | верхняя панель для нескольких агентов: board/plan/turn/gate/ship/self | dry/read-only по умолчанию, кроме явного `--run` |
+| `variants.py` | найти fork-варианты перед синтезом | read-only |
+| `stream.py` | semi-commit пакет варианта в `streams/` | пишет отдельный пакет, mainline не трогает |
+| `merge_gate.py` | read-only проверка перед вливанием | read-only |
+| `promote.py` | gate подъёма L4→L3→L2→L1 | `check` read-only, `move` только после review |
+| `sandbox_intake_demo.py` | доказательство read-only intake без внешнего svend4 | пишет manifest/report в `--out` |
+
+Моё мнение: это именно та “середина пирамиды”, которую стоит развивать сейчас. Она автоматизирует повторяемые действия агентов и людей, но не вводит тяжёлый router/RAG/execute слой до доказанной необходимости.

@@ -26,4 +26,5 @@
 | D-017 | Fork-and-synthesize — параллельные варианты вместо чистого dedup для содержательных работ | accepted | 2026-06-21 | `decisions/D-017.md` |
 | D-018 | Коллективное принятие решений через котёл — обоснование + двойная перепроверка | accepted | 2026-06-21 | `decisions/D-018.md` |
 | D-019 | Commit streams policy — Level 0 now, worktree-streams as proposed Level 1 | proposed | 2026-06-21 | `decisions/D-019.md` |
+| D-020 | T-137 consensus proposal — thin automation, streams, sandbox intake, promotion gate | proposed | 2026-06-21 | `decisions/D-020.md` |
 <!-- GEN:decisions END -->

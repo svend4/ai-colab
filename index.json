@@ -326,13 +326,13 @@
     {
       "id": "T-020",
       "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
-      "status": "doing",
+      "status": "blocked",
       "owner": "Novax",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Q-007 закрыт D-010; дальше — read-only repo inventory driver (T-024) и фактический список/доступ к репозиториям Sven4"
+      "next": "Ожидается read-only путь/архив/snapshot внешнего источника; затем generic sandbox intake через tools/sandbox.py или tools/sandbox_intake_demo.py без execute."
     },
     {
       "id": "T-021",
@@ -1613,13 +1613,13 @@
     {
       "id": "T-137",
       "title": "Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат)",
-      "status": "todo",
+      "status": "review",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
-      "next": "Коллективно решить с обоснованием: D3 (сколько инфра-автоматизации — C1-C3 vs §9 P1), T-020/svend4 (дать данные / закрыть orphan / переоформить как первый external-source), приоритет text-extract; двойная перепроверка техн.+гуман."
+      "next": "Review D-020; Stefan/integrator decides worktree-streams, T-020 source policy, text-extract dependency path."
     },
     {
       "id": "T-138",
@@ -1866,6 +1866,13 @@
       "status": "proposed",
       "date": "2026-06-21",
       "file": "decisions/D-019.md"
+    },
+    {
+      "id": "D-020",
+      "title": "T-137 consensus proposal — thin automation, streams, sandbox intake, promotion gate",
+      "status": "proposed",
+      "date": "2026-06-21",
+      "file": "decisions/D-020.md"
     }
   ],
   "drivers": [
