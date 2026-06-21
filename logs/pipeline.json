@@ -1,14 +1,6 @@
 {
-  "epoch": 1782041681,
-  "doing": [
-    {
-      "id": "T-103",
-      "title": "Codex verification for git-log driver and sync acceptance",
-      "agent": "codex",
-      "claim_id": "d9ef4560e9d1",
-      "lease_epoch": "1782042684"
-    }
-  ],
+  "epoch": 1782041790,
+  "doing": [],
   "ready": [],
   "blocked": [
     {

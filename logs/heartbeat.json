@@ -1,5 +1,5 @@
 {
-  "epoch": 1782041681,
+  "epoch": 1782041790,
   "agents": [
     {
       "agent": "claude",
@@ -8,7 +8,7 @@
       "note": "G: execute-sandbox gate в validate (ERROR без реальной изоляции)",
       "eta": "done",
       "epoch": 1782037173,
-      "age_seconds": 4508,
+      "age_seconds": 4617,
       "fresh": false
     },
     {
@@ -18,7 +18,7 @@
       "note": "placeholders retired; validating cleanup",
       "eta": "3m",
       "epoch": 1782038818,
-      "age_seconds": 2863,
+      "age_seconds": 2972,
       "fresh": false
     },
     {
@@ -28,7 +28,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 88599,
+      "age_seconds": 88708,
       "fresh": false
     }
   ]
