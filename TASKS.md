@@ -109,6 +109,6 @@
 | T-093 | Retired placeholder — no task assigned | done | claude | — | закрыто как retired placeholder по политике T-091; реальная gateway-test задача перенесена в T-094 |
 | T-094 | Unit-тест gateway-композиции (in-process, без stdio) — покрытие находки M | done | claude | `темы/repo-review-2026-06-21.md` | Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный |
 | T-095 | Канонизировать нумерацию слоёв L0-L7 (P1, находка J) | done | claude | `темы/repo-review-2026-06-21.md` | Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими |
-| T-096 | Actualize layer coverage after driver acceptance | doing | pool | `темы/ai-os-bridge.md` | Обновить docs/layers-coverage.md под фактическое состояние L2/L6/L7 после T-087..T-095 |
+| T-096 | Actualize layer coverage after driver acceptance | done | pool | `темы/ai-os-bridge.md` | Карта обновлена; закрыть через pipeline done после validate/generate/snapshot |
 | T-097 | Runnable demo среднего слоя (tools/demo_bridge.py) | done | claude | `темы/ai-os-bridge.md` | Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0 |
 <!-- GEN:tasks END -->

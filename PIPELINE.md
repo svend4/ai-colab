@@ -12,7 +12,7 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-096 | high | pool | Actualize layer coverage after driver acceptance |
+| — | — | — | — |
 
 ## Заблокированы
 

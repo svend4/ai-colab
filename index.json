@@ -1141,13 +1141,13 @@
     {
       "id": "T-096",
       "title": "Actualize layer coverage after driver acceptance",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Обновить docs/layers-coverage.md под фактическое состояние L2/L6/L7 после T-087..T-095"
+      "next": "Карта обновлена; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
       "id": "T-097",
