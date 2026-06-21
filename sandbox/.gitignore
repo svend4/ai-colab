@@ -1,0 +1,23 @@
+# Keep sandbox documentation and templates in Git, but keep external code,
+# runtime workspaces, and raw logs local.
+
+inbox/*
+!inbox/README.md
+
+sources/*
+!sources/README.md
+
+workspaces/*
+!workspaces/README.md
+
+runs/*
+!runs/README.md
+
+reports/*
+!reports/README.md
+
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar

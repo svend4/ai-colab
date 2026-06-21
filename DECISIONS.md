@@ -22,4 +22,5 @@
 | D-013 | Driver schema v1 — вариант B как proposed | accepted | 2026-06-20 | `decisions/D-013.md` |
 | D-014 | (зарезервировано — заполните) | proposed | 2026-06-20 | `decisions/D-014.md` |
 | D-015 | Гейт статуса драйверов — многоагентная верификация вместо обязательного human-confirm | accepted | 2026-06-21 | `decisions/D-015.md` |
+| D-016 | Универсальное ядро + тематические порталы (домен как плагин, не в коде ядра) | accepted | 2026-06-21 | `decisions/D-016.md` |
 <!-- GEN:decisions END -->

@@ -1146,3 +1146,35 @@ Stefan справедливо уточнил проблему дублей: ес
 Моё мнение: это более правильная модель для большой компании людей и агентов. Очередь должна быть узкой,
 чтобы работа не конфликтовала, но пространство вариантов должно быть широким, чтобы система находила
 лучшее техническое решение.
+
+### 2026-06-21 - Codex (external code sandbox workspace)
+
+По вопросу старых долгов вроде `T-020` / `svend4` добавил нейтральную `sandbox/` структуру и документ
+`docs/external-code-sandbox.md`.
+
+Главная идея: внешний код нельзя напрямую интегрировать в ядро и нельзя запускать на host Windows просто
+потому, что источник появился. Но его также не нужно держать вечным blocked. Нужен промежуточный слой:
+
+```text
+external source -> manifest -> quarantine -> read-only inventory -> report -> decision
+```
+
+Создана папка:
+
+```text
+sandbox/
+  inbox/
+  sources/
+  workspaces/
+  runs/
+  reports/
+  templates/
+```
+
+Она не привязана к `svend4`: тот же процесс работает для любого GitHub-профиля, архива, локального кода
+или портала. Raw sources и workspaces не коммитятся; в Git попадают только README/templates и очищенные
+summaries.
+
+Моё мнение: это правильная "середина" между текущим read-only слоем и будущим execute runner. Сейчас это
+ещё не песочница выполнения, а sandbox workspace contract. Настоящий runner должен появиться только после
+accepted decision и `docs/execute-sandbox-preflight.md`.

@@ -1,0 +1,33 @@
+{
+  "schema": "external-source-manifest/v1",
+  "source_id": "example-source-YYYYMMDD",
+  "title": "Human-readable source title",
+  "source_type": "git|archive|local-folder|export|corpus|other",
+  "origin": {
+    "url": "",
+    "local_path": "",
+    "provided_by": "",
+    "received_at": "YYYY-MM-DD"
+  },
+  "permission": {
+    "allowed_for_project": false,
+    "license_or_usage_note": "",
+    "approved_by": "",
+    "approval_reference": ""
+  },
+  "safety": {
+    "contains_external_code": true,
+    "may_contain_secrets": "unknown",
+    "may_contain_personal_data": "unknown",
+    "default_mode": "read-only",
+    "execute_candidate": false
+  },
+  "analysis_goal": [
+    "inventory",
+    "documentation review"
+  ],
+  "expected_outputs": [
+    "sandbox/reports/example-source-YYYYMMDD-inventory.md"
+  ],
+  "notes": ""
+}

@@ -10,3 +10,4 @@ logs/_sync_acc.db
 logs/knowledge.db
 logs/knowledge.db
 logs/_kn_test*.db
+data/portals/*/*.db

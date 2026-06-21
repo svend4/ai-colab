@@ -26,6 +26,7 @@ docs/
 - `pipeline-operator-guide.md` — практический порядок работы с pipeline/live-room.
 - `agent-roles-matrix.md` — матрица ролей людей, AI-агентов и скриптов: зоны записи, запреты, типовые задачи, эскалация и цикл pool-задачи.
 - `driver-safety-policy.md` — правила безопасности для драйверов и больших папок.
+- `external-code-sandbox.md` — универсальная схема `sandbox/` для внешнего кода и старых долгов вроде `svend4`: intake, quarantine, read-only inventory, workspaces, reports, execute gate.
 - `data-folder-plan.md` — план будущей `data/` структуры для корпуса: inbox/originals/copies/text/chunks/indexes/reports/audit/workbench.db и правила записи.
 - `test-corpus-plan.md` — план маленького безопасного fixture-корпуса для проверки `files`, `text-extract`, `search-index`, `report`.
 - `runtime-diagnostics.md` — диагностика блокировки внешних процессов/Python runtime, которая держит T-029/T-039 blocked.

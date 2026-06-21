@@ -14,6 +14,10 @@ related: tasks/T-114.md, tasks/T-020.md, drivers/SCHEMA.md, docs/driver-safety-p
 
 Это preflight-документ, а не разрешение на `mode: execute`. Текущий проект остается read-only для внешних репозиториев.
 
+Связанная рабочая зона: `sandbox/`. Её описание — `docs/external-code-sandbox.md`.
+`sandbox/` не даёт разрешение на запуск. Это quarantine/intake/workspace структура для любого внешнего
+кода до решения о sandbox runner.
+
 ## Жесткие запреты до отдельного решения
 
 - Не запускать `run`, `test`, `install`, `pip install`, `npm install`, `make`, shell-скрипты или бинарники из непроверенного репозитория на хостовой Windows-системе.
@@ -213,6 +217,7 @@ Invoke-Timed "driver execute scan" {
 2. сохранять отчеты в `reports/`;
 3. делать knowledge corpus и query/report;
 4. проверять зависимости и риск-файлы без запуска;
-5. только после этого проектировать sandbox-runner как отдельный L3/L4 модуль.
+5. регистрировать внешние источники через `sandbox/` и `docs/external-code-sandbox.md`;
+6. только после этого проектировать sandbox-runner как отдельный L3/L4 модуль.
 
 Моё мнение: запуск чужого кода должен быть не "следующей кнопкой" в текущем драйвере, а отдельной подсистемой с собственным review, лимитами и audit. Иначе весь полезный read-only слой становится слишком рискованным для обычной многоагентной работы.

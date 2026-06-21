@@ -1540,6 +1540,28 @@
       "depends_on": "[]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
       "next": "Реализовать tools/onboard.py <agent> — одна команда входа: печатает system-capabilities.json кратко + текущий pipeline status + что читать (agent-onboarding/operating-manual), вместо чтения 10 файлов вручную"
+    },
+    {
+      "id": "T-132",
+      "title": "Механизм тематических порталов tools/portal.py (D-016 universal core + portals)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-129]",
+      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "next": "Реализован tools/portal.py (list/new/build/report) поверх knowledge-движка; домен = контент портала (файлы+topics как данные), ядро не меняется; демо-портал data/portals/example; тест зелёный"
+    },
+    {
+      "id": "T-133",
+      "title": "text-extract — генерик-извлечение текста (.md/.txt/.html → PDF/DOCX) для реальных порталов",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "next": "По D-016 text-extract — генерик-способность ядра (не доменная): начать с .md/.txt/.html (stdlib), затем .pdf/.docx (первая внешняя зависимость — осознанное решение). Нужно для индексации реальных документов в любом портале"
     }
   ],
   "questions": [
@@ -1637,9 +1659,9 @@
     {
       "id": "Q-014",
       "title": "Цель проекта — юридический workbench (домен) или универсальный generic-инструмент?",
-      "status": "open",
-      "where": "",
-      "outcome": ""
+      "status": "answered",
+      "where": "темы/opinion-synthesis-2026-06-21.md",
+      "outcome": "Stefan — универсальное ядро + домен как тематический портал/плагин (модель Википедии). См. D-016."
     }
   ],
   "decisions": [
@@ -1747,6 +1769,13 @@
       "status": "accepted",
       "date": "2026-06-21",
       "file": "decisions/D-015.md"
+    },
+    {
+      "id": "D-016",
+      "title": "Универсальное ядро + тематические порталы (домен как плагин, не в коде ядра)",
+      "status": "accepted",
+      "date": "2026-06-21",
+      "file": "decisions/D-016.md"
     }
   ],
   "drivers": [

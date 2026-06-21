@@ -1,0 +1,47 @@
+{
+  "schema": "sandbox-run-plan/v1",
+  "run_id": "run-YYYYMMDD-HHMM",
+  "source_id": "example-source-YYYYMMDD",
+  "task_id": "",
+  "agent_id": "",
+  "status": "draft",
+  "preflight": {
+    "accepted_decision": "",
+    "inventory_report": "",
+    "human_first_run_confirmation": ""
+  },
+  "environment": {
+    "type": "docker|wsl2|vm|remote-server|none",
+    "image_or_vm": "",
+    "workdir": "",
+    "network": "none",
+    "read_only_root": true
+  },
+  "mounts": [
+    {
+      "host_path": "",
+      "guest_path": "",
+      "mode": "ro"
+    }
+  ],
+  "limits": {
+    "timeout_seconds": 60,
+    "cpus": 1,
+    "memory": "1g",
+    "pids": 128,
+    "disk": ""
+  },
+  "command": {
+    "argv": [],
+    "shell": false
+  },
+  "outputs": {
+    "raw_log_path": "sandbox/runs/run-YYYYMMDD-HHMM/",
+    "summary_report": "sandbox/reports/run-YYYYMMDD-HHMM-summary.md"
+  },
+  "rollback": {
+    "delete_workspace_after_run": true,
+    "preserve_outputs": true
+  },
+  "notes": ""
+}
