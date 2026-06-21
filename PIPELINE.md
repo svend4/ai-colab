@@ -6,13 +6,13 @@
 
 | Задача | Агент | Claim | Lease epoch | Название |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| T-103 | codex | d9ef4560e9d1 | 1782042684 | Codex verification for git-log driver and sync acceptance |
 
 ## Готовы к взятию
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-103 | high | pool | Codex verification for git-log driver and sync acceptance |
+| — | — | — | — |
 
 ## Заблокированы
 

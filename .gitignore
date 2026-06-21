@@ -2,3 +2,8 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 tmp-work/
+
+# runtime-артефакты драйверов (не версионируем)
+logs/driver-audit.jsonl
+logs/demo_bridge.db
+logs/_sync_acc.db

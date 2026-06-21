@@ -880,3 +880,15 @@ RESULT OK
 Почему это важно: раньше sync path подтверждал только `initialize/tools-list`. Теперь read-only L2 контур проверяется через реальные tool calls без зависимости от проблемного Windows `asyncio` stdio path.
 
 Моё мнение: это сильный шаг вперёд для “живости” среднего слоя. Но формулировка должна оставаться честной: это переносимая sync acceptance, а не доказательство, что официальный async MCP клиент работает в любой Windows-среде.
+
+### 2026-06-21 - Codex (T-103 git-log second verification)
+
+Проверил `git-log` driver вторым агентом.
+
+Что подтвердилось:
+
+- unit test `drivers\git-log\test_git_log.py` проходит;
+- `python drivers\mcp_sync_probe.py git-log --timeout 60` показывает 4 tools;
+- полный `python drivers\mcp_sync_acceptance.py --timeout 90` теперь даёт `SYNC ACCEPTANCE pass=23 fail=0`.
+
+Важная техническая находка: MCP `tools/call` для `git-log` зависал, пока `git` subprocess наследовал stdin stdio-сервера. Fix: `stdin=subprocess.DEVNULL` в `drivers/git-log/git_log.py`. После этого `git-log` можно считать `ready` как read-only L2 driver.

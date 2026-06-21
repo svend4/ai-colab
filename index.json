@@ -1224,7 +1224,7 @@
       "risk": "low",
       "depends_on": "[T-102, T-101]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Проверить git-log вторым агентом, добавить в mcp_sync_probe/mcp_sync_acceptance и прогнать"
+      "next": "Проверки пройдены; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
       "id": "T-104",
@@ -1247,6 +1247,17 @@
       "depends_on": "[T-102]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Исправлено: git-вызовы с stdin=DEVNULL (устранён Windows-дедлок наследования stdin-пайпа MCP-сервера); git-log sync-приёмка pass=4 fail=0; статус git-log → ready по D-015"
+    },
+    {
+      "id": "T-106",
+      "title": "Не версионировать runtime-артефакты драйверов (.gitignore audit-лог/temp-БД)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[T-083]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выполнено: logs/driver-audit.jsonl (+ demo/sync temp-БД) в .gitignore и убраны из индекса (git rm --cached); дерево больше не дрейфит от прогонов"
     }
   ],
   "questions": [
