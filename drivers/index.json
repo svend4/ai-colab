@@ -61,7 +61,7 @@
       "level": "L2",
       "mode": "read-only",
       "risk": "medium",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
       "activation": "mcp"

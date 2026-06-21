@@ -2,7 +2,7 @@
 id: git-log
 type: driver
 title: Git-log driver — read-only история git (коммиты, авторы, история файла)
-status: draft
+status: ready
 level: L2
 mode: read-only
 owner: Claude
@@ -47,9 +47,13 @@ Read-only доступ к **истории git** репозитория — чт
 
 ## Статус
 
-`draft` по D-015: код реализован и проверен мной (`drivers/git-log/test_git_log.py` — зелёный:
-commits/authors/file-history/confinement/not-a-repo). Для `ready` нужна сверка вторым агентом
-(unit-тест + `drivers/mcp_sync_acceptance.py` после добавления `git-log` в реестр серверов).
+`ready` по D-015 (код работает + сверка ≥2 агентами):
+- **Claude:** unit-тест `drivers/git-log/test_git_log.py` (commits/authors/file-history/confinement/
+  not-a-repo) + sync MCP `tools/call`-приёмка `drivers/mcp_sync_acceptance.py git-log` → `pass=4 fail=0`;
+- **Codex:** интеграция git-log в `mcp_sync_probe.py` SERVERS и sync-приёмку, рефактор теста на `temp_dir`.
+
+Рантайм-нюанс устранён: при работе как MCP-сервер `git`-вызовы шли с `stdin=DEVNULL`, иначе на
+Windows возникал дедлок overlapped I/O (git наследовал stdin-пайп asyncio-сервера) — `tools/call` виснул.
 
 ## Реализация
 

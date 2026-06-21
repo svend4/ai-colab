@@ -118,4 +118,5 @@
 | T-102 | Новый read-only L2-драйвер git-log (история git) (шаг 3/4) | done | claude | `темы/ai-os-bridge.md` | Реализован драйвер git-log (engine+MCP+тест+манифест); тест зелёный; в каталоге 8 драйверов; status draft по D-015 (нужна сверка 2-м агентом для ready) |
 | T-103 | Codex verification for git-log driver and sync acceptance | doing | pool | `темы/ai-os-bridge.md` | Проверить git-log вторым агентом, добавить в mcp_sync_probe/mcp_sync_acceptance и прогнать |
 | T-104 | Консолидация плана разработки — демо с git-log + сквозная верификация (шаг 4/4) | done | claude | `темы/ai-os-bridge.md` | Демо расширено до 5 способностей (git-log); финальная верификация зелёная (validate 9/0/0, gateway/git-log тесты, демо, sync-приёмка 19/19) |
+| T-105 | Фикс git-log MCP tools/call hang (stdin=DEVNULL) + git-log → ready | done | claude | `темы/ai-os-bridge.md` | Исправлено: git-вызовы с stdin=DEVNULL (устранён Windows-дедлок наследования stdin-пайпа MCP-сервера); git-log sync-приёмка pass=4 fail=0; статус git-log → ready по D-015 |
 <!-- GEN:tasks END -->

@@ -63,9 +63,15 @@ def _resolve_repo(repo, base_dir=None):
 
 
 def _git(repo_path, args, timeout=TIMEOUT):
-    """Запуск read-only git-команды. args — только из доверенного whitelist вызывающего."""
+    """Запуск read-only git-команды. args — только из доверенного whitelist вызывающего.
+
+    `stdin=DEVNULL` обязателен: когда драйвер работает как MCP-сервер (subprocess под
+    pipe-stdio), без этого `git` наследует stdin-пайп asyncio-сервера и на Windows
+    возникает дедлок overlapped I/O — `tools/call` виснет (in-process путь не затронут).
+    """
     proc = subprocess.run(
         ["git", "-C", str(repo_path)] + args,
+        stdin=subprocess.DEVNULL,
         capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout,
     )
     if proc.returncode != 0:

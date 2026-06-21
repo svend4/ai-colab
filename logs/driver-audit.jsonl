@@ -73,3 +73,58 @@
 {"ts": 1782040723, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
 {"ts": 1782040723, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
 {"ts": 1782040723, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782040986, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040986, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040986, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040995, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782040995, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040995, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782040995, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782041002, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782041002, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782041014, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041014, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782041014, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782041014, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782041014, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041014, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782041023, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041027, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041087, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041114, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041138, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041198, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041204, "driver": "git-log", "action": "file_history", "target": ".", "path": "AGENTS.md", "n": 5}
+{"ts": 1782041294, "driver": "git-log", "action": "repo_summary", "target": "."}
+{"ts": 1782041407, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041417, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041427, "driver": "git-log", "action": "file_history", "target": ".", "path": "AGENTS.md", "n": 5}
+{"ts": 1782041437, "driver": "git-log", "action": "repo_summary", "target": "."}
+{"ts": 1782041463, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 2}
+{"ts": 1782041487, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 2}
+{"ts": 1782041487, "driver": "git-log", "action": "repo_summary", "target": "."}
+{"ts": 1782041493, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 3}
+{"ts": 1782041493, "driver": "git-log", "action": "repo_summary", "target": "."}
+{"ts": 1782041560, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041561, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041561, "driver": "git-log", "action": "file_history", "target": ".", "path": "AGENTS.md", "n": 5}
+{"ts": 1782041561, "driver": "git-log", "action": "repo_summary", "target": "."}
+{"ts": 1782041564, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041564, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041564, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041573, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782041573, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782041573, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782041573, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782041580, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782041580, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782041589, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041589, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782041589, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782041589, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782041589, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782041589, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782041600, "driver": "git-log", "action": "recent_commits", "target": ".", "n": 5}
+{"ts": 1782041600, "driver": "git-log", "action": "author_stats", "target": "."}
+{"ts": 1782041601, "driver": "git-log", "action": "file_history", "target": ".", "path": "AGENTS.md", "n": 5}
+{"ts": 1782041601, "driver": "git-log", "action": "repo_summary", "target": "."}
