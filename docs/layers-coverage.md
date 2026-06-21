@@ -13,22 +13,22 @@
 |---|---|---|---|---|
 | **L0 Основание** | ОС, ФС, железо | Windows + file-native репозиторий | ✅ | — |
 | **L1 Runtime** | Python / Node / shell / Docker / WSL2 | Python-инструменты и PowerShell работают; стандартный Windows `tempfile` и `asyncio` stdio pipes имеют локальные ограничения | 🟡 | WSL2 + Docker/контейнеры для запуска непроверенного кода; продолжать использовать `drivers/test_tmp.py` для тестов |
-| **L2 MCP-драйверы** | обёртки ИИ↔возможность (stdio/http) | 7 driver manifest; MCP wrappers для `files`, `data`, `repo-runner`, `codex-local`, `gateway`; sync `tools/list` и sync `tools/call` acceptance 19/19 работают; manifest-tools validation и gateway in-process regression есть | 🟡 | Оставшийся hardening: официальный async stdio runtime в проблемных Windows-средах, cleanup старых blocker-формулировок в done-задачах, затем server/sandbox только по спросу |
-| **L3 Skills** | пассивные навыки, грузятся по требованию | Правила, manifest-подход и docs есть; переносимые проектные `.codex/skills/*/SKILL.md` ещё не оформлены | 🟡 | выделить повторяемые workflow в 2-3 проектных skill-папки (`driver-acceptance`, `pipeline-operator`, `repo-review`) |
+| **L2 MCP-драйверы** | обёртки ИИ↔возможность (stdio/http) | 8 driver manifest; MCP wrappers для `files`, `data`, `repo-runner`, `codex-local`, `gateway`, `git-log`; sync `tools/list` и sync `tools/call` acceptance 23/23 работают; manifest-tools validation и gateway in-process regression есть | 🟡 | Оставшийся hardening: официальный async stdio runtime в проблемных Windows-средах и server/sandbox только по спросу |
+| **L3 Skills** | пассивные навыки, грузятся по требованию | `skills/driver-acceptance`, `skills/pipeline-operator`, `skills/repo-review` оформлены как переносимые `SKILL.md` + README | ✅ | позже упаковать как plugin/marketplace, если появится реальная командная установка |
 | **L4 Агенты/субагенты** | исполнители с ролью и контекстом | `participants/` (Claude/Codex/Mavis/Novax), `AGENTS.md` | ✅ | — |
 | **L5 Plugins/Marketplaces** | упаковка навыков+MCP в пакет | `drivers/` — зародыш | ❌ | позже, когда появятся MCP-драйверы |
-| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance, `gateway.memory_query` и `tools/knowledge.py` workflow есть | 🟡 | расширить knowledge workflow на реальные корпуса и отчёты; vector/RAG оставить позже |
+| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance, `gateway.memory_query` и `tools/knowledge.py` workflow есть | 🟡 | применить knowledge workflow к большему безопасному корпусу и сохранять отчёты; vector/RAG оставить позже |
 | **L7 Оркестрация** | правила + конвейер + наблюдаемость | `AGENTS.md`, `PROTOCOL.md`, `pipeline.py`, `queue`, `dispatch`, `generate`/`validate`, `next_id` | ✅ | — |
 | **Вершина: клиент-хост** | дирижёр (Cowork/Codex/Claude) | агенты в своих сессиях | ✅ | — |
 
 ## Вывод
 
-Сильные слои — **L0, L4, L7** (основание, агенты, оркестрация — это и есть инфраструктура, которую построили). После T-087..T-095 средний слой уже вышел за пределы «карты»: **L2** имеет рабочие read-only драйверы и MCP/tools-list контур, **L6** имеет SQLite workbench/ingest/search. Но оба слоя ещё не являются зрелой платформой: L2 требует устойчивой `tools/call` приёмки, L6 требует регулярного knowledge workflow и, позже, vector/RAG.
+Сильные слои — **L0, L3, L4, L7** (основание, skills, агенты, оркестрация). После T-087..T-110 средний слой уже вышел за пределы «карты»: **L2** имеет рабочие read-only драйверы и переносимую MCP `tools/call` приёмку 23/23, **L6** имеет SQLite workbench/ingest/search и практический knowledge workflow. Но это всё ещё read-only прототип, а не execute-платформа: запуск чужого кода требует отдельной песочницы.
 
 **Рекомендуемый порядок (right-size, по D-010):**
-1. **L2 — reconciliation hardening:** убрать старые blocker-формулировки из done-задач и оставить явную разницу между sync acceptance и официальным async stdio client.
-2. **L6 — knowledge workflow next:** применить `tools/knowledge.py` к большему безопасному корпусу и сделать сохраняемый report artifact.
-3. **L3 — project skills:** вынести повторяемые процедуры (`driver acceptance`, `pipeline operation`, `repo review`) в переносимые `SKILL.md`.
+1. **L6 — knowledge report artifacts:** применить `tools/knowledge.py` к большему безопасному корпусу и сохранять Markdown-отчёты в `docs/` или `reports/`.
+2. **L2 — async/stdout compatibility:** при необходимости проверить официальный async MCP client во внешней среде; локальный sync path уже покрывает регулярную приёмку.
+3. **L5 — packaging later:** plugin/marketplace только если skills/drivers надо переносить в другие проекты.
 4. **L1 — WSL2+Docker** только когда дойдём до запуска непроверенного кода Sven4 или другого внешнего кода (песочница).
 
 Связано: `docs/middle-layer-guide.md`, `docs/agent-layer-design.md`, `темы/ai-os-bridge.md`, `decisions/D-010.md`.

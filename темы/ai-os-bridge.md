@@ -909,3 +909,13 @@ python tools\knowledge.py query logs\knowledge.db sample
 Что важно: `logs/knowledge.db` добавлен в `.gitignore`, потому что это runtime-БД. В git должен идти код workflow и отчёт, а не локальная база.
 
 Моё мнение: это правильный L6-шаг перед vector/RAG. Сначала нужен простой проверяемый контур памяти, затем можно расширять его на большие корпуса.
+
+### 2026-06-21 - Codex (T-110 roadmap reconciliation)
+
+Синхронизировал roadmap после последних шагов:
+
+- `T-048` и `T-051` больше не выглядят как текущие blockers: исторический async stdio blocker оставлен, но добавлен актуальный блок про sync MCP `tools/call` acceptance;
+- `docs/layers-coverage.md` обновлён до 8 драйверов, sync acceptance 23/23, L3 project skills и L6 knowledge workflow;
+- execute/svend4 оставлен отдельной зоной, где нужна песочница.
+
+Моё мнение: это важная уборка для новых агентов. Старые диагностические записи полезны как история, но `next` у done-задач должен показывать актуальную картину, иначе конвейер и roadmap начинают спорить друг с другом.

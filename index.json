@@ -619,7 +619,7 @@
       "risk": "low",
       "depends_on": "[T-039, T-047]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Blocked by runtime: files unit/inventory tests pass, but MCP stdio depends on asyncio subprocess pipe, which fails with PermissionError WinError 5 in this environment"
+      "next": "Done: files unit/inventory pass; sync MCP tools/call acceptance now covers files without relying on broken Windows async stdio"
     },
     {
       "id": "T-049",
@@ -652,7 +652,7 @@
       "risk": "low",
       "depends_on": "[T-039, T-050]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Blocked by runtime: repo-runner unit test passed, but MCP stdio acceptance depends on asyncio subprocess pipe; see docs/mcp-stdio-windows-pipe-diagnostics-2026-06-21.md"
+      "next": "Done: repo-runner unit path and sync MCP tools/call acceptance pass without relying on broken Windows async stdio"
     },
     {
       "id": "T-052",
@@ -1291,6 +1291,17 @@
       "depends_on": "[T-078]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализовано skills/ с 3 SKILL.md (driver-acceptance, pipeline-operator, repo-review) + README; закрывает L3 project skills из roadmap layers-coverage"
+    },
+    {
+      "id": "T-110",
+      "title": "Reconcile L2/L3/L6 roadmap after sync acceptance and skills",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-100, T-103, T-107, T-109]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Reconciliation внесён; закрыть через pipeline done после validate/generate/snapshot"
     }
   ],
   "questions": [
