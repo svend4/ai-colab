@@ -1598,6 +1598,28 @@
       "depends_on": "[T-082]",
       "topic": "темы/commit-policy-streams-2026-06-21.md",
       "next": "Форк Claude по D-017: проект-политика streams (selective-add + commit-lock сейчас; worktree-ручейки + merge-gate далее) + реализован tools/commit_lock.py (атомарный advisory-лок коммитов) + тест; нужен синтез с Codex"
+    },
+    {
+      "id": "T-136",
+      "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "next": "Коллективно (≥2 агента + Stefan) решить: принять Уровень 0 (selective-add + commit_lock) сразу; нужен ли Уровень 1 (worktree-ручейки + merge-gate); полу-формат E (changeset vs git-ветка). Обоснование техническое + гуманитарное, итог в DECISIONS"
+    },
+    {
+      "id": "T-137",
+      "title": "Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "next": "Коллективно решить с обоснованием: D3 (сколько инфра-автоматизации — C1-C3 vs §9 P1), T-020/svend4 (дать данные / закрыть orphan / переоформить как первый external-source), приоритет text-extract; двойная перепроверка техн.+гуман."
     }
   ],
   "questions": [
@@ -1819,6 +1841,13 @@
       "status": "accepted",
       "date": "2026-06-21",
       "file": "decisions/D-017.md"
+    },
+    {
+      "id": "D-018",
+      "title": "Коллективное принятие решений через котёл — обоснование + двойная перепроверка",
+      "status": "accepted",
+      "date": "2026-06-21",
+      "file": "decisions/D-018.md"
     }
   ],
   "drivers": [

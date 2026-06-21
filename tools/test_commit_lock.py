@@ -1,15 +1,37 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Тест commit-lock (tools/commit_lock.py) — сериализация коммитов."""
 import os
 import sys
-import tempfile
 import shutil
 
-ROOT = tempfile.mkdtemp(prefix="cl_test_")
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(HERE)
+
+
+def prepare_root():
+    candidates = [
+        os.path.join(r"C:\tmp", "ai_colab_commit_lock_test"),
+        os.path.join(REPO_ROOT, "tmp-work", "commit_lock_test_runtime"),
+    ]
+    last_error = None
+    for root in candidates:
+        try:
+            shutil.rmtree(root, ignore_errors=True)
+            os.makedirs(os.path.join(root, "queues"), exist_ok=True)
+            probe = os.path.join(root, "queues", ".write_probe")
+            with open(probe, "w", encoding="utf-8") as f:
+                f.write("ok")
+            os.remove(probe)
+            return root
+        except OSError as exc:
+            last_error = exc
+    raise RuntimeError("no writable commit_lock test root: %r" % (last_error,))
+
+
+ROOT = prepare_root()
 os.environ["COLLAB_ROOT"] = ROOT
-os.makedirs(os.path.join(ROOT, "queues"), exist_ok=True)
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, HERE)
 import commit_lock as cl
 
 
@@ -24,7 +46,7 @@ def run():
         assert cl.acquire("codex", wait=0) == 0, "после release свободно"
         assert cl.release("codex") == 0
 
-        # протухший лок снимается и берётся
+        # Протухший лок снимается и берётся.
         with open(cl.LOCK, "w", encoding="utf-8", newline="\n") as f:
             f.write("agent: ghost\nepoch: 1\nlease_epoch: 1\n")
         assert cl.acquire("claude", wait=0) == 0, "протухший лок должен перехватываться"
