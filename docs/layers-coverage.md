@@ -17,16 +17,16 @@
 | **L3 Skills** | пассивные навыки, грузятся по требованию | `skills/driver-acceptance`, `skills/pipeline-operator`, `skills/repo-review` оформлены как переносимые `SKILL.md` + README; usage/packaging guide — `docs/skills-usage.md` | ✅ | позже упаковать как plugin/marketplace, если появится реальная командная установка |
 | **L4 Агенты/субагенты** | исполнители с ролью и контекстом | `participants/` (Claude/Codex/Mavis/Novax), `AGENTS.md` | ✅ | — |
 | **L5 Plugins/Marketplaces** | упаковка навыков+MCP в пакет | есть кандидаты (`skills/`, `drivers/`), но нет plugin manifest/install lifecycle | ❌ | позже, когда один skill/driver реально понадобится переносить как пакет |
-| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance, `gateway.memory_query`; `tools/knowledge.py` имеет FTS5 search, `report --out`, `reports/`, `data/knowledge-corpus/` | 🟡 | закрепить `report --out` regression-тестом; vector/RAG оставить позже |
+| **L6 Память / RAG** | SQLite, векторная БД, индексы | `workbench` SQLite driver ready; `documents`/`audit_log`, ingest/search tests, CLI acceptance, `gateway.memory_query`; `tools/knowledge.py` имеет FTS5 search, `report --out`, `reports/`, `data/knowledge-corpus/`, regression-тест write-path safety | 🟡 | применить workflow к более крупному безопасному корпусу; vector/RAG оставить позже |
 | **L7 Оркестрация** | правила + конвейер + наблюдаемость | `AGENTS.md`, `PROTOCOL.md`, `pipeline.py`, `queue`, `dispatch`, `generate`/`validate`, `next_id` | ✅ | — |
 | **Вершина: клиент-хост** | дирижёр (Cowork/Codex/Claude) | агенты в своих сессиях | ✅ | — |
 
 ## Вывод
 
-Сильные слои — **L0, L3, L4, L7** (основание, skills, агенты, оркестрация). После T-087..T-117 средний слой уже вышел за пределы «карты»: **L2** имеет рабочие read-only драйверы и переносимую MCP `tools/call` приёмку 27/27, включая `sqlite`; **L6** имеет SQLite workbench/ingest/search, FTS5, `report --out`, `reports/` и безопасный mini-corpus. Но это всё ещё read-only прототип, а не execute-платформа: запуск чужого кода требует отдельной песочницы и accepted decision.
+Сильные слои — **L0, L3, L4, L7** (основание, skills, агенты, оркестрация). После T-087..T-120 средний слой уже вышел за пределы «карты»: **L2** имеет рабочие read-only драйверы и переносимую MCP `tools/call` приёмку 27/27, включая `sqlite`; **L6** имеет SQLite workbench/ingest/search, FTS5, `report --out`, `reports/`, безопасный mini-corpus и regression-тест write-path safety. Но это всё ещё read-only прототип, а не execute-платформа: запуск чужого кода требует отдельной песочницы и accepted decision.
 
 **Рекомендуемый порядок (right-size, по D-010):**
-1. **L6 — regression:** закрепить `tools/knowledge.py report --out` и safe-path правила тестом (`T-119`).
+1. **L6 — larger safe corpus:** применить knowledge workflow к более крупному безопасному корпусу и сравнивать `reports/` между запусками.
 2. **L2 — async/stdout compatibility:** при необходимости проверить официальный async MCP client во внешней среде; локальный sync path уже покрывает регулярную приёмку.
 3. **L5 — packaging later:** plugin/marketplace только если конкретный skill/driver нужно переносить как пакет.
 4. **L1 — WSL2+Docker** только когда дойдём до запуска непроверенного кода Sven4 или другого внешнего кода (песочница).

@@ -82,9 +82,10 @@ python tools/knowledge.py search logs/knowledge.db bridge
 - ✅ Работает: read-only драйверы (files/repo-runner/data/codex-local/git-log/sqlite), gateway-композиция,
   workbench-память, knowledge workflow с FTS5/search/report `--out`, `reports/`, безопасный
   `data/knowledge-corpus/`, демо, in-process тесты, manifest↔tools сверка, аудит,
-  sync `tools/call` MCP-приёмка 27/27, переносимые project skills (L3) и `docs/skills-usage.md`.
-- 🟡 В работе: regression-тест для `knowledge.py report --out`, official async stdio path в проблемных
-  Windows-средах только по необходимости.
+  sync `tools/call` MCP-приёмка 27/27, regression-тест `knowledge.py report --out`,
+  переносимые project skills (L3) и `docs/skills-usage.md`.
+- 🟡 В работе: official async stdio path в проблемных Windows-средах только по необходимости;
+  следующий практический рост — более крупный безопасный corpus и реальные read-only источники.
 - ⛔ Отдельно (с песочницей): запуск непроверенного кода (svend4) — требует контейнера/изоляции,
   `mode: execute` закрыт гардом до её реализации.
 

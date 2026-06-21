@@ -1401,6 +1401,17 @@
       "depends_on": "[T-111, T-112, T-115]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Закрыто — report --out regression и write-path safety покрыты тестом"
+    },
+    {
+      "id": "T-120",
+      "title": "Architecture docs recheck — сверить раннюю концепцию с текущей стадией",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-118, T-119]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто — отчёт по ранней архитектуре и текущей стадии создан, drift исправлен"
     }
   ],
   "questions": [

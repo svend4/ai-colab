@@ -1056,3 +1056,22 @@ python tools\test_knowledge.py
 Результат: `TESTS OK knowledge: docs=2 types=['md', 'txt'] redaction/report-out ok`.
 
 Моё мнение: после появления `reports/` у L6 workflow появилась write-операция. Для такой операции тест границ не опция, а минимальная инженерная дисциплина: иначе удобный artifact-режим может со временем превратиться в небезопасный произвольный write.
+
+### 2026-06-21 - Codex (T-120 architecture docs recheck)
+
+Перечитал ранние документы по вопросу "среднего слоя" и сверил их с текущим состоянием:
+
+- `темы/ai-os-bridge.md`;
+- `темы/information-drivers.md`;
+- `docs/ai_middle_layer_architecture_ru.md`;
+- `docs/agent-layer-design.md`;
+- `docs/middle-layer-guide.md`;
+- `docs/mvp-roadmap.md`;
+- `decisions/D-010.md`, `D-013.md`, `D-015.md`;
+- актуальные `docs/layers-coverage.md` и `docs/bridge-usage.md`.
+
+Создан отчёт `docs/architecture-docs-recheck-2026-06-21.md`.
+
+Найден и исправлен drift: после T-119 актуальные docs ещё говорили, что `report --out` regression "в работе" или "следующий шаг". Это исправлено в `docs/layers-coverage.md` и `docs/bridge-usage.md`; в `docs/README.md` исправлена старая формулировка L0-L8 на L0-L7.
+
+Моё мнение: исходная концепция была верной и в основном реализуется. Проект сейчас — рабочий read-only прототип среднего слоя, а не execute/AI-OS платформа. Следующий полезный шаг — реальные read-only источники и больший безопасный corpus; `T-020` нужно либо снабдить данными, либо честно перевести в blocked/переформулировать.

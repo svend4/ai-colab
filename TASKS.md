@@ -133,4 +133,5 @@
 | T-117 | SQLite driver second-agent acceptance — перевести draft→ready по D-015 | done | pool | `темы/ai-os-bridge.md` | Закрыто — sqlite driver ready по D-015, полный sync acceptance pass=27 fail=0 |
 | T-118 | Roadmap/usage refresh — синхронизировать документы после T-112..T-117 | done | pool | `темы/ai-os-bridge.md` | Закрыто — quick-start docs синхронизированы с sqlite/FTS5/reports/skills/preflight |
 | T-119 | Knowledge report regression — покрыть --out и safe path тестом | done | pool | `темы/ai-os-bridge.md` | Закрыто — report --out regression и write-path safety покрыты тестом |
+| T-120 | Architecture docs recheck — сверить раннюю концепцию с текущей стадией | done | pool | `темы/ai-os-bridge.md` | Закрыто — отчёт по ранней архитектуре и текущей стадии создан, drift исправлен |
 <!-- GEN:tasks END -->
