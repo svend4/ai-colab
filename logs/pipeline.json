@@ -1,52 +1,12 @@
 {
-  "epoch": 1782038103,
+  "epoch": 1782038963,
   "doing": [],
-  "ready": [
-    {
-      "id": "T-088",
-      "title": "Gateway driver cleanup — audit, tools manifest, status policy",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-089",
-      "title": "Files driver cleanup — общий redaction helper и tools manifest",
-      "priority": "normal",
-      "owner": "pool"
-    },
-    {
-      "id": "T-090",
-      "title": "Driver status reconciliation — draft/ready матрица после acceptance",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-091",
-      "title": "Очистить placeholder/stale-work слой без svend4",
-      "priority": "normal",
-      "owner": "pool"
-    }
-  ],
+  "ready": [],
   "blocked": [
     {
       "id": "T-020",
       "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
       "reason": "doing without active claim"
-    },
-    {
-      "id": "T-062",
-      "title": "(зарезервировано — заполните)",
-      "reason": "placeholder task"
-    },
-    {
-      "id": "T-063",
-      "title": "(зарезервировано — заполните)",
-      "reason": "placeholder task"
-    },
-    {
-      "id": "T-064",
-      "title": "(зарезервировано — заполните)",
-      "reason": "placeholder task"
     }
   ]
 }

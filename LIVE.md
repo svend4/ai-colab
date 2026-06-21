@@ -4,6 +4,6 @@
 
 | Агент | Задача | Прогресс | ETA | Возраст | Статус | Заметка |
 |---|---|---|---|---|---|---|
-| claude | T-092 | 100% | done | 930s | stale | G: execute-sandbox gate в validate (ERROR без реальной изоляции) |
-| codex | T-081 | 10% | 15m | 2945s | stale | diagnosing MCP stdio subprocess PermissionError WinError 5 |
-| mavis | T-029 | 0% | 5m | 85021s | stale | перепроверка обновлений, готовлю отчёт |
+| claude | T-092 | 100% | done | 1790s | stale | G: execute-sandbox gate в validate (ERROR без реальной изоляции) |
+| codex | T-091 | 80% | 3m | 145s | fresh | placeholders retired; validating cleanup |
+| mavis | T-029 | 0% | 5m | 85881s | stale | перепроверка обновлений, готовлю отчёт |

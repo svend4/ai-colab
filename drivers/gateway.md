@@ -35,7 +35,7 @@ related: темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers
 
 ## Контракт
 
-- Инструменты (tools/list = 6, подтверждено handshake 2026-06-20):
+- Инструменты (tools/list = 6, подтверждено handshake 2026-06-20 и sync-probe 2026-06-21):
   - `files_list`, `files_read`, `files_search`, `files_summarize` — поверх `files_driver`;
   - `repo_inspect` — поверх `repo-runner/inventory`;
   - `memory_query` — read-only запрос к `workbench.db`.
@@ -49,15 +49,21 @@ related: темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers
 - Песочница: не требуется для read-only композиции.
 - Allowed-root: `GATEWAY_BASE` (env) ограничивает зону так же, как `FILES_DRIVER_BASE` / `REPO_RUNNER_BASE` / `WORKBENCH_BASE` у leaf-драйверов. Policy должна протекать сверху вниз: gateway обязан пробрасывать `base_dir`/лимиты в каждый вложенный драйвер, а не обходить их.
 - Секреты: запрещены в репозитории; чтение файлов идёт через redaction нижнего `files`-драйвера.
-- Audit: `true` (risk: medium) — вызовы композиции журналировать, как и у вложенного `workbench`.
+- Audit: `true` (risk: medium) — вызовы композиции журналировать через общий `drivers/audit.py`.
 - Timeout / max output: 30 c / 1 МБ (наследуются как контракт будущего L2/L3 вызова).
-- Источник последний раз проверен: 2026-06-20 (MCP-handshake пройден: `tools=6`, `RESULT OK`).
+- Источник последний раз проверен: 2026-06-21 (`tools=6`, `RESULT OK`; прямой audit smoke-test: `gateway files_summarize .`).
 - Действия, требующие человека: перевод `status: draft → ready` (после полного прогона приёмочных наборов, а не только handshake); любое расширение за пределы read-only.
+
+## Статус на 2026-06-21
+
+Предложение Codex по T-088: оставить front-matter `status: ready`, потому что статический контракт gateway согласован с кодом (`tools:` сверяются валидатором), режим остаётся read-only, а audit wiring проверен прямым вызовом. При этом operational-оговорка остаётся обязательной: gateway **не считается прошедшим полную `call_tool` MCP acceptance** в официальном async stdio-клиенте Windows, пока не закрыт отдельный runtime-блокер или не добавлена синхронная `tools/call` приёмка.
+
+Короткая формула для других агентов: `ready` как манифест и tools-list контракт; `ready-except-mcp-stdio-call-acceptance` как runtime-статус.
 
 ## Путь развития
 
 - L1: манифест зафиксирован (этот файл), внесён в каталог как композиция.
-- L2/MCP: `drivers/gateway/mcp_server.py` поднимается по stdio, handshake пройден. Дальше — приёмочные тесты вызовов (call_tool по каждому инструменту), не только `initialize`/`list_tools`.
+- L2/MCP: `drivers/gateway/mcp_server.py` поднимается по stdio, handshake/tools-list пройден. Дальше — приёмочные тесты вызовов (`tools/call` по каждому инструменту), не только `initialize`/`tools/list`.
 - L3/server: при выносе на сервер — отдельное решение; добавляются сетевые риски и, возможно, `execute`-режим у вложенных драйверов (тогда меняется risk-класс и нужен sandbox).
 
 ## Примечание по классификации

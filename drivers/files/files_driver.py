@@ -20,6 +20,13 @@ import sys
 import json
 from pathlib import Path
 
+# Канонический redaction-хелпер (drivers/redaction.py) — общий для драйверов,
+# чтобы files/data не держали расходящиеся копии SECRET_RE.
+_DRIVERS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _DRIVERS_DIR not in sys.path:
+    sys.path.insert(0, _DRIVERS_DIR)
+from redaction import redact as redact_text
+
 
 def configure_output():
     for name in ("stdout", "stderr"):
@@ -47,17 +54,6 @@ SKIP_DIRS = {
     "build",
     "dist",
 }
-SECRET_RE = re.compile(
-    r"(?i)\b(api[_-]?key|secret[_-]?key|access[_-]?key|aws[_-]?key|token|secret|password|passwd)"
-    r"\b(\s*[=:]\s*)(\S+)"
-)
-# Отдельный паттерн для «голых» AWS access key id (AKIA + 16 символов), без key=value.
-AWS_KEY_RE = re.compile(r"\bAKIA[0-9A-Z]{16}\b")
-
-
-def _redact(line):
-    line = SECRET_RE.sub(lambda m: m.group(1) + m.group(2) + "***", line)
-    return AWS_KEY_RE.sub("***", line)
 
 
 class PathAccessError(ValueError):
@@ -126,7 +122,7 @@ def read_file(path, max_bytes=MAX_OUTPUT_BYTES, base_dir=None, redact=True):
     truncated = len(data) > max_bytes
     text = data[:max_bytes].decode("utf-8", "replace")
     if redact:
-        text = _redact(text)
+        text = redact_text(text)
     return {"path": str(resolved), "truncated": truncated, "bytes": min(len(data), max_bytes), "text": text}
 
 
@@ -146,7 +142,7 @@ def search(
             with open(p, encoding="utf-8", errors="replace") as f:
                 for i, line in enumerate(f, 1):
                     if (rx.search(line) if rx else pattern in line):
-                        hits.append({"path": rel, "line": i, "text": _redact(line.rstrip())[:300]})
+                        hits.append({"path": rel, "line": i, "text": redact_text(line.rstrip())[:300]})
                         if len(hits) >= max_hits:
                             return hits
         except Exception:

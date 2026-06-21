@@ -766,36 +766,36 @@
     },
     {
       "id": "T-062",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
       "owner": "Claude",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "закрыто как retired placeholder по T-091; для новых задач используйте новый id"
     },
     {
       "id": "T-063",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
       "owner": "Claude",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "закрыто как retired placeholder по T-091; для новых задач используйте новый id"
     },
     {
       "id": "T-064",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
       "owner": "Claude",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "закрыто как retired placeholder по T-091; для новых задач используйте новый id"
     },
     {
       "id": "T-065",
@@ -1053,24 +1053,24 @@
     {
       "id": "T-088",
       "title": "Gateway driver cleanup — audit, tools manifest, status policy",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-083, T-084]",
       "topic": "темы/repo-review-2026-06-21.md",
-      "next": "Добавить gateway audit/tools metadata и зафиксировать статус без ложной MCP acceptance"
+      "next": "Проверки пройдены; закрыть через pipeline done и оставить runtime-оговорку ready-except-mcp-stdio-call-acceptance"
     },
     {
       "id": "T-089",
       "title": "Files driver cleanup — общий redaction helper и tools manifest",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-080, T-084]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Мигрировать files_driver.py на drivers/redaction.py и добавить tools metadata без изменения MCP acceptance статуса"
+      "next": "Проверки пройдены; закрыть через pipeline done, не меняя статус T-048"
     },
     {
       "id": "T-090",
@@ -1086,13 +1086,13 @@
     {
       "id": "T-091",
       "title": "Очистить placeholder/stale-work слой без svend4",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-082]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Решить судьбу T-062..T-064 и stale heartbeat/claims без удаления истории"
+      "next": "Placeholder retirement и stale-work policy записаны; закрыть через pipeline done после snapshot/validate"
     },
     {
       "id": "T-092",
@@ -1104,6 +1104,28 @@
       "depends_on": "[T-078]",
       "topic": "темы/repo-review-2026-06-21.md",
       "next": "Реализовано: mode:execute без реальной изоляции (container/nsjail/...) → ERROR в validate.py; SCHEMA пункт 8 обновлён; validate OK=9/0/0 (ни один драйвер не execute — без регрессии)"
+    },
+    {
+      "id": "T-093",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "закрыто как retired placeholder по политике T-091; для новых задач используйте новый id"
+    },
+    {
+      "id": "T-094",
+      "title": "Unit-тест gateway-композиции (in-process, без stdio) — покрытие находки M",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный"
     }
   ],
   "questions": [

@@ -9,6 +9,7 @@ owner: Codex
 risk: low
 activation: manual
 interfaces: [list, read, search, summarize]
+tools: [list_files, read_file, search, summarize]
 inputs: [path, pattern]
 outputs: [file-list, snippets, summary]
 sandbox: not-required-for-read-only
@@ -45,11 +46,11 @@ related: темы/ai-os-bridge.md
 
 ## Текущее состояние реализации
 
-На 2026-06-20 уже есть L2-draft код:
+На 2026-06-21 есть рабочий read-only L2-код:
 
 - `drivers/files/files_driver.py` — engine `list/read/search/summarize`;
 - `drivers/files/inventory.py` — подробная инвентаризация файлов;
 - `drivers/files/mcp_server.py` — FastMCP stdio wrapper;
 - `drivers/files/test_files.py` и `drivers/files/test_inventory.py` — тесты.
 
-После `T-047` MCP-wrapper использует allowed-root через `FILES_DRIVER_BASE`, лимиты `max_files/max_hits`, redaction и пропуск шумных директорий. Статус манифеста остаётся `draft`, потому что Codex не смог повторно прогнать тесты из-за runtime-блокера `T-039`; приёмка вынесена в `T-048`.
+После `T-089` `files_driver.py` использует общий `drivers/redaction.py`, а manifest содержит `tools:` для статической сверки с `drivers/files/mcp_server.py`. Unit tests зелёные. `T-048` остаётся отдельной MCP acceptance-задачей не из-за логики files driver, а из-за известного Windows/asyncio stdio runtime blocker.

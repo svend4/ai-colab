@@ -1,5 +1,5 @@
 {
-  "epoch": 1782038103,
+  "epoch": 1782038963,
   "agents": [
     {
       "agent": "claude",
@@ -8,18 +8,18 @@
       "note": "G: execute-sandbox gate в validate (ERROR без реальной изоляции)",
       "eta": "done",
       "epoch": 1782037173,
-      "age_seconds": 930,
+      "age_seconds": 1790,
       "fresh": false
     },
     {
       "agent": "codex",
-      "task": "T-081",
-      "progress": 10,
-      "note": "diagnosing MCP stdio subprocess PermissionError WinError 5",
-      "eta": "15m",
-      "epoch": 1782035158,
-      "age_seconds": 2945,
-      "fresh": false
+      "task": "T-091",
+      "progress": 80,
+      "note": "placeholders retired; validating cleanup",
+      "eta": "3m",
+      "epoch": 1782038818,
+      "age_seconds": 145,
+      "fresh": true
     },
     {
       "agent": "mavis",
@@ -28,7 +28,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 85021,
+      "age_seconds": 85881,
       "fresh": false
     }
   ]

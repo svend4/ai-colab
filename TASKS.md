@@ -75,9 +75,9 @@
 | T-059 | File inventory driver — no-deps Python, карта файлов проекта | done | pool | `темы/ai-os-bridge.md` | Выполнено: tests pass, fixture-report.json создан, JSON/Markdown output и allowed-root rejection проверены |
 | T-060 | Workbench.db schema — SQLite для документов и audit_log | done | pool | `темы/ai-os-bridge.md` | Спроектировать схему, создать init-скрипт, тесты, манифест |
 | T-061 | (зарезервировано — заполните) | done | Claude | — | зарезервировано через tools/next_id.py — заполните |
-| T-062 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
-| T-063 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
-| T-064 | (зарезервировано — заполните) | todo | Claude | — | зарезервировано через tools/next_id.py — заполните |
+| T-062 | Retired placeholder — no task assigned | done | Claude | — | закрыто как retired placeholder по T-091; для новых задач используйте новый id |
+| T-063 | Retired placeholder — no task assigned | done | Claude | — | закрыто как retired placeholder по T-091; для новых задач используйте новый id |
+| T-064 | Retired placeholder — no task assigned | done | Claude | — | закрыто как retired placeholder по T-091; для новых задач используйте новый id |
 | T-065 | Подготовить runtime recovery playbook для снятия T-039 | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку |
 | T-066 | State reconciliation layer — спецификация контроля дрейфа индексов | done | Codex | `темы/ai-os-bridge.md` | Выполнено: docs/state-reconciliation-layer.md создан; после восстановления T-039 можно реализовать tools/reconcile_state.py |
 | T-067 | Pipeline placeholder gating — не выдавать резервные задачи агентам | done | Codex | `темы/ai-os-bridge.md` | Выполнено: Batch C подтвердил ready_sorted() == []; placeholder-задачи не выдаются агентам |
@@ -101,9 +101,11 @@
 | T-085 | Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L) | done | claude | `темы/repo-review-2026-06-21.md` | Выполнено на чистом дереве после коммита 97ec55a — 8 копий парсера заменены импортом из tools/_canon.py; поведение идентично, все инструменты и тесты зелёные |
 | T-086 | Сформировать план дальнейшей разработки без svend4 | done | Codex | `темы/repo-review-2026-06-21.md` | Выполнено: docs/non-svend4-development-plan-2026-06-21.md создан; T-087..T-091 добавлены в пул |
 | T-087 | Реализовать sync MCP stdio probe без asyncio для acceptance | done | pool | `темы/ai-os-bridge.md` | Выполнено: sync subprocess JSON-RPC probe проходит initialize/tools-list для data/codex-local/files/repo-runner/gateway |
-| T-088 | Gateway driver cleanup — audit, tools manifest, status policy | doing | pool | `темы/repo-review-2026-06-21.md` | Добавить gateway audit/tools metadata и зафиксировать статус без ложной MCP acceptance |
-| T-089 | Files driver cleanup — общий redaction helper и tools manifest | todo | pool | `темы/ai-os-bridge.md` | Мигрировать files_driver.py на drivers/redaction.py и добавить tools metadata без изменения MCP acceptance статуса |
+| T-088 | Gateway driver cleanup — audit, tools manifest, status policy | done | pool | `темы/repo-review-2026-06-21.md` | Проверки пройдены; закрыть через pipeline done и оставить runtime-оговорку ready-except-mcp-stdio-call-acceptance |
+| T-089 | Files driver cleanup — общий redaction helper и tools manifest | done | pool | `темы/ai-os-bridge.md` | Проверки пройдены; закрыть через pipeline done, не меняя статус T-048 |
 | T-090 | Driver status reconciliation — draft/ready матрица после acceptance | done | pool | `темы/repo-review-2026-06-21.md` | Составить матрицу статусов драйверов и предложить честные draft/ready/blocked формулировки |
-| T-091 | Очистить placeholder/stale-work слой без svend4 | todo | pool | `темы/ai-os-bridge.md` | Решить судьбу T-062..T-064 и stale heartbeat/claims без удаления истории |
+| T-091 | Очистить placeholder/stale-work слой без svend4 | done | pool | `темы/ai-os-bridge.md` | Placeholder retirement и stale-work policy записаны; закрыть через pipeline done после snapshot/validate |
 | T-092 | Enforce execute-sandbox gate в validate.py (P1 security, находка G) | done | claude | `темы/repo-review-2026-06-21.md` | Реализовано: mode:execute без реальной изоляции (container/nsjail/...) → ERROR в validate.py; SCHEMA пункт 8 обновлён; validate OK=9/0/0 (ни один драйвер не execute — без регрессии) |
+| T-093 | Retired placeholder — no task assigned | done | claude | — | закрыто как retired placeholder по политике T-091; для новых задач используйте новый id |
+| T-094 | Unit-тест gateway-композиции (in-process, без stdio) — покрытие находки M | done | claude | `темы/repo-review-2026-06-21.md` | Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный |
 <!-- GEN:tasks END -->
