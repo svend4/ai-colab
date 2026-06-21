@@ -1416,13 +1416,13 @@
     {
       "id": "T-121",
       "title": "Top agent operating manual — чистовая инструкция вершины пирамиды",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-120]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Создать clean-current manual: metadata, функции, Q&A, проблемы, предложения автоматизации"
+      "next": "Закрыто — top-agent manual и agent-onboarding связаны, проверки зелёные"
     },
     {
       "id": "T-122",

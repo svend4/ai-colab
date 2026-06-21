@@ -134,6 +134,6 @@
 | T-118 | Roadmap/usage refresh — синхронизировать документы после T-112..T-117 | done | pool | `темы/ai-os-bridge.md` | Закрыто — quick-start docs синхронизированы с sqlite/FTS5/reports/skills/preflight |
 | T-119 | Knowledge report regression — покрыть --out и safe path тестом | done | pool | `темы/ai-os-bridge.md` | Закрыто — report --out regression и write-path safety покрыты тестом |
 | T-120 | Architecture docs recheck — сверить раннюю концепцию с текущей стадией | done | pool | `темы/ai-os-bridge.md` | Закрыто — отчёт по ранней архитектуре и текущей стадии создан, drift исправлен |
-| T-121 | Top agent operating manual — чистовая инструкция вершины пирамиды | doing | pool | `темы/ai-os-bridge.md` | Создать clean-current manual: metadata, функции, Q&A, проблемы, предложения автоматизации |
+| T-121 | Top agent operating manual — чистовая инструкция вершины пирамиды | done | pool | `темы/ai-os-bridge.md` | Закрыто — top-agent manual и agent-onboarding связаны, проверки зелёные |
 | T-122 | Чистовик-онбординг агента + Q&A коллаборации (docs/agent-onboarding.md) | done | claude | `темы/ai-os-bridge.md` | Создан docs/agent-onboarding.md — present-tense чистовик: что система умеет сейчас, роли людей/агентов, карта документации, Q&A проблем разработки/коллаборации с микроскиллами, критика, зрелость/self-improvement движка, инновационные идеи |
 <!-- GEN:tasks END -->
