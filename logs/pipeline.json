@@ -1,32 +1,7 @@
 {
-  "epoch": 1782035661,
+  "epoch": 1782036577,
   "doing": [],
-  "ready": [
-    {
-      "id": "T-055",
-      "title": "Runtime-приёмка workbench.db driver после hardening",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-057",
-      "title": "Runtime-приёмка ingest pipeline после hardening",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-059",
-      "title": "File inventory driver — no-deps Python, карта файлов проекта",
-      "priority": "high",
-      "owner": "pool"
-    },
-    {
-      "id": "T-085",
-      "title": "Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L)",
-      "priority": "normal",
-      "owner": "pool"
-    }
-  ],
+  "ready": [],
   "blocked": [
     {
       "id": "T-020",

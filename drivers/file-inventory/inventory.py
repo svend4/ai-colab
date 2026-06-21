@@ -38,6 +38,7 @@ SKIP_DIRS = {
     "target",
     "build",
     "dist",
+    "tmp-work",
 }
 
 EXECUTABLE_EXTS = {".exe", ".dll", ".msi", ".bat", ".cmd", ".com"}

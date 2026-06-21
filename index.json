@@ -690,13 +690,13 @@
     {
       "id": "T-055",
       "title": "Runtime-приёмка workbench.db driver после hardening",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039, T-054]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Готово к взятию: workbench/workbench-db tests прошли в Batch B; осталось CLI init/list/audit с WORKBENCH_BASE и generate.py --check при необходимости"
+      "next": "Выполнено: test_workbench.py, CLI init/list/audit с WORKBENCH_BASE, outside-root rejection, validate/generate/catalog checks прошли"
     },
     {
       "id": "T-056",
@@ -712,13 +712,13 @@
     {
       "id": "T-057",
       "title": "Runtime-приёмка ingest pipeline после hardening",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039, T-056]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Готово к взятию: test_ingest/test_workbench/test_search прошли в Batch B; осталось CLI repo/dir с WORKBENCH_BASE/INGEST_SOURCE_BASE и generate.py --check при необходимости"
+      "next": "Выполнено: ingest/workbench/search tests, CLI repo/dir with WORKBENCH_BASE and INGEST_SOURCE_BASE, INGEST_MAX_FILES, outside-root JSON error"
     },
     {
       "id": "T-058",
@@ -734,13 +734,13 @@
     {
       "id": "T-059",
       "title": "File inventory driver — no-deps Python, карта файлов проекта",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Готово к взятию: file-inventory tests прошли в Batch B; осталось demo scan/fixture-report и final generator/check pass"
+      "next": "Выполнено: tests pass, fixture-report.json создан, JSON/Markdown output и allowed-root rejection проверены"
     },
     {
       "id": "T-060",
@@ -1020,13 +1020,13 @@
     {
       "id": "T-085",
       "title": "Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L)",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "claude",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/repo-review-2026-06-21.md",
-      "next": "Отложено сознательно (высокий blast radius): вынести parse_front_matter в tools/_canon.py и заменить 8 копий (validate/generate/queue/pipeline/dispatch/metrics/risk_gate/drivers_catalog) одним импортом; сделать в выделенном PR с прогоном всех инструментов"
+      "next": "Выполнено на чистом дереве после коммита 97ec55a — 8 копий парсера заменены импортом из tools/_canon.py; поведение идентично, все инструменты и тесты зелёные"
     }
   ],
   "questions": [

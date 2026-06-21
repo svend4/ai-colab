@@ -3,17 +3,18 @@
 """Тесты RAG-поиска v1 (TF-IDF keyword-rank) над workbench.db."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.dirname(HERE))
 import workbench as wb
 import search
+from test_tmp import make_temp_dir
 
 
 def run():
-    d = tempfile.mkdtemp(prefix="search_test_")
+    d = make_temp_dir("search_test_")
     db = os.path.join(d, "wb.db")
     ok = True
     try:

@@ -3,17 +3,18 @@
 """End-to-end тест сквозного потока (T-053): скан → workbench.db → поиск."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.dirname(HERE))
 import ingest
 import workbench as wb
+from test_tmp import make_temp_dir
 
 
 def run():
-    d = tempfile.mkdtemp(prefix="ingest_test_")
+    d = make_temp_dir("ingest_test_")
     repo = os.path.join(d, "repo")
     os.makedirs(repo)
     with open(os.path.join(repo, "x.py"), "w", encoding="utf-8") as f:

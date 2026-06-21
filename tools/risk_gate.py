@@ -42,18 +42,7 @@ TIER = {
 }
 
 
-def parse_fm(text):
-    if not text.startswith("---"):
-        return {}
-    end = text.find("\n---", 3)
-    if end == -1:
-        return {}
-    fm = {}
-    for line in text[3:end].strip().splitlines():
-        if ":" in line:
-            k, v = line.split(":", 1)
-            fm[k.strip()] = v.strip()
-    return fm
+from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
 
 
 def find_entity(eid):

@@ -3,14 +3,16 @@
 """Self-tests for file-inventory driver (T-059)."""
 import os
 import shutil
-import tempfile
+import sys
 from pathlib import Path
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import inventory
+from test_tmp import make_temp_dir
 
 
 def run():
-    tmp = tempfile.mkdtemp(prefix="file_inventory_test_")
+    tmp = make_temp_dir("file_inventory_test_")
     ok = True
     try:
         root = Path(tmp)
@@ -57,4 +59,3 @@ def run():
 
 if __name__ == "__main__":
     raise SystemExit(run())
-

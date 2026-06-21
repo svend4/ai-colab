@@ -12,10 +12,7 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-055 | high | pool | Runtime-приёмка workbench.db driver после hardening |
-| T-057 | high | pool | Runtime-приёмка ingest pipeline после hardening |
-| T-059 | high | pool | File inventory driver — no-deps Python, карта файлов проекта |
-| T-085 | normal | pool | Единый tools/_canon.py — убрать 8 копий парсера front-matter (P1, находка L) |
+| — | — | — | — |
 
 ## Заблокированы
 

@@ -71,18 +71,7 @@ def task_source_path(task):
     return os.path.join(ROOT, "tasks", task + ".md")
 
 
-def parse_fm(text):
-    if not text.startswith("---"):
-        return {}
-    end = text.find("\n---", 3)
-    if end == -1:
-        return {}
-    d = {}
-    for line in text[3:end].strip().splitlines():
-        if ":" in line:
-            k, v = line.split(":", 1)
-            d[k.strip()] = v.strip()
-    return d
+from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
 
 
 def read_claim(task):

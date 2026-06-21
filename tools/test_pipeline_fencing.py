@@ -64,27 +64,41 @@ def run():
             "done без claim_id должен работать (backward compat)"
 
         # --- 3. атомарный перехват протухшего claim: ровно 1 победитель ---
-        _seed_stale_claim("T-901")
-        results = []
-        rlock = threading.Lock()
+        # Гонка флакичная, поэтому гоняем МНОГО раундов: одиночный прогон её прятал
+        # (ровно так баг двойного захвата дожил до перепроверки T-084).
+        rounds = 16
+        for rnd in range(rounds):
+            # очистить возможные lock/tmp хвосты и пере-засеять протухший claim
+            cp = P.claim_path("T-901")
+            d = os.path.dirname(cp)
+            for fn in os.listdir(d):
+                if fn.startswith("T-901.claim.md."):  # .take.* / .tmp.*
+                    try:
+                        os.remove(os.path.join(d, fn))
+                    except OSError:
+                        pass
+            _seed_stale_claim("T-901")
+            results = []
+            rlock = threading.Lock()
 
-        def worker():
-            r = P.try_claim("T-901", "claude")
-            with rlock:
-                results.append(r)
+            def worker():
+                r = P.try_claim("T-901", "claude")
+                with rlock:
+                    results.append(r)
 
-        threads = [threading.Thread(target=worker) for _ in range(8)]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
-        winners = [r for r in results if r]
-        assert len(winners) == 1, \
-            "перехват протухшего claim: победителей %d (ожидался 1): %s" % (len(winners), results)
-        # после перехвата claim свежий и принадлежит победителю
-        assert P.claim_is_fresh("T-901"), "после перехвата claim должен быть свежим"
+            threads = [threading.Thread(target=worker) for _ in range(8)]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+            winners = [r for r in results if r]
+            assert len(winners) == 1, \
+                "раунд %d: перехват протухшего claim: победителей %d (ожидался 1): %s" \
+                % (rnd, len(winners), results)
+            assert P.claim_is_fresh("T-901"), "раунд %d: после перехвата claim должен быть свежим" % rnd
 
-        print("TESTS OK fencing+takeover: winners=1, done-fencing ok")
+        print("TESTS OK fencing+takeover: %d раундов по 8 потоков → ровно 1 победитель; done-fencing ok"
+              % rounds)
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

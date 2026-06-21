@@ -47,18 +47,7 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
 STATUS_RANK = {"needs-decision": 0, "waiting": 1, "open": 2, "done": 3, "archive": 4}
 
 
-def parse_front_matter(text):
-    if not text.startswith("---"):
-        return {}
-    end = text.find("\n---", 3)
-    if end == -1:
-        return {}
-    fm = {}
-    for line in text[3:end].strip().splitlines():
-        if ":" in line:
-            k, v = line.split(":", 1)
-            fm[k.strip()] = v.strip()
-    return fm
+from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
 
 
 def collect_topics():

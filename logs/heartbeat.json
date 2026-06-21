@@ -1,15 +1,15 @@
 {
-  "epoch": 1782035662,
+  "epoch": 1782036577,
   "agents": [
     {
       "agent": "claude",
-      "task": "T-084",
+      "task": "T-085",
       "progress": 100,
-      "note": "K закрыт: manifest tools + check_driver_tools в validate; L (T-085) отложен с обоснованием",
+      "note": "L закрыт: tools/_canon.py, 8 копий парсера → импорт; поведение идентично, все тесты зелёные",
       "eta": "done",
-      "epoch": 1782034183,
-      "age_seconds": 1479,
-      "fresh": false
+      "epoch": 1782036467,
+      "age_seconds": 110,
+      "fresh": true
     },
     {
       "agent": "codex",
@@ -18,8 +18,8 @@
       "note": "diagnosing MCP stdio subprocess PermissionError WinError 5",
       "eta": "15m",
       "epoch": 1782035158,
-      "age_seconds": 504,
-      "fresh": true
+      "age_seconds": 1419,
+      "fresh": false
     },
     {
       "agent": "mavis",
@@ -28,7 +28,7 @@
       "note": "перепроверка обновлений, готовлю отчёт",
       "eta": "5m",
       "epoch": 1781953082,
-      "age_seconds": 82580,
+      "age_seconds": 83495,
       "fresh": false
     }
   ]

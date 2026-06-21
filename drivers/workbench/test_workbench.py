@@ -3,15 +3,16 @@
 """Тесты workbench.db (SQLite) — T-052."""
 import os
 import sys
-import tempfile
 import shutil
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import workbench as wb
+from test_tmp import make_temp_dir
 
 
 def run():
-    d = tempfile.mkdtemp(prefix="wb_test_")
+    d = make_temp_dir("wb_test_")
     db = os.path.join(d, "workbench.db")
     conn = None
     ok = True

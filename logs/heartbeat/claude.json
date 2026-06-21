@@ -1,8 +1,8 @@
 {
   "agent": "claude",
-  "task": "T-084",
+  "task": "T-085",
   "progress": 100,
-  "note": "K закрыт: manifest tools + check_driver_tools в validate; L (T-085) отложен с обоснованием",
+  "note": "L закрыт: tools/_canon.py, 8 копий парсера → импорт; поведение идентично, все тесты зелёные",
   "eta": "done",
-  "epoch": 1782034183
+  "epoch": 1782036467
 }

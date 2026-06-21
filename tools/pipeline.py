@@ -55,18 +55,7 @@ PRANK = {"high": 0, "normal": 1, "low": 2, "": 1}
 DEFAULT_TTL_MIN = 30
 
 
-def parse_fm(text):
-    if not text.startswith("---"):
-        return {}
-    end = text.find("\n---", 3)
-    if end == -1:
-        return {}
-    fm = {}
-    for line in text[3:end].strip().splitlines():
-        if ":" in line:
-            k, v = line.split(":", 1)
-            fm[k.strip()] = v.strip()
-    return fm
+from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
 
 
 def collect_tasks():
@@ -150,6 +139,15 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
             return None  # другой агент уже перехватывает этот же протухший claim
         try:
             os.close(lfd)
+            # повторная проверка ПОД lock'ом: claim всё ещё тот же протухший?
+            # закрывает гонку (T-084-перепроверка), когда другой агент успел
+            # перехватить и СНЯТЬ lock между чтением `old` и взятием lock'а здесь —
+            # иначе поздний агент перезапишет уже свежий claim (двойной захват).
+            cur = claim_holder(tid)
+            if (cur is None
+                    or cur.get("claim_id") != old.get("claim_id")
+                    or int(cur.get("lease_epoch", "0")) > int(time.time())):
+                return None
             tmp = "%s.tmp.%s" % (p, cid)
             with open(tmp, "w", encoding="utf-8", newline="\n") as f:
                 f.write(body)
