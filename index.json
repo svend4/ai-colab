@@ -1185,7 +1185,7 @@
     {
       "id": "T-100",
       "title": "Sync MCP tools/call acceptance for read-only drivers",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -1203,6 +1203,17 @@
       "depends_on": "[T-078, T-087]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Реализовано drivers/mcp_sync_acceptance.py поверх SyncMcpClient (T-087, Codex) — initialize+tools/list+tools/call по 19 инструментам 5 серверов; прогон pass=19 fail=0 RESULT OK, переносимо между средами (обходит WinError 5)"
+    },
+    {
+      "id": "T-102",
+      "title": "Новый read-only L2-драйвер git-log (история git) (шаг 3/4)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализован драйвер git-log (engine+MCP+тест+манифест); тест зелёный; в каталоге 8 драйверов; status draft по D-015 (нужна сверка 2-м агентом для ready)"
     }
   ],
   "questions": [

@@ -113,6 +113,7 @@
 | T-097 | Runnable demo среднего слоя (tools/demo_bridge.py) | done | claude | `темы/ai-os-bridge.md` | Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0 |
 | T-098 | Usage-гайд среднего слоя (docs/bridge-usage.md) | done | claude | `темы/ai-os-bridge.md` | Реализовано docs/bridge-usage.md — операционный гайд: демо, драйверы, подключение gateway к AI-клиенту (MCP config), безопасность, приёмка, что работает/в работе |
 | T-099 | Codex review/integration for bridge usage guide | done | pool | `темы/ai-os-bridge.md` | Проверки пройдены; закрыть через pipeline done после generate/snapshot |
-| T-100 | Sync MCP tools/call acceptance for read-only drivers | doing | pool | `темы/ai-os-bridge.md` | Sync acceptance 19/19 оформлена; закрыть через pipeline done после validate/generate/snapshot |
+| T-100 | Sync MCP tools/call acceptance for read-only drivers | done | pool | `темы/ai-os-bridge.md` | Sync acceptance 19/19 оформлена; закрыть через pipeline done после validate/generate/snapshot |
 | T-101 | Переносимая sync MCP tools/call-приёмка всех драйверов (шаг 2/4) | done | claude | `темы/ai-os-bridge.md` | Реализовано drivers/mcp_sync_acceptance.py поверх SyncMcpClient (T-087, Codex) — initialize+tools/list+tools/call по 19 инструментам 5 серверов; прогон pass=19 fail=0 RESULT OK, переносимо между средами (обходит WinError 5) |
+| T-102 | Новый read-only L2-драйвер git-log (история git) (шаг 3/4) | done | claude | `темы/ai-os-bridge.md` | Реализован драйвер git-log (engine+MCP+тест+манифест); тест зелёный; в каталоге 8 драйверов; status draft по D-015 (нужна сверка 2-м агентом для ready) |
 <!-- GEN:tasks END -->

@@ -58,3 +58,18 @@
 {"ts": 1782040616, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
 {"ts": 1782040616, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
 {"ts": 1782040616, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
+{"ts": 1782040707, "driver": "repo-runner", "action": "inspect_repo", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040707, "driver": "repo-runner", "action": "repo_summary", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040707, "driver": "repo-runner", "action": "repo_risks", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040712, "driver": "data", "action": "list_tables", "target": "data/fixtures"}
+{"ts": 1782040712, "driver": "data", "action": "columns", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040712, "driver": "data", "action": "head", "target": "data/fixtures/sample-table.csv", "n": 10}
+{"ts": 1782040712, "driver": "data", "action": "summarize", "target": "data/fixtures/sample-table.csv"}
+{"ts": 1782040718, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782040718, "driver": "codex-local", "action": "codex_info", "target": null}
+{"ts": 1782040723, "driver": "gateway", "action": "files_list", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040723, "driver": "gateway", "action": "files_read", "target": "data/fixtures/README.md"}
+{"ts": 1782040723, "driver": "gateway", "action": "files_search", "target": "data/fixtures"}
+{"ts": 1782040723, "driver": "gateway", "action": "files_summarize", "target": "data/fixtures"}
+{"ts": 1782040723, "driver": "gateway", "action": "repo_inspect", "target": "data/fixtures", "max_files": 1000}
+{"ts": 1782040723, "driver": "gateway", "action": "memory_query", "target": "logs/_sync_acc.db", "type": null, "risk": null}
