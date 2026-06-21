@@ -1339,13 +1339,13 @@
     {
       "id": "T-114",
       "title": "Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-110]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Составить preflight-план песочницы для execute/svend4 без включения mode: execute"
+      "next": "Закрыто — execute/svend4 остаётся read-only до отдельной песочницы и accepted decision"
     },
     {
       "id": "T-115",
@@ -1357,6 +1357,17 @@
       "depends_on": "[T-108]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Добавлен FTS5-индекс + ранжированный поиск (bm25) в tools/knowledge.py: build строит kn_fts, команда search и report используют fts_search с fallback на LIKE; тест расширен, зелёный"
+    },
+    {
+      "id": "T-116",
+      "title": "Новый read-only L2-драйвер sqlite (инспекция/запрос SQLite-БД) (направление 2)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Реализован драйвер sqlite (engine+MCP+тест+манифест), тест зелёный, каталог=9; status draft по D-015 (нужна сверка 2-м агентом через sync-приёмку с фикстурой-БД)"
     }
   ],
   "questions": [
@@ -1671,6 +1682,23 @@
       "sandbox": "required-before-run-or-test",
       "secrets": "forbidden-in-repo",
       "related": "темы/ai-os-bridge.md, tasks/T-024.md"
+    },
+    {
+      "id": "sqlite",
+      "title": "SQLite driver — read-only инспекция и запрос SQLite-БД",
+      "file": "drivers/sqlite.md",
+      "status": "draft",
+      "level": "L2",
+      "mode": "read-only",
+      "owner": "Claude",
+      "risk": "medium",
+      "activation": "mcp",
+      "interfaces": "[list_tables, table_schema, table_head, query]",
+      "inputs": "[db-path, table, sql]",
+      "outputs": "[table-list, schema, rows]",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "related": "темы/ai-os-bridge.md, drivers/data.md, drivers/workbench.md"
     },
     {
       "id": "workbench",

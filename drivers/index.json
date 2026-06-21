@@ -78,6 +78,17 @@
       "activation": "manual"
     },
     {
+      "id": "sqlite",
+      "title": "SQLite driver — read-only инспекция и запрос SQLite-БД",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "draft",
+      "sandbox": "not-required-for-read-only",
+      "secrets": "forbidden-in-repo",
+      "activation": "mcp"
+    },
+    {
       "id": "workbench",
       "title": "Workbench DB driver — SQLite-память корпуса и audit log",
       "level": "L2",

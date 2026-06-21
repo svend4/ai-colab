@@ -1,5 +1,5 @@
 {
-  "epoch": 1782043176,
+  "epoch": 1782043364,
   "doing": [],
   "ready": [
     {
@@ -12,12 +12,6 @@
       "id": "T-113",
       "title": "Project skills packaging guide — как переносить skills в другие среды",
       "priority": "normal",
-      "owner": "pool"
-    },
-    {
-      "id": "T-114",
-      "title": "Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода",
-      "priority": "high",
       "owner": "pool"
     }
   ],

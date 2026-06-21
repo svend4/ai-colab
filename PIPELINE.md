@@ -14,7 +14,6 @@
 |---|---|---|---|
 | T-112 | normal | pool | Safe knowledge corpus expansion — добавить маленький локальный корпус |
 | T-113 | normal | pool | Project skills packaging guide — как переносить skills в другие среды |
-| T-114 | high | pool | Execute/svend4 sandbox preflight plan — что нужно до запуска чужого кода |
 
 ## Заблокированы
 

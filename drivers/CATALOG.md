@@ -11,4 +11,5 @@
 | gateway | Gateway — единый MCP над files/repo/workbench (композиция) | L2 | read-only | medium | ready |
 | git-log | Git-log driver — read-only история git (коммиты, авторы, история файла) | L2 | read-only | medium | ready |
 | repo-runner | Repo runner — inventory репозиториев и будущий запуск в песочнице | L1 | read-only | medium | ready |
+| sqlite | SQLite driver — read-only инспекция и запрос SQLite-БД | L2 | read-only | medium | draft |
 | workbench | Workbench DB driver — SQLite-память корпуса и audit log | L2 | safe-write | medium | ready |
