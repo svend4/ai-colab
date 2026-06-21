@@ -15,6 +15,7 @@
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
+- `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html` на stdlib, с redaction через `files` driver. PDF/DOCX оставлены отдельным решением о зависимостях.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
 
 ## Как запускать
@@ -280,3 +281,14 @@ python tools/metrics.py --json
 ```
 
 Очередь считается по текущему формату Queue 2.0: `claimed` = `*.claim.md`, `done` = `*.done.md`, `failed` = `*.failed.md`. Старые legacy-файлы в этих папках остаются историей, но не считаются активным состоянием очереди.
+
+## Извлечение текста (`text_extract.py`, T-133)
+
+`text_extract.py` — маленькая универсальная способность ядра для L6 knowledge workflow и тематических порталов. Она не привязана к домену: любой портал с документами получает один и тот же безопасный путь `file -> redacted text -> FTS/search/report`.
+
+```bash
+python tools/text_extract.py extract data/knowledge-corpus/README.md
+python tools/text_extract.py summary data/knowledge-corpus/README.md
+```
+
+Сейчас поддерживаются `.md`, `.markdown`, `.txt`, `.text`, `.html`, `.htm` без внешних зависимостей. `tools/knowledge.py` использует этот слой при `build/report`, поэтому FTS индексирует содержимое документа, а не только первую строку. PDF/DOCX намеренно не добавлены в этот шаг: это первая зависимость/парсер сложнее stdlib, её нужно подключать отдельным доказательным решением.

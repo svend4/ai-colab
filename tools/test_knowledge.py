@@ -22,14 +22,16 @@ def run():
                 f.write("# Заголовок\nтекст\n")
             with open(os.path.join(corpus, "b.txt"), "w", encoding="utf-8") as f:
                 f.write("token=SUPERSECRETXYZ\nостальное\n")  # секрет в первой строке
+            with open(os.path.join(corpus, "c.md"), "w", encoding="utf-8") as f:
+                f.write("# First only\n\nbody has PortalNeedle for content indexing\n")
 
             n = kn.build(db, corpus)
-            assert n == 2, n
+            assert n == 3, n
 
             conn = kn.wb.init(db, base_dir=ROOT)
             try:
                 docs = kn.wb.query_documents(conn, limit=100)
-                assert len(docs) == 2, docs
+                assert len(docs) == 3, docs
                 types = {d["type"] for d in docs}
                 assert types == {"md", "txt"}, types
                 # redaction: секрет из первой строки b.txt не должен попасть в summary
@@ -41,6 +43,8 @@ def run():
                 # FTS5 ранжированный поиск (build уже построил kn_fts)
                 fts = kn.fts_search(conn, "Заголовок", limit=5)
                 assert any(h["type"] == "md" for h in fts), "FTS5 не нашёл md: %s" % fts
+                deep = kn.fts_search(conn, "PortalNeedle", limit=5)
+                assert any("c.md" in h.get("path", "") for h in deep), "FTS5 не нашёл content body: %s" % deep
             finally:
                 conn.close()
 

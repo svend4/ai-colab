@@ -1,17 +1,11 @@
 {
-  "epoch": 1782057546,
+  "epoch": 1782058547,
   "doing": [],
   "ready": [
     {
       "id": "T-127",
       "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
       "priority": "normal",
-      "owner": "pool"
-    },
-    {
-      "id": "T-133",
-      "title": "text-extract — генерик-извлечение текста (.md/.txt/.html → PDF/DOCX) для реальных порталов",
-      "priority": "high",
       "owner": "pool"
     },
     {

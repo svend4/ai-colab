@@ -29,7 +29,7 @@ dialog_plane: [темы/, queues/outbox/, docs/*result*.md]
 memory_plane: [drivers/workbench, tools/knowledge.py, reports/, logs/*.db runtime]
 driver_acceptance: D-015, tests + MCP acceptance + second-agent verification
 current_l2_acceptance: sync MCP tools/call 27/27
-current_l6: SQLite workbench, FTS5 search, report --out, safe corpus, regression test
+current_l6: SQLite workbench, text_extract .md/.txt/.html, FTS5 search, report --out, safe corpus, regression test
 execute_policy: forbidden_until_sandbox_and_accepted_decision
 main_blocker: T-020 svend4/orphan claim, no read-only source provided
 ```
@@ -57,6 +57,7 @@ python tools\test_knowledge.py
 | Skills | `skills/README.md`, `docs/skills-usage.md` | переносимые процедуры |
 | Safety | `docs/driver-safety-policy.md`, `drivers/SCHEMA.md`, `docs/execute-sandbox-preflight.md` | ограничения и запреты |
 | Knowledge workflow | `tools/knowledge.py`, `data/knowledge-corpus/`, `reports/` | обработка корпуса и отчёты |
+| Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
 | История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
 | Итоги задач | `docs/*result*.md`, `queues/outbox/`, `queues/done/` | что уже сделано |
 
@@ -122,7 +123,7 @@ read current state
 | MCP acceptance | `drivers/mcp_sync_acceptance.py` | рабочее, 27/27 |
 | Read-only safety | allowed-root, mode guards, redaction | рабочее |
 | Audit | `drivers/audit.py`, JSONL для risk>=medium | рабочее |
-| L6 memory | `drivers/workbench`, `tools/knowledge.py` | рабочее на малых corpus |
+| L6 memory | `drivers/workbench`, `tools/knowledge.py`, `tools/text_extract.py` | рабочее на малых corpus |
 | Reports | `reports/*.md`, `report --out`, regression test | рабочее |
 | Skills | `skills/*/SKILL.md` | рабочее как project-local procedures |
 | Execute sandbox | `docs/execute-sandbox-preflight.md` | только preflight |
@@ -310,6 +311,7 @@ Task должен иметь `owner: pool`, зависимости, `next` и к
 ```powershell
 python tools\knowledge.py report <corpus> --query <term> --out reports\<name>.md
 python tools\knowledge.py search logs\knowledge.db <term>
+python tools\text_extract.py summary <file>
 ```
 
 Runtime DB не коммитить; Markdown report можно коммитить.

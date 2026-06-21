@@ -47,6 +47,8 @@
   ingest корпуса → состав по типам/рискам → ответ на запрос → markdown-отчёт.
 - `python tools/knowledge.py search <db> <текст>` — **ранжированный поиск (FTS5 + bm25)**;
   `query` — простой LIKE.
+- `python tools/text_extract.py summary <file>` — безопасное извлечение текста для `.md/.txt/.html`;
+  `knowledge.py` использует его, чтобы искать по содержимому документа, а не только по первой строке.
 
 ### Конвейер задач (как агент выполняет работу)
 - `pipeline.py next <agent>` (взять) → `done <agent> <T-id> --claim <id> --report "..."` (закрыть) →

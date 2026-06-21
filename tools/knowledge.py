@@ -86,12 +86,24 @@ def write_report(text, out_path):
 
 wb = _load("kn_wb", "workbench", "workbench.py")
 fd = _load("kn_files", "files", "files_driver.py")
+import text_extract as tx
 
 
-def _first_line(rel, base):
+def _memory_text(rel, base):
+    """Redacted text fragment for workbench.summary and FTS.
+
+    T-133: for .md/.txt/.html use generic text_extract so search indexes content beyond the
+    first line. For unsupported files, keep the old safe first-line fallback.
+    """
+    full = os.path.join(base, rel) if not os.path.isabs(rel) else rel
     try:
-        text = fd.read_file(os.path.join(base, rel) if not os.path.isabs(rel) else rel,
-                            base_dir=base, redact=True).get("text", "")
+        item = tx.extract(full, base_dir=base, max_chars=tx.MAX_MEMORY_CHARS)
+        if item.get("supported") and item.get("text"):
+            return item["text"]
+    except Exception:
+        pass
+    try:
+        text = fd.read_file(full, base_dir=base, redact=True).get("text", "")
         for line in text.splitlines():
             if line.strip():
                 return line.strip()[:140]
@@ -109,7 +121,7 @@ def build(db, corpus, agent="knowledge"):
         for rel in fd.list_files(corpus, max_files=MAX_FILES, base_dir=ROOT):
             ext = os.path.splitext(rel)[1].lstrip(".") or "file"
             wb.add_document(conn, src, src + ":" + rel, type=ext, lang=ext,
-                            summary=_first_line(os.path.join(corpus, rel), ROOT))
+                            summary=_memory_text(os.path.join(corpus, rel), ROOT))
             n += 1
         _build_fts(conn)  # полнотекстовый индекс для ранжированного поиска (FTS5)
         wb.log(conn, agent, "knowledge_build", corpus, "docs=%d" % n)

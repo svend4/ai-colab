@@ -1,0 +1,157 @@
+﻿#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Generic text extract (T-133) — read-only stdlib extraction for core/portals.
+
+Supported now: .md, .markdown, .txt, .text, .html, .htm.
+No PDF/DOCX here yet: those need an explicit dependency decision.
+
+CLI:
+    python tools/text_extract.py extract <file> [--base ROOT]
+    python tools/text_extract.py summary <file> [--base ROOT]
+"""
+import os
+import sys
+import re
+import json
+from html.parser import HTMLParser
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DRIVERS = os.path.join(ROOT, "drivers")
+if DRIVERS not in sys.path:
+    sys.path.insert(0, DRIVERS)
+from files.files_driver import read_file, PathAccessError
+
+SUPPORTED = {".md", ".markdown", ".txt", ".text", ".html", ".htm"}
+MAX_EXTRACT_CHARS = 20000
+MAX_MEMORY_CHARS = 4000
+MAX_SUMMARY_CHARS = 240
+
+
+def configure_output():
+    for name in ("stdout", "stderr"):
+        s = getattr(sys, name, None)
+        if s is not None and hasattr(s, "reconfigure"):
+            s.reconfigure(encoding="utf-8", errors="replace")
+
+
+configure_output()
+
+
+class _HTMLText(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.skip = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() in {"script", "style", "noscript"}:
+            self.skip += 1
+        if tag.lower() in {"p", "div", "br", "li", "tr", "h1", "h2", "h3", "h4", "h5", "h6"}:
+            self.parts.append("\n")
+
+    def handle_endtag(self, tag):
+        if tag.lower() in {"script", "style", "noscript"} and self.skip:
+            self.skip -= 1
+        if tag.lower() in {"p", "div", "li", "tr", "h1", "h2", "h3", "h4", "h5", "h6"}:
+            self.parts.append("\n")
+
+    def handle_data(self, data):
+        if not self.skip and data:
+            self.parts.append(data)
+
+    def text(self):
+        return "".join(self.parts)
+
+
+def _normalize(text):
+    lines = []
+    for line in text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+        compact = re.sub(r"\s+", " ", line).strip()
+        if compact:
+            lines.append(compact)
+    return "\n".join(lines)
+
+
+def _strip_markdown_noise(text):
+    # Keep readable words, remove common Markdown syntax that hurts summaries/search snippets.
+    text = re.sub(r"```.*?```", " ", text, flags=re.S)
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    text = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.M)
+    text = re.sub(r"^[\s>*_`#-]+", "", text, flags=re.M)
+    return text
+
+
+def extract(path, base_dir=ROOT, max_chars=MAX_EXTRACT_CHARS):
+    ext = os.path.splitext(str(path))[1].lower()
+    supported = ext in SUPPORTED
+    data = read_file(path, base_dir=base_dir, redact=True)
+    raw = data.get("text", "")
+    if ext in {".html", ".htm"}:
+        parser = _HTMLText()
+        parser.feed(raw)
+        text = parser.text()
+    elif ext in {".md", ".markdown"}:
+        text = _strip_markdown_noise(raw)
+    else:
+        text = raw
+    text = _normalize(text)
+    truncated = len(text) > max_chars
+    return {
+        "path": data.get("path"),
+        "type": ext.lstrip(".") or "file",
+        "supported": supported,
+        "text": text[:max_chars],
+        "chars": min(len(text), max_chars),
+        "truncated": truncated or bool(data.get("truncated")),
+    }
+
+
+def summary_from_text(text, max_chars=MAX_SUMMARY_CHARS):
+    text = _normalize(text)
+    if not text:
+        return ""
+    return text[:max_chars]
+
+
+def memory_text(path, base_dir=ROOT, max_chars=MAX_MEMORY_CHARS):
+    """Text fragment safe to store in workbench.summary for FTS/search."""
+    item = extract(path, base_dir=base_dir, max_chars=max_chars)
+    return item["text"]
+
+
+def _arg_value(args, name, default=None):
+    if name not in args:
+        return default
+    pos = args.index(name) + 1
+    if pos >= len(args):
+        raise ValueError("missing value for %s" % name)
+    return args[pos]
+
+
+def main():
+    a = sys.argv[1:]
+    if len(a) < 2:
+        print(__doc__)
+        return 2
+    cmd = a[0]
+    base = _arg_value(a, "--base", ROOT)
+    try:
+        if cmd == "extract":
+            print(json.dumps(extract(a[1], base_dir=base), ensure_ascii=False, indent=2))
+            return 0
+        if cmd == "summary":
+            item = extract(a[1], base_dir=base)
+            print(summary_from_text(item["text"]))
+            return 0
+    except (OSError, PathAccessError, ValueError) as exc:
+        print(json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False))
+        return 1
+    print(__doc__)
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main())
