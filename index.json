@@ -1536,13 +1536,13 @@
     {
       "id": "T-130",
       "title": "C2 drift detector — tools/drift_check.py (консенсус)",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "claude",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
-      "next": "Реализовать tools/drift_check.py — ловить stale acceptance-числа, draft/ready mismatch (манифест vs catalog/index), L0-L8 вместо L0-L7 в docs, system-capabilities.json --check, команды без актуальных флагов"
+      "next": "Реализован tools/drift_check.py (+тест) — агрегирует generate/drivers_catalog/capabilities --check + validate + текст-сканы (L0-L8 vs канон L0-L7, legacy queue.py, orphan doing); на первом прогоне нашёл 6 реальных дрейфов"
     },
     {
       "id": "T-131",
