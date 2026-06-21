@@ -37,6 +37,9 @@ main_blocker: T-020 svend4/orphan claim, no read-only source provided
 Минимальный health-check:
 
 ```powershell
+python tools\top.py buttons
+python tools\top.py status codex
+python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
 python tools\generate.py --check
@@ -57,6 +60,7 @@ python tools\test_knowledge.py
 | Skills | `skills/README.md`, `docs/skills-usage.md` | переносимые процедуры |
 | Safety | `docs/driver-safety-policy.md`, `drivers/SCHEMA.md`, `docs/execute-sandbox-preflight.md` | ограничения и запреты |
 | Knowledge workflow | `tools/knowledge.py`, `data/knowledge-corpus/`, `reports/` | обработка корпуса и отчёты |
+| Top command panel | `tools/top.py` | сценарии/кнопки для людей и агентов |
 | Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
 | История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
 | Итоги задач | `docs/*result*.md`, `queues/outbox/`, `queues/done/` | что уже сделано |
@@ -250,6 +254,9 @@ read current state
 
 ```powershell
 git status --short --untracked-files=all
+python tools\top.py buttons
+python tools\top.py status codex
+python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
 python tools\generate.py --check

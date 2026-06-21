@@ -15,6 +15,7 @@
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
+- `top.py` — верхняя панель сценариев/“кнопок”: status, health, agent-start, take, snapshot, knowledge, cycle.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html` на stdlib, с redaction через `files` driver. PDF/DOCX оставлены отдельным решением о зависимостях.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
 
@@ -292,3 +293,19 @@ python tools/text_extract.py summary data/knowledge-corpus/README.md
 ```
 
 Сейчас поддерживаются `.md`, `.markdown`, `.txt`, `.text`, `.html`, `.htm` без внешних зависимостей. `tools/knowledge.py` использует этот слой при `build/report`, поэтому FTS индексирует содержимое документа, а не только первую строку. PDF/DOCX намеренно не добавлены в этот шаг: это первая зависимость/парсер сложнее stdlib, её нужно подключать отдельным доказательным решением.
+
+## Верхняя панель (`top.py`, T-138)
+
+`top.py` группирует существующие инструменты в сценарии, удобные как людям, так и агентам:
+
+```bash
+python tools/top.py buttons
+python tools/top.py status codex
+python tools/top.py health
+python tools/top.py agent-start codex
+python tools/top.py take codex
+python tools/top.py snapshot
+python tools/top.py knowledge data/knowledge-corpus --query bridge --out reports/bridge.md
+```
+
+Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py` и `drift_check.py`.

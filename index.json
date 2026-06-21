@@ -1620,6 +1620,17 @@
       "depends_on": "[]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
       "next": "Коллективно решить с обоснованием: D3 (сколько инфра-автоматизации — C1-C3 vs §9 P1), T-020/svend4 (дать данные / закрыть orphan / переоформить как первый external-source), приоритет text-extract; двойная перепроверка техн.+гуман."
+    },
+    {
+      "id": "T-138",
+      "title": "Top command panel — обёртка кнопок для людей и агентов",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/top-layer-command-groups.md",
+      "next": "Реализовать tools/top.py как верхнюю панель сценариев: buttons/status/health/agent-start/take/snapshot/knowledge/cycle; добавить тест и документацию."
     }
   ],
   "questions": [
