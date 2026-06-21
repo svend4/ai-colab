@@ -12,3 +12,6 @@ front-matter `name`/`description` + инструкция). Извлечены и
 
 Это L3 «project skills» из roadmap `docs/layers-coverage.md`. Каноническая нумерация слоёв —
 там же. Связано: `docs/bridge-usage.md`, `decisions/D-015.md`.
+
+Использование и переносимость описаны в `docs/skills-usage.md`. Важно: это project-local L3
+skills, а не L5 plugin/marketplace package; автоматическая загрузка зависит от конкретной среды.

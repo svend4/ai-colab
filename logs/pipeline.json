@@ -1,14 +1,7 @@
 {
-  "epoch": 1782043671,
+  "epoch": 1782043872,
   "doing": [],
-  "ready": [
-    {
-      "id": "T-113",
-      "title": "Project skills packaging guide — как переносить skills в другие среды",
-      "priority": "normal",
-      "owner": "pool"
-    }
-  ],
+  "ready": [],
   "blocked": [
     {
       "id": "T-020",

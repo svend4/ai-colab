@@ -1328,13 +1328,13 @@
     {
       "id": "T-113",
       "title": "Project skills packaging guide — как переносить skills в другие среды",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-109]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Описать packaging/usage для skills без создания полноценного plugin"
+      "next": "Закрыто — skills остаются L3 project procedures до отдельного L5 plugin decision"
     },
     {
       "id": "T-114",
