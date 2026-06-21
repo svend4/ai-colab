@@ -19,6 +19,7 @@ def run():
     assert "cohort-board" in ids, ids
     assert "variants" in ids, ids
     assert "merge-gate" in ids, ids
+    assert "synthesis-helper" in ids, ids
     assert any(r["audience"] == "human" for r in rows), rows
     assert any(r["audience"] == "agent" for r in rows), rows
     rendered = top.format_buttons(rows)

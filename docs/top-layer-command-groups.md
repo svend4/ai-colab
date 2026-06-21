@@ -69,6 +69,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 python tools\cohort.py board
 python tools\cohort.py self --json
 python tools\variants.py list --topic commit-policy
+python tools\synthesis_helper.py report commit-policy --out темы\commit-policy-synthesis.md
 python tools\merge_gate.py check codex
 python tools\stream.py list commit-policy
 python tools\promote.py check --artifact sandbox\reports\demo-fixtures-inventory.md
@@ -81,6 +82,7 @@ python tools\sandbox_intake_demo.py --out tmp-work\sandbox-demo
 |---|---|---|
 | `cohort.py` | верхняя панель для нескольких агентов: board/plan/turn/gate/ship/self | dry/read-only по умолчанию, кроме явного `--run` |
 | `variants.py` | найти fork-варианты перед синтезом | read-only |
+| `synthesis_helper.py` | подготовить scaffold синтеза без принятия решения | пишет report при `--out` |
 | `stream.py` | semi-commit пакет варианта в `streams/` | пишет отдельный пакет, mainline не трогает |
 | `merge_gate.py` | read-only проверка перед вливанием | read-only |
 | `promote.py` | gate подъёма L4→L3→L2→L1 | `check` read-only, `move` только после review |

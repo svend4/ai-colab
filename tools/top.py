@@ -115,6 +115,13 @@ _BUTTONS = [
         "effect": "read-only",
     },
     {
+        "id": "synthesis-helper",
+        "audience": "both",
+        "command": "python tools/synthesis_helper.py report <topic> --out темы/<topic>-synthesis.md",
+        "does": "Собрать scaffold синтеза из найденных fork-вариантов без принятия решения.",
+        "effect": "writes report if --out",
+    },
+    {
         "id": "merge-gate",
         "audience": "agent",
         "command": "python tools/merge_gate.py check <agent>",

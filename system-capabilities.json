@@ -25,6 +25,10 @@
       "does": "найти fork-варианты для синтеза"
     },
     {
+      "cmd": "python tools/synthesis_helper.py report <topic> --out темы/<topic>-synthesis.md",
+      "does": "собрать scaffold синтеза из fork-вариантов"
+    },
+    {
       "cmd": "python tools/merge_gate.py check <agent>",
       "does": "read-only merge gate перед вливанием"
     },
