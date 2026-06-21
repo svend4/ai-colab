@@ -613,7 +613,7 @@
     {
       "id": "T-048",
       "title": "Runtime-приёмка files driver и MCP wrapper после восстановления Python",
-      "status": "blocked",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -646,7 +646,7 @@
     {
       "id": "T-051",
       "title": "Runtime-приёмка repo-runner MCP wrapper после hardening",
-      "status": "blocked",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",

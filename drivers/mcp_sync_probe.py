@@ -43,40 +43,11 @@ def configure_output():
 configure_output()
 
 
-def encode_message(payload):
-    body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-    return b"Content-Length: %d\r\n\r\n" % len(body) + body
-
-
-def read_exact(stream, n):
-    chunks = []
-    remaining = n
-    while remaining:
-        data = stream.read(remaining)
-        if not data:
-            raise EOFError("stdio closed while reading message body")
-        chunks.append(data)
-        remaining -= len(data)
-    return b"".join(chunks)
-
-
 def read_message(stream):
-    header = bytearray()
-    while b"\r\n\r\n" not in header:
-        ch = stream.read(1)
-        if not ch:
-            raise EOFError("stdio closed while reading header")
-        header.extend(ch)
-    header_text = header.decode("ascii", errors="replace")
-    length = None
-    for line in header_text.split("\r\n"):
-        if line.lower().startswith("content-length:"):
-            length = int(line.split(":", 1)[1].strip())
-            break
-    if length is None:
-        raise ValueError("missing Content-Length header: %r" % header_text)
-    body = read_exact(stream, length)
-    return json.loads(body.decode("utf-8"))
+    raw = stream.readline()
+    if not raw:
+        raise EOFError("stdio closed while reading JSON-RPC line")
+    return json.loads(raw.decode("utf-8"))
 
 
 class SyncMcpClient:
@@ -124,7 +95,8 @@ class SyncMcpClient:
     def send(self, payload):
         if self.proc.poll() is not None:
             raise RuntimeError("server exited with code %s" % self.proc.returncode)
-        self.proc.stdin.write(encode_message(payload))
+        body = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        self.proc.stdin.write(body + b"\n")
         self.proc.stdin.flush()
 
     def request(self, method, params=None):
