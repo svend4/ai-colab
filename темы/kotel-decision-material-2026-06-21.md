@@ -8,13 +8,13 @@ next: Использовать как независимую перепрове�
 
 # Котёл-пакет: материал ПРЕДЛАГАЕТСЯ для коллективного решения (D-018)
 
-> **Это НЕ решения.** Это подготовленный материал для коллективного принятия через котёл (D-018). Ни один пункт не переведён в `accepted`, в `DECISIONS.md` ничего не записано, governance остаётся за людьми.
+> **Исторический статус:** изначально это был материал, а не решение. После принятия `D-021` рекомендации котла ратифицированы Stefan; сам файл остаётся evidence/review-материалом, не decision-record.
 >
-> **Контекст перепроверки:** Codex независимо синтезировал часть пунктов — `tasks/T-137.md` (status: **review**), `decisions/D-020.md` (status: **proposed**), `streams/commit-policy/2026-06-21-codex-t136-synthesis/STREAM.md` (status: ready-for-review). Данный пакет — **независимая вторая перепроверка** (D-015: верификация ≥2 агентами), а не дубль: каждый пункт прочитан против синтеза Codex и помечен кросс-чеком (agree / partial / differ).
+> **Контекст перепроверки:** Codex независимо синтезировал часть пунктов — `tasks/T-137.md`, `decisions/D-020.md`, `streams/commit-policy/2026-06-21-codex-t136-synthesis/STREAM.md`. Данный пакет был **независимой второй перепроверкой** (D-015: верификация ≥2 агентами), а не дублем: каждый пункт прочитан против синтеза Codex и помечен кросс-чеком (agree / partial / differ).
 >
 > **Двойной чек (D-018):** для каждого пункта приведены технический и гуманитарный чек.
 >
-> **Сверка с живым состоянием репозитория (read-only):** T-137 = review; T-136 = blocked; D-020 = proposed; T-020 = `blocked` (честный, не orphan-doing); `tools/text_extract.py` после T-142 поддерживает `.md/.markdown/.txt/.text/.html/.htm/.docx`; PDF остаётся исключён явно и требует отдельного dependency decision; `core/engine-manifest.md` и `portals/example/portal.md` существуют. Заявления синтезов подтверждаются файлами.
+> **Сверка с живым состоянием после D-021/T-143:** T-137 = done; T-136 = done; D-021 = accepted; D-020 остаётся proposed technical draft; T-020 = `blocked` до read-only источника; `tools/text_extract.py` поддерживает `.md/.markdown/.txt/.text/.html/.htm/.docx`; PDF остаётся отдельным dependency decision; Level-1 worktree toolset проверен dry-by-default.
 
 ---
 
@@ -161,4 +161,4 @@ DOCX low-risk path реализован как `tools/text_extract.py` + тес�
 | 6. d3-infra-scope | Только C1-C3 + тонкие инструменты T-137; §9 P1 отложить до измеренного спроса | высокая |
 | 7. svend4-t020 | Честный BLOCKED + generic external-source intake; реальный прогон за Stefan; execute = OFF | высокая |
 
-> **Governance остаётся за Stefan + Codex.** Ни один пункт здесь не `accepted`. Этот пакет — материал для котла (D-018) и независимая перепроверка синтезов Codex (T-137 review, D-020 proposed). Перевод любого пункта в `accepted` и запись в `DECISIONS.md` — результат коллективного синтеза с подтверждением человека, а не действие агента.
+> **Governance closeout:** D-021 зафиксировал accepted-решение Stefan. Этот файл остаётся доказательной базой; актуальный accepted decision — `decisions/D-021.md`, операционный closeout — `tasks/T-143.md` и `docs/d021-acceptance-closeout-2026-06-21.md`.

@@ -1,9 +1,9 @@
 ---
 id: commit-policy-streams-2026-06-21
 title: Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию
-status: open
-wait: Stefan, Codex
-next: Немедленно — commit-lock + selective-add; следующий уровень — worktree-stream на агента + merge-gate (модель «ручейки→основная линия»); по D-017 — форк Claude, нужен синтез с Codex
+status: accepted
+wait: none
+next: Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout
 ---
 
 # Политика коммитов: «ручейки» в основную линию
@@ -87,3 +87,13 @@ file-native канона, без полноценного git-flow.
 Это эмпирически усиливает аргумент за **Уровень 1 (worktree-на-агента)**, где индекс генерится в своём
 притоке и сводится merge-gate'ом, а не делится в реальном времени. Уровень 0 закрывает риск half-done
 кода, но не устраняет связку через общий генерируемый индекс.
+
+## Closeout 2026-06-21 — D-021 / T-143
+
+Stefan ратифицировал котёл-пакет в `D-021`. Итог по этой теме:
+
+- Уровень 0 (`selective-add` + `commit_lock`) остаётся дефолтом для общего рабочего дерева.
+- Уровень 1 (`git worktree` на агента/задачу + `merge_gate`) принят как явный режим для реальной параллельной нагрузки.
+- `streams/` остаётся полу-форматом видимости и синтеза, но не становится отдельной VCS.
+- Merge подтверждает Stefan или назначенный интегратор.
+- Проверки T-143: `test_worktree`, `test_flow`, `test_stream`, `test_merge_gate`, dry-run `worktree.py spawn`, `flow.py start/finish --worktree`.

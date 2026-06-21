@@ -29,13 +29,6 @@
       "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
     },
     {
-      "id": "commit-policy-streams-2026-06-21",
-      "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
-      "file": "темы/commit-policy-streams-2026-06-21.md",
-      "status": "open",
-      "next": "Немедленно — commit-lock + selective-add; следующий уровень — worktree-stream на агента + merge-gate (модель «ручейки→основная линия»); по D-017 — форк Claude, нужен синтез с Codex"
-    },
-    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "темы/infrastructure-review.md",
@@ -118,6 +111,13 @@
       "file": "темы/information-drivers.md",
       "status": "archive",
       "next": "Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
+    },
+    {
+      "id": "commit-policy-streams-2026-06-21",
+      "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
+      "file": "темы/commit-policy-streams-2026-06-21.md",
+      "status": "accepted",
+      "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     }
   ],
   "tasks": [
@@ -1609,24 +1609,24 @@
     {
       "id": "T-136",
       "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
-      "status": "blocked",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/commit-policy-streams-2026-06-21.md",
-      "next": "Коллективно (≥2 агента + Stefan) решить: принять Уровень 0 (selective-add + commit_lock) сразу; нужен ли Уровень 1 (worktree-ручейки + merge-gate); полу-формат E (changeset vs git-ветка). Обоснование техническое + гуманитарное, итог в DECISIONS"
+      "next": "Закрыто D-021/T-143 — Уровень 0 остаётся дефолтом, Уровень 1 worktree-streams принят как явный режим --worktree; merge-gate подтверждает Stefan/интегратор."
     },
     {
       "id": "T-137",
       "title": "Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат)",
-      "status": "review",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
-      "next": "Review D-020; Stefan/integrator decides worktree-streams, T-020 source policy, text-extract dependency path."
+      "next": "Закрыто D-021/T-143 — governance-пакет ратифицирован; T-020 остаётся отдельным blocked до read-only источника; PDF dependency остаётся отдельным будущим решением."
     },
     {
       "id": "T-138",
@@ -1682,6 +1682,17 @@
       "depends_on": "[]",
       "topic": "темы/kotel-decision-material-2026-06-21.md",
       "next": "Реализовано read-only .docx extraction через zipfile + ElementTree; PDF оставлен gated; тесты test_text_extract/test_knowledge зелёные."
+    },
+    {
+      "id": "T-143",
+      "title": "D-021 acceptance closeout — закрыть T-136/T-137 после ратификации Level-1",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "next": "Закрыто — D-021/toolset проверены, T-136/T-137 переведены в done, отчёт и outbox записаны; T-020 остаётся blocked."
     }
   ],
   "questions": [
