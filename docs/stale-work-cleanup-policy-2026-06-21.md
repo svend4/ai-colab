@@ -25,7 +25,7 @@ related: tasks/T-091.md, tasks/T-020.md, tasks/T-062.md, tasks/T-063.md, tasks/T
 ## Применение сейчас
 
 - `T-062`, `T-063`, `T-064` закрыты как retired placeholders.
-- `T-093` сначала выглядел как новый пустой резерв, но после проверки найден реальный артефакт `drivers/gateway/test_gateway.py`; задача восстановлена как gateway in-process regression test, а не retired placeholder.
+- `T-093` появился как новый пустой резерв после первого cleanup и закрыт как retired placeholder. Реальная gateway in-process regression работа оформлена отдельно как `T-094`.
 - `T-020` оставлен без изменения: это `svend4`-зависимая задача другого владельца (`Novax`) и требует отдельного решения человека/владельца.
 - Heartbeat-записи других агентов не удалялись; Codex обновил только собственный heartbeat на `T-091`.
 

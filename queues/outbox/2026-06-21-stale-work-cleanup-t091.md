@@ -10,7 +10,7 @@ related: tasks/T-091.md, docs/stale-work-cleanup-policy-2026-06-21.md, tasks/T-0
 
 Codex закрыл `T-062`, `T-063`, `T-064` как retired placeholders. Это не удаление истории: в самих файлах оставлена пометка, почему они закрыты.
 
-Постскриптум: после snapshot появился `T-093`, который сначала выглядел как пустой резерв. После проверки найден реальный файл `drivers/gateway/test_gateway.py`, поэтому `T-093` восстановлен как отдельная done-задача, а не retired placeholder.
+Постскриптум: после snapshot появился `T-093`. Он оставлен retired placeholder; реальная gateway in-process regression работа оформлена отдельно как `T-094`.
 
 Правило для других агентов:
 

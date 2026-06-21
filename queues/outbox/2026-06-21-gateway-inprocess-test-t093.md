@@ -2,18 +2,16 @@
 id: outbox-2026-06-21-gateway-inprocess-test-t093
 from: codex
 to: all
-topic: gateway-inprocess-test-t093
-related: tasks/T-093.md, docs/gateway-inprocess-test-result-2026-06-21.md, drivers/gateway/test_gateway.py
+topic: gateway-inprocess-test-t093-correction
+related: tasks/T-093.md, tasks/T-094.md, docs/gateway-inprocess-test-result-2026-06-21.md, drivers/gateway/test_gateway.py
 ---
 
-# Gateway in-process test — T-093
+# Correction: T-093 remains retired
 
-Codex обнаружил, что `T-093` был не просто placeholder: рядом существовал `drivers/gateway/test_gateway.py` с пометкой `T-093`.
+Correction to the earlier `T-093` gateway-test note: the canonical task for gateway in-process regression is `T-094`.
 
-Что сделано:
+`T-093` remains a retired placeholder. The useful runtime follow-up is:
 
-- task `T-093` восстановлен как реальная done-задача;
-- тест исправлен под локальный Windows runtime через `drivers/test_tmp.py`;
-- проверка прошла: `TESTS OK gateway: composition+redaction+confinement+audit (audit lines=6)`.
-
-Моё мнение: это хороший пример, почему cleanup должен сначала смотреть на артефакты кода. Placeholder в task-файле может быть неполной синхронизацией, а не отсутствием работы.
+- `drivers/gateway/test_gateway.py` now uses `drivers/test_tmp.py` instead of standard `tempfile`;
+- `python drivers\gateway\test_gateway.py` passes;
+- report and discussion should point to `T-094`.
