@@ -1412,6 +1412,28 @@
       "depends_on": "[T-118, T-119]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Закрыто — отчёт по ранней архитектуре и текущей стадии создан, drift исправлен"
+    },
+    {
+      "id": "T-121",
+      "title": "Top agent operating manual — чистовая инструкция вершины пирамиды",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-120]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создать clean-current manual: metadata, функции, Q&A, проблемы, предложения автоматизации"
+    },
+    {
+      "id": "T-122",
+      "title": "Чистовик-онбординг агента + Q&A коллаборации (docs/agent-onboarding.md)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Создан docs/agent-onboarding.md — present-tense чистовик: что система умеет сейчас, роли людей/агентов, карта документации, Q&A проблем разработки/коллаборации с микроскиллами, критика, зрелость/self-improvement движка, инновационные идеи"
     }
   ],
   "questions": [
