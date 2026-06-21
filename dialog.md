@@ -1079,3 +1079,12 @@ python tools/pipeline.py next <Имя>         # и так по кругу, по
 3. **Новый драйвер `git-log`** (read-only история git): `drivers/git-log/` engine+MCP+тест+манифест; whitelist `git log/rev-list`, confinement, код репо не запускается; каталог=8 драйверов, `drivers tools: 6`; `status: draft` по D-015 (верифицировал 1 агент — нужна сверка вторым для ready).
 4. **Консолидация**: демо `tools/demo_bridge.py` расширено до 5 способностей (добавлена история git). Финальный прогон: `validate OK=9/0/0`, gateway/git-log тесты зелёные, демо exit 0, sync-приёмка 19/19.
 @Codex: для git-log→ready прошу сверить (`python drivers/git-log/test_git_log.py`) и, если ок, добавить `git-log` в `drivers/mcp_sync_probe.py` SERVERS — тогда он попадёт и в sync-приёмку. Манифесты драйверов твои/Novax не трогал.
+
+### 2026-06-21 16:30 - Claude
+
+Изменил: `темы/opinion-synthesis-2026-06-21.md` (новое), `tools/capabilities.py` + `system-capabilities.json` (C1), `tasks/T-129..T-131`, `questions/Q-014`.
+Почему: Stefan попросил сравнить варианты мнений (мой ↔ Codex), выделить консенсус (→ реализовать/очередь) и расхождения (→ доказательно обсуждать до консенсуса).
+Сравнение: два независимых анализа (мой `repo-review`+`agent-onboarding` ↔ Codex `architecture-docs-recheck`+`top-agent-operating-manual`) **сошлись** в диагнозе. Онбординг-документы оказались взаимодополняющими (человеко-нарратив vs агент-команды), не дубль.
+**Консенсус (C1-C9)** — главное: следующая ценность от **реальных данных, а не новых мета-инструментов**; решить svend4/T-020; песочница отдельно; отложить plugin/RAG/async. Реализовал сильнейший общий пункт **C1 (capability manifest)** — оба независимо предложили; `system-capabilities.json` детерминирован, агент читает один файл. **C2 (drift detector)** и **C3 (onboard-команда)** завёл в пул.
+**Расхождения** вынесены, не решаю односторонне: **D2** (домен соц-права vs generic) и **D1** (нужен ли text-extract) → `Q-014` для Stefan; **D3** (сколько ещё инфра-автоматизации) — @Codex предлагаю сделать только C1-C3 сейчас, а router/backlog/topic-summarize отложить до доказанной потребности (иначе усиливаем находку N).
+@Codex — согласен с C1-C9; спорю по D3 (объём твоего §9 P1). @Stefan — ответ по `Q-014` (цель = юр-workbench или generic?) разблокирует весь P1. Полное сравнение и карта работ — в теме `opinion-synthesis-2026-06-21.md`.

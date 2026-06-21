@@ -1,0 +1,186 @@
+{
+  "commands": [
+    {
+      "cmd": "python tools/demo_bridge.py",
+      "does": "увидеть слой в действии (read-only)"
+    },
+    {
+      "cmd": "python tools/pipeline.py status",
+      "does": "состояние конвейера задач"
+    },
+    {
+      "cmd": "python tools/pipeline.py next <agent>",
+      "does": "атомарно взять задачу"
+    },
+    {
+      "cmd": "python tools/validate.py",
+      "does": "проверить канон (ERROR=0)"
+    },
+    {
+      "cmd": "python tools/knowledge.py report <корпус> --query <t>",
+      "does": "L6 ingest→query→report"
+    },
+    {
+      "cmd": "python tools/knowledge.py search <db> <t>",
+      "does": "ранжированный поиск FTS5"
+    },
+    {
+      "cmd": "python drivers/mcp_sync_acceptance.py",
+      "does": "переносимая MCP tools/call приёмка"
+    }
+  ],
+  "default_mode": "read-only",
+  "docs": {
+    "driver_catalog": "drivers/CATALOG.md",
+    "layers": "docs/layers-coverage.md",
+    "onboarding_agent": "docs/top-agent-operating-manual.md",
+    "onboarding_human": "docs/agent-onboarding.md",
+    "rules": "AGENTS.md",
+    "skills": "skills/README.md",
+    "usage": "docs/bridge-usage.md"
+  },
+  "driver_status_gate": "D-015 (код работает + сверка >=2 агентами)",
+  "drivers": [
+    {
+      "audit": true,
+      "id": "codex-local",
+      "level": "L1",
+      "mode": "manual",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Codex local driver — мост к локальной рабочей среде",
+      "tools": [
+        "codex_available",
+        "codex_info"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "data",
+      "level": "L1",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Data driver — таблицы, JSON, SQLite и индексы",
+      "tools": [
+        "list_tables",
+        "columns",
+        "head",
+        "summarize"
+      ]
+    },
+    {
+      "audit": false,
+      "id": "file-inventory",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "low",
+      "status": "draft",
+      "title": "File inventory driver — project file map with metadata and risk flags",
+      "tools": [
+        "scan",
+        "render_markdown"
+      ]
+    },
+    {
+      "audit": false,
+      "id": "files",
+      "level": "L1",
+      "mode": "read-only",
+      "risk": "low",
+      "status": "ready",
+      "title": "Files driver — безопасное чтение и инвентаризация файлов",
+      "tools": [
+        "list_files",
+        "read_file",
+        "search",
+        "summarize"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "gateway",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Gateway — единый MCP над files/repo/workbench (композиция)",
+      "tools": [
+        "files_list",
+        "files_read",
+        "files_search",
+        "files_summarize",
+        "repo_inspect",
+        "memory_query"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "git-log",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Git-log driver — read-only история git (коммиты, авторы, история файла)",
+      "tools": [
+        "recent_commits",
+        "author_stats",
+        "file_history",
+        "repo_summary"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "repo-runner",
+      "level": "L1",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Repo runner — inventory репозиториев и будущий запуск в песочнице",
+      "tools": [
+        "inspect_repo",
+        "repo_summary",
+        "repo_risks"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "sqlite",
+      "level": "L2",
+      "mode": "read-only",
+      "risk": "medium",
+      "status": "ready",
+      "title": "SQLite driver — read-only инспекция и запрос SQLite-БД",
+      "tools": [
+        "list_tables",
+        "table_schema",
+        "table_head",
+        "query"
+      ]
+    },
+    {
+      "audit": true,
+      "id": "workbench",
+      "level": "L2",
+      "mode": "safe-write",
+      "risk": "medium",
+      "status": "ready",
+      "title": "Workbench DB driver — SQLite-память корпуса и audit log",
+      "tools": [
+        "init",
+        "add_document",
+        "query_documents",
+        "log",
+        "audit",
+        "ingest_repo"
+      ]
+    }
+  ],
+  "drivers_ready": 8,
+  "drivers_total": 9,
+  "execute_policy": "forbidden_until_sandbox_and_accepted_decision (D-010, находка G)",
+  "note": "Производный файл: генерируется tools/capabilities.py из drivers/*.md. Не править руками.",
+  "purpose": "Средний слой между AI-клиентом и Windows/файлами/репозиториями/данными",
+  "stage": "Рабочий read-only прототип среднего слоя (не execute-платформа)",
+  "system": "AI-OS Bridge / Information Workbench Layer"
+}

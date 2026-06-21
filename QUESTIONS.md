@@ -26,4 +26,6 @@
 | Q-010 | Переименовать ли папку темы/ в ASCII (topics/)? | open | Claude | все | `темы/migrate-file-names.md` |  |
 | Q-011 | Как сделать динамический конвейер агентов для управляемой разработки? | answered | Stefan (через Novax) | все | `темы/agent-pipeline.md` | Принят D-011: комбинированный конвейер A+B+C — pipeline.py как pull-next/status/done/fail, PIPELINE.md для людей, logs/pipeline.json для агентов. |
 | Q-012 | Делать ли обязательный heartbeat/live-room для агентов? | answered | Codex | Stefan, Claude, Mavis, Novax | `темы/agent-pipeline.md` | Принят D-012: вариант B — добровольный heartbeat; pipeline.py heartbeat пишет per-agent JSON, LIVE.md и logs/heartbeat.json. |
+| Q-013 | Как согласовать спорные пункты onboarding/manual roadmap? | open | codex | все | `темы/ai-os-bridge.md` |  |
+| Q-014 | Цель проекта — юридический workbench (домен) или универсальный generic-инструмент? | open | — | все | — |  |
 <!-- GEN:questions END -->
