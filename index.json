@@ -1924,6 +1924,13 @@
       "status": "proposed",
       "date": "2026-06-21",
       "file": "decisions/D-020.md"
+    },
+    {
+      "id": "D-021",
+      "title": "Ратификация котёл-пакета — Уровень-1 принят, core-export/apex/D3 по рекомендациям, svend4 BLOCKED",
+      "status": "accepted",
+      "date": "2026-06-21",
+      "file": "decisions/D-021.md"
     }
   ],
   "drivers": [
