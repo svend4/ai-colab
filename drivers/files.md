@@ -13,7 +13,7 @@ inputs: [path, pattern]
 outputs: [file-list, snippets, summary]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
-source_last_verified: 2026-06-20
+source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: false

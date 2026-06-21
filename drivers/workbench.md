@@ -2,7 +2,7 @@
 id: workbench
 type: driver
 title: Workbench DB driver — SQLite-память корпуса и audit log
-status: draft
+status: ready
 level: L2
 mode: safe-write
 owner: Codex
@@ -13,7 +13,7 @@ inputs: [db-path, document-record, repo-scan-report]
 outputs: [sqlite-db, document-list, audit-list]
 sandbox: workspace-write-only
 secrets: forbidden-in-repo
-source_last_verified: 2026-06-20
+source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true

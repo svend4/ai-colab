@@ -10,4 +10,4 @@
 | files | Files driver — безопасное чтение и инвентаризация файлов | L1 | read-only | low | ready |
 | gateway | Gateway — единый MCP над files/repo/workbench (композиция) | L2 | read-only | medium | ready |
 | repo-runner | Repo runner — inventory репозиториев и будущий запуск в песочнице | L1 | read-only | medium | ready |
-| workbench | Workbench DB driver — SQLite-память корпуса и audit log | L2 | safe-write | medium | draft |
+| workbench | Workbench DB driver — SQLite-память корпуса и audit log | L2 | safe-write | medium | ready |

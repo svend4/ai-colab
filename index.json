@@ -1042,7 +1042,7 @@
     {
       "id": "T-087",
       "title": "Реализовать sync MCP stdio probe без asyncio для acceptance",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -1290,6 +1290,13 @@
       "status": "proposed",
       "date": "2026-06-20",
       "file": "decisions/D-014.md"
+    },
+    {
+      "id": "D-015",
+      "title": "Гейт статуса драйверов — многоагентная верификация вместо обязательного human-confirm",
+      "status": "accepted",
+      "date": "2026-06-21",
+      "file": "decisions/D-015.md"
     }
   ],
   "drivers": [
@@ -1399,7 +1406,7 @@
       "id": "workbench",
       "title": "Workbench DB driver — SQLite-память корпуса и audit log",
       "file": "drivers/workbench.md",
-      "status": "draft",
+      "status": "ready",
       "level": "L2",
       "mode": "safe-write",
       "owner": "Codex",

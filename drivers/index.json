@@ -72,7 +72,7 @@
       "level": "L2",
       "mode": "safe-write",
       "risk": "medium",
-      "status": "draft",
+      "status": "ready",
       "sandbox": "workspace-write-only",
       "secrets": "forbidden-in-repo",
       "activation": "manual"

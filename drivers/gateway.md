@@ -9,11 +9,12 @@ owner: Claude
 risk: medium
 activation: mcp
 interfaces: [files_list, files_read, files_search, files_summarize, repo_inspect, memory_query]
+tools: [files_list, files_read, files_search, files_summarize, repo_inspect, memory_query]
 inputs: [path, repo-path, query]
 outputs: [listing, content, search-hits, repo-summary, memory-hits]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
-source_last_verified: 2026-06-20
+source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true

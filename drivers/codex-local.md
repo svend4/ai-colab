@@ -14,7 +14,7 @@ inputs: [workspace-path, task-id]
 outputs: [status, report, patch-summary]
 sandbox: current-workspace-policy
 secrets: forbidden-in-repo
-source_last_verified: 2026-06-20
+source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true

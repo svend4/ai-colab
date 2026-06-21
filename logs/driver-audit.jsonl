@@ -1,0 +1,9 @@
+{"ts": 1782037615, "driver": "repo-runner", "action": "inspect_repo", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\repo", "max_files": 1000}
+{"ts": 1782037615, "driver": "repo-runner", "action": "repo_summary", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\repo", "max_files": 1000}
+{"ts": 1782037615, "driver": "repo-runner", "action": "repo_risks", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\repo", "max_files": 1000}
+{"ts": 1782037630, "driver": "data", "action": "list_tables", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba"}
+{"ts": 1782037631, "driver": "data", "action": "columns", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\t.csv"}
+{"ts": 1782037631, "driver": "data", "action": "head", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\t.csv", "n": 10}
+{"ts": 1782037631, "driver": "data", "action": "summarize", "target": "C:\\Users\\stefan\\Documents\\New project ai colab\\tmp-work\\mcp_accept_eae9c9f412ba\\t.csv"}
+{"ts": 1782037644, "driver": "codex-local", "action": "codex_available", "target": null}
+{"ts": 1782037644, "driver": "codex-local", "action": "codex_info", "target": null}
