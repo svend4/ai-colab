@@ -9,6 +9,10 @@
       "does": "групповая проверка здоровья канона"
     },
     {
+      "cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md",
+      "does": "сравнить два knowledge-отчёта"
+    },
+    {
       "cmd": "python tools/demo_bridge.py",
       "does": "увидеть слой в действии (read-only)"
     },

@@ -1,13 +1,7 @@
 {
-  "epoch": 1782059929,
+  "epoch": 1782060936,
   "doing": [],
   "ready": [
-    {
-      "id": "T-127",
-      "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
-      "priority": "normal",
-      "owner": "pool"
-    },
     {
       "id": "T-137",
       "title": "Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат)",

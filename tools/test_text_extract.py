@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Tests for tools/text_extract.py (T-133)."""
 import os
@@ -20,7 +20,7 @@ def run():
             html = os.path.join(d, "page.html")
             txt = os.path.join(d, "secret.txt")
             with open(md, "w", encoding="utf-8") as f:
-                f.write("# Title\n\nIntro line\n\nDeepNeedle in body\n")
+                f.write("---\ntitle: Hidden Meta\n---\n# Title\n\nIntro line\n\nDeepNeedle in body\n")
             with open(html, "w", encoding="utf-8") as f:
                 f.write("<html><head><style>.x{}</style><script>bad()</script></head>"
                         "<body><h1>Heading</h1><p>Visible HTML Text</p></body></html>")
@@ -30,6 +30,7 @@ def run():
             md_item = tx.extract(md, base_dir=ROOT)
             assert md_item["supported"] is True, md_item
             assert "Title" in md_item["text"] and "DeepNeedle" in md_item["text"], md_item
+            assert "Hidden Meta" not in md_item["text"], md_item
             assert "#" not in tx.summary_from_text(md_item["text"]), md_item
 
             html_item = tx.extract(html, base_dir=ROOT)

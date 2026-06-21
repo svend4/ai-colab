@@ -202,7 +202,7 @@ def report(corpus, db=DEFAULT_DB, query_text=None):
         out.append("| %s | %d |" % (k, v))
     if query_text is not None:
         out.append("")
-        out.append("## Запрос: «%s» — %d совпадений (ранжировано, FTS5)" % (query_text, len(hits)))
+        out.append("## Запрос: «%s» — показано %d совпадений (limit=10, ранжировано, FTS5)" % (query_text, len(hits)))
         out.append("| Документ | Тип | Summary |")
         out.append("|---|---|---|")
         for d in hits:

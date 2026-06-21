@@ -87,6 +87,13 @@ _BUTTONS = [
         "effect": "writes report if --out",
     },
     {
+        "id": "report-diff",
+        "audience": "both",
+        "command": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md",
+        "does": "Сравнить два knowledge-отчёта по масштабу, типам и hit-count.",
+        "effect": "writes report if --out",
+    },
+    {
         "id": "work-cycle",
         "audience": "agent",
         "command": "python tools/top.py cycle <agent>",
@@ -206,11 +213,20 @@ def cmd_snapshot(_args):
 
 def cmd_knowledge(args):
     cmd = _tool("knowledge.py", "report", args.corpus)
+    if args.db:
+        cmd += ["--db", args.db]
     if args.query:
         cmd += ["--query", args.query]
     if args.out:
         cmd += ["--out", args.out]
     return _run("knowledge report", cmd, timeout=90)
+
+
+def cmd_report_diff(args):
+    cmd = _tool("report_diff.py", args.a, args.b)
+    if args.out:
+        cmd += ["--out", args.out]
+    return _run("report diff", cmd, timeout=45)
 
 
 def cmd_cycle(args):
@@ -259,8 +275,15 @@ def build_parser():
     p = sub.add_parser("knowledge", help="run knowledge report")
     p.add_argument("corpus")
     p.add_argument("--query")
+    p.add_argument("--db")
     p.add_argument("--out")
     p.set_defaults(func=cmd_knowledge)
+
+    p = sub.add_parser("report-diff", help="compare two knowledge reports")
+    p.add_argument("a")
+    p.add_argument("b")
+    p.add_argument("--out")
+    p.set_defaults(func=cmd_report_diff)
 
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")

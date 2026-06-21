@@ -15,7 +15,8 @@
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
-- `top.py` — верхняя панель сценариев/“кнопок”: status, health, agent-start, take, snapshot, knowledge, cycle.
+- `top.py` — верхняя панель сценариев/“кнопок”: status, health, agent-start, take, snapshot, knowledge, report-diff, cycle.
+- `report_diff.py` — механическое сравнение двух `knowledge.py report` Markdown-отчётов: документы, типы, hit-count.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html` на stdlib, с redaction через `files` driver. PDF/DOCX оставлены отдельным решением о зависимостях.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
 
@@ -306,6 +307,7 @@ python tools/top.py agent-start codex
 python tools/top.py take codex
 python tools/top.py snapshot
 python tools/top.py knowledge data/knowledge-corpus --query bridge --out reports/bridge.md
+python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md
 ```
 
 Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py` и `drift_check.py`.

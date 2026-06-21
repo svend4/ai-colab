@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Generic text extract (T-133) — read-only stdlib extraction for core/portals.
@@ -75,6 +75,8 @@ def _normalize(text):
 
 def _strip_markdown_noise(text):
     # Keep readable words, remove common Markdown syntax that hurts summaries/search snippets.
+    # Drop leading YAML-ish front-matter from docs/topics before FTS summaries.
+    text = re.sub(r"^\s*---\s*\n.*?\n---\s*\n", "", text, flags=re.S)
     text = re.sub(r"```.*?```", " ", text, flags=re.S)
     text = re.sub(r"`([^`]*)`", r"\1", text)
     text = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", text)

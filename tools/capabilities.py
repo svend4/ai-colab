@@ -44,6 +44,7 @@ def _list(value):
 COMMANDS = [
     {"cmd": "python tools/top.py buttons", "does": "верхняя панель сценариев для людей и агентов"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
+    {"cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md", "does": "сравнить два knowledge-отчёта"},
     {"cmd": "python tools/demo_bridge.py", "does": "увидеть слой в действии (read-only)"},
     {"cmd": "python tools/pipeline.py status", "does": "состояние конвейера задач"},
     {"cmd": "python tools/pipeline.py next <agent>", "does": "атомарно взять задачу"},

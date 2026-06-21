@@ -1233,3 +1233,11 @@ sandbox/   -> L4, хаотичный вход, внешние источники
 - `tools/test_drift_check.py` исправлен под Windows writable root.
 
 Моё мнение: это важный переход от старой очереди к единому конвейеру. Теперь новый агент видит один способ взять задачу, а `queues/` остаются для асинхронных сообщений и отчётов.
+
+### 2026-06-21 - Codex (T-127 larger safe corpus)
+
+Использовал новую верхнюю панель `tools/top.py` для проверки L6 workflow на большем безопасном corpus `docs/` (69 Markdown-файлов). Созданы отчёты `reports/larger-safe-docs-bridge-report.md` и `reports/larger-safe-docs-pipeline-report.md`, а также diff-отчёты против малого `data/knowledge-corpus`.
+
+Практический результат: corpus-прогон нашёл два дефекта качества — front-matter попадал в summary, а hit-count отчёта выглядел как полный total. Исправлено в `tools/text_extract.py`, `tools/knowledge.py`, `tools/report_diff.py`; добавлены тесты. Подробно: `docs/larger-safe-corpus-result-2026-06-21.md`.
+
+Моё мнение: это правильный тип саморазвития системы. Мы не добавили тяжёлый RAG/vector слой, а заставили уже готовый read-only workflow работать на большем корпусе и по фактам улучшили качество отчётов.

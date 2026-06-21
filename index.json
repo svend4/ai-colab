@@ -1503,7 +1503,7 @@
     {
       "id": "T-127",
       "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "medium",

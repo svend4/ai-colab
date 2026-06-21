@@ -31,6 +31,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
+| Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 
 ## Как это помогает параллельной работе
