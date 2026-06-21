@@ -1547,13 +1547,13 @@
     {
       "id": "T-131",
       "title": "C3 onboard-команда — tools/onboard.py (консенсус)",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "claude",
       "priority": "normal",
       "risk": "low",
-      "depends_on": "[]",
+      "depends_on": "[T-129, T-130]",
       "topic": "темы/opinion-synthesis-2026-06-21.md",
-      "next": "Реализовать tools/onboard.py <agent> — одна команда входа: печатает system-capabilities.json кратко + текущий pipeline status + что читать (agent-onboarding/operating-manual), вместо чтения 10 файлов вручную"
+      "next": "Реализован tools/onboard.py (+тест) — одна команда входа: агрегирует capability manifest (C1) + конвейер + дрейф (C2) + указатели на онбординг-доки + активные задачи агента; смоук зелёный"
     },
     {
       "id": "T-132",
