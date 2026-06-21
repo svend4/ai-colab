@@ -1027,6 +1027,83 @@
       "depends_on": "[]",
       "topic": "темы/repo-review-2026-06-21.md",
       "next": "Выполнено на чистом дереве после коммита 97ec55a — 8 копий парсера заменены импортом из tools/_canon.py; поведение идентично, все инструменты и тесты зелёные"
+    },
+    {
+      "id": "T-086",
+      "title": "Сформировать план дальнейшей разработки без svend4",
+      "status": "done",
+      "owner": "Codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Выполнено: docs/non-svend4-development-plan-2026-06-21.md создан; T-087..T-091 добавлены в пул"
+    },
+    {
+      "id": "T-087",
+      "title": "Реализовать sync MCP stdio probe без asyncio для acceptance",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-081]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверить, можно ли заменить падающий asyncio MCP stdio acceptance на subprocess.Popen JSON-RPC probe"
+    },
+    {
+      "id": "T-088",
+      "title": "Gateway driver cleanup — audit, tools manifest, status policy",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-083, T-084]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Добавить gateway audit/tools metadata и зафиксировать статус без ложной MCP acceptance"
+    },
+    {
+      "id": "T-089",
+      "title": "Files driver cleanup — общий redaction helper и tools manifest",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-080, T-084]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Мигрировать files_driver.py на drivers/redaction.py и добавить tools metadata без изменения MCP acceptance статуса"
+    },
+    {
+      "id": "T-090",
+      "title": "Driver status reconciliation — draft/ready матрица после acceptance",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-055, T-057, T-059, T-081]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Составить матрицу статусов драйверов и предложить честные draft/ready/blocked формулировки"
+    },
+    {
+      "id": "T-091",
+      "title": "Очистить placeholder/stale-work слой без svend4",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-082]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Решить судьбу T-062..T-064 и stale heartbeat/claims без удаления истории"
+    },
+    {
+      "id": "T-092",
+      "title": "Enforce execute-sandbox gate в validate.py (P1 security, находка G)",
+      "status": "done",
+      "owner": "claude",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-078]",
+      "topic": "темы/repo-review-2026-06-21.md",
+      "next": "Реализовано: mode:execute без реальной изоляции (container/nsjail/...) → ERROR в validate.py; SCHEMA пункт 8 обновлён; validate OK=9/0/0 (ни один драйвер не execute — без регрессии)"
     }
   ],
   "questions": [

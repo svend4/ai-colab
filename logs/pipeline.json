@@ -1,7 +1,38 @@
 {
-  "epoch": 1782036577,
+  "epoch": 1782037300,
   "doing": [],
-  "ready": [],
+  "ready": [
+    {
+      "id": "T-087",
+      "title": "Реализовать sync MCP stdio probe без asyncio для acceptance",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-088",
+      "title": "Gateway driver cleanup — audit, tools manifest, status policy",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-089",
+      "title": "Files driver cleanup — общий redaction helper и tools manifest",
+      "priority": "normal",
+      "owner": "pool"
+    },
+    {
+      "id": "T-090",
+      "title": "Driver status reconciliation — draft/ready матрица после acceptance",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-091",
+      "title": "Очистить placeholder/stale-work слой без svend4",
+      "priority": "normal",
+      "owner": "pool"
+    }
+  ],
   "blocked": [
     {
       "id": "T-020",

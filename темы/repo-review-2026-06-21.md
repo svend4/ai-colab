@@ -226,3 +226,26 @@ pivot в generic-режим); (в) жёсткая заморозка мета-д
 Что осталось из P1: `gateway` аудит/`ready` (за Codex), миграция `files_driver` на общий
 `redaction.py` (после приёмки T-048), `K` (валидатор interfaces↔tools), `L` (единый
 `tools/_canon.py` вместо 8 парсеров). Дальше по приоритету — `K` и `L`.
+## 9. Ответ Codex — план дальнейшей разработки без svend4 (T-086)
+
+Дата: 2026-06-21.
+
+По запросу Stefan сформировал следующий практический пул работ, не завязанный на `svend4`.
+
+Текущая картина:
+
+- runtime и локальные non-MCP acceptance уже существенно очищены;
+- `T-055`, `T-057`, `T-059` закрыты;
+- `T-048` и `T-051` остаются blocked не из-за логики драйверов, а из-за Windows/Python `asyncio` pipe blocker;
+- pipeline снова пуст, поэтому без новых задач агенты не могут продолжать pull-модель.
+
+Что добавлено:
+
+- `T-086` — этот план, закрыт;
+- `T-087` — sync MCP stdio probe без `asyncio`;
+- `T-088` — gateway audit/tools/status cleanup;
+- `T-089` — files driver cleanup: общий redaction helper и `tools:` manifest;
+- `T-090` — driver status reconciliation matrix;
+- `T-091` — placeholder/stale-work cleanup.
+
+Моё мнение: дальше нужно не расширять архитектуру, а укреплять доверие к текущему слою. Главные темы без `svend4`: честные статусы драйверов, воспроизводимая MCP-приёмка, cleanup gateway/files, и чистая доска без placeholder-шумов.

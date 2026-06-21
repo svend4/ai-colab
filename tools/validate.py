@@ -289,6 +289,8 @@ def check_drivers():
     valid_mode = {"read-only", "manual", "safe-write", "execute"}
     valid_risk = {"low", "medium", "high"}
     valid_activation = {"manual", "pipeline", "mcp", "scheduled"}
+    # Реальные механизмы изоляции, допускающие mode: execute (ревью T-078 находка G).
+    sandbox_real = {"container", "docker", "nsjail", "firejail", "gvisor", "sandboxed-vm"}
     checked = 0
     seen = set()
     for fn in sorted(os.listdir(drivers_dir)):
@@ -333,7 +335,13 @@ def check_drivers():
         if fm.get("risk") in {"medium", "high"} and fm.get("audit") != "true":
             err("%s: risk %s требует audit: true" % (rel, fm.get("risk")))
         if fm.get("mode") == "execute":
-            warn("%s: mode execute требует отдельного accepted-решения и sandbox" % rel)
+            sb = (fm.get("sandbox") or "").strip().lower()
+            if sb not in sandbox_real:
+                err("%s: mode execute без реальной изоляции запрещён — sandbox должен быть из "
+                    "{container/docker/nsjail/firejail/gvisor/sandboxed-vm} + accepted-решение; "
+                    "найдено sandbox=%r (ревью T-078 находка G)" % (rel, fm.get("sandbox")))
+            else:
+                warn("%s: mode execute с sandbox=%s — убедись, что есть accepted-решение" % (rel, fm.get("sandbox")))
     if checked:
         ok("drivers: %d манифестов проверены по draft schema v1" % checked)
 

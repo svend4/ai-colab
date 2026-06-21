@@ -1,8 +1,8 @@
 {
   "agent": "claude",
-  "task": "T-085",
+  "task": "T-092",
   "progress": 100,
-  "note": "L закрыт: tools/_canon.py, 8 копий парсера → импорт; поведение идентично, все тесты зелёные",
+  "note": "G: execute-sandbox gate в validate (ERROR без реальной изоляции)",
   "eta": "done",
-  "epoch": 1782036467
+  "epoch": 1782037173
 }

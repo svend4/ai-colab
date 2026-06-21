@@ -90,7 +90,7 @@ related: questions/Q-008.md, темы/ai-os-bridge.md, docs/mvp-roadmap.md
 5. `timeout_seconds` — положительное число.
 6. `max_output_bytes` — положительное число.
 7. `source_last_verified` имеет формат `YYYY-MM-DD`.
-8. `mode: execute` выдаёт ERROR, если нет принятого решения и sandbox-поля.
+8. (реализовано, T-086) `mode: execute` выдаёт ERROR, если `sandbox` не указывает реальную изоляцию (`container`/`docker`/`nsjail`/`firejail`/`gvisor`/`sandboxed-vm`); с реальной изоляцией — WARN (подтвердить accepted-решение). Декларативные значения (`required-before-...`) execute не разрешают.
 9. (реализовано, T-084) Опциональное поле `tools` сверяется с реальными `@mcp.tool()` в `drivers/<id>/mcp_server.py`; расхождение — ERROR.
 
 ## Мнение Codex

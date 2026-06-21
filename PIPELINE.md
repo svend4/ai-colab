@@ -12,7 +12,11 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| — | — | — | — |
+| T-087 | high | pool | Реализовать sync MCP stdio probe без asyncio для acceptance |
+| T-088 | high | pool | Gateway driver cleanup — audit, tools manifest, status policy |
+| T-089 | normal | pool | Files driver cleanup — общий redaction helper и tools manifest |
+| T-090 | high | pool | Driver status reconciliation — draft/ready матрица после acceptance |
+| T-091 | normal | pool | Очистить placeholder/stale-work слой без svend4 |
 
 ## Заблокированы
 
