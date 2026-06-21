@@ -1,13 +1,7 @@
 {
-  "epoch": 1782048239,
+  "epoch": 1782057546,
   "doing": [],
   "ready": [
-    {
-      "id": "T-124",
-      "title": "Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций",
-      "priority": "high",
-      "owner": "pool"
-    },
     {
       "id": "T-127",
       "title": "Larger safe corpus — применить L6 workflow к 50-200 read-only файлам",
@@ -15,14 +9,20 @@
       "owner": "pool"
     },
     {
-      "id": "T-130",
-      "title": "C2 drift detector — tools/drift_check.py (консенсус)",
-      "priority": "normal",
+      "id": "T-133",
+      "title": "text-extract — генерик-извлечение текста (.md/.txt/.html → PDF/DOCX) для реальных порталов",
+      "priority": "high",
       "owner": "pool"
     },
     {
-      "id": "T-131",
-      "title": "C3 onboard-команда — tools/onboard.py (консенсус)",
+      "id": "T-136",
+      "title": "Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат)",
+      "priority": "high",
+      "owner": "pool"
+    },
+    {
+      "id": "T-137",
+      "title": "Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат)",
       "priority": "normal",
       "owner": "pool"
     }

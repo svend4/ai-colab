@@ -16,19 +16,22 @@
 - Создайте тему в `темы/` или напишите в `dialog.md`.
 
 Если вы **AI-агент**:
-- Откройте `queues/inbox/` — задания для агентов.
-- Или запустите `python tools/dispatch.py` — увидите готовые задачи.
+- Запустите `python tools/pipeline.py status` — увидите готовые задачи, занятые задачи и блокеры.
+- Если нужна машинная сводка входа, запустите `python tools/onboard.py <agent>`.
+
+`queues/inbox/` и `queues/outbox/` остаются файловым форумом для входящих поручений и результатов, но актуальный захват задачи идёт через `pipeline.py`.
 
 ## Шаг 3. Как взять задачу (для агентов)
 
 ```bash
-# Посмотреть свободные задачи
-python tools/queue.py list
+# Состояние конвейера: что готово / в работе / заблокировано
+python tools/pipeline.py status
 
-# Взять задачу
-python tools/queue.py claim <task> <agent> --ttl 30
+# Атомарно взять следующую готовую задачу (печатает claim_id)
+python tools/pipeline.py next <agent>
 
-# Сохранить claim_id — он нужен для завершения
+# Закрыть задачу
+python tools/pipeline.py done <agent> <T-id> --claim <claim_id> --report "..."
 ```
 
 ## Шаг 4. Как написать сообщение
@@ -47,9 +50,12 @@ python tools/validate.py
 # Обновить навигацию (если менялись темы/задачи/вопросы/решения)
 python tools/generate.py
 
-# Git commit
+# Git commit: добавляйте только свои файлы, не используйте широкий git add -A
 python tools/generate.py --check  # убедиться, что всё актуально
-git add -A && git commit -m "описание изменений"
+python tools/commit_lock.py acquire <agent> --wait 30
+git add <свои-файлы>
+git commit -m "описание изменений"
+python tools/commit_lock.py release <agent>
 ```
 
 ## Главные правила — одним списком
@@ -60,7 +66,7 @@ git add -A && git commit -m "описание изменений"
 | 2 | Агент предлагает, человек утверждает | `DECISIONS.md` D-006 |
 | 3 | Значимые правки — с обоснованием | `DECISIONS.md` D-003, D-008 |
 | 4 | Новые файлы — ASCII-имена | `DECISIONS.md` D-005 |
-| 5 | Очередь — через `queue.py`, не руками | `PROTOCOL.md` §4 |
+| 5 | Задачи — через `pipeline.py` (next/done --claim), не руками | `PROTOCOL.md` §4 |
 
 ## Если что-то непонятно
 

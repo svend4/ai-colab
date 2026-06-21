@@ -12,10 +12,10 @@
 
 | Задача | Приоритет | Owner | Название |
 |---|---|---|---|
-| T-124 | high | pool | Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций |
 | T-127 | normal | pool | Larger safe corpus — применить L6 workflow к 50-200 read-only файлам |
-| T-130 | normal | pool | C2 drift detector — tools/drift_check.py (консенсус) |
-| T-131 | normal | pool | C3 onboard-команда — tools/onboard.py (консенсус) |
+| T-133 | high | pool | text-extract — генерик-извлечение текста (.md/.txt/.html → PDF/DOCX) для реальных порталов |
+| T-136 | high | pool | Котёл — довести до консенсуса политику коммитов (Уровень 0/1/полу-формат) |
+| T-137 | normal | pool | Котёл — довести до консенсуса открытые пункты (D3 объём инфры, T-020 svend4, форк-формат) |
 
 ## Заблокированы
 

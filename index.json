@@ -1470,7 +1470,7 @@
     {
       "id": "T-124",
       "title": "Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",

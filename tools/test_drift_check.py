@@ -3,7 +3,6 @@
 """Тест drift detector (tools/drift_check.py) — текстовые сканеры дрейфа."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -12,9 +11,28 @@ sys.path.insert(0, HERE)
 import drift_check as dc
 
 
+def prepare_base():
+    candidates = [
+        os.path.join(r"C:\tmp", "ai_colab_drift_test"),
+        os.path.join(ROOT, "tmp-work", "drift_test_runtime"),
+    ]
+    last_error = None
+    for base in candidates:
+        try:
+            shutil.rmtree(base, ignore_errors=True)
+            os.makedirs(base, exist_ok=True)
+            probe = os.path.join(base, ".write_probe")
+            with open(probe, "w", encoding="utf-8") as f:
+                f.write("ok")
+            os.remove(probe)
+            return base
+        except OSError as exc:
+            last_error = exc
+    raise RuntimeError("no writable drift_check test root: %r" % (last_error,))
+
+
 def run():
-    base = tempfile.mkdtemp(prefix="drift_test_", dir=os.path.join(ROOT, "tmp-work")
-                            if os.path.isdir(os.path.join(ROOT, "tmp-work")) else None)
+    base = prepare_base()
     ok = True
     try:
         docs = os.path.join(base, "docs")

@@ -16,25 +16,29 @@ cat STATUS.md
 # Машинный индекс — все сущности одним файлом
 cat index.json
 
-# Или: какие задачи готовы к взятию
-python tools/dispatch.py
+# Какие задачи готовы к взятию / заняты / заблокированы
+python tools/pipeline.py status
+
+# Один briefing для нового агента
+python tools/onboard.py <agent>
 ```
 
-`dispatch.py` покажет задачи со статусом `todo` и выполненными зависимостями (`depends_on`). Если список пуст — смотрите `queues/inbox/` или `TASKS.md`.
+`pipeline.py status` показывает актуальный конвейер. `queues/inbox/` и `queues/outbox/` остаются файловым форумом для входящих поручений и результатов, но claim задачи делается через `pipeline.py next`.
 
-## Шаг 3. Взять задачу через `queue.py claim`
+## Шаг 3. Взять задачу через `pipeline.py next`
 
 ```bash
-# Посмотреть свободные задачи
-python tools/queue.py list
+# Состояние конвейера: что готово / в работе / заблокировано
+python tools/pipeline.py status
 
-# Взять задачу (task — имя файла без .md)
-python tools/queue.py claim <task> <agent> --ttl 30
+# Атомарно взять следующую готовую задачу (печатает claim_id)
+python tools/pipeline.py next <agent>
 
-# Сохранить claim_id — он нужен для complete
+# Сохранить claim_id — он нужен для done --claim
 ```
 
-Пример: `python tools/queue.py claim dogfood-glossary mavis --ttl 30`
+Пример: `python tools/pipeline.py next mavis`, затем закрыть:
+`python tools/pipeline.py done mavis <T-id> --claim <claim_id> --report "..."`.
 
 ## Шаг 4. Работать в своей зоне
 
@@ -66,7 +70,11 @@ python tools/generate.py --check
 python tools/permissions.py <agent>
 
 # 5. Git commit
-python tools/generate.py --check && git add -A && git commit -m "описание"
+python tools/commit_lock.py acquire <agent> --wait 30
+python tools/generate.py --check
+git add <свои-файлы>
+git commit -m "описание"
+python tools/commit_lock.py release <agent>
 ```
 
 Pre-commit hook (`tools/githooks/pre-commit`) автоматически запускает `validate.py` и `generate.py --check`. Если ERROR — коммит блокируется.
@@ -78,9 +86,9 @@ Pre-commit hook (`tools/githooks/pre-commit`) автоматически зап�
 | 1 | **Не переписывать чужие сообщения** | Пишите новые записи в конец файла или новый файл в `messages/` |
 | 2 | **Агент предлагает, человек утверждает** | Ваши решения — `proposed`; `accepted` только человек или сборщик (D-006) |
 | 3 | **Значимые правки — с обоснованием** | Короткое объяснение в `dialog.md` или профильной теме (D-003, D-008) |
-| 4 | **Claim перед работой** | `queue.py claim` — атомарный захват, не двигайте файлы руками |
+| 4 | **Claim перед работой** | `pipeline.py next` — атомарный захват+статус; закрытие `done --claim`; не двигайте файлы руками |
 | 5 | **Проверяйте права** | `permissions.py <agent>` перед записью; не пишите в чужую зону |
-| 6 | **Валидатор зелёный** | `validate.py` → `generate.py` → commit; ERROR блокирует |
+| 6 | **Валидатор зелёный** | `validate.py` → `generate.py` → commit-lock → selective-add → commit; ERROR блокирует |
 
 ## Если что-то непонятно
 

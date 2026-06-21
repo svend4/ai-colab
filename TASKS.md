@@ -137,7 +137,7 @@
 | T-121 | Top agent operating manual — чистовая инструкция вершины пирамиды | done | pool | `темы/ai-os-bridge.md` | Закрыто — top-agent manual и agent-onboarding связаны, проверки зелёные |
 | T-122 | Чистовик-онбординг агента + Q&A коллаборации (docs/agent-onboarding.md) | done | claude | `темы/ai-os-bridge.md` | Создан docs/agent-onboarding.md — present-tense чистовик: что система умеет сейчас, роли людей/агентов, карта документации, Q&A проблем разработки/коллаборации с микроскиллами, критика, зрелость/self-improvement движка, инновационные идеи |
 | T-123 | Сравнить варианты onboarding/manual/recheck и собрать consensus roadmap | done | codex | `темы/ai-os-bridge.md` | Сравнить мнения Claude/Codex/recheck, выделить консенсус, расхождения и очередь следующих задач |
-| T-124 | Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций | todo | pool | `темы/ai-os-bridge.md` | Сверить quickstart-документы и привести команды к актуальному циклу pipeline.py |
+| T-124 | Quickstart pipeline cleanup — убрать legacy queue.py из входных инструкций | done | pool | `темы/ai-os-bridge.md` | Сверить quickstart-документы и привести команды к актуальному циклу pipeline.py |
 | T-125 | System capabilities manifest — merged with T-129 | done | pool | `темы/ai-os-bridge.md` | Закрыто как дубликат — Claude реализовал консенсусный capability manifest в T-129 |
 | T-126 | Docs drift detector — merged with T-130 | done | pool | `темы/ai-os-bridge.md` | Закрыто как дубликат — активная задача для реализации drift detector: T-130 |
 | T-127 | Larger safe corpus — применить L6 workflow к 50-200 read-only файлам | todo | pool | `темы/ai-os-bridge.md` | Подготовить безопасный корпус без секретов/execute и сравнимые reports между запусками |
