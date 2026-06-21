@@ -80,3 +80,9 @@ L2 без доменного спора (legal/social откладываем д�
 
 > Q2 (какой первый core-export) и Q3 (какой первый портал) — открытые вопросы пирамиды; эта карта их НЕ
 > закрывает соло, а даёт обоснованные кандидаты и рекомендации в котёл (D-018).
+## Update 2026-06-21 — first L2 example portal scaffold
+
+Первый L2 scaffold реализован аддитивно: `portals/example/portal.md`, `current-state.md`,
+`workflows.md`, `sources.md`. Это не закрывает Q4 окончательно: `tools/portal.py` пока работает с
+`data/portals/example`, а `portals/example` — clean present-tense слой со ссылками. Вопрос location
+model вынесен в `streams/portal-location/20260621-1931-claude/STREAM.md`.

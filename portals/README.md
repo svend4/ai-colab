@@ -18,3 +18,14 @@ portals/<portal-id>/
 В портал не кладутся raw sandbox sources, длинные споры и вся история изменений. Для истории используются L3 folders: `темы/`, `tasks/`, `questions/`, `decisions/`, `streams/`.
 
 Документ модели: `docs/workspace-pyramid-levels.md`.
+## Текущий пример
+
+`portals/example/` — первый clean L2 scaffold:
+
+- `portal.md` — identity/config;
+- `current-state.md` — текущее состояние;
+- `workflows.md` — команды;
+- `sources.md` — curated источники и ссылка на `data/portals/example/corpus/`.
+
+До отдельного синтеза `portal-location` операционный корпус остаётся в `data/portals/example/`, а
+`portals/example/` остаётся чистовым present-tense слоем.

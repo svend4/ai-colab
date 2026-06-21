@@ -1631,6 +1631,17 @@
       "depends_on": "[]",
       "topic": "docs/top-layer-command-groups.md",
       "next": "Реализовать tools/top.py как верхнюю панель сценариев: buttons/status/health/agent-start/take/snapshot/knowledge/cycle; добавить тест и документацию."
+    },
+    {
+      "id": "T-139",
+      "title": "First L2 portal — оформить clean example portal поверх data/portals/example",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/pyramid-candidate-map.md",
+      "next": "Оформить portals/example как чистовой L2 scaffold; не менять portal.py до синтеза portal-location."
     }
   ],
   "questions": [
