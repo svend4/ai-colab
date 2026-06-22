@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repo Friction Playbook"
+  short_description: "Avoid repeated repo friction"
+  default_prompt: "Use the repo friction playbook to diagnose repeated project friction, choose the safe workflow, and update the ledger if needed."

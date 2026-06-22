@@ -138,3 +138,43 @@ recipes: exact commands
 ## Решение по этой итерации
 
 В T-147 создаётся документация и outbox. Большой автоматический инструмент не пишется: список симптомов ещё надо один-два раза применить в реальных задачах, затем переносить стабильные проверки в `tools/friction.py` или `tools/top.py friction`.
+## Архетипы повторяющегося трения
+
+| Архетип | Включает F-ID | Оценка ручных повторов | Типовое ручное лечение | Порог автоматизации | Следующий автоматический слой |
+|---|---|---:|---|---|---|
+| Windows shell/runtime friction | F-002, F-003, F-004 | 6+ | UTF-8 setup, короткие команды, workspace temp, runtime smoke-check | если снова блокирует задачу больше 10 минут | `tools/friction.py runtime`, `tools/friction.py temp`, `tools/friction.py encoding` |
+| Git/shared-worktree friction | F-005, F-006, F-007, F-008, F-015 | 8+ | commit_lock, selective-add, restore volatile, Level 1 worktree по триггерам | если agent дважды ждёт чужой commit или ловит stale-loop | `tools/top.py friction`, `cohort guard`, auto work-mode preflight |
+| Pipeline/coordination friction | F-009, F-010, F-014, F-016 | 4+ | заполнить task до claim, проверить mine/status, не вызывать `next` если нужна конкретная задача | если агент взял не ту задачу или оставил orphan claim | `pipeline.py claim <T-id>` или `top.py take <T-id>` |
+| Knowledge/governance drift | F-011, F-013 | 4+ | generate/validate/drift_check, stream adoption/rejection, outbox summary | если stream/decision/task висит без итога больше N дней | `stream.py check`, stale governance report |
+| External-code safety friction | F-012 | постоянный блокер | read-only sandbox intake, execute off, external-source preflight | когда появится реальный внешний источник | sandbox intake status + preflight checklist |
+
+## Новые находки 2026-06-22
+
+| ID | Симптом | Где встречалось | Оценка повторов | Ручное решение сейчас | Риск | Что автоматизировать |
+|---|---|---|---:|---|---|---|
+| F-016 | `pipeline.py next` берёт следующую задачу по приоритету/ID, а не “ту, которую агент имел в виду” | T-149: `next` взял T-148, пришлось вручную снять свой claim и повысить priority T-149 | 1, но высокий UX-риск | если нужна конкретная задача, не вызывать `next` вслепую; либо временно выставить priority/depends, либо нужен targeted claim | агент может случайно занять чужой/нежелательный work item и оставить claim | добавить `pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>` с проверкой ready/placeholder/claim |
+| F-017 | Ручная бухгалтерия “сколько раз решали” пока приблизительная | T-147/T-149 ledger | 1 | вести оценку `1 / 2-3 / 4+ / 8+`, пока нет event log | невозможно точно приоритизировать автоматизацию | future: `logs/friction.jsonl` или `tools/friction.py note <F-id>` |
+| F-018 | Skill/документы могут разойтись | создание `repo-friction-playbook` после ledger/playbook | 1 | skill должен быть тонкой навигацией, а детали остаются в `docs/friction-*` | агент читает устаревший skill и не смотрит канон | в `validate.py` позже проверить наличие ссылок skill -> docs |
+
+## Бухгалтерское правило для автоматизации
+
+Автоматизировать не “по желанию”, а по повторяемости и цене:
+
+1. **1 раз:** записать в ledger как наблюдение.
+2. **2-3 раза:** добавить рецепт в playbook.
+3. **4+ раза:** создать skill или top-command, если рецепт уже стабилен.
+4. **6+ раз или потеря >10 минут:** добавить read-only detector.
+5. **8+ раз или риск чужого commit/data loss:** добавить guard/gate, который блокирует опасное действие или явно переводит в Level 1.
+
+## Формат новой записи friction
+
+```md
+| F-XXX | Симптом | Где встречалось | Оценка повторов | Ручное решение сейчас | Риск | Что автоматизировать |
+```
+
+Минимум для каждой записи:
+
+- симптом должен быть видимым в команде, ошибке, статусе или поведении;
+- решение должно быть уже реально применено хотя бы один раз;
+- риск должен объяснять, почему это не просто неудобство;
+- automation candidate должен быть read-only/dry-by-default, пока нет отдельного решения на auto-fix.

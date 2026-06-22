@@ -9,6 +9,7 @@ front-matter `name`/`description` + инструкция). Извлечены и
 | [`driver-acceptance`](driver-acceptance/SKILL.md) | добавлен/изменён драйвер → довести до `ready` (unit + sync MCP-приёмка + манифест + D-015) |
 | [`pipeline-operator`](pipeline-operator/SKILL.md) | выполнение задач из пула: атомарно взять/закрыть, heartbeat, не ломая канон |
 | [`repo-review`](repo-review/SKILL.md) | перепроверка/ревью репозитория: валидаторы, дрейф, плюсы/минусы, рекомендации |
+| [`repo-friction-playbook`](repo-friction-playbook/SKILL.md) | повторяющееся трение разработки: Windows/runtime/git/pipeline/generated-index/streams проблемы → найти F-ID, применить playbook, обновить бухгалтерию |
 
 Это L3 «project skills» из roadmap `docs/layers-coverage.md`. Каноническая нумерация слоёв —
 там же. Связано: `docs/bridge-usage.md`, `decisions/D-015.md`.

@@ -1748,6 +1748,17 @@
       "depends_on": "[]",
       "topic": "docs/parallel-work-policy.md",
       "next": "Координированно (трогает pipeline/generate и общий .gitignore — не соло): untrack волатильных (git rm --cached LIVE.md PIPELINE.md logs/heartbeat.json logs/pipeline.json) + .gitignore; гейт не валится на волатильных; авто-эскалация flow/cohort в worktree по триггеру guard."
+    },
+    {
+      "id": "T-149",
+      "title": "Friction archetypes + repo-friction-playbook skill — бухгалтерия граблей и Q&A",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-147]",
+      "topic": "docs/friction-ledger.md",
+      "next": "Готово — friction ledger расширен архетипами/повторами/Q&A, создан complaints log и project skill repo-friction-playbook; skill validation зелёная."
     }
   ],
   "questions": [

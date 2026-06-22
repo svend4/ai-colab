@@ -28,6 +28,7 @@ docs/
 - `commit-stream-policy.md` — политика commit/streams: как не коммитить чужую half-done работу и как вести параллельные варианты перед mainline.
 - `friction-ledger.md` — журнал повторяющихся проблем разработки: симптом, где встречалось, ручное решение, риск и кандидат на автоматизацию.
 - `friction-playbook.md` — короткая инструкция “если видишь X, делай Y” для Windows/runtime/git/pipeline/streams трения.
+- `friction-complaints-suggestions.md` — журнал жалоб и предложений: повторившийся симптом, ручное решение, риск и кандидат на автоматизацию.
 - `workspace-pyramid-levels.md` — модель 4 уровней папок: `core/` как переносимое ядро, `portals/` как чистовые специализированные области, `collab/` как история/полилог, `sandbox/` как входной хаос.
 - `driver-safety-policy.md` — правила безопасности для драйверов и больших папок.
 - `external-code-sandbox.md` — универсальная схема `sandbox/` для внешнего кода и старых долгов вроде `svend4`: intake, quarantine, read-only inventory, workspaces, reports, execute gate.
