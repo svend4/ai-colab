@@ -50,6 +50,12 @@ def run():
         d = json.loads(out)
         assert "assignment" in d and isinstance(d["assignment"], dict), "plan assignment"
 
+        # guard --json: триггеры Уровня-1
+        _, out = _run("guard", "--json")
+        d = json.loads(out)
+        assert "level1_recommended" in d and "triggers" in d, "guard json без триггеров"
+        assert isinstance(d["triggers"], list), "guard triggers должен быть списком"
+
         # turn БЕЗ --run: только печать плана, ничего не делает
         _, out = _run("turn", "claude")
         assert "печать" in out, "turn должен быть dry без --run"

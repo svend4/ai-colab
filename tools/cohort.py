@@ -17,6 +17,7 @@ side-effect команды (`turn`, `ship`) только ПЕЧАТАЮТ пла
     python tools/cohort.py plan [N]              # раздать N агентам разные готовые задачи без коллизий
     python tools/cohort.py turn  <agent> [--run] # безопасная параллельная смена агента (взять→контекст→гейт→ship)
     python tools/cohort.py gate  <agent>         # пред-merge гейт (merge_gate: validate+generate --check+permissions)
+    python tools/cohort.py guard                 # ТРИГГЕРЫ Уровня-1 (Q-015 B): стоит ли уйти в --worktree
     python tools/cohort.py ship  <agent> <file...> [--run]  # коммит под commit_lock + selective-add (политика Ур.0)
     python tools/cohort.py self                  # САМОХОСТИНГ: движок проверяет/чинит сам себя, что улучшить дальше
 
@@ -32,6 +33,12 @@ import subprocess
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
 CAPS = os.path.join(ROOT, "system-capabilities.json")
+
+# Триггеры Уровня-1 (D-022 / Q-015 B). Source-зоны: правка здесь связывает агентов через индекс/дерево.
+SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "темы/", "docs/")
+# Hot-files: генерируемые индексы и активно правимые соседом инструменты — править соло опасно.
+HOT_FILES = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json",
+             "tools/top.py", "tools/portal.py", "tools/capabilities.py", "tools/generate.py"}
 
 
 def configure_output():
@@ -317,6 +324,50 @@ def self_host(as_json=False):
     return 0 if all(c["ok"] for c in checks) else 1
 
 
+# ---------------------------------------------------------------- guard (триггеры Уровня-1)
+
+def guard(as_json=False):
+    """Детектор триггеров Уровня-1 (Q-015 B / D-022): связывает ли текущее состояние агентов так,
+    что лучше уйти в свой worktree (--worktree), а не коммитить в общее дерево. Снимает LS-5
+    (нет видимости, что правит сосед): печатает, какие триггеры сейчас активны."""
+    _, st = _git("status", "--short")
+    changed = [(ln[:2].strip(), ln[3:].strip().strip('"')) for ln in st.splitlines() if len(ln) > 3]
+
+    def norm(p):
+        return p.replace("\\", "/")
+
+    foreign_src = sorted({p for code, p in changed if "M" in code and norm(p).startswith(SOURCE_DIRS)})
+    hot = sorted({p for code, p in changed if norm(p) in HOT_FILES})
+    rc, gen = _run("generate.py", "--check")
+    stale = (rc != 0) or ("STALE" in gen) or ("устарел" in gen)
+
+    triggers = []
+    if foreign_src:
+        triggers.append({"trigger": "uncommitted-source", "files": foreign_src})
+    if hot:
+        triggers.append({"trigger": "hot-file", "files": hot})
+    if stale:
+        triggers.append({"trigger": "stale-index", "files": ["generate --check"]})
+    level1 = bool(triggers)
+
+    if as_json:
+        print(json.dumps({"level1_recommended": level1, "triggers": triggers}, ensure_ascii=False, indent=2))
+        return 0
+    line = "=" * 60
+    print(line); print("COHORT GUARD — триггеры Уровня-1 (Q-015 B / D-022)"); print(line)
+    if not triggers:
+        print("  триггеров нет — Уровень-0 ок (selective-add + commit_lock + ship).")
+    for t in triggers:
+        more = " …" if len(t["files"]) > 6 else ""
+        print("  [!] %-20s %s%s" % (t["trigger"], ", ".join(t["files"][:6]), more))
+    print("\nВывод: %s" % (
+        "УРОВЕНЬ-1 → `python tools/flow.py start <agent> <task> --worktree --run` (свой индекс/дерево)"
+        if level1 else
+        "УРОВЕНЬ-0 ок → `python tools/cohort.py ship <agent> <files> --message \"...\" --run`"))
+    print(line)
+    return 0
+
+
 # ---------------------------------------------------------------- CLI
 
 def main():
@@ -339,6 +390,8 @@ def main():
             return turn(pos[0], do_run=do_run)
         if cmd == "gate" and pos:
             return gate(pos[0])
+        if cmd == "guard":
+            return guard(as_json=as_json)
         if cmd == "ship":
             r = list(rest)
             msg = None
