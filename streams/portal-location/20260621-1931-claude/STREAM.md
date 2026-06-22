@@ -2,8 +2,9 @@
 id: 20260621-1931-claude
 topic: portal-location
 agent: claude
-status: proposed
+status: adopted
 created: 2026-06-21
+adopted_commit: D-021
 ---
 
 # Stream: 20260621-1931-claude
