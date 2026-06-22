@@ -8,10 +8,12 @@
 Домен живёт ВНУТРИ портала (его файлы + таксономия как данные в `portal.md`), а НЕ в коде ядра.
 Универсальные движки работают на любом портале без изменений.
 
-Портал = `data/portals/<name>/`:
-  - `portal.md`   — манифест (front-matter: id/type/title/description/corpus/topics);
-  - `<corpus>/`   — тематические файлы;
-  - `<name>.db`   — генерируемая knowledge-память (runtime, в .gitignore).
+Портал = чистый L2 manifest `portals/<name>/portal.md` + операционный корпус `data/portals/<name>/`:
+  - `portals/<name>/portal.md` — identity/config (corpus_ref, topics);
+  - `data/portals/<name>/<corpus>/` — тематические файлы;
+  - `data/portals/<name>/<name>.db` — генерируемая knowledge-память (runtime, в .gitignore).
+
+Fallback: если `portals/<name>/portal.md` отсутствует, используется legacy `data/portals/<name>/portal.md`.
 
 CLI:
     python tools/portal.py list
@@ -28,7 +30,8 @@ sys.path.insert(0, HERE)
 from _canon import parse_front_matter  # единый парсер front-matter
 import knowledge as kn  # универсальный L6-движок ingest→query→report (ядро)
 
-PORTALS = os.path.join(ROOT, "data", "portals")
+PORTALS = os.path.join(ROOT, "data", "portals")  # legacy/runtime data root
+L2_PORTALS = os.path.join(ROOT, "portals")
 
 
 def configure_output():
@@ -48,20 +51,31 @@ def _list_field(value):
     return [x.strip() for x in s.split(",") if x.strip()]
 
 
+def _manifest_path(name):
+    l2 = os.path.join(L2_PORTALS, name, "portal.md")
+    if os.path.exists(l2):
+        return l2, "l2"
+    legacy = os.path.join(PORTALS, name, "portal.md")
+    if os.path.exists(legacy):
+        return legacy, "legacy"
+    raise FileNotFoundError("нет портала: %s" % name)
+
+
 def _manifest(name):
-    path = os.path.join(PORTALS, name, "portal.md")
-    if not os.path.exists(path):
-        raise FileNotFoundError("нет портала: %s" % name)
+    path, source = _manifest_path(name)
     with open(path, encoding="utf-8") as f:
         fm = parse_front_matter(f.read())
+    fm["_manifest_path"] = path
+    fm["_manifest_source"] = source
     fm["_corpus_subdir"] = fm.get("corpus") or "corpus"
+    fm["_corpus_ref"] = fm.get("corpus_ref") or os.path.join("data", "portals", name, fm["_corpus_subdir"])
     fm["_topics"] = _list_field(fm.get("topics"))
     return fm
 
 
 def _corpus_path(name, fm=None):
     fm = fm or _manifest(name)
-    return os.path.join("data", "portals", name, fm["_corpus_subdir"])  # относительно ROOT
+    return fm["_corpus_ref"].replace("\\", "/")  # относительно ROOT
 
 
 def _db_path(name):
@@ -69,15 +83,18 @@ def _db_path(name):
 
 
 def list_portals():
-    if not os.path.isdir(PORTALS):
-        return []
+    names = set()
+    for root in (PORTALS, L2_PORTALS):
+        if os.path.isdir(root):
+            for name in os.listdir(root):
+                if os.path.isfile(os.path.join(root, name, "portal.md")):
+                    names.add(name)
     out = []
-    for name in sorted(os.listdir(PORTALS)):
-        mp = os.path.join(PORTALS, name, "portal.md")
-        if os.path.isfile(mp):
-            fm = _manifest(name)
-            out.append({"name": name, "title": fm.get("title", ""),
-                        "topics": fm["_topics"], "corpus": fm["_corpus_subdir"]})
+    for name in sorted(names):
+        fm = _manifest(name)
+        out.append({"name": name, "title": fm.get("title", ""),
+                    "topics": fm["_topics"], "corpus": _corpus_path(name, fm),
+                    "source": fm["_manifest_source"]})
     return out
 
 

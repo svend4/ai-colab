@@ -27,5 +27,4 @@ portals/<portal-id>/
 - `workflows.md` — команды;
 - `sources.md` — curated источники и ссылка на `data/portals/example/corpus/`.
 
-До отдельного синтеза `portal-location` операционный корпус остаётся в `data/portals/example/`, а
-`portals/example/` остаётся чистовым present-tense слоем.
+После `D-021`/`T-145` split-модель принята: `portal.py` читает identity/config из `portals/example/portal.md`, а операционный корпус и runtime остаются в `data/portals/example/` через `corpus_ref`.

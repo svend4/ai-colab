@@ -17,9 +17,7 @@ related: T-139, D-016, D-020, docs/pyramid-candidate-map.md
 - `workflows.md` — operational commands;
 - `sources.md` — curated source list and L2/L4 boundary.
 
-The operational corpus remains in `data/portals/example/corpus/`, because current `tools/portal.py`
-uses `data/portals/<name>/`. This keeps L2 clean while avoiding a risky `portal.py` rewrite before the
-`portal-location` stream is synthesized.
+The operational corpus remains in `data/portals/example/corpus/`. After D-021/T-145, `tools/portal.py` reads the clean L2 manifest from `portals/example/portal.md` and resolves `corpus_ref` back to `data/portals/example/corpus/`.
 
 ## Verification
 
@@ -33,8 +31,6 @@ python tools/promote.py list
 `tools/test_portal.py` confirms the existing operational portal still builds/reports over 2 documents
 and 3 topics. `tools/promote.py list` sees `portals/example/*` as L2 artifacts.
 
-## Open follow-up
+## Follow-up closed by D-021/T-145
 
-Do not change `portal.py` yet. The location model must be synthesized through
-`streams/portal-location/20260621-1931-claude/STREAM.md`: keep split `portals/` + `data/portals/`, or
-make `portal.py` read L2 manifest directly.
+The location model is now Variant A: keep split `portals/` + `data/portals/`, and make `portal.py` read the L2 manifest directly when present. Legacy `data/portals/<name>/portal.md` remains supported.

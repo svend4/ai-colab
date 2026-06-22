@@ -41,12 +41,31 @@ def run():
         assert "| zeta | 0 |" in rep, "ожидалось zeta=0: %s" % rep[-400:]
         assert ("| alpha | 1 |" in rep or "| alpha | 2 |" in rep), "alpha должно встречаться"
 
+
+        # L2 split-модель: identity/config в portals/<name>/portal.md, corpus_ref указывает в data/.
+        l2_name = "_ptest_l2"
+        l2_dir = os.path.join(p.L2_PORTALS, l2_name)
+        l2_data = os.path.join(p.PORTALS, l2_name)
+        os.makedirs(l2_dir, exist_ok=True)
+        os.makedirs(os.path.join(l2_data, "corpus"), exist_ok=True)
+        with open(os.path.join(l2_dir, "portal.md"), "w", encoding="utf-8") as f:
+            f.write("---\nid: portal-_ptest_l2\ntype: portal\nlevel: L2\ntitle: L2 Test Portal\ncorpus_ref: data/portals/_ptest_l2/corpus\ntopics: [delta]\n---\n")
+        with open(os.path.join(l2_data, "corpus", "delta.md"), "w", encoding="utf-8") as f:
+            f.write("# delta\nL2 delta document\n")
+        l2_n, l2_db, l2_fm = p.build(l2_name)
+        assert l2_n == 1, l2_n
+        assert l2_fm["_manifest_source"] == "l2", l2_fm
+        assert p._corpus_path(l2_name, l2_fm) == "data/portals/_ptest_l2/corpus", l2_fm
+        l2_rep = p.report(l2_name, query="delta")
+        assert "L2 Test Portal" in l2_rep and "| delta | 1 |" in l2_rep, l2_rep[-400:]
         print("TESTS OK portal: docs=%d topics=%d (build/report/coverage)" % (n, len(fm["_topics"])))
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)
     finally:
         shutil.rmtree(pdir, ignore_errors=True)
+        shutil.rmtree(os.path.join(p.L2_PORTALS, "_ptest_l2"), ignore_errors=True)
+        shutil.rmtree(os.path.join(p.PORTALS, "_ptest_l2"), ignore_errors=True)
     return 0 if ok else 1
 
 

@@ -83,9 +83,9 @@ L2 без доменного спора (legal/social откладываем д�
 ## Update 2026-06-21 — first L2 example portal scaffold
 
 Первый L2 scaffold реализован аддитивно: `portals/example/portal.md`, `current-state.md`,
-`workflows.md`, `sources.md`. Это не закрывает Q4 окончательно: `tools/portal.py` пока работает с
-`data/portals/example`, а `portals/example` — clean present-tense слой со ссылками. Вопрос location
-model вынесен в `streams/portal-location/20260621-1931-claude/STREAM.md`.
+`workflows.md`, `sources.md`. Q4/portal-location закрыт позднее через D-021/T-145: `tools/portal.py`
+читает clean L2 manifest из `portals/example/portal.md`, а corpus/runtime остаются в
+`data/portals/example` через `corpus_ref`.
 
 ## Update 2026-06-21 — core-export mechanism acceptance
 

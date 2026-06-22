@@ -24,7 +24,4 @@ links:
 - **Рабочие процессы** — `workflows.md`.
 - **Корпус (данные)** — `data/portals/example/corpus/` (операционный слой, строится `tools/portal.py`).
 
-> Открытый вопрос для котла (пирамида Q4 + интеграция `portal.py`): свести ли чистовой портал
-> (`portals/`) и операционный корпус (`data/portals/`) под один `portal.py` (читать
-> `portals/<name>/portal.md`, данные держать в `data/`), или оставить раздельно. См. stream
-> `portal-location` (форк для синтеза с Codex, D-017).
+> Решение D-021/T-145: split-модель принята. `portal.py` читает этот L2 manifest, а данные/runtime остаются в `data/portals/example/` через `corpus_ref`.
