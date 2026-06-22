@@ -345,6 +345,12 @@ def guard(as_json=False):
     hot = sorted({p for code, p in changed if norm(p) in HOT_FILES})
     rc, gen = _run("generate.py", "--check")
     stale = (rc != 0) or ("STALE" in gen) or ("устарел" in gen)
+    # gate-poison: общий validate-гейт уже КРАСНЫЙ (часто из-за чужой half-done — задача со ссылкой
+    # на ещё не созданный файл, битый front-matter, дубль id) → pre-commit hook блокирует коммит ВСЕМ.
+    _, val = _run("validate.py")
+    m = re.search(r"ERROR=(\d+)", val)
+    poison_errs = [ln.strip()[:90] for ln in val.splitlines() if ln.strip().startswith("ERROR:")][:3]
+    poison = bool(m and int(m.group(1)) > 0)
 
     triggers = []
     if foreign_src:
@@ -353,6 +359,8 @@ def guard(as_json=False):
         triggers.append({"trigger": "hot-file", "files": hot})
     if stale:
         triggers.append({"trigger": "stale-index", "files": ["generate --check"]})
+    if poison:
+        triggers.append({"trigger": "gate-poison", "files": poison_errs or ["validate ERROR>0"]})
     level1 = bool(triggers)
 
     if as_json:
@@ -365,6 +373,9 @@ def guard(as_json=False):
     for t in triggers:
         more = " …" if len(t["files"]) > 6 else ""
         print("  [!] %-20s %s%s" % (t["trigger"], ", ".join(t["files"][:6]), more))
+    if poison:
+        print("\n  GATE-POISON: общий validate-гейт КРАСНЫЙ — коммит в master заблокирован ВСЕМ "
+              "(часто чужая half-done). Worktree бери от ЧИСТОЙ базы; merge — когда гейт очистится.")
     print("\nВывод: %s" % (
         "УРОВЕНЬ-1 → `python tools/flow.py start <agent> <task> --worktree --run` (свой индекс/дерево)"
         if level1 else
