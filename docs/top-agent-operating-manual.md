@@ -262,6 +262,15 @@ python tools\validate.py
 python tools\generate.py --check
 ```
 
+
+### choose-work-mode
+
+```powershell
+python tools\top.py work-mode <agent> <T-id>
+python tools\top.py work-mode <agent> <T-id> --parallel --hot-files
+```
+
+Правило D-021: Level 0 shared tree остаётся дефолтом; Level 1 worktree включается явно, если задача параллельная, mainline грязная или ожидаются конфликты generated files.
 ### take-one-task
 
 ```powershell

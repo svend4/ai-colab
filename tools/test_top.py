@@ -19,6 +19,7 @@ def run():
     assert "cohort-board" in ids, ids
     assert "variants" in ids, ids
     assert "merge-gate" in ids, ids
+    assert "work-mode" in ids, ids
     assert "synthesis-helper" in ids, ids
     assert any(r["audience"] == "human" for r in rows), rows
     assert any(r["audience"] == "agent" for r in rows), rows
@@ -26,12 +27,17 @@ def run():
     assert "Top command buttons" in rendered, rendered
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
+    assert "python tools/top.py work-mode" in rendered, rendered
     parser = top.build_parser()
     args = parser.parse_args(["cycle", "codex"])
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])
     assert kargs.cmd == "knowledge" and kargs.db == "tmp-work/x.db", kargs
-    print("TESTS OK top: buttons/cycle parser")
+    wargs = parser.parse_args(["work-mode", "codex", "T-144", "--parallel"])
+    assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
+    sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
+    assert top._work_mode_choice(sargs) == "shared", sargs
+    print("TESTS OK top: buttons/cycle/work-mode parser")
     return 0
 
 

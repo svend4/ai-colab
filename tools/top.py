@@ -14,6 +14,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
     python tools/top.py knowledge <corpus> [--query TEXT] [--out reports/x.md]
     python tools/top.py cycle <agent>            # print safe work cycle template
+    python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
 """
 import argparse
 import json
@@ -154,6 +155,13 @@ _BUTTONS = [
         "audience": "agent",
         "command": "python tools/top.py cycle <agent>",
         "does": "Показать безопасный цикл работы агента с claim, проверками и отчётом.",
+        "effect": "read-only",
+    },
+    {
+        "id": "work-mode",
+        "audience": "both",
+        "command": "python tools/top.py work-mode <agent> <task> [--parallel|--dirty-mainline|--hot-files]",
+        "does": "Подсказать режим D-021: Level 0 shared tree или Level 1 worktree-приток.",
         "effect": "read-only",
     },
 ]
@@ -302,6 +310,62 @@ def cmd_cycle(args):
     return 0
 
 
+def _work_mode_choice(args):
+    if args.mode in {"shared", "worktree"}:
+        return args.mode
+    if args.parallel or args.dirty_mainline or args.hot_files:
+        return "worktree"
+    return "shared"
+
+
+def cmd_work_mode(args):
+    choice = _work_mode_choice(args)
+    reasons = []
+    if args.mode in {"shared", "worktree"}:
+        reasons.append("explicit --mode %s" % args.mode)
+    if args.parallel:
+        reasons.append("parallel work")
+    if args.dirty_mainline:
+        reasons.append("dirty mainline")
+    if args.hot_files:
+        reasons.append("hot generated/shared files")
+    if not reasons:
+        reasons.append("small or isolated task")
+    label = "Level 1 worktree" if choice == "worktree" else "Level 0 shared tree"
+
+    print("# Work mode recommendation")
+    print("")
+    print("agent: `%s`" % args.agent)
+    print("task: `%s`" % args.task)
+    print("recommended: **%s**" % label)
+    print("reason: %s" % ", ".join(reasons))
+    print("")
+    print("## Level 0 shared tree")
+    print("")
+    print("Use for small, low-conflict edits in the current workspace.")
+    print("")
+    print("```powershell")
+    print("python tools/top.py status %s" % args.agent)
+    print("python tools/pipeline.py mine %s" % args.agent)
+    print("python tools/top.py health")
+    print("python tools/merge_gate.py check %s" % args.agent)
+    print('python tools/cohort.py ship %s <files> --message "%s: <summary>"' % (args.agent, args.task))
+    print("```")
+    print("")
+    print("## Level 1 worktree")
+    print("")
+    print("Use for parallel/contested work, dirty mainline, or changes likely to touch generated indexes.")
+    print("")
+    print("```powershell")
+    print("python tools/flow.py start %s %s --worktree" % (args.agent, args.task))
+    print("# add --run only after reviewing the printed worktree path")
+    print("python tools/flow.py finish %s %s --worktree" % (args.agent, args.task))
+    print("```")
+    print("")
+    print("Rule: D-021 keeps Level 0 as the default; Level 1 is explicit for real parallel load.")
+    return 0
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Top command panel for humans and agents.")
     sub = parser.add_subparsers(dest="cmd")
@@ -344,6 +408,15 @@ def build_parser():
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")
     p.set_defaults(func=cmd_cycle)
+
+    p = sub.add_parser("work-mode", help="recommend Level 0 shared tree or Level 1 worktree")
+    p.add_argument("agent")
+    p.add_argument("task")
+    p.add_argument("--mode", choices=["auto", "shared", "worktree"], default="auto")
+    p.add_argument("--parallel", action="store_true")
+    p.add_argument("--dirty-mainline", action="store_true")
+    p.add_argument("--hot-files", action="store_true")
+    p.set_defaults(func=cmd_work_mode)
 
     return parser
 

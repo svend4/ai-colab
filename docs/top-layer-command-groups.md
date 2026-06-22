@@ -30,6 +30,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 | Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding и статус |
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next |
+| Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
@@ -56,10 +57,30 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 - network/source intake — через sandbox policy;
 - execute — только после preflight и accepted decision;
 - commit — через `commit_lock.py` и selective-add.
+- worktree — только как явный Level 1 режим; `work-mode` по умолчанию ничего не создаёт.
 
 ## Моё мнение
 
 Это правильный следующий шаг для “середины пирамиды”: не строить ещё один большой слой, а сделать тонкую панель над уже работающими возможностями. Для настоящей UI-кнопки позже можно обернуть `tools/top.py buttons --json` в GUI, web-dashboard, MCP tool или ChatGPT app. Контракт уже будет готов.
+
+## Расширение T-144: выбор режима работы
+
+После `D-021` верхний слой умеет не только показывать команды, но и помогать выбрать режим выполнения задачи:
+
+```powershell
+python tools\top.py work-mode codex T-144
+python tools\top.py work-mode codex T-144 --parallel --hot-files
+python tools\top.py work-mode codex T-144 --mode worktree
+```
+
+Смысл:
+
+| Режим | Когда использовать | Что печатает |
+|---|---|---|
+| Level 0 shared tree | маленькая низкоконфликтная задача | status/mine/health/merge_gate/cohort ship |
+| Level 1 worktree | параллельная работа, грязная mainline, горячие generated files | `flow.py start/finish --worktree` dry-run |
+
+Команда не создаёт worktree и не делает commit. Она превращает принятую D-021 политику в короткую подсказку для старта задачи.
 
 ## Расширение T-137: параллельная работа и синтез
 

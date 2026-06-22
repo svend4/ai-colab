@@ -1693,6 +1693,28 @@
       "depends_on": "[]",
       "topic": "темы/kotel-decision-material-2026-06-21.md",
       "next": "Закрыто — D-021/toolset проверены, T-136/T-137 переведены в done, отчёт и outbox записаны; T-020 остаётся blocked."
+    },
+    {
+      "id": "T-144",
+      "title": "Top work-mode — подсказка выбора Level 0 shared tree или Level 1 worktree",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "next": "Реализовано top.py work-mode: auto/shared/worktree, причины --parallel/--dirty-mainline/--hot-files, тесты и документация обновлены."
+    },
+    {
+      "id": "T-145",
+      "title": "Portal-location split — portal.py читает portals/<name>/portal.md + corpus_ref (D-021 Вариант A)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/pyramid-candidate-map.md",
+      "next": "Аддитивно — portal.py принимает имя L2-портала, читает identity из portals/<name>/portal.md, резолвит corpus_ref -> data/portals/<name>/corpus; обратная совместимость с прямым data/portals/. Координировать (горячая зона, не соло — D-021)."
     }
   ],
   "questions": [
