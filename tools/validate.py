@@ -137,10 +137,14 @@ def parse_questions(decisions):
             for d in re.findall(r"D-\d+", outcome):
                 if d not in decisions:
                     err(f"QUESTIONS: {qid} ссылается на несуществующее решение {d}")
-        # ссылки на тему-файл существуют
+        # ссылки на тему-файл существуют (S1 карантин: open-вопрос со ссылкой на ещё не созданный
+        # файл = WARN; ERROR только для answered/closed — готовый вопрос обязан иметь свой файл).
         for p in md_paths(where):
             if not os.path.exists(os.path.join(ROOT, p)):
-                err(f"QUESTIONS: {qid} «Где обсуждается» → нет файла {p}")
+                if status in ("answered", "closed"):
+                    err(f"QUESTIONS: {qid} ({status}) «Где обсуждается» → нет файла {p}")
+                else:
+                    warn(f"QUESTIONS: {qid} (status={status}) «Где обсуждается» → файла {p} ещё нет (карантин)")
     if seen:
         ok(f"QUESTIONS: {len(seen)} вопросов, id уникальны, ссылки и итоги проверены")
 
@@ -165,7 +169,13 @@ def parse_tasks():
             warn(f"TASKS: {tid} нестандартный статус «{status}»")
         for p in md_paths(topic):
             if not os.path.exists(os.path.join(ROOT, p)):
-                err(f"TASKS: {tid} «Тема» → нет файла {p}")
+                # S1 «карантин half-done» (D-022/gate-poison): незавершённая задача со ссылкой на
+                # ещё не созданный файл = WARN, а не ERROR — чтобы чужая half-done не отравляла общий
+                # commit-gate ВСЕМ. ERROR только для done: готовая задача обязана иметь свой deliverable.
+                if status == "done":
+                    err(f"TASKS: {tid} (done) «Тема» → нет файла {p}")
+                else:
+                    warn(f"TASKS: {tid} (status={status}) «Тема» → файла {p} ещё нет (карантин half-done)")
     if seen:
         ok(f"TASKS: {len(seen)} задач, id уникальны, ссылки проверены")
 
