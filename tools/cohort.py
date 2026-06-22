@@ -358,15 +358,16 @@ def guard(as_json=False, agent=None):
     poison_errs = [ln.strip()[:90] for ln in val.splitlines() if ln.strip().startswith("ERROR:")][:3]
     poison = bool(m and int(m.group(1)) > 0)
 
+    # recipe — кросс-линк на детектор Codex (friction.py recipe <alias>), синтез #4.
     triggers = []
     if foreign:
-        triggers.append({"trigger": "foreign-source", "files": foreign})
+        triggers.append({"trigger": "foreign-source", "files": foreign, "recipe": "foreign"})
     if hot_tools:
-        triggers.append({"trigger": "hot-tool", "files": hot_tools})
+        triggers.append({"trigger": "hot-tool", "files": hot_tools, "recipe": "dirty"})
     if stale:
-        triggers.append({"trigger": "stale-index", "files": ["generate --check"]})
+        triggers.append({"trigger": "stale-index", "files": ["generate --check"], "recipe": "stale-index"})
     if poison:
-        triggers.append({"trigger": "gate-poison", "files": poison_errs or ["validate ERROR>0"]})
+        triggers.append({"trigger": "gate-poison", "files": poison_errs or ["validate ERROR>0"], "recipe": "gate-poison"})
     level1 = bool(triggers)
 
     if as_json:
@@ -379,6 +380,9 @@ def guard(as_json=False, agent=None):
     for t in triggers:
         more = " …" if len(t["files"]) > 6 else ""
         print("  [!] %-20s %s%s" % (t["trigger"], ", ".join(t["files"][:6]), more))
+    if triggers:
+        print("\n  Рецепты (детектор Codex): " + " · ".join(
+            "friction.py recipe %s" % t.get("recipe", "?") for t in triggers))
     if poison:
         print("\n  GATE-POISON: общий validate-гейт КРАСНЫЙ — коммит в master заблокирован ВСЕМ "
               "(часто чужая half-done). Worktree бери от ЧИСТОЙ базы; merge — когда гейт очистится.")
