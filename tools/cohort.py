@@ -33,6 +33,8 @@ import subprocess
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
 CAPS = os.path.join(ROOT, "system-capabilities.json")
+sys.path.insert(0, TOOLS)
+import ownership as own  # общий классификатор владения dirty-файлами (T-153, синтез подсистем)
 
 # Триггеры Уровня-1 (D-022 / Q-015 B). Source-зоны: правка здесь связывает агентов через индекс/дерево.
 SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "темы/", "docs/")
@@ -201,7 +203,7 @@ def turn(agent, do_run=False):
     лучше уйти в свой worktree, а не коммитить в общее дерево."""
     print("=== СМЕНА АГЕНТА: %s ===" % agent)
     print("\nТриггеры Уровня-1 (guard) перед стартом:")
-    guard()
+    guard(agent=agent)
     _, mine = _run("pipeline.py", "mine", agent)
     print("\nТвои активные задачи:")
     for l in (mine.strip().splitlines() or ["  (нет)"])[:6]:
@@ -331,32 +333,36 @@ def self_host(as_json=False):
 
 # ---------------------------------------------------------------- guard (триггеры Уровня-1)
 
-def guard(as_json=False):
+def guard(as_json=False, agent=None):
     """Детектор триггеров Уровня-1 (Q-015 B / D-022): связывает ли текущее состояние агентов так,
     что лучше уйти в свой worktree (--worktree), а не коммитить в общее дерево. Снимает LS-5
-    (нет видимости, что правит сосед): печатает, какие триггеры сейчас активны."""
+    (нет видимости, что правит сосед). Ownership-aware (T-153): триггерит только на ЧУЖИЕ
+    заявленные файлы, не на свои/generated/volatile — через общий `tools/ownership.py`."""
     _, st = _git("status", "--short")
     changed = [(ln[:2].strip(), ln[3:].strip().strip('"')) for ln in st.splitlines() if len(ln) > 3]
 
     def norm(p):
         return p.replace("\\", "/")
 
-    foreign_src = sorted({p for code, p in changed if "M" in code and norm(p).startswith(SOURCE_DIRS)})
-    hot = sorted({p for code, p in changed if norm(p) in HOT_FILES})
+    paths = [norm(p) for _code, p in changed]
+    # foreign = source-файл, привязанный к задаче ДРУГОГО агента (не свой/generated/volatile/unknown).
+    foreign = sorted(own.summary(paths, agent=agent)["by"]["foreign"])
+    # hot-tools: общие ИНСТРУМЕНТЫ (не генерируемые индексы — те регенерируются) — правка соседом = коллизия.
+    hot_set = {h for h in HOT_FILES if h.startswith("tools/")}
+    hot_tools = sorted({p for p in paths if p in hot_set})
     rc, gen = _run("generate.py", "--check")
     stale = (rc != 0) or ("STALE" in gen) or ("устарел" in gen)
-    # gate-poison: общий validate-гейт уже КРАСНЫЙ (часто из-за чужой half-done — задача со ссылкой
-    # на ещё не созданный файл, битый front-matter, дубль id) → pre-commit hook блокирует коммит ВСЕМ.
+    # gate-poison: общий validate-гейт уже КРАСНЫЙ (часто из-за чужой half-done) → hook блокирует коммит ВСЕМ.
     _, val = _run("validate.py")
     m = re.search(r"ERROR=(\d+)", val)
     poison_errs = [ln.strip()[:90] for ln in val.splitlines() if ln.strip().startswith("ERROR:")][:3]
     poison = bool(m and int(m.group(1)) > 0)
 
     triggers = []
-    if foreign_src:
-        triggers.append({"trigger": "uncommitted-source", "files": foreign_src})
-    if hot:
-        triggers.append({"trigger": "hot-file", "files": hot})
+    if foreign:
+        triggers.append({"trigger": "foreign-source", "files": foreign})
+    if hot_tools:
+        triggers.append({"trigger": "hot-tool", "files": hot_tools})
     if stale:
         triggers.append({"trigger": "stale-index", "files": ["generate --check"]})
     if poison:
@@ -407,7 +413,7 @@ def main():
         if cmd == "gate" and pos:
             return gate(pos[0])
         if cmd == "guard":
-            return guard(as_json=as_json)
+            return guard(as_json=as_json, agent=pos[0] if pos else None)
         if cmd == "ship":
             r = list(rest)
             msg = None
