@@ -78,9 +78,13 @@ def main():
         )
     if cmd == "finish" and len(args) >= 3:
         b = branch_name(args[1], args[2])
-        if use_worktree:  # Уровень-1: гейт через merge_gate -> merge -> снять приток
+        if use_worktree:  # Уровень-1: регенерация (снять чужой generate-stale) -> гейт -> merge -> снять приток
             import worktree as wt
-            cmds = [[sys.executable, "tools/merge_gate.py", "check", args[1]],
+            # generate.py перед гейтом сглаживает merge-back wall: чужая незакоммиченная задача делает
+            # общий индекс STALE → merge_gate RED. Регенерируем индексы (не-staged) — merge приносит
+            # только ветку, индексы оставляем владельцу источников. (Узкая гонка остаётся — retry.)
+            cmds = [[sys.executable, "tools/generate.py"],
+                    [sys.executable, "tools/merge_gate.py", "check", args[1]],
                     ["git", "merge", "--no-ff", b, "-m", "Merge %s" % b]] + wt.remove_cmds(args[1], args[2])
             return run_or_print(cmds, do_run)
         return run_or_print(
