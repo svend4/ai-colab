@@ -120,6 +120,13 @@
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     },
     {
+      "id": "friction-subsystems-synthesis-2026-06-22",
+      "title": "Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017",
+      "file": "темы/friction-subsystems-synthesis-2026-06-22.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "gate-poison-situation-2026-06-22",
       "title": "Отравление общего gate чужой half-done задачей — ситуация и слои решений",
       "file": "темы/gate-poison-situation-2026-06-22.md",
@@ -1803,7 +1810,7 @@
     {
       "id": "T-153",
       "title": "Friction ownership-aware dirty classifier",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",

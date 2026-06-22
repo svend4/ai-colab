@@ -32,6 +32,7 @@
 | Слой драйверов (Treiber) — СЛИТО в ai-os-bridge | `темы/drivers-layer.md` | archive | — | Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md |
 | Информационные драйверы (трайберы) — СЛИТО в ai-os-bridge | `темы/information-drivers.md` | archive | — | Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план). |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | none | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
+| Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed | — |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft | — |  |
 <!-- GEN:topics-board END -->
 
