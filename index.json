@@ -1741,13 +1741,13 @@
     {
       "id": "T-148",
       "title": "Реализовать механику политики параллельной работы — волатильные файлы + авто-эскалация в worktree (D-022)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "docs/parallel-work-policy.md",
-      "next": "Координированно (трогает pipeline/generate и общий .gitignore — не соло): untrack волатильных (git rm --cached LIVE.md PIPELINE.md logs/heartbeat.json logs/pipeline.json) + .gitignore; гейт не валится на волатильных; авто-эскалация flow/cohort в worktree по триггеру guard."
+      "next": "Готово — volatile snapshots untracked/ignored, regression test added; auto-escalation via cohort guard already merged in 82cab10/e2e700f."
     },
     {
       "id": "T-149",

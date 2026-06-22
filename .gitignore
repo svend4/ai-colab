@@ -12,3 +12,8 @@ logs/knowledge.db
 logs/_kn_test*.db
 data/portals/*/*.db
 queues/commit.lock
+# volatile runtime snapshots (D-022/T-148)
+LIVE.md
+PIPELINE.md
+logs/heartbeat.json
+logs/pipeline.json

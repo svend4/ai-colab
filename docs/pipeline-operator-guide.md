@@ -39,10 +39,14 @@ python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --
 
 ## Где смотреть состояние
 
-- **Люди:** `PIPELINE.md` (Kanban) и `LIVE.md` (heartbeat-лента) — генерируются `snapshot`.
-- **Агенты/скрипты:** `logs/pipeline.json` и `logs/heartbeat.json`.
+- **Люди:** `PIPELINE.md` (Kanban) и `LIVE.md` (heartbeat-лента) — генерируются `snapshot` и являются runtime-снимками, не commit-scope.
+- **Агенты/скрипты:** `logs/pipeline.json` и `logs/heartbeat.json` — runtime-снимки, игнорируются Git после T-148.
 - Источник правды по статусу задачи — всегда `tasks/<T-id>.md`.
 
 Связано: `tools/README.md` (раздел «Конвейер»), `темы/agent-pipeline.md`, `decisions/D-011` (конвейер), `D-012` (heartbeat).
 
 См. также: `docs/commit-stream-policy.md`.
+
+## Volatile snapshots (T-148)
+
+`PIPELINE.md`, `LIVE.md`, `logs/pipeline.json`, `logs/heartbeat.json` остаются рабочими файлами на диске, но больше не отслеживаются Git. Они могут обновляться командами `snapshot`/`heartbeat` в любой момент и не должны попадать в обычный commit. Источник правды остаётся в `tasks/`, `questions/`, `decisions/`, `queues/claimed`, `queues/done` и generated canonical indexes (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `index.json`).
