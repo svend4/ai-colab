@@ -23,6 +23,9 @@ import time
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import ownership  # общий классификатор владения dirty-файлами (T-153, синтез подсистем)
+
 VOLATILE = [
     "LIVE.md",
     "PIPELINE.md",
@@ -351,19 +354,28 @@ def path_matches(path, candidates):
     return p in candidates or any(p.startswith(c.rstrip("/") + "/") for c in candidates)
 
 
-def check_git_status(status_text):
+def check_git_status(status_text, agent=None, task_files=None):
     rows = git_status_paths(status_text)
     dirty = [r["raw"] for r in rows]
     nonvolatile = [r["raw"] for r in rows if not path_matches(r["path"], VOLATILE)]
     volatile = [r["raw"] for r in rows if path_matches(r["path"], VOLATILE)]
     generated = [r["raw"] for r in rows if path_matches(r["path"], GENERATED_SHARED)]
+    # ownership-aware (T-153): отделить ЧУЖИЕ заявленные source-файлы от своих/неизвестных.
+    own = ownership.summary([r["path"] for r in rows], agent=agent, task_files=task_files)
+    foreign = own["by"]["foreign"]
 
     checks = []
-    if nonvolatile:
+    if foreign:
         checks.append(make_check(
-            "F-006", "warn", "shared tree has non-volatile uncommitted files",
+            "F-006", "warn", "shared tree has FOREIGN uncommitted source (another agent's claimed work)",
+            evidence=foreign[:8],
+            recipe_hint="Foreign half-done — use Level 1 worktree (flow.py start <agent> <task> --worktree); do not couple via shared index.",
+        ))
+    elif nonvolatile:
+        checks.append(make_check(
+            "F-006", "warn", "shared tree has non-volatile uncommitted files (yours/unknown, not foreign)",
             evidence=nonvolatile[:8],
-            recipe_hint="Use selective-add only; consider Level 1 worktree if these files are foreign or contested.",
+            recipe_hint="Selective-add (cohort ship); Level 0 ok if files are yours/generated and not foreign.",
         ))
     else:
         checks.append(make_check("F-006", "ok", "no non-volatile dirty files visible", evidence=dirty[:4]))
@@ -535,7 +547,11 @@ def collect_status(args):
     if git["timeout"]:
         checks.append(make_check("F-003", "fail", "git status timed out", evidence=first_lines(git["out"], 4)))
     else:
-        checks.extend(check_git_status(git["out"]))
+        tf = list(getattr(args, "files", None) or [])
+        if getattr(args, "task", None):
+            tf.append("tasks/%s.md" % args.task)  # карточка моей задачи = mine
+        checks.extend(check_git_status(
+            git["out"], agent=getattr(args, "agent", None), task_files=tf or None))
 
     ls = run_cmd("git", "ls-files", "--", *VOLATILE, timeout=20)
     try:
@@ -672,6 +688,9 @@ def build_parser():
     p.add_argument("--strict", action="store_true", help="return non-zero if any warning/failure is found")
     p.add_argument("--no-temp-probe", dest="temp_probe", action="store_false")
     p.add_argument("--stream-max-age-days", type=int, default=7)
+    p.add_argument("--task", help="мой текущий T-ID — его карточка считается mine (T-153)")
+    p.add_argument("--files", nargs="*", help="явные файлы моей задачи → mine (T-153)")
+    p.add_argument("--agent", help="кто я (mine vs foreign по claim'ам) (T-153)")
     p.set_defaults(func=cmd_status, temp_probe=True)
 
     p = sub.add_parser("recipe", help="print one F-XXX recipe")
