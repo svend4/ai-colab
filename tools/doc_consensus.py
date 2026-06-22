@@ -41,12 +41,31 @@ def configure_output():
 configure_output()
 
 
+# Лёгкий стемминг: чтобы «безопасность/безопасности», «коммит/коммиты» совпадали (cross-agent проза
+# одни идеи пишет разными формами). Грубо, без морфологии — отсечь частые окончания.
+_RU_SUF = sorted((
+    "ость", "ения", "иями", "ями", "ами", "ого", "ому", "ыми", "ими", "ах", "ях", "ов", "ев",
+    "ий", "ый", "ая", "ое", "ые", "ться", "ть", "ет", "ут", "ют", "ам", "ом", "ем", "ах", "и", "ы", "а", "у", "е",
+), key=len, reverse=True)
+_EN_SUF = ("ings", "ing", "ies", "ed", "es", "s")
+
+
+def _stem(w):
+    for suf in _RU_SUF:
+        if w.endswith(suf) and len(w) - len(suf) >= 4:
+            return w[:-len(suf)]
+    for suf in _EN_SUF:
+        if w.endswith(suf) and len(w) - len(suf) >= 4:
+            return w[:-len(suf)]
+    return w
+
+
 def _norm_tokens(text):
     t = text.lower()
     t = re.sub(r"`[^`]*`", " ", t)
     t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
     t = re.sub(r"[^0-9a-zа-яё_-]+", " ", t)
-    return {w for w in t.split() if len(w) > 2 and w not in STOP}
+    return {_stem(w) for w in t.split() if len(w) > 2 and w not in STOP}
 
 
 def units(path, root=ROOT):
