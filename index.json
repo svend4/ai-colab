@@ -113,6 +113,13 @@
       "next": "Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
     },
     {
+      "id": "assurance-and-doc-merge-2026-06-22",
+      "title": "Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов",
+      "file": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "commit-policy-streams-2026-06-21",
       "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
       "file": "темы/commit-policy-streams-2026-06-21.md",
@@ -1935,6 +1942,20 @@
       "status": "answered",
       "where": "темы/commit-policy-streams-2026-06-21.md",
       "outcome": "Принят D-022 — вариант B; Level 1 worktree обязателен по триггерам: чужие source-файлы, stale index не от своей работы, hot files, явная параллельная работа или same-file коллизия."
+    },
+    {
+      "id": "Q-016",
+      "title": "Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1",
+      "status": "open",
+      "where": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "outcome": ""
+    },
+    {
+      "id": "Q-017",
+      "title": "Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия",
+      "status": "open",
+      "where": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "outcome": ""
     }
   ],
   "decisions": [

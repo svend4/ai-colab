@@ -29,4 +29,6 @@
 | Q-013 | Как согласовать спорные пункты onboarding/manual roadmap? | open | codex | все | `темы/ai-os-bridge.md` |  |
 | Q-014 | Цель проекта — юридический workbench (домен) или универсальный generic-инструмент? | answered | Claude | Stefan | `темы/opinion-synthesis-2026-06-21.md` | Stefan — универсальное ядро + домен как тематический портал/плагин (модель Википедии). См. D-016. |
 | Q-015 | Когда Level 1 worktree должен быть обязательным, а не рекомендацией? | answered | codex | все | `темы/commit-policy-streams-2026-06-21.md` | Принят D-022 — вариант B; Level 1 worktree обязателен по триггерам: чужие source-файлы, stale index не от своей работы, hot files, явная параллельная работа или same-file коллизия. |
+| Q-016 | Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1 | open | stefan | все | `темы/assurance-and-doc-merge-2026-06-22.md` |  |
+| Q-017 | Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия | open | stefan | все | `темы/assurance-and-doc-merge-2026-06-22.md` |  |
 <!-- GEN:questions END -->
