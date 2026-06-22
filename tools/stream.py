@@ -16,12 +16,15 @@ CLI:
         # перечисляет пакеты (по статусу; --ready-only — только status: ready)
     python tools/stream.py adopt <stream-id> <commit>
         # status: adopted + adopted_commit; сериализуется под commit-lock
+    python tools/stream.py check [--max-age-days N] [--json]
+        # гигиена (P-11 «кладбище потоков»): открытые пакеты старше N дней без adoption + битый front-matter
 
 Корень streams переопределяется (для герметичных тестов):
     COLLAB_STREAMS_ROOT=<dir>   или   --root <dir>
 """
 import os
 import sys
+import json
 import datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,6 +44,9 @@ def configure_output():
 configure_output()
 
 READY_STATUSES = ("ready", "adopted")
+# Терминальные статусы — пакет «закрыт», не считается кладбищем.
+TERMINAL_STATUSES = ("adopted", "superseded", "rejected", "archived")
+REQUIRED_FM = ("id", "topic", "agent", "status", "created")
 
 
 def streams_root(override=None):
@@ -145,6 +151,36 @@ def list_packets(topic=None, ready_only=False, root=None):
             continue
         out.append(p)
     return out
+
+
+def _rel(path):
+    try:
+        return os.path.relpath(path, ROOT).replace("\\", "/")
+    except ValueError:
+        return path
+
+
+def check(root=None, max_age_days=14):
+    """Гигиена потоков (P-11 «кладбище»): открытые (не terminal) пакеты старше N дней без adoption +
+    пакеты с битым/неполным front-matter. Возвращает {stale:[...], broken:[...]}."""
+    today = datetime.date.today()
+    stale, broken = [], []
+    for p in _iter_packets(root):
+        missing = [k for k in REQUIRED_FM if not p.get(k) or p.get(k) == "?"]
+        if missing:
+            broken.append({"id": p["id"], "path": _rel(p["path"]), "reason": "missing:" + ",".join(missing)})
+            continue
+        if p["status"] in TERMINAL_STATUSES:
+            continue
+        try:
+            age = (today - datetime.date.fromisoformat(p["created"])).days
+        except ValueError:
+            broken.append({"id": p["id"], "path": _rel(p["path"]), "reason": "bad-date:%s" % p["created"]})
+            continue
+        if age > max_age_days:
+            stale.append({"id": p["id"], "topic": p["topic"], "agent": p["agent"],
+                          "status": p["status"], "age_days": age, "path": _rel(p["path"])})
+    return {"stale": stale, "broken": broken}
 
 
 def _find_packet(stream_id, root):
@@ -253,6 +289,23 @@ def main():
             print("adopt %s -> adopted (commit=%s)" % (r["id"], r["adopted_commit"]))
             print("Файл: %s" % r["path"])
             return 0
+        if cmd == "check":
+            max_age = int(_argval(argv, "--max-age-days") or 14)
+            r = check(root=root, max_age_days=max_age)
+            if "--json" in argv:
+                print(json.dumps(r, ensure_ascii=False, indent=2))
+                return 1 if (r["stale"] or r["broken"]) else 0
+            if not r["stale"] and not r["broken"]:
+                print("OK: stream-кладбища нет (открытые пакеты свежие, front-matter полон)")
+                return 0
+            print("Гигиена потоков (P-11): stale=%d, broken=%d (порог %dд)"
+                  % (len(r["stale"]), len(r["broken"]), max_age))
+            for s in r["stale"]:
+                print("  СТАРЫЙ %-22s %-16s status=%-9s age=%dд -> adopt/reject/archive  %s"
+                      % (s["id"], s["topic"], s["status"], s["age_days"], s["path"]))
+            for b in r["broken"]:
+                print("  БИТЫЙ  %-22s %s  %s" % (b["id"], b["reason"], b["path"]))
+            return 1
     except Exception as exc:
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1
