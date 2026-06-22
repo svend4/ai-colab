@@ -55,6 +55,18 @@
 - `pipeline.py next <agent>` (взять) → `done <agent> <T-id> --claim <id> --report "..."` (закрыть) →
   `generate.py` → `validate.py` → `snapshot`. Подробности — §3 и `skills/pipeline-operator/SKILL.md`.
 
+### Параллельная работа без блокировки (вершина + Уровень-0/1)
+Полная карта движка — `docs/engine-state-2026-06-22.md`; политика по ситуациям — `docs/parallel-work-policy.md` (D-022).
+- **Вершина (одна кнопка):** `python tools/cohort.py board|plan|turn|self` (параллель+самохостинг) и
+  Codex-панель `python tools/top.py` (одиночный агент/человек).
+- **Перед работой — `guard`:** `python tools/cohort.py guard <agent>` — триггеры Уровня-1 (foreign-source /
+  hot-tool / stale-index / gate-poison) через общий `tools/ownership.py` (mine|generated|volatile|foreign|unknown).
+- **Уровень-0 (общее дерево):** `python tools/cohort.py ship <agent> <свои файлы> --message "..." --run` —
+  `commit_lock` + selective-add + авто-регенерация (не блокируя других, не тащя чужое).
+- **Уровень-1 (изоляция):** при триггерах — `python tools/flow.py start <agent> <task> --worktree --run` →
+  работа в притоке → `flow.py finish ... --worktree` (`merge_gate` → merge → снять). Форк-пакеты — `tools/stream.py`.
+- **Трение:** `python tools/friction.py status --agent <you>` — детектор повторяющихся проблем (F-XXX) + рецепты.
+
 ### MCP-приёмка (подключить драйверы к реальному AI-клиенту)
 - `python drivers/mcp_sync_acceptance.py` — **переносимая** `tools/call`-приёмка всех серверов
   (работает там, где официальный async stdio падает Windows `WinError 5`).
