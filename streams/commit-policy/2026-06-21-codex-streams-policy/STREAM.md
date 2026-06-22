@@ -1,7 +1,9 @@
 ---
 id: 2026-06-21-codex-streams-policy
 topic: commit-policy
+agent: codex
 status: adopted
+created: 2026-06-21
 author: codex
 related: [Q-013]
 adoption: docs/commit-stream-policy.md

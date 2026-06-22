@@ -1,7 +1,9 @@
 ---
 id: 2026-06-21-codex-t136-synthesis
 topic: commit-policy
+agent: codex
 status: ready-for-review
+created: 2026-06-21
 author: codex
 related: [T-136, D-017, D-018, D-019]
 adoption: proposed-in-D-019

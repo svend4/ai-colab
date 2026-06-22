@@ -118,6 +118,13 @@
       "file": "темы/commit-policy-streams-2026-06-21.md",
       "status": "accepted",
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
+    },
+    {
+      "id": "gate-poison-situation-2026-06-22",
+      "title": "Отравление общего gate чужой half-done задачей — ситуация и слои решений",
+      "file": "темы/gate-poison-situation-2026-06-22.md",
+      "status": "draft",
+      "next": ""
     }
   ],
   "tasks": [
@@ -1774,7 +1781,7 @@
     {
       "id": "T-151",
       "title": "Stream hygiene cleanup — legacy front-matter after friction check",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
