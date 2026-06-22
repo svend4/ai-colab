@@ -97,3 +97,15 @@ Stefan ратифицировал котёл-пакет в `D-021`. Итог п�
 - `streams/` остаётся полу-форматом видимости и синтеза, но не становится отдельной VCS.
 - Merge подтверждает Stefan или назначенный интегратор.
 - Проверки T-143: `test_worktree`, `test_flow`, `test_stream`, `test_merge_gate`, dry-run `worktree.py spawn`, `flow.py start/finish --worktree`.
+
+## Follow-up 2026-06-22 — T-146 / waiting vs worktree triggers
+
+Codex перепроверил историю этой темы после новых вопросов Stefan. Вывод: старый дефект не закрыт полностью организационно. `D-021` принял Level 1 worktree-streams, но пока режим остаётся явным выбором. Практика T-133/T-136 и свежие проверки показывают: ожидание чужого commit из-за stale generated indexes остаётся потерей времени.
+
+Новые материалы:
+
+- `docs/parallel-streams-problems-review-2026-06-22.md` — подробная ретроспектива проблем и предложенная карта работы.
+- `questions/Q-015.md` — вопрос: когда Level 1 должен быть обязательным, а не рекомендацией.
+- `streams/commit-policy/20260622-0555-codex/STREAM.md` — stream-предложение по trigger policy.
+
+Позиция Codex: Level 0 остаётся дефолтом для малых правок, но Level 1 должен быть обязательным при чужих незавершённых файлах, stale generated index, hot files или явной параллельной работе нескольких агентов.

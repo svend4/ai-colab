@@ -1715,6 +1715,17 @@
       "depends_on": "[]",
       "topic": "docs/pyramid-candidate-map.md",
       "next": "Реализовано — portal.py читает L2 manifest portals/<name>/portal.md, corpus_ref -> data/portals/<name>/corpus, legacy data/portals/<name>/portal.md сохранён; тесты зелёные."
+    },
+    {
+      "id": "T-146",
+      "title": "Ретроспектива ручейков/worktree — ожидание чужого коммита, полу-формат, открытые вопросы",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "next": "Сравнить D-017/D-019/D-021/T-135/T-136/T-143/T-144 и свежие конфликты, вынести проблемы и вопросы в docs/outbox/Q-015."
     }
   ],
   "questions": [
@@ -1815,6 +1826,13 @@
       "status": "answered",
       "where": "темы/opinion-synthesis-2026-06-21.md",
       "outcome": "Stefan — универсальное ядро + домен как тематический портал/плагин (модель Википедии). См. D-016."
+    },
+    {
+      "id": "Q-015",
+      "title": "Когда Level 1 worktree должен быть обязательным, а не рекомендацией?",
+      "status": "open",
+      "where": "темы/commit-policy-streams-2026-06-21.md",
+      "outcome": ""
     }
   ],
   "decisions": [
