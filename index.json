@@ -1759,6 +1759,50 @@
       "depends_on": "[T-147]",
       "topic": "docs/friction-ledger.md",
       "next": "Готово — friction ledger расширен архетипами/повторами/Q&A, создан complaints log и project skill repo-friction-playbook; skill validation зелёная."
+    },
+    {
+      "id": "T-150",
+      "title": "Deep friction retrospective + read-only diagnostics",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-149]",
+      "topic": "docs/friction-retrospective-2026-06-22.md",
+      "next": "Провести ретроспективный аудит повторяющихся проблем, добавить docs/friction-retrospective-2026-06-22.md, tools/friction.py и тесты."
+    },
+    {
+      "id": "T-151",
+      "title": "Stream hygiene cleanup — legacy front-matter after friction check",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-150]",
+      "topic": "docs/friction-retrospective-2026-06-22.md",
+      "next": "Исправить или явно закрыть broken legacy streams, чтобы `python tools/stream.py check --max-age-days 7` стал зелёным без смешивания с чужими задачами."
+    },
+    {
+      "id": "T-152",
+      "title": "Pipeline targeted claim — взять конкретный T-id без wrong-next",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-150]",
+      "topic": "docs/friction-retrospective-2026-06-22.md",
+      "next": "Спроектировать и реализовать `pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>` с проверкой ready/placeholder/active claim."
+    },
+    {
+      "id": "T-153",
+      "title": "Friction ownership-aware dirty classifier",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-150]",
+      "topic": "docs/friction-retrospective-2026-06-22.md",
+      "next": "Улучшить `tools/friction.py status`, чтобы dirty files классифицировались как mine/generated/volatile/foreign/unknown по текущей задаче и явному списку файлов."
     }
   ],
   "questions": [

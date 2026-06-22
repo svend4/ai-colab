@@ -13,6 +13,7 @@ def run():
     rows = top.button_rows()
     ids = {r["id"] for r in rows}
     assert "health" in ids, ids
+    assert "friction-status" in ids, ids
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
     assert "report-diff" in ids, ids
@@ -26,9 +27,12 @@ def run():
     rendered = top.format_buttons(rows)
     assert "Top command buttons" in rendered, rendered
     assert "python tools/top.py health" in rendered, rendered
+    assert "python tools/top.py friction" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     parser = top.build_parser()
+    fargs = parser.parse_args(["friction", "--json"])
+    assert fargs.cmd == "friction" and fargs.json, fargs
     args = parser.parse_args(["cycle", "codex"])
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])

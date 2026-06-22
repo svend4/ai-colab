@@ -1,6 +1,6 @@
 # Friction ledger
 
-Дата: 2026-06-22  
+Дата: 2026-06-22
 Связано: `T-147`, `docs/friction-playbook.md`, `docs/runtime-recovery-playbook.md`, `docs/powershell-utf8-output.md`, `docs/parallel-streams-problems-review-2026-06-22.md`, `docs/commit-stream-policy.md`, `Q-015`, `D-022`.
 
 ## Назначение
@@ -178,3 +178,25 @@ recipes: exact commands
 - решение должно быть уже реально применено хотя бы один раз;
 - риск должен объяснять, почему это не просто неудобство;
 - automation candidate должен быть read-only/dry-by-default, пока нет отдельного решения на auto-fix.
+
+## T-150 — deep retrospective + first detector
+
+Дата: 2026-06-22
+Связано: `docs/friction-retrospective-2026-06-22.md`, `tools/friction.py`, `tools/test_friction.py`, `tools/top.py friction`.
+
+Что изменилось:
+
+- проведён глубокий retrospective audit по прошлым инцидентам и текущей сессии;
+- F-001..F-019 сохранены как стабильный реестр симптомов и рецептов;
+- добавлен `tools/friction.py status` как read-mostly detector: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links;
+- добавлена команда верхнего уровня `python tools/top.py friction`;
+- тест `tools/test_friction.py` специально закрепляет правила F-004: не использовать системный `%TEMP%` в герметичных тестах этой среды.
+
+Новая практическая норма: перед повторным ручным workaround сначала запускать:
+
+```powershell
+python tools\top.py friction
+python tools\friction.py recipe <F-id>
+```
+
+Если detector показывает dirty/stale/stream warnings, это не обязательно блокер работы. Это сигнал: не использовать `git add -A`, не смешивать чужие изменения и перед commit делать selective-add.

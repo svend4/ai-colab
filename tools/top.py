@@ -8,6 +8,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
 
     python tools/top.py buttons                  # human/agent command groups
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
+    python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py health                   # validation/generator/capability checks
     python tools/top.py agent-start <agent>      # onboard + current state
     python tools/top.py take <agent>             # side effect: pipeline next
@@ -58,6 +59,13 @@ _BUTTONS = [
         "command": "python tools/top.py status [agent]",
         "does": "Быстро увидеть git status, pipeline status и drift_check.",
         "effect": "read-only",
+    },
+    {
+        "id": "friction-status",
+        "audience": "both",
+        "command": "python tools/top.py friction",
+        "does": "Проверить повторяющиеся проблемы: dirty/stale/volatile/lock/pipeline/drift/streams/temp и получить рецепты.",
+        "effect": "read-mostly",
     },
     {
         "id": "health",
@@ -236,6 +244,15 @@ def cmd_status(args):
     return rc
 
 
+def cmd_friction(args):
+    cmd = _tool("friction.py", "status")
+    if args.json:
+        cmd.append("--json")
+    if args.strict:
+        cmd.append("--strict")
+    return _run("friction status", cmd, timeout=90)
+
+
 def cmd_health(_args):
     rc = 0
     for label, cmd in [
@@ -377,6 +394,11 @@ def build_parser():
     p = sub.add_parser("status", help="quick state: git + pipeline + drift")
     p.add_argument("agent", nargs="?")
     p.set_defaults(func=cmd_status)
+
+    p = sub.add_parser("friction", help="diagnose repeated repo friction and print recipes")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--strict", action="store_true")
+    p.set_defaults(func=cmd_friction)
 
     p = sub.add_parser("health", help="validate generated state and capability indexes")
     p.set_defaults(func=cmd_health)

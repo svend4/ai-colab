@@ -76,3 +76,14 @@
 - Потеря времени/риск: skill выглядит созданным, но metadata/validation падают позже.
 - Предложение: добавить в skill/playbook правило frontmatter: длинные descriptions с `:` оформлять block scalar.
 - Статус: documented
+
+### 2026-06-22 — T-150 retrospective: старые обходы повторились и стали detector-слоем
+
+- F-ID: F-001, F-004, F-006, F-011, F-013, F-018
+- Кто заметил: Codex
+- Где/команда: `apply_patch` при правке `tasks/T-150.md`; первый `tools/test_friction.py`; `python tools/friction.py status`; `python tools/stream.py check`.
+- Повторяемость: F-001/F-004/F-006 уже 4+ раз; F-013/F-018 повторяются как governance/tooling drift.
+- Ручное решение: PowerShell UTF-8 fallback; temp root в `C:\tmp`/`tmp-work`; selective-add; не включать unrelated `streams/*`; обновить skill/docs.
+- Потеря времени/риск: без detector агент снова тратит время на уже известные обходы и может смешать чужие изменения в commit.
+- Предложение: `tools/friction.py status/recipe/list`, `top.py friction`, затем отдельные задачи для targeted claim, stream cleanup и ownership-aware dirty classifier.
+- Статус: automate

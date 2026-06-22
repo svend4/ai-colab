@@ -267,3 +267,30 @@ description: >
 $env:PYTHONUTF8='1'
 python <script>.py ...
 ```
+
+## Одна команда friction-preflight
+
+Перед задачей, где есть риск повторить старую проблему, запускайте:
+
+```powershell
+python tools\top.py friction
+```
+
+Или напрямую:
+
+```powershell
+python tools\friction.py status
+python tools\friction.py recipe F-007
+python tools\friction.py list
+```
+
+Как читать результат:
+
+- `OK` — проверка не видит симптом сейчас.
+- `INFO` — проверка пропущена или носит справочный характер.
+- `WARN` — работа может продолжаться, но нужен рецепт и осторожный commit scope.
+- `FAIL` — сначала устранить runtime/temp/critical состояние, потом продолжать.
+
+Типичный смысл предупреждения `F-006/F-007/F-015`: рабочее дерево грязное или есть generated/shared файлы. Это нормально во время активной задачи, но запрещает `git add -A`. Перед commit нужно снова выполнить `git status --short --untracked-files=all` и stage только явные файлы текущей задачи.
+
+Если `friction.py` нашёл stream/skill/docs drift, не чините это внутри чужой задачи без основания. Создайте отдельную cleanup-задачу или outbox-заметку.

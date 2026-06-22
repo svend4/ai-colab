@@ -15,6 +15,8 @@ Read these files as needed:
 - `docs/friction-ledger.md` — archetypes, approximate repeat counts, risks, automation threshold.
 - `docs/friction-playbook.md` — “if X, do Y” recipes and Q&A.
 - `docs/friction-complaints-suggestions.md` — complaints/suggestions log and proposed improvements.
+- `docs/friction-retrospective-2026-06-22.md` — deep retrospective, evidence map, and next automation plan.
+- `tools/friction.py` — read-mostly detector: status, recipes, registry.
 - `docs/parallel-work-policy.md` — D-022 Level 1 triggers for parallel work.
 
 ## First Move
@@ -24,6 +26,7 @@ Read these files as needed:
 ```powershell
 git status --short --untracked-files=all
 python tools\top.py status codex
+python tools\top.py friction
 python tools\generate.py --check
 ```
 
@@ -42,6 +45,7 @@ python tools\generate.py --check
 - Runtime noise in `LIVE.md` or `logs/*`: do not include it in normal commits.
 - Pipeline selected the wrong task: release only your own mistaken claim; prefer a future targeted `claim <T-id>` workflow.
 - Stream lacks adoption: add status/related/adoption conditions or create a synthesis task.
+- Before repeating a manual workaround, run `python tools\friction.py status` and then `python tools\friction.py recipe <F-id>`.
 
 ## Recording A New Complaint
 

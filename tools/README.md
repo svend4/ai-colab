@@ -15,7 +15,8 @@
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
-- `top.py` — верхняя панель сценариев/“кнопок”: status, health, agent-start, take, snapshot, knowledge, report-diff, cycle, work-mode.
+- `top.py` — верхняя панель сценариев/“кнопок”: status, health, friction, agent-start, take, snapshot, knowledge, report-diff, cycle, work-mode.
+- `friction.py` — read-mostly диагностика повторяющихся проблем: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links + рецепты F-001..F-019.
 - `report_diff.py` — механическое сравнение двух `knowledge.py report` Markdown-отчётов: документы, типы, hit-count.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html`, `.docx` на stdlib, с redaction через `files`/canonical redaction. PDF оставлен отдельным dependency decision.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
@@ -313,3 +314,26 @@ python tools/top.py work-mode codex T-144 --parallel
 ```
 
 Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `drift_check.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе.
+
+## Friction diagnostics (`friction.py`, T-150)
+
+`friction.py` превращает повторяющиеся ручные обходы из `docs/friction-ledger.md` и `docs/friction-playbook.md` в одну read-mostly диагностику. Он не исправляет репозиторий автоматически: показывает симптом, evidence, F-ID и рецепт.
+
+```bash
+python tools/friction.py status
+python tools/friction.py status --json
+python tools/friction.py recipe F-007
+python tools/friction.py list
+python tools/top.py friction
+```
+
+Проверки сейчас покрывают:
+
+- dirty shared tree и generated/shared files;
+- volatile snapshots (`LIVE.md`, `PIPELINE.md`, `logs/heartbeat.json`, `logs/pipeline.json`);
+- `generate.py --check`, `commit_lock.py status`, `pipeline.py status`, `drift_check.py`, `stream.py check`;
+- project-safe temp probe под `tmp-work/`;
+- наличие sandbox-контракта для external code;
+- связь skill `repo-friction-playbook` с каноническими docs/tool.
+
+Если `friction.py` предупреждает про dirty/foreign/stale состояние, это не всегда ошибка: во время активной задачи дерево ожидаемо грязное. Смысл предупреждения — не использовать `git add -A`, не смешивать чужие stream/source изменения и перед commit снова проверить явный список файлов.
