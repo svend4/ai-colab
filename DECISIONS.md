@@ -28,4 +28,5 @@
 | D-019 | Commit streams policy — Level 0 now, worktree-streams as proposed Level 1 | proposed | 2026-06-21 | `decisions/D-019.md` |
 | D-020 | T-137 consensus proposal — thin automation, streams, sandbox intake, promotion gate | proposed | 2026-06-21 | `decisions/D-020.md` |
 | D-021 | Ратификация котёл-пакета — Уровень-1 принят, core-export/apex/D3 по рекомендациям, svend4 BLOCKED | accepted | 2026-06-21 | `decisions/D-021.md` |
+| D-022 | Детальная политика параллельной работы — триггеры Level-1, STALE-индекс, волатильные файлы, same-file | accepted | 2026-06-22 | `decisions/D-022.md` |
 <!-- GEN:decisions END -->

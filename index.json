@@ -1726,6 +1726,28 @@
       "depends_on": "[]",
       "topic": "темы/commit-policy-streams-2026-06-21.md",
       "next": "Сравнить D-017/D-019/D-021/T-135/T-136/T-143/T-144 и свежие конфликты, вынести проблемы и вопросы в docs/outbox/Q-015."
+    },
+    {
+      "id": "T-147",
+      "title": "Friction ledger/playbook — журнал повторяющихся проблем и решений",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/friction-ledger.md",
+      "next": "Готово — созданы friction-ledger/playbook/outbox, README обновлён; следующий этап предложен как read-only tools/friction.py или top.py friction."
+    },
+    {
+      "id": "T-148",
+      "title": "Реализовать механику политики параллельной работы — волатильные файлы + авто-эскалация в worktree (D-022)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "docs/parallel-work-policy.md",
+      "next": "Координированно (трогает pipeline/generate и общий .gitignore — не соло): untrack волатильных (git rm --cached LIVE.md PIPELINE.md logs/heartbeat.json logs/pipeline.json) + .gitignore; гейт не валится на волатильных; авто-эскалация flow/cohort в worktree по триггеру guard."
     }
   ],
   "questions": [
@@ -1830,9 +1852,9 @@
     {
       "id": "Q-015",
       "title": "Когда Level 1 worktree должен быть обязательным, а не рекомендацией?",
-      "status": "open",
+      "status": "answered",
       "where": "темы/commit-policy-streams-2026-06-21.md",
-      "outcome": ""
+      "outcome": "Принят D-022 — вариант B; Level 1 worktree обязателен по триггерам: чужие source-файлы, stale index не от своей работы, hot files, явная параллельная работа или same-file коллизия."
     }
   ],
   "decisions": [
@@ -1982,6 +2004,13 @@
       "status": "accepted",
       "date": "2026-06-21",
       "file": "decisions/D-021.md"
+    },
+    {
+      "id": "D-022",
+      "title": "Детальная политика параллельной работы — триггеры Level-1, STALE-индекс, волатильные файлы, same-file",
+      "status": "accepted",
+      "date": "2026-06-22",
+      "file": "decisions/D-022.md"
     }
   ],
   "drivers": [
