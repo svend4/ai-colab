@@ -225,9 +225,9 @@ REGISTRY = [
         "name": "pipeline.py next takes the wrong ready task",
         "symptom": "An agent wants a specific task but next claims a different high-priority ready item.",
         "recipe": [
-            "If you need a specific task, do not call next blindly.",
-            "Release only your own mistaken claim if this happens.",
-            "Future improvement: pipeline.py claim <agent> <T-id> or top.py take <agent> <T-id>.",
+            "If you need a specific task, use pipeline.py claim <agent> <T-id> or top.py take <agent> <T-id>.",
+            "If the T-id is not ready, targeted claim returns an error and does not take another task.",
+            "If an old next-based mistake happens, release only your own mistaken claim.",
         ],
         "docs": ["docs/friction-complaints-suggestions.md"],
         "aliases": ["wrong-task", "targeted-claim"],

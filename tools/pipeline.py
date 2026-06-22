@@ -11,6 +11,7 @@
 операцию pull-next: между «увидел задачу» и «занял» нет окна для перехвата.
 
     python tools/pipeline.py next   <agent>                 # атомарно занять след. готовую задачу
+    python tools/pipeline.py claim  <agent> <T-id>          # атомарно занять конкретную ready-задачу
     python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."]
     python tools/pipeline.py fail   <agent> <T-id> [--claim ID] [--reason "..."]
     python tools/pipeline.py status                          # лента конвейера (одна форма)
@@ -103,8 +104,14 @@ def claim_holder(tid):
     p = claim_path(tid)
     if not os.path.exists(p):
         return None
-    with open(p, encoding="utf-8") as f:
-        return parse_fm(f.read())
+    try:
+        with open(p, encoding="utf-8") as f:
+            return parse_fm(f.read())
+    except OSError:
+        # Windows may briefly deny access while another worker is replacing the
+        # claim. Treat this as a transient no-holder view; callers retry or fail
+        # safe instead of crashing.
+        return None
 
 
 def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
@@ -125,6 +132,8 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
             % (tid, agent, cid, lease))
     try:
         fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except PermissionError:
+        return None
     except FileExistsError:
         old = claim_holder(tid)
         if old is None:
@@ -137,6 +146,8 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
             lfd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
             return None  # другой агент уже перехватывает этот же протухший claim
+        except PermissionError:
+            return None
         try:
             os.close(lfd)
             # повторная проверка ПОД lock'ом: claim всё ещё тот же протухший?
@@ -151,8 +162,21 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
             tmp = "%s.tmp.%s" % (p, cid)
             with open(tmp, "w", encoding="utf-8", newline="\n") as f:
                 f.write(body)
-            os.replace(tmp, p)  # атомарная подмена протухшего claim новым
-            return cid
+            # Windows can transiently deny os.replace while another thread/process is
+            # touching the same claim path. Keep the stale-takeover lock and retry a
+            # few times; if it still fails, return no-claim instead of leaking a
+            # background thread exception through tests/agents.
+            for _ in range(5):
+                try:
+                    os.replace(tmp, p)  # атомарная подмена протухшего claim новым
+                    return cid
+                except PermissionError:
+                    time.sleep(0.02)
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+            return None
         finally:
             try:
                 os.remove(lock)
@@ -200,18 +224,55 @@ def ready_sorted(tasks):
     return ready
 
 
+def _claim_success(agent, task, cid):
+    set_status(task["path"], "doing")
+    print("ЗАНЯЛ: %s — %s" % (task["id"], task["title"]))
+    print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, task["id"]))
+    print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\""
+          % (agent, task["id"], cid))
+
+
 def cmd_next(agent):
     tasks = collect_tasks()
     for t in ready_sorted(tasks):
         cid = try_claim(t["id"], agent)
         if cid:
-            set_status(t["path"], "doing")
-            print("ЗАНЯЛ: %s — %s" % (t["id"], t["title"]))
-            print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, t["id"]))
-            print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\""
-                  % (agent, t["id"], cid))
+            _claim_success(agent, t, cid)
             return 0
     print("КОТЁЛ ПУСТ: готовых задач нет (всё done / занято / заблокировано зависимостями).")
+    return 0
+
+
+def targeted_claim_error(tid, tasks):
+    if tid not in tasks:
+        return "задачи %s нет" % tid
+    t = tasks[tid]
+    done_ids = {x["id"] for x in tasks.values() if x["status"] == "done"}
+    if t["status"] != "todo":
+        return "status: %s" % t["status"]
+    if is_placeholder_task(t):
+        return "placeholder task"
+    missing = [d for d in t["deps"] if d not in done_ids]
+    if missing:
+        return "depends_on: " + ", ".join(missing)
+    if claim_is_fresh(tid):
+        h = claim_holder(tid) or {}
+        return "занято агентом %s" % h.get("agent", "?")
+    return None
+
+
+def cmd_claim(agent, tid):
+    """Атомарно занять конкретную ready-задачу без риска взять другую через next."""
+    tasks = collect_tasks()
+    err = targeted_claim_error(tid, tasks)
+    if err:
+        print("НЕ ГОТОВО: %s ← %s" % (tid, err))
+        return 1
+    cid = try_claim(tid, agent)
+    if not cid:
+        print("ЗАНЯТО: %s — claim уже перехвачен другим агентом" % tid)
+        return 1
+    _claim_success(agent, tasks[tid], cid)
     return 0
 
 
@@ -545,6 +606,8 @@ def main():
     cmd = pos[0]
     if cmd == "next" and len(pos) >= 2:
         return cmd_next(pos[1])
+    if cmd == "claim" and len(pos) >= 3:
+        return cmd_claim(pos[1], pos[2])
     if cmd == "done" and len(pos) >= 3:
         return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"))
     if cmd == "fail" and len(pos) >= 3:

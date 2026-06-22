@@ -6,30 +6,36 @@
   1. fencing в done: чужой/протухший claim_id отклоняется, верный — проходит,
      без claim_id — backward-compatible (как раньше);
   2. done чужим агентом отклоняется (старое поведение сохранено);
-  3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель.
+  3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель;
+  4. targeted claim: success/busy/not-ready/placeholder без wrong-next.
 
 Изолированный COLLAB_ROOT во временной папке; pipeline импортируется ПОСЛЕ установки env.
 """
 import os
 import sys
-import tempfile
 import shutil
 import threading
 
-ROOT = tempfile.mkdtemp(prefix="pl_fence_")
+TOOLS = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(TOOLS)
+sys.path.insert(0, os.path.join(REPO_ROOT, "drivers"))
+from test_tmp import make_temp_dir
+
+ROOT = make_temp_dir("pl_fence_")
 os.environ["COLLAB_ROOT"] = ROOT
 for sub in (("tasks",), ("queues", "claimed"), ("queues", "done"), ("queues", "failed")):
     os.makedirs(os.path.join(ROOT, *sub), exist_ok=True)
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # tools/
+sys.path.insert(0, TOOLS)  # tools/
 import pipeline as P
 
 
-def _make_task(tid):
+def _make_task(tid, status="todo", title="t", deps="[]"):
     path = os.path.join(ROOT, "tasks", "%s.md" % tid)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write("---\nid: %s\ntype: task\ntitle: t\nstatus: todo\nowner: pool\n"
-                "priority: normal\nrisk: low\ndepends_on: []\nnext: x\n---\n# t\n" % tid)
+        f.write("---\nid: %s\ntype: task\ntitle: %s\nstatus: %s\nowner: pool\n"
+                "priority: normal\nrisk: low\ndepends_on: %s\nnext: x\n---\n# t\n"
+                % (tid, title, status, deps))
     return path
 
 
@@ -79,10 +85,16 @@ def run():
                         pass
             _seed_stale_claim("T-901")
             results = []
+            errors = []
             rlock = threading.Lock()
 
             def worker():
-                r = P.try_claim("T-901", "claude")
+                try:
+                    r = P.try_claim("T-901", "claude")
+                except Exception as exc:
+                    with rlock:
+                        errors.append(repr(exc))
+                    return
                 with rlock:
                     results.append(r)
 
@@ -91,13 +103,42 @@ def run():
                 t.start()
             for t in threads:
                 t.join()
+            assert not errors, "раунд %d: try_claim не должен выбрасывать исключения из worker: %s" % (rnd, errors)
             winners = [r for r in results if r]
             assert len(winners) == 1, \
                 "раунд %d: перехват протухшего claim: победителей %d (ожидался 1): %s" \
                 % (rnd, len(winners), results)
             assert P.claim_is_fresh("T-901"), "раунд %d: после перехвата claim должен быть свежим" % rnd
 
-        print("TESTS OK fencing+takeover: %d раундов по 8 потоков → ровно 1 победитель; done-fencing ok"
+        # --- 4. targeted claim: success/busy/not-ready/placeholder ---
+        _make_task("T-903")
+        assert P.cmd_claim("codex", "T-903") == 0, "targeted claim ready должен проходить"
+        h = P.claim_holder("T-903") or {}
+        assert h.get("agent") == "codex" and h.get("claim_id"), h
+        assert P.collect_tasks()["T-903"]["status"] == "doing", "targeted claim должен ставить doing"
+
+        _make_task("T-904")
+        busy_cid = P.try_claim("T-904", "claude")
+        assert busy_cid, "busy setup claim не выдан"
+        assert P.cmd_claim("codex", "T-904") == 1, "targeted claim занятой задачи должен отклоняться"
+        assert (P.claim_holder("T-904") or {}).get("agent") == "claude", "чужой claim не должен перезаписываться"
+        assert P.collect_tasks()["T-904"]["status"] == "todo", "busy targeted claim не должен менять status"
+
+        _make_task("T-905", deps="[T-999]")
+        assert P.cmd_claim("codex", "T-905") == 1, "targeted claim с незакрытой зависимостью должен отклоняться"
+        assert not P.claim_holder("T-905"), "not-ready dependency не должен создавать claim"
+
+        _make_task("T-906", title="(зарезервировано — заполните)")
+        assert P.cmd_claim("codex", "T-906") == 1, "placeholder не должен claim-иться"
+        assert not P.claim_holder("T-906"), "placeholder не должен создавать claim"
+
+        _make_task("T-907", status="done")
+        assert P.cmd_claim("codex", "T-907") == 1, "done задача не должна claim-иться"
+        assert not P.claim_holder("T-907"), "done задача не должна создавать claim"
+
+        assert P.cmd_claim("codex", "T-999") == 1, "missing task должен отклоняться"
+
+        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; claim success/busy/not-ready/placeholder ok"
               % rounds)
     except AssertionError as e:
         ok = False

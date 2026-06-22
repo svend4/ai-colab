@@ -29,7 +29,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 |---|---|---|---|
 | Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding и статус |
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
-| Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next |
+| Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |
 | Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |

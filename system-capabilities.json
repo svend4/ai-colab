@@ -54,7 +54,11 @@
     },
     {
       "cmd": "python tools/pipeline.py next <agent>",
-      "does": "атомарно взять задачу"
+      "does": "атомарно взять следующую ready-задачу"
+    },
+    {
+      "cmd": "python tools/pipeline.py claim <agent> <T-id>",
+      "does": "атомарно взять конкретную ready-задачу без wrong-next"
     },
     {
       "cmd": "python tools/validate.py",

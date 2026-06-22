@@ -11,7 +11,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py health                   # validation/generator/capability checks
     python tools/top.py agent-start <agent>      # onboard + current state
-    python tools/top.py take <agent>             # side effect: pipeline next
+    python tools/top.py take <agent> [T-id]      # side effect: pipeline next or targeted claim
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
     python tools/top.py knowledge <corpus> [--query TEXT] [--out reports/x.md]
     python tools/top.py cycle <agent>            # print safe work cycle template
@@ -77,8 +77,8 @@ _BUTTONS = [
     {
         "id": "take-task",
         "audience": "agent",
-        "command": "python tools/top.py take <agent>",
-        "does": "Атомарно взять следующую задачу из общего котла.",
+        "command": "python tools/top.py take <agent> [T-id]",
+        "does": "Атомарно взять следующую задачу из котла или конкретную ready-задачу по T-id.",
         "effect": "writes claim/status",
     },
     {
@@ -275,6 +275,8 @@ def cmd_agent_start(args):
 
 
 def cmd_take(args):
+    if args.task:
+        return _run("pipeline claim", _tool("pipeline.py", "claim", args.agent, args.task), timeout=45)
     return _run("pipeline next", _tool("pipeline.py", "next", args.agent), timeout=45)
 
 
@@ -407,8 +409,9 @@ def build_parser():
     p.add_argument("agent")
     p.set_defaults(func=cmd_agent_start)
 
-    p = sub.add_parser("take", help="take next pipeline task; writes claim/status")
+    p = sub.add_parser("take", help="take next pipeline task or claim a specific ready T-id; writes claim/status")
     p.add_argument("agent")
+    p.add_argument("task", nargs="?")
     p.set_defaults(func=cmd_take)
 
     p = sub.add_parser("snapshot", help="regenerate derived snapshots")

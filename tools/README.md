@@ -10,7 +10,7 @@
 - `race_test.py` — стресс-проверка атомарности `queue.py claim`: несколько параллельных агентов пытаются взять одну задачу, победить должен ровно один.
 - `next_id.py` — атомарная выдача id (`T-`/`Q-`/`D-`): берёт `max+1` и резервирует номер через `O_CREAT|O_EXCL`, чтобы два агента не заняли один id.
 - `dispatch.py` — read-only диспетчер задач: показывает готовые и заблокированные задачи по `depends_on`.
-- `pipeline.py` — конвейер: агент атомарно берёт следующую готовую задачу из «общего котла», делает, отчитывается, берёт следующую. Объединяет dispatch (готовность) и queue (захват) в один pull-next.
+- `pipeline.py` — конвейер: агент атомарно берёт следующую готовую задачу из «общего котла» (`next`) или конкретную ready-задачу (`claim <agent> <T-id>`), делает, отчитывается, берёт следующую. Объединяет dispatch (готовность) и queue (захват) в один pull/claim.
 - `risk_gate.py` — советчик по уровню автономии: `low -> AUTO`, `medium -> REVIEW`, `high -> HUMAN`.
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
@@ -223,6 +223,7 @@ python tools/dispatch.py next  # один id задачи с наивысшим 
 
 ```bash
 python tools/pipeline.py next   Claude                  # атомарно занять след. готовую задачу
+python tools/pipeline.py claim  Claude T-152            # атомарно занять конкретную ready-задачу
 python tools/pipeline.py done   Claude T-027 --report "сделал X"
 python tools/pipeline.py fail   Claude T-031 --reason "нужен доступ"
 python tools/pipeline.py status                          # лента: в работе / готовы / заблокированы
@@ -239,6 +240,7 @@ next → (делаю задачу) → done --report → next → … → "КО�
 
 - **Pull-next атомарен.** `next` объединяет dispatch (готовность по DAG) и queue (захват через `O_CREAT|O_EXCL`) в одну операцию — между «увидел» и «занял» нет окна для перехвата. Проверено: 5 параллельных `next` → 5 разных задач, ноль задвоений.
 - **Готовая задача** = `status:todo` + все `depends_on` done + не занята свежим claim'ом. Заблокированные зависимостями в `next` не попадают.
+- **Targeted claim.** Если агенту нужна конкретная задача, используйте `pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>`. Команда применяет те же ready/placeholder/claim проверки, что `next`, но не берёт другую задачу при ошибке.
 - **Отчёт — без «горячего файла».** `done` пишет per-task маркер `queues/done/<id>.done.md` (источник правды, без конфликтов слияния) и переводит задачу в `done`. Единый вид ленты — `pipeline.py status` (генерируется на лету, как индексы), а не общий файл с параллельными дописываниями (это был бы тот самый конфликт записи из D-002).
 - **Snapshot для людей и агентов.** `snapshot` пишет `PIPELINE.md` как человекочитаемую доску и `logs/pipeline.json` как машинный срез для быстрых агентных циклов. После T-148 это volatile runtime-файлы: они остаются на диске, но игнорируются Git.
 - **Добровольный heartbeat.** `heartbeat` пишет `logs/heartbeat/<agent>.json`, обновляет `logs/heartbeat.json` и `LIVE.md`. Это live-слой по D-012: полезен для долгих задач и параллельной работы, но не обязателен для каждого действия. Агрегированные heartbeat/LIVE snapshots после T-148 не входят в обычный commit.
@@ -306,7 +308,8 @@ python tools/top.py buttons
 python tools/top.py status codex
 python tools/top.py health
 python tools/top.py agent-start codex
-python tools/top.py take codex
+python tools/top.py take codex             # next
+python tools/top.py take codex T-152       # targeted claim
 python tools/top.py snapshot
 python tools/top.py knowledge data/knowledge-corpus --query bridge --out reports/bridge.md
 python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md

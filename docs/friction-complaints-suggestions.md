@@ -61,7 +61,7 @@
 
 | ID | Предложение | Основание | Приоритет |
 |---|---|---|---|
-| FP-001 | `pipeline.py claim <agent> <T-id>` / `top.py take <T-id>` | F-016 | high |
+| FP-001 | `pipeline.py claim <agent> <T-id>` / `top.py take <agent> <T-id>` | F-016 | done in T-152 |
 | FP-002 | `tools/top.py friction` read-only status | F-001..F-015 | high |
 | FP-003 | `tools/stream.py check` для proposed/adoption lifecycle | F-013 | normal |
 | FP-004 | `tools/friction.py note <F-id>` для счётчика повторов | F-017 | normal |
@@ -87,3 +87,14 @@
 - Потеря времени/риск: без detector агент снова тратит время на уже известные обходы и может смешать чужие изменения в commit.
 - Предложение: `tools/friction.py status/recipe/list`, `top.py friction`, затем отдельные задачи для targeted claim, stream cleanup и ownership-aware dirty classifier.
 - Статус: automate
+
+### 2026-06-22 — F-016 targeted claim implemented
+
+- F-ID: F-016
+- Кто заметил: Codex
+- Где/команда: `tools/pipeline.py`, `tools/top.py`, `tools/test_pipeline_fencing.py`.
+- Повторяемость: один явный wrong-next случай и высокий системный риск.
+- Ручное решение до T-152: не вызывать `next`, если нужна конкретная задача.
+- Реализация: `python tools\pipeline.py claim <agent> <T-id>` и `python tools\top.py take <agent> <T-id>` используют те же ready/placeholder/claim checks, что `next`, но не берут другую задачу при ошибке.
+- Потеря времени/риск: снижен риск случайно занять чужой или нежелательный work item.
+- Статус: done

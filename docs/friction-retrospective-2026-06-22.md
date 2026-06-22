@@ -68,7 +68,7 @@
 - `docs/friction-complaints-suggestions.md`;
 - `tasks/T-067.md`, `T-068`, `T-091`.
 
-Ручное решение: placeholder нужно заполнить до claim; orphan doing показывать как проблему, но не закрывать молча; если нужен конкретный T-id, не вызывать `next` вслепую. Следующая автоматизация: targeted claim (`pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>`).
+Ручное решение: placeholder нужно заполнить до claim; orphan doing показывать как проблему, но не закрывать молча; если нужен конкретный T-id, не вызывать `next` вслепую. Следующая автоматизация была реализована в T-152: targeted claim (`pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>`).
 
 ### Этап 5. Docs/generated-index drift
 
@@ -135,7 +135,7 @@
 | F-013 | stream lifecycle | T-135/T-136/T-143/T-146, current `stream.py check` broken=2 | growing | `stream.py check`, adoption fields | `stream.py`, `friction.py` | cleanup legacy stream front-matter |
 | F-014 | too many commands | top-layer docs, user feedback | 4+ | wrappers/buttons | `top.py`, `friction.py`, `top.py friction` | integrate friction into agent-start |
 | F-015 | check→commit race | D-022, shared dirty tree | 4+ | re-check status before stage | `friction.py`, `cohort guard` | snapshot-based precommit audit |
-| F-016 | wrong task via `next` | T-149 complaint | 1+ but high-risk | release own mistaken claim | complaint/playbook | targeted claim command |
+| F-016 | wrong task via `next` | T-149 complaint | 1+ but high-risk | release own mistaken claim | `pipeline.py claim`, `top.py take` | реализовано T-152 |
 | F-017 | approximate repeat counts | T-147/T-149/T-150 | systemic | estimate buckets | ledger/playbook | `logs/friction.jsonl` or `friction.py note` |
 | F-018 | skill/docs drift | T-149/T-150 | 2+ | skill stays thin, docs canonical | `friction.py` skill link check | validator link check |
 | F-019 | skill metadata UTF-8/YAML | T-149 metadata generation | 1+ | `PYTHONUTF8=1`, YAML block scalar | complaints/playbook | skill metadata lint |
@@ -204,7 +204,7 @@ python tools\top.py friction
 
 ### P0. Targeted claim
 
-Сделать `pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>`, чтобы агент мог взять конкретную задачу без обходов через priority и без риска F-016.
+Статус после `T-152`: реализовано. Используйте `pipeline.py claim <agent> <T-id>` или `top.py take <agent> <T-id>`, чтобы агент мог взять конкретную ready-задачу без обходов через priority и без риска F-016.
 
 ### P0. Включить friction в старт агента
 
@@ -263,6 +263,6 @@ python tools\friction.py note F-004 --where tools/test_friction.py --result fixe
 
 ## Итоговая стадия
 
-Концептуально система находится не на стадии “хаотичная папка”, а на стадии раннего самоуправляемого middleware: есть канон, индексы, pipeline, claims, decisions, stream variants, sandbox intake, top buttons, merge gates, skills, friction ledger. Технически это ещё не автономная multi-agent OS: нет полноценной изоляции execute, нет ownership-aware dirty classifier, нет exact friction counters, targeted claim ещё не реализован, stream legacy cleanup нужен.
+Концептуально система находится не на стадии “хаотичная папка”, а на стадии раннего самоуправляемого middleware: есть канон, индексы, pipeline, claims, decisions, stream variants, sandbox intake, top buttons, merge gates, skills, friction ledger. Технически это ещё не автономная multi-agent OS: нет полноценной изоляции execute, нет ownership-aware dirty classifier, нет exact friction counters, targeted claim реализован в T-152, stream legacy cleanup закрыт T-151.
 
 Правильный следующий вектор: продолжать превращать повторяющиеся ручные процедуры в маленькие read-only detectors, затем в guard/gate только там, где риск подтверждён практикой.

@@ -33,6 +33,8 @@ def run():
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
+    take_args = parser.parse_args(["take", "codex", "T-152"])
+    assert take_args.cmd == "take" and take_args.agent == "codex" and take_args.task == "T-152", take_args
     args = parser.parse_args(["cycle", "codex"])
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])
@@ -41,7 +43,7 @@ def run():
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/work-mode parser")
+    print("TESTS OK top: buttons/cycle/take/work-mode parser")
     return 0
 
 
