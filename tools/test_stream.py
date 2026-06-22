@@ -83,7 +83,23 @@ def run():
         except FileNotFoundError:
             pass
 
-        print("TESTS OK stream: create/list/ready-only/adopt(atomic+locked)")
+        # check (P-11): сейчас r1=adopted(terminal), r2=ready(свежий) -> чисто
+        c = st.check()
+        assert not c["stale"] and not c["broken"], "свежие/terminal не должны быть stale/broken: %s" % c
+        # состарим открытый пакет -> stale
+        r3 = st.create("aging", "claude", "старый набросок")
+        st._rewrite_front_matter(r3["path"], {"created": "2000-01-01"})
+        c2 = st.check(max_age_days=14)
+        assert any(s["id"] == r3["id"] for s in c2["stale"]), "старый proposed -> stale: %s" % c2
+        # битый front-matter -> broken
+        bdir = os.path.join(st.streams_root(), "broketopic", "brokeid")
+        os.makedirs(bdir)
+        with open(os.path.join(bdir, "STREAM.md"), "w", encoding="utf-8") as f:
+            f.write("нет тут front-matter\n")
+        c3 = st.check()
+        assert any(b["id"] == "brokeid" for b in c3["broken"]), "битый front-matter -> broken: %s" % c3
+
+        print("TESTS OK stream: create/list/ready-only/adopt + check(stale/broken P-11)")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)
