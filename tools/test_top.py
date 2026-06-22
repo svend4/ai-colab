@@ -14,6 +14,7 @@ def run():
     ids = {r["id"] for r in rows}
     assert "health" in ids, ids
     assert "friction-status" in ids, ids
+    assert "instruction-preflight" in ids, ids
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
     assert "report-diff" in ids, ids
@@ -28,11 +29,14 @@ def run():
     assert "Top command buttons" in rendered, rendered
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
+    assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
+    ip_args = parser.parse_args(["instruction-preflight", "codex", "T-154", "--json"])
+    assert ip_args.cmd == "instruction-preflight" and ip_args.agent == "codex" and ip_args.task == "T-154" and ip_args.json, ip_args
     take_args = parser.parse_args(["take", "codex", "T-152"])
     assert take_args.cmd == "take" and take_args.agent == "codex" and take_args.task == "T-152", take_args
     args = parser.parse_args(["cycle", "codex"])

@@ -1817,6 +1817,17 @@
       "depends_on": "[T-150]",
       "topic": "docs/friction-retrospective-2026-06-22.md",
       "next": "Улучшить `tools/friction.py status`, чтобы dirty files классифицировались как mine/generated/volatile/foreign/unknown по текущей задаче и явному списку файлов."
+    },
+    {
+      "id": "T-154",
+      "title": "Instruction assurance preflight — evidence that agents apply repo rules",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-121, T-122, T-138, T-150]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Добавить docs/instruction-assurance.md, tools/instructions.py preflight, top.py instruction-preflight и тест, чтобы агент видел обязательные правила и оставлял evidence их применения."
     }
   ],
   "questions": [

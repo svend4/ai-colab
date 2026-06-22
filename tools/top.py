@@ -11,6 +11,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py health                   # validation/generator/capability checks
     python tools/top.py agent-start <agent>      # onboard + current state
+    python tools/top.py instruction-preflight <agent> [T-id]  # applicable rules + evidence template
     python tools/top.py take <agent> [T-id]      # side effect: pipeline next or targeted claim
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
     python tools/top.py knowledge <corpus> [--query TEXT] [--out reports/x.md]
@@ -51,6 +52,13 @@ _BUTTONS = [
         "audience": "agent",
         "command": "python tools/top.py agent-start <agent>",
         "does": "Подключить агента: onboarding, конвейер, дрейф, активные задачи.",
+        "effect": "read-only",
+    },
+    {
+        "id": "instruction-preflight",
+        "audience": "both",
+        "command": "python tools/top.py instruction-preflight <agent> [T-id]",
+        "does": "Показать task-scoped инструкции, evidence-блок и проверки перед работой/отчётом.",
         "effect": "read-only",
     },
     {
@@ -274,6 +282,17 @@ def cmd_agent_start(args):
     return rc
 
 
+def cmd_instruction_preflight(args):
+    cmd = _tool("instructions.py", "preflight", args.agent)
+    if args.task:
+        cmd.append(args.task)
+    if args.json:
+        cmd.append("--json")
+    if args.onboarding:
+        cmd.append("--onboarding")
+    return _run("instruction preflight", cmd, timeout=45)
+
+
 def cmd_take(args):
     if args.task:
         return _run("pipeline claim", _tool("pipeline.py", "claim", args.agent, args.task), timeout=45)
@@ -408,6 +427,13 @@ def build_parser():
     p = sub.add_parser("agent-start", help="onboard an agent")
     p.add_argument("agent")
     p.set_defaults(func=cmd_agent_start)
+
+    p = sub.add_parser("instruction-preflight", help="show applicable instructions and evidence template")
+    p.add_argument("agent")
+    p.add_argument("task", nargs="?")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--onboarding", action="store_true")
+    p.set_defaults(func=cmd_instruction_preflight)
 
     p = sub.add_parser("take", help="take next pipeline task or claim a specific ready T-id; writes claim/status")
     p.add_argument("agent")

@@ -9,6 +9,10 @@
       "does": "групповая проверка здоровья канона"
     },
     {
+      "cmd": "python tools/top.py instruction-preflight <agent> [T-id]",
+      "does": "показать применимые инструкции и evidence-шаблон"
+    },
+    {
       "cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md",
       "does": "сравнить два knowledge-отчёта"
     },
@@ -80,6 +84,7 @@
   "default_mode": "read-only",
   "docs": {
     "driver_catalog": "drivers/CATALOG.md",
+    "instruction_assurance": "docs/instruction-assurance.md",
     "layers": "docs/layers-coverage.md",
     "onboarding_agent": "docs/top-agent-operating-manual.md",
     "onboarding_human": "docs/agent-onboarding.md",

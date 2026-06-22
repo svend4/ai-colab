@@ -20,6 +20,7 @@ docs/
 - `mvp-roadmap.md` — практический MVP-roadmap из импортированного документа: стадия проекта, плюсы/минусы, первые драйверы, SQLite-память, проверки и следующий слой работ.
 - `agent-onboarding.md` — present-tense чистовик для человека/агента: что система умеет сейчас, роли, карта документации, Q&A, зрелость и идеи развития.
 - `top-agent-operating-manual.md` — чистовая инструкция для человека или AI-агента на "вершине пирамиды": metadata, функции, Q&A, проблемы коллективной работы, микро-инструкции и roadmap автоматизации.
+- `instruction-assurance.md` — проверяемая цепочка применения инструкций: preflight, evidence в отчёте, будущие machine checks/gates.
 - `onboarding-opinions-comparison-2026-06-21.md` — сравнение свежих обзоров/мнений (`agent-onboarding`, `top-agent-operating-manual`, architecture recheck): консенсус, расхождения, очередь T-124..T-128 и вопрос Q-013.
 - `l2-candidates.md` — приоритетный список первых L2/MCP-кандидатов: `files` первым после T-029, `repo-runner` как fallback, затем `data` и `codex-local`.
 - `layers-coverage.md` — карта покрытия слоёв L0-L7: что уже есть, где пробелы, какие следующие шаги.

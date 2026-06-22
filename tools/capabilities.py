@@ -44,6 +44,7 @@ def _list(value):
 COMMANDS = [
     {"cmd": "python tools/top.py buttons", "does": "верхняя панель сценариев для людей и агентов"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
+    {"cmd": "python tools/top.py instruction-preflight <agent> [T-id]", "does": "показать применимые инструкции и evidence-шаблон"},
     {"cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md", "does": "сравнить два knowledge-отчёта"},
     {"cmd": "python tools/cohort.py board", "does": "dashboard параллельной многоагентной работы"},
     {"cmd": "python tools/cohort.py self --json", "does": "самопроверка движка и next maintenance hints"},
@@ -67,6 +68,7 @@ DOCS = {
     "onboarding_human": "docs/agent-onboarding.md",
     "onboarding_agent": "docs/top-agent-operating-manual.md",
     "usage": "docs/bridge-usage.md",
+    "instruction_assurance": "docs/instruction-assurance.md",
     "layers": "docs/layers-coverage.md",
     "driver_catalog": "drivers/CATALOG.md",
     "rules": "AGENTS.md",
