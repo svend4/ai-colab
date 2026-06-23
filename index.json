@@ -2110,13 +2110,13 @@
     {
       "id": "T-172",
       "title": "Fix Python tempfile PermissionError on Windows sandbox",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-171]",
       "topic": "docs/project-audit-2026-06-23.md",
-      "next": "Воспроизвести и исправить `tempfile.mkdtemp(..., dir=tmp-work)` PermissionError; добавить safe temp helper и расширить friction F-004"
+      "next": "Закрыто — тесты переведены на `drivers/test_tmp.py`, F-004 ловит unsafe stdlib tempfile; tools tests 36/36, driver tests 15/15"
     },
     {
       "id": "T-173",
@@ -2132,7 +2132,7 @@
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "open",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",

@@ -3,6 +3,7 @@
 """Тест doc_consensus (tools/doc_consensus.py) — консенсус (>=2 док.) + разногласия (1 док.)."""
 import os
 import sys
+import json
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -61,6 +62,40 @@ def run():
         res2 = dc.analyze([q1, q2], root=base, thr=0.4)
         assert res2["n_units"] >= 4, "H1/абзацы должны извлекаться: %s" % res2
         assert len(res2["consensus"]) >= 1, "ожидался consensus из абзацев: %s" % res2
+
+        # --- gate: "одна идея — разные слова" — лексика ПРОВАЛИВАЕТ, --semantic ЛОВИТ ---
+        s1 = os.path.join(base, "semA.md")
+        s2 = os.path.join(base, "semB.md")
+        with open(s1, "w", encoding="utf-8") as f:
+            f.write("# A\n\n- каждый агент работает в изолированном worktree\n")
+        with open(s2, "w", encoding="utf-8") as f:
+            f.write("# B\n\n- параллельные ветки не пересекаются на диске\n")
+
+        # 1) lexical mode PROVABLY fails: zero token overlap -> 0 consensus at any thr
+        lex = dc.analyze([s1, s2], root=base, thr=0.3)
+        assert len(lex["consensus"]) == 0, "лексика должна дать 0 consensus (слепое пятно): %d" % len(lex["consensus"])
+
+        # 2) stub the agent: it conceptually groups the two paraphrases by unit-id
+        unit_ids = [u["id"] for u in dc.units(s1, base) + dc.units(s2, base)]
+        assert len(unit_ids) == 2, "ожидалось 2 unit: %s" % unit_ids
+        orig_run_agent = dc._run_agent
+        dc._run_agent = lambda payload: json.dumps({
+            "consensus": [{"ids": unit_ids, "rationale": "изоляция worktree = непересечение веток на диске"}],
+            "divergences": []})
+        try:
+            sem = dc.analyze_semantic([s1, s2], root=base)
+        finally:
+            dc._run_agent = orig_run_agent
+
+        # 3) --semantic CATCHES it: 1 consensus spanning both docs, carrying rationale
+        assert len(sem["consensus"]) == 1, "--semantic должен поймать парафраз: %d" % len(sem["consensus"])
+        c = sem["consensus"][0]
+        assert len({u["doc"] for u in c["members"]}) == 2, "консенсус через оба дока"
+        assert c["rationale"], "семантический пункт несёт rationale (оба свидетельства)"
+
+        # 4) semantic render is status: proposed, never auto-accepted
+        stxt = dc.render(sem)
+        assert "status: proposed" in stxt and "Консенсус" in stxt, "семантический отчёт proposed+консенсус"
 
         # render не падает и содержит секции
         txt = dc.render(res)
