@@ -88,7 +88,7 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --applied "AGENTS.md, PROTOCOL.md, docs/instruction-assurance.md, Checks"
 ```
 
-`--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`.
+`--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`. `tools/instructions.py check-report` принимает оба формата: подробный outbox-блок `## Applied instructions` и короткий pipeline done-маркер.
 
 ## Моё мнение
 

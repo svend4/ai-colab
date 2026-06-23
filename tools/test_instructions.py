@@ -69,8 +69,12 @@ def run():
 
     ok_report = """# Report\n\n## Applied instructions\n\n- `AGENTS.md` / `PROTOCOL.md`: ok.\n- Checks: python tools/validate.py -> OK.\n"""
     assert instructions.check_report_text(ok_report) == []
+    ok_done = """---\ntask: T-156\nagent: codex\napplied: AGENTS.md, PROTOCOL.md, docs/instruction-assurance.md\n---\n\nDone.\n\nApplied instructions: AGENTS.md, PROTOCOL.md\n"""
+    assert instructions.check_report_text(ok_done) == []
+    no_checks = """# Report\n\n## Applied instructions\n\n- `AGENTS.md` / `PROTOCOL.md`: ok.\n"""
+    assert "Checks:" in instructions.check_report_text(no_checks)
     bad = instructions.check_report_text("# Report\n")
-    assert "## Applied instructions" in bad, bad
+    assert "Applied instructions evidence" in bad, bad
 
     print("TESTS OK instructions: manifest/preflight/check-report")
     return 0

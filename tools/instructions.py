@@ -367,8 +367,19 @@ def format_preflight(payload):
 
 
 def check_report_text(text):
-    required = ["## Applied instructions", "AGENTS.md", "PROTOCOL.md", "Checks:"]
-    return [token for token in required if token not in text]
+    """Return missing evidence tokens for an outbox report or pipeline done marker."""
+    with_leading_nl = "\n" + text
+    has_outbox_section = "## Applied instructions" in text
+    has_done_marker = "\napplied:" in with_leading_nl or "\nApplied instructions:" in with_leading_nl
+    missing = []
+    if not (has_outbox_section or has_done_marker):
+        missing.append("Applied instructions evidence")
+    for token in ("AGENTS.md", "PROTOCOL.md"):
+        if token not in text:
+            missing.append(token)
+    if has_outbox_section and "Checks:" not in text:
+        missing.append("Checks:")
+    return missing
 
 
 def cmd_manifest(args):

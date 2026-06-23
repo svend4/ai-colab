@@ -1864,6 +1864,17 @@
       "depends_on": "[T-154, T-155]",
       "topic": "docs/instruction-assurance.md",
       "next": "Добавить мягкий флаг `--applied` в `pipeline.py done`, чтобы done-маркер хранил evidence применённых инструкций без поломки старого сценария."
+    },
+    {
+      "id": "T-157",
+      "title": "Instruction check-report accepts pipeline done applied marker",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-156]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Научить `tools/instructions.py check-report` принимать не только outbox-секцию `## Applied instructions`, но и done-маркер `applied:` / `Applied instructions:`."
     }
   ],
   "questions": [
