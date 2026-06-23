@@ -187,5 +187,6 @@
 | T-171 | Full technical and conceptual project audit | done | codex | `docs/project-audit-2026-06-23.md` | Закрыто — полный аудит записан; follow-up задачи T-172/T-173 заведены |
 | T-172 | Fix Python tempfile PermissionError on Windows sandbox | done | codex | `docs/project-audit-2026-06-23.md` | Закрыто — тесты переведены на `drivers/test_tmp.py`, F-004 ловит unsafe stdlib tempfile; tools tests 36/36, driver tests 15/15 |
 | T-173 | Close assurance medium findings for promotion coverage and instruction flow | done | codex | `docs/instruction-assurance.md` | Закрыто — `top.py assurance all --json` показывает orphan-L1=0 и висячих accepted-решений=0 |
-| T-174 | Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers) | doing | pool | `темы/ai-os-bridge.md` | Periodically re-test asyncio.create_subprocess_exec MCP path on Windows; close when official async stdio acceptance passes, or downgrade to wontfix if confirmed environment-permanent |
+| T-174 | Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers) | doing | codex | `темы/ai-os-bridge.md` | Заблокировано до runtime-изменения; после апгрейда Python/Windows/mcp повторить `python drivers/mcp_async_stdio_monitor.py gateway --force-acceptance --out reports/mcp-async-stdio-monitor-<date>.md` |
+| T-175 | Ратифицировать D-014 (execute OFF + 10-гейтовый preflight) через котёл | todo | pool | — | Провести D-014 через котёл (D-018) + человеко-гейт D-006 — перевод proposed→accepted; до accept'а политика действует де-факто |
 <!-- GEN:tasks END -->

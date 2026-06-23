@@ -2133,12 +2133,23 @@
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
       "status": "doing",
-      "owner": "pool",
+      "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-087, T-088]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Periodically re-test asyncio.create_subprocess_exec MCP path on Windows; close when official async stdio acceptance passes, or downgrade to wontfix if confirmed environment-permanent"
+      "next": "Заблокировано до runtime-изменения; после апгрейда Python/Windows/mcp повторить `python drivers/mcp_async_stdio_monitor.py gateway --force-acceptance --out reports/mcp-async-stdio-monitor-<date>.md`"
+    },
+    {
+      "id": "T-175",
+      "title": "Ратифицировать D-014 (execute OFF + 10-гейтовый preflight) через котёл",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[D-014, D-021, D-006, D-018]",
+      "topic": "",
+      "next": "Провести D-014 через котёл (D-018) + человеко-гейт D-006 — перевод proposed→accepted; до accept'а политика действует де-факто"
     }
   ],
   "questions": [
@@ -2356,7 +2367,7 @@
     },
     {
       "id": "D-014",
-      "title": "(зарезервировано — заполните)",
+      "title": "Execute OFF по умолчанию — 10-гейтовый preflight перед любым mode:execute",
       "status": "proposed",
       "date": "2026-06-20",
       "file": "decisions/D-014.md"

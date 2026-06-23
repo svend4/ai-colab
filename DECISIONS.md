@@ -20,7 +20,7 @@
 | D-011 | Динамический конвейер агентов поверх tasks/queue/index | accepted | 2026-06-20 | `decisions/D-011.md` |
 | D-012 | Heartbeat агентов — добровольный live-слой | accepted | 2026-06-20 | `decisions/D-012.md` |
 | D-013 | Driver schema v1 — вариант B как proposed | accepted | 2026-06-20 | `decisions/D-013.md` |
-| D-014 | (зарезервировано — заполните) | proposed | 2026-06-20 | `decisions/D-014.md` |
+| D-014 | Execute OFF по умолчанию — 10-гейтовый preflight перед любым mode:execute | proposed | 2026-06-20 | `decisions/D-014.md` |
 | D-015 | Гейт статуса драйверов — многоагентная верификация вместо обязательного human-confirm | accepted | 2026-06-21 | `decisions/D-015.md` |
 | D-016 | Универсальное ядро + тематические порталы (домен как плагин, не в коде ядра) | accepted | 2026-06-21 | `decisions/D-016.md` |
 | D-017 | Fork-and-synthesize — параллельные варианты вместо чистого dedup для содержательных работ | accepted | 2026-06-21 | `decisions/D-017.md` |
