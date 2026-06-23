@@ -3,252 +3,252 @@
     {
       "id": "kotel-decision-material-2026-06-21",
       "title": "Котёл-пакет для коллективного решения — 7 открытых пунктов",
-      "file": "темы/kotel-decision-material-2026-06-21.md",
+      "file": "topics/kotel-decision-material-2026-06-21.md",
       "status": "needs-decision",
       "next": "Использовать как независимую перепроверку D-020/T-137; решения переносить только через accepted decision"
     },
     {
       "id": "dogfood-run",
       "title": "Первый реальный прогон системы (dogfood)",
-      "file": "темы/dogfood-run.md",
+      "file": "topics/dogfood-run.md",
       "status": "waiting",
       "next": "Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки"
     },
     {
       "id": "agent-pipeline",
       "title": "Динамический конвейер агентов — управляемая разработка",
-      "file": "темы/agent-pipeline.md",
+      "file": "topics/agent-pipeline.md",
       "status": "open",
       "next": "D-011 принят, T-027 первая версия готова; обсудить heartbeat/live-room и правила использования pipeline.py"
     },
     {
       "id": "ai-os-bridge",
       "title": "AI-OS Bridge — прослойка между ОС и AI-агентами",
-      "file": "темы/ai-os-bridge.md",
+      "file": "topics/ai-os-bridge.md",
       "status": "open",
       "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
     },
     {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
-      "file": "темы/infrastructure-review.md",
+      "file": "topics/infrastructure-review.md",
       "status": "open",
       "next": "Обсудить предложения; выбрать следующий инженерный шаг"
     },
     {
       "id": "opinion-synthesis-2026-06-21",
       "title": "Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ",
-      "file": "темы/opinion-synthesis-2026-06-21.md",
+      "file": "topics/opinion-synthesis-2026-06-21.md",
       "status": "open",
       "next": "Реализовать консенсус-очередь (C1-C3 готовы к взятию); по расхождениям D1-D4 — доказательное обсуждение до консенсуса"
     },
     {
       "id": "repo-review-2026-06-21",
       "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
-      "file": "темы/repo-review-2026-06-21.md",
+      "file": "topics/repo-review-2026-06-21.md",
       "status": "open",
       "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
     },
     {
       "id": "sandbox-and-forks-2026-06-21",
       "title": "Старые долги — генерик-песочница и методология форков (параллельные варианты)",
-      "file": "темы/sandbox-and-forks-2026-06-21.md",
+      "file": "topics/sandbox-and-forks-2026-06-21.md",
       "status": "open",
       "next": "D-017 (fork-and-synthesize) принят; sandbox-контур = контракт Codex + intake-автоматизация Claude (синтез); T-020 переформулирован как первый external-source"
     },
     {
       "id": "d003-scope",
       "title": "Границы D-003 (Q-005)",
-      "file": "темы/d003-scope.md",
+      "file": "topics/d003-scope.md",
       "status": "done",
       "next": "Решено A (D-008): обоснование только для значимых правок"
     },
     {
       "id": "example",
       "title": "Пример обсуждения",
-      "file": "темы/example.md",
+      "file": "topics/example.md",
       "status": "done",
       "next": "T-001 закрыт: формат полилога подтверждён"
     },
     {
       "id": "migrate-file-names",
       "title": "Миграция имён файлов к ASCII (Q-004)",
-      "file": "темы/migrate-file-names.md",
+      "file": "topics/migrate-file-names.md",
       "status": "done",
       "next": "Решено C (D-007): переименовывать при правках, ход — T-005"
     },
     {
       "id": "organization",
       "title": "Организация папки и обоснование правок",
-      "file": "темы/organization.md",
+      "file": "topics/organization.md",
       "status": "done",
       "next": "Тема закрыта: все оргвопросы решены (D-002..D-008), система стабильна. Новые обоснования — в dialog.md или новых темах."
     },
     {
       "id": "q006-agent-onboarding",
       "title": "Онбординг агентов (Q-006)",
-      "file": "темы/q006-agent-onboarding.md",
+      "file": "topics/q006-agent-onboarding.md",
       "status": "done",
       "next": "Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия"
     },
     {
       "id": "scaling-design",
       "title": "Масштабирование (много агентов/людей/задач)",
-      "file": "темы/scaling-design.md",
+      "file": "topics/scaling-design.md",
       "status": "done",
       "next": "Тема закрыта: все задачи T-008..T-016 выполнены, roadmap реализован полностью. При необходимости масштабирования — создавать новую тему."
     },
     {
       "id": "drivers-layer",
       "title": "Слой драйверов (Treiber) — СЛИТО в ai-os-bridge",
-      "file": "темы/drivers-layer.md",
+      "file": "topics/drivers-layer.md",
       "status": "archive",
       "next": "Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md"
     },
     {
       "id": "information-drivers",
       "title": "Информационные драйверы (трайберы) — СЛИТО в ai-os-bridge",
-      "file": "темы/information-drivers.md",
+      "file": "topics/information-drivers.md",
       "status": "archive",
-      "next": "Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
+      "next": "Тема слита с `topics/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
     },
     {
       "id": "assurance-and-doc-merge-2026-06-22",
       "title": "Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов",
-      "file": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "file": "topics/assurance-and-doc-merge-2026-06-22.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "assurance-hardening-plan-2026-06-23",
       "title": "Hardening assurance — лестница warn→block (S0..S4) + apex-подключение",
-      "file": "темы/assurance-hardening-plan-2026-06-23.md",
+      "file": "topics/assurance-hardening-plan-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "build-specs-2026-06-23",
       "title": "Worktree-ready build specs (2026-06-23)",
-      "file": "темы/build-specs-2026-06-23.md",
+      "file": "topics/build-specs-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "collab-safety-subsystem-2026-06-23",
       "title": "Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1)",
-      "file": "темы/collab-safety-subsystem-2026-06-23.md",
+      "file": "topics/collab-safety-subsystem-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "commit-policy-streams-2026-06-21",
       "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
-      "file": "темы/commit-policy-streams-2026-06-21.md",
+      "file": "topics/commit-policy-streams-2026-06-21.md",
       "status": "accepted",
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     },
     {
       "id": "d014-execute-off-ratification-2026-06-23",
       "title": "D-014 execute OFF ratification packet",
-      "file": "темы/d014-execute-off-ratification-2026-06-23.md",
+      "file": "topics/d014-execute-off-ratification-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "finder-frontier-2026-06-23",
       "title": "FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов)",
-      "file": "темы/finder-frontier-2026-06-23.md",
+      "file": "topics/finder-frontier-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "fleet-designs-2026-06-23",
       "title": "Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов",
-      "file": "темы/fleet-designs-2026-06-23.md",
+      "file": "topics/fleet-designs-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "friction-subsystems-synthesis-2026-06-22",
       "title": "Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017",
-      "file": "темы/friction-subsystems-synthesis-2026-06-22.md",
+      "file": "topics/friction-subsystems-synthesis-2026-06-22.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "gate-poison-situation-2026-06-22",
       "title": "Отравление общего gate чужой half-done задачей — ситуация и слои решений",
-      "file": "темы/gate-poison-situation-2026-06-22.md",
+      "file": "topics/gate-poison-situation-2026-06-22.md",
       "status": "resolved",
       "next": ""
     },
     {
       "id": "governance-proposals-2026-06-23",
       "title": "Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified",
-      "file": "темы/governance-proposals-2026-06-23.md",
+      "file": "topics/governance-proposals-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "parallel-work-divergences-2026-06-22",
       "title": "Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017)",
-      "file": "темы/parallel-work-divergences-2026-06-22.md",
+      "file": "topics/parallel-work-divergences-2026-06-22.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "perspective-backlog-2026-06-23",
       "title": "Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение)",
-      "file": "темы/perspective-backlog-2026-06-23.md",
+      "file": "topics/perspective-backlog-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "pyramid-grounding-consolidated-2026-06-23",
       "title": "Заземление пирамиды (L2→L1) — consolidated plan (derive_reuse + наполнение порталов)",
-      "file": "темы/pyramid-grounding-consolidated-2026-06-23.md",
+      "file": "topics/pyramid-grounding-consolidated-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "pyramid-grounding-plan-2026-06-23",
       "title": "Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance)",
-      "file": "темы/pyramid-grounding-plan-2026-06-23.md",
+      "file": "topics/pyramid-grounding-plan-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "q017-docmerge-semantic-2026-06-23",
       "title": "Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass)",
-      "file": "темы/q017-docmerge-semantic-2026-06-23.md",
+      "file": "topics/q017-docmerge-semantic-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "q017-semantic-consolidated-2026-06-23",
       "title": "Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready)",
-      "file": "темы/q017-semantic-consolidated-2026-06-23.md",
+      "file": "topics/q017-semantic-consolidated-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "safe-auto-apply-design-2026-06-23",
       "title": "Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal)",
-      "file": "темы/safe-auto-apply-design-2026-06-23.md",
+      "file": "topics/safe-auto-apply-design-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
       "id": "session-state-2026-06-23",
       "title": "Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture",
-      "file": "темы/session-state-2026-06-23.md",
+      "file": "topics/session-state-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
     {
-      "id": "темы/finder-doc-vs-reality-2026-06-23.md",
+      "id": "topics/finder-doc-vs-reality-2026-06-23.md",
       "title": "\"FINDER — doc-vs-reality синтез (26 подтверждённых находок)\"",
-      "file": "темы/finder-doc-vs-reality-2026-06-23.md",
+      "file": "topics/finder-doc-vs-reality-2026-06-23.md",
       "status": "proposed",
       "next": ""
     }
@@ -262,7 +262,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/example.md",
+      "topic": "topics/example.md",
       "next": "Подтверждено реальной нагрузкой сессии; крупные темы → папочный режим D-002"
     },
     {
@@ -273,7 +273,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/organization.md",
+      "topic": "topics/organization.md",
       "next": "Закрыто D-005 — новые файлы в ASCII, русский текст в заголовке"
     },
     {
@@ -306,7 +306,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/migrate-file-names.md",
+      "topic": "topics/migrate-file-names.md",
       "next": "Задача выполнена — все 5 русских имён мигрированы, ссылки обновлены, канон 0 ERROR"
     },
     {
@@ -317,7 +317,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/infrastructure-review.md",
+      "topic": "topics/infrastructure-review.md",
       "next": "tools/validate.py готов и прогнан на Windows (0 ERROR, commit 572ffa3)"
     },
     {
@@ -328,7 +328,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-006]",
-      "topic": "темы/infrastructure-review.md",
+      "topic": "topics/infrastructure-review.md",
       "next": "tools/generate.py + front-matter тем + маркеры GEN; в hook добавлен --check"
     },
     {
@@ -339,7 +339,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-007]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "Реестры шардированы; TASKS/QUESTIONS/DECISIONS — генерируемые индексы из tasks|questions|decisions/*.md"
     },
     {
@@ -350,7 +350,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "queue.py готов и самопроверен; далее — шардинг questions/decisions или валидатор v2"
     },
     {
@@ -361,7 +361,7 @@
       "priority": "medium",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "check_sources ловит битый front-matter, дубли id, депенды; queue.py check — для очереди"
     },
     {
@@ -372,7 +372,7 @@
       "priority": "medium",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "index.json генерится из front-matter, --check контролирует свежесть; Codex верифицировал и задокументировал"
     },
     {
@@ -383,7 +383,7 @@
       "priority": "medium",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "permissions.py + permissions.json проверяют, что агент пишет в свою зону; совещательный guard (не безопасность)"
     },
     {
@@ -394,7 +394,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-012]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "flow.py печатает команды ветка-на-агента + merge-гейт (validate/generate/permissions); --run выполняет"
     },
     {
@@ -405,7 +405,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "dispatch.py показывает готовые/заблокированные по depends_on; next — топ по приоритету"
     },
     {
@@ -416,7 +416,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "risk_gate.py — low→AUTO, medium→REVIEW, high→HUMAN; чтобы D-006 не стал горлышком"
     },
     {
@@ -427,7 +427,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-008]",
-      "topic": "темы/scaling-design.md",
+      "topic": "topics/scaling-design.md",
       "next": "metrics.py — сводка по задачам/вопросам/решениям/темам/очереди; --json"
     },
     {
@@ -438,7 +438,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/dogfood-run.md",
+      "topic": "topics/dogfood-run.md",
       "next": "Выполнено Mavis: docs/glossary.md создан; done-маркеры очереди есть"
     },
     {
@@ -449,7 +449,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/dogfood-run.md",
+      "topic": "topics/dogfood-run.md",
       "next": "Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть"
     },
     {
@@ -460,7 +460,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-009]",
-      "topic": "темы/dogfood-run.md",
+      "topic": "topics/dogfood-run.md",
       "next": "Прогнано вживую на Windows (8 параллельных claim → 1 победитель, 7 RACE/BUSY); tools/race_test.py поддерживает повторы [N] [раунды]"
     },
     {
@@ -471,7 +471,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Ожидается read-only путь/архив/snapshot внешнего источника; затем generic sandbox intake через tools/sandbox.py или tools/sandbox_intake_demo.py без execute."
     },
     {
@@ -482,7 +482,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "docs/agent-layer-design.md готов (MCP/skills-framing, каталог драйверов, L0–L4, риски, план); вынесено на голос в Q-007 — рекомендация B + коннекторы как MCP + Sven4 read-only"
     },
     {
@@ -493,7 +493,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-021]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "L1-каркас создан: README, шаблон, files/data/repo-runner/codex-local; дальше T-023 индекс драйверов"
     },
     {
@@ -504,7 +504,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: generate.py добавляет drivers в корневой index.json; расширенная schema остаётся Q-008"
     },
     {
@@ -515,7 +515,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-022]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Описать контракт inspect/summary без запуска кода; определить поля безопасности и требования к серверной песочнице"
     },
     {
@@ -526,7 +526,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022]",
-      "topic": "темы/information-drivers.md",
+      "topic": "topics/information-drivers.md",
       "next": "Извлечь из docs/ai_middle_layer_architecture_ru.md конкретный MVP: какие 3-5 драйверов, какие skills, какие индексы и какие проверки делать первыми"
     },
     {
@@ -537,7 +537,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-009]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "next_id.py готов и протестирован (8 параллельных вызовов → 8 разных id); этот файл выдан и заведён через сам инструмент (догфуд)"
     },
     {
@@ -548,7 +548,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-009, T-014, T-026]",
-      "topic": "темы/agent-pipeline.md",
+      "topic": "topics/agent-pipeline.md",
       "next": "pipeline.py готов; Codex добавил snapshot → PIPELINE.md + logs/pipeline.json; следующий слой — heartbeat/live-room отдельной задачей"
     },
     {
@@ -559,7 +559,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-027]",
-      "topic": "темы/agent-pipeline.md",
+      "topic": "topics/agent-pipeline.md",
       "next": "Реализовано: pipeline.py heartbeat, LIVE.md, logs/heartbeat.json, per-agent logs/heartbeat/*.json"
     },
     {
@@ -570,7 +570,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-022, T-025]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: files inventory driver проверен Batch B; L2 MCP-приёмка продолжается отдельно в T-048"
     },
     {
@@ -581,7 +581,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "tools/drivers_catalog.py — собрать drivers/index.json + CATALOG.md из drivers/*.md front-matter"
     },
     {
@@ -592,7 +592,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Схема SQLite — таблицы documents (id, path, type, summary, source_last_verified) и audit_log (ts, agent, action, target); только дизайн + обоснование, без кода"
     },
     {
@@ -603,7 +603,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "docs/layers-coverage.md — таблица: какой слой L0–L8 чем покрыт в проекте и что не хватает"
     },
     {
@@ -614,7 +614,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/l2-candidates.md создан; рекомендация — files первым L2 PoC после разблокировки T-029, repo-runner как fallback"
     },
     {
@@ -625,7 +625,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/agent-pipeline.md",
+      "topic": "topics/agent-pipeline.md",
       "next": "docs/pipeline-operator-guide.md — короткий порядок next/done/fail/snapshot/heartbeat и правила, когда брать новую задачу"
     },
     {
@@ -636,7 +636,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/agent-roles-matrix.md создан; использовать вместе с AGENTS.md и tools/permissions.json"
     },
     {
@@ -647,7 +647,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "docs/driver-safety-policy.md — read-only-first, dry-run, audit, no secrets, no execute without decision"
     },
     {
@@ -658,7 +658,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/data-folder-plan.md создан; следующий шаг — data/README.md и fixtures перед реальным импортом"
     },
     {
@@ -669,7 +669,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "docs/test-corpus-plan.md — 10-20 безопасных fixture-файлов, сценарии проверки files/text/search/report drivers"
     },
     {
@@ -680,7 +680,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: runtime-блокер снят; T-029 закрыта; acceptance-задачи T-048/T-051/T-055/T-057/T-059 возвращены в пул"
     },
     {
@@ -691,7 +691,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-037]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: data/README.md создан; теперь можно делать T-041 fixture-корпус"
     },
     {
@@ -702,7 +702,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-038, T-040]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: data/fixtures/README.md и 7 synthetic fixture-файлов созданы"
     },
     {
@@ -713,7 +713,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: decisions/D-013.md создан со статусом proposed; Q-008 обновлён и остаётся open до accepted"
     },
     {
@@ -724,7 +724,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "drivers/files/files_driver.py — list/read/search/summarize (read-only, лимиты по safety-policy) + drivers/files/test_files.py"
     },
     {
@@ -735,7 +735,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-041]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: data/fixtures/EXPECTED.md создан"
     },
     {
@@ -746,7 +746,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-042]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/driver-schema-acceptance-checklist.md создан; D-013 остаётся proposed"
     },
     {
@@ -757,7 +757,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-043]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "drivers/files/mcp_server.py на FastMCP — инструменты list/read/search/summarize поверх files_driver.py; тест handshake + tools/list"
     },
     {
@@ -768,7 +768,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-043, T-046]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: allowed-root, max_files/max_hits, skip dirs, read redaction; runtime-приёмка вынесена в T-048"
     },
     {
@@ -779,7 +779,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039, T-047]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Done: files unit/inventory pass; sync MCP tools/call acceptance now covers files without relying on broken Windows async stdio"
     },
     {
@@ -790,7 +790,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-024]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "drivers/repo-runner/mcp_server.py на FastMCP — инструменты inspect/summary/risks поверх inventory.scan_repo (read-only, без запуска кода); тест handshake"
     },
     {
@@ -801,7 +801,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-049]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: REPO_RUNNER_BASE, max_files/truncated, allowed-root checks, тестовые проверки; runtime-приёмка вынесена в T-051"
     },
     {
@@ -812,7 +812,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039, T-050]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Done: repo-runner unit path and sync MCP tools/call acceptance pass without relying on broken Windows async stdio"
     },
     {
@@ -823,7 +823,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-031]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "drivers/workbench/workbench.py — init/add_document/query_documents/log/audit по схеме documents+audit_log; тесты на чистой stdlib (sqlite3)"
     },
     {
@@ -834,7 +834,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-043, T-049, T-052]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "drivers/workbench/ingest.py — scan (files/repo-runner) → workbench.add_document/ingest_repo → query; тест end-to-end на фикстуре"
     },
     {
@@ -845,7 +845,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-052]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: allowed-root для DB, suffix check, query/ingest limits, drivers/workbench.md; runtime-приёмка вынесена в T-055"
     },
     {
@@ -856,7 +856,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039, T-054]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: test_workbench.py, CLI init/list/audit с WORKBENCH_BASE, outside-root rejection, validate/generate/catalog checks прошли"
     },
     {
@@ -867,7 +867,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-053, T-054]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: WORKBENCH_BASE, INGEST_SOURCE_BASE, INGEST_MAX_FILES, db_base/source_base propagation; runtime-приёмка вынесена в T-057"
     },
     {
@@ -878,7 +878,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039, T-056]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: ingest/workbench/search tests, CLI repo/dir with WORKBENCH_BASE and INGEST_SOURCE_BASE, INGEST_MAX_FILES, outside-root JSON error"
     },
     {
@@ -889,7 +889,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Создать валидатор drivers/ и генератор CATALOG.md + index.json"
     },
     {
@@ -900,7 +900,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: tests pass, fixture-report.json создан, JSON/Markdown output и allowed-root rejection проверены"
     },
     {
@@ -911,7 +911,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Спроектировать схему, создать init-скрипт, тесты, манифест"
     },
     {
@@ -966,7 +966,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/runtime-recovery-playbook.md создан; после внешнего восстановления выполнить проверки по порядку"
     },
     {
@@ -977,7 +977,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-065]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/state-reconciliation-layer.md создан; после восстановления T-039 можно реализовать tools/reconcile_state.py"
     },
     {
@@ -988,7 +988,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: Batch C подтвердил ready_sorted() == []; placeholder-задачи не выдаются агентам"
     },
     {
@@ -999,7 +999,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-039]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: Batch C подтвердил T-020 как doing without active claim"
     },
     {
@@ -1010,7 +1010,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-068]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/implementation-stage-report-2026-06-20.md и queues/outbox/2026-06-20-implementation-stage-report.md созданы для оценки людьми и агентами"
     },
     {
@@ -1021,7 +1021,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-039]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/runtime-powershell-check-2026-06-20.md создан; T-039 уточнён, но остаётся blocked до project validation/test batch"
     },
     {
@@ -1032,7 +1032,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-070]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/powershell-utf8-output.md создан; читать Markdown через Get-Content -Encoding UTF8 после chcp 65001"
     },
     {
@@ -1043,7 +1043,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-070]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/runtime-validation-batch-2026-06-20.md создан; следующий шаг — driver acceptance batch через python"
     },
     {
@@ -1054,7 +1054,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-071]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: пользователь подтвердил, что chcp 65001 + Get-Content -Encoding UTF8 корректно показывают PIPELINE.md и TASKS.md"
     },
     {
@@ -1065,7 +1065,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-072]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/driver-acceptance-batch-2026-06-21.md создан; нужно запустить batch и вернуть вывод"
     },
     {
@@ -1076,7 +1076,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-074]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/mcp-handshake-result-2026-06-21.md создан; Batch D пройден, нужны Batch B/C driver tests и pipeline guards"
     },
     {
@@ -1087,7 +1087,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-074]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/driver-tests-result-2026-06-21.md создан; Batch B пройден, Batch C pipeline guards ещё нужен"
     },
     {
@@ -1098,7 +1098,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-074, T-067, T-068]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: docs/pipeline-guards-result-2026-06-21.md создан; T-067 и T-068 закрыты"
     },
     {
@@ -1109,8 +1109,8 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/repo-review-2026-06-21.md",
-      "next": "Прогнаны валидаторы и runtime-тесты драйверов; найден дрейф index.json и фантомный блокер T-039; отчёт — queues/outbox/2026-06-21-claude-repo-review.md и темы/repo-review-2026-06-21.md"
+      "topic": "topics/repo-review-2026-06-21.md",
+      "next": "Прогнаны валидаторы и runtime-тесты драйверов; найден дрейф index.json и фантомный блокер T-039; отчёт — queues/outbox/2026-06-21-claude-repo-review.md и topics/repo-review-2026-06-21.md"
     },
     {
       "id": "T-079",
@@ -1120,7 +1120,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Выполнено: T-029/T-039 закрыты, T-059 разблокирована, pipeline снова содержит ready-задачи"
     },
     {
@@ -1131,7 +1131,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Реализовано: drivers/redaction.py (канонический хелпер) + redaction значений ячеек и max_output_bytes в data_driver.head; test_data расширен (AWS-ключ и token-значение маскируются); тест зелёный"
     },
     {
@@ -1142,7 +1142,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Диагностика выполнена: plain subprocess works, asyncio subprocess pipe fails with PermissionError WinError 5; MCP acceptance needs external runtime or sync subprocess workaround"
     },
     {
@@ -1153,7 +1153,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Реализовано backward-compatible: опц. --claim ID + сверка claim_id в done/fail, проверка держателя в fail, атомарный takeover протухшего claim через эксклюзивный lock; тест tools/test_pipeline_fencing.py зелёный, race_test регрессия ок"
     },
     {
@@ -1164,7 +1164,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Re-home из T-081 (коллизия id с задачей Codex про MCP-stdio). Реализовано: drivers/audit.py + обвязка data/repo-runner/codex-local MCP; тест drivers/test_audit.py + e2e зелёные"
     },
     {
@@ -1175,7 +1175,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Реализовано: опц. поле manifest `tools` + check_driver_tools() в validate.py (ERROR при расхождении); поля проставлены для data/repo-runner/codex-local; SCHEMA.md дополнен; validate OK=9/0/0"
     },
     {
@@ -1186,7 +1186,7 @@
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Выполнено на чистом дереве после коммита 97ec55a — 8 копий парсера заменены импортом из tools/_canon.py; поведение идентично, все инструменты и тесты зелёные"
     },
     {
@@ -1197,7 +1197,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Выполнено: docs/non-svend4-development-plan-2026-06-21.md создан; T-087..T-091 добавлены в пул"
     },
     {
@@ -1208,7 +1208,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-081]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: sync subprocess JSON-RPC probe проходит initialize/tools-list для data/codex-local/files/repo-runner/gateway"
     },
     {
@@ -1219,7 +1219,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-083, T-084]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Проверки пройдены; закрыть через pipeline done и оставить runtime-оговорку ready-except-mcp-stdio-call-acceptance"
     },
     {
@@ -1230,7 +1230,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-080, T-084]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверки пройдены; закрыть через pipeline done, не меняя статус T-048"
     },
     {
@@ -1241,7 +1241,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-055, T-057, T-059, T-081]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Составить матрицу статусов драйверов и предложить честные draft/ready/blocked формулировки"
     },
     {
@@ -1252,7 +1252,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-082]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Placeholder retirement и stale-work policy записаны; закрыть через pipeline done после snapshot/validate"
     },
     {
@@ -1263,7 +1263,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Реализовано: mode:execute без реальной изоляции (container/nsjail/...) → ERROR в validate.py; SCHEMA пункт 8 обновлён; validate OK=9/0/0 (ни один драйвер не execute — без регрессии)"
     },
     {
@@ -1285,7 +1285,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Реализовано drivers/gateway/test_gateway.py — композиция/redaction/confinement/audit in-process, без MCP stdio (переносим между средами, обходит WinError 5); тест зелёный"
     },
     {
@@ -1296,7 +1296,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/repo-review-2026-06-21.md",
+      "topic": "topics/repo-review-2026-06-21.md",
       "next": "Назначен канонический источник нумерации (docs/layers-coverage.md + middle-layer-guide.md); конфликтующие схемы помечены неканоническими"
     },
     {
@@ -1307,7 +1307,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Карта обновлена; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
@@ -1318,7 +1318,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализовано tools/demo_bridge.py — один запуск показывает файлы/поиск/инвентаризацию/память на data/fixtures; in-process (без stdio, работает в любой среде); exit 0"
     },
     {
@@ -1329,7 +1329,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализовано docs/bridge-usage.md — операционный гайд: демо, драйверы, подключение gateway к AI-клиенту (MCP config), безопасность, приёмка, что работает/в работе"
     },
     {
@@ -1340,7 +1340,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-098]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверки пройдены; закрыть через pipeline done после generate/snapshot"
     },
     {
@@ -1351,7 +1351,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-087, T-096]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Sync acceptance 19/19 оформлена; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
@@ -1362,7 +1362,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-078, T-087]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализовано drivers/mcp_sync_acceptance.py поверх SyncMcpClient (T-087, Codex) — initialize+tools/list+tools/call по 19 инструментам 5 серверов; прогон pass=19 fail=0 RESULT OK, переносимо между средами (обходит WinError 5)"
     },
     {
@@ -1373,7 +1373,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализован драйвер git-log (engine+MCP+тест+манифест); тест зелёный; в каталоге 8 драйверов; status draft по D-015 (нужна сверка 2-м агентом для ready)"
     },
     {
@@ -1384,7 +1384,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-102, T-101]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверки пройдены; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
@@ -1395,7 +1395,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-098, T-101, T-102]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Демо расширено до 5 способностей (git-log); финальная верификация зелёная (validate 9/0/0, gateway/git-log тесты, демо, sync-приёмка 19/19)"
     },
     {
@@ -1406,7 +1406,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-102]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Исправлено: git-вызовы с stdin=DEVNULL (устранён Windows-дедлок наследования stdin-пайпа MCP-сервера); git-log sync-приёмка pass=4 fail=0; статус git-log → ready по D-015"
     },
     {
@@ -1417,7 +1417,7 @@
       "priority": "low",
       "risk": "low",
       "depends_on": "[T-083]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выполнено: logs/driver-audit.jsonl (+ demo/sync temp-БД) в .gitignore и убраны из индекса (git rm --cached); дерево больше не дрейфит от прогонов"
     },
     {
@@ -1428,7 +1428,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-096, T-099]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверить и оформить tools/knowledge.py как L6 knowledge workflow без vector/RAG"
     },
     {
@@ -1439,7 +1439,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализовано tools/knowledge.py (build/report/query) поверх workbench-памяти + files; тест зелёный (redaction в summary); roadmap L6 knowledge workflow закрыт"
     },
     {
@@ -1450,7 +1450,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализовано skills/ с 3 SKILL.md (driver-acceptance, pipeline-operator, repo-review) + README; закрывает L3 project skills из roadmap layers-coverage"
     },
     {
@@ -1461,7 +1461,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-100, T-103, T-107, T-109]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Reconciliation внесён; закрыть через pipeline done после validate/generate/snapshot"
     },
     {
@@ -1472,7 +1472,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-107, T-110]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — T-112 может расширять corpus на основе reports/ workflow"
     },
     {
@@ -1483,7 +1483,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-111]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — corpus/report готовы для regression-проверок L6"
     },
     {
@@ -1494,7 +1494,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-109]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — skills остаются L3 project procedures до отдельного L5 plugin decision"
     },
     {
@@ -1505,7 +1505,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-110]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — execute/svend4 остаётся read-only до отдельной песочницы и accepted decision"
     },
     {
@@ -1516,7 +1516,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-108]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Добавлен FTS5-индекс + ранжированный поиск (bm25) в tools/knowledge.py: build строит kn_fts, команда search и report используют fts_search с fallback на LIKE; тест расширен, зелёный"
     },
     {
@@ -1527,7 +1527,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Реализован драйвер sqlite (engine+MCP+тест+манифест), тест зелёный, каталог=9; status draft по D-015 (нужна сверка 2-м агентом через sync-приёмку с фикстурой-БД)"
     },
     {
@@ -1538,7 +1538,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-116]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — sqlite driver ready по D-015, полный sync acceptance pass=27 fail=0"
     },
     {
@@ -1549,7 +1549,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-112, T-113, T-114, T-115, T-117]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — quick-start docs синхронизированы с sqlite/FTS5/reports/skills/preflight"
     },
     {
@@ -1560,7 +1560,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-111, T-112, T-115]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — report --out regression и write-path safety покрыты тестом"
     },
     {
@@ -1571,7 +1571,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-118, T-119]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — отчёт по ранней архитектуре и текущей стадии создан, drift исправлен"
     },
     {
@@ -1582,7 +1582,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-120]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто — top-agent manual и agent-onboarding связаны, проверки зелёные"
     },
     {
@@ -1593,7 +1593,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Создан docs/agent-onboarding.md — present-tense чистовик: что система умеет сейчас, роли людей/агентов, карта документации, Q&A проблем разработки/коллаборации с микроскиллами, критика, зрелость/self-improvement движка, инновационные идеи"
     },
     {
@@ -1604,7 +1604,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-120, T-121, T-122]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Сравнить мнения Claude/Codex/recheck, выделить консенсус, расхождения и очередь следующих задач"
     },
     {
@@ -1615,7 +1615,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-123]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Сверить quickstart-документы и привести команды к актуальному циклу pipeline.py"
     },
     {
@@ -1626,7 +1626,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-123]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто как дубликат — Claude реализовал консенсусный capability manifest в T-129"
     },
     {
@@ -1637,7 +1637,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-123]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто как дубликат — активная задача для реализации drift detector: T-130"
     },
     {
@@ -1648,7 +1648,7 @@
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-123, T-112, T-119]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Подготовить безопасный корпус без секретов/execute и сравнимые reports между запусками"
     },
     {
@@ -1659,7 +1659,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-123, T-125]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто как дубликат — активная задача для onboarding-команды: T-131"
     },
     {
@@ -1670,7 +1670,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-078]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "Реализован tools/capabilities.py (snapshot/--check) → детерминированный system-capabilities.json (9 драйверов, статусы, tools, команды, доки); агент читает ОДИН файл и знает возможности"
     },
     {
@@ -1681,7 +1681,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "Реализован tools/drift_check.py (+тест) — агрегирует generate/drivers_catalog/capabilities --check + validate + текст-сканы (L0-L8 vs канон L0-L7, legacy queue.py, orphan doing); на первом прогоне нашёл 6 реальных дрейфов"
     },
     {
@@ -1692,7 +1692,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-129, T-130]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "Реализован tools/onboard.py (+тест) — одна команда входа: агрегирует capability manifest (C1) + конвейер + дрейф (C2) + указатели на онбординг-доки + активные задачи агента; смоук зелёный"
     },
     {
@@ -1703,7 +1703,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-129]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "Реализован tools/portal.py (list/new/build/report) поверх knowledge-движка; домен = контент портала (файлы+topics как данные), ядро не меняется; демо-портал data/portals/example; тест зелёный"
     },
     {
@@ -1714,7 +1714,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "По D-016 text-extract — генерик-способность ядра (не доменная): начать с .md/.txt/.html (stdlib), затем .pdf/.docx (первая внешняя зависимость — осознанное решение). Нужно для индексации реальных документов в любом портале"
     },
     {
@@ -1725,7 +1725,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/sandbox-and-forks-2026-06-21.md",
+      "topic": "topics/sandbox-and-forks-2026-06-21.md",
       "next": "Реализован tools/sandbox.py (intake/list) — read-only inventory внешнего источника поверх sandbox/-контракта Codex; тест зелёный; execute остаётся закрыт gate'ом (preflight); демонстрирует D-017 fork-and-synthesize"
     },
     {
@@ -1736,7 +1736,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-082]",
-      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "topic": "topics/commit-policy-streams-2026-06-21.md",
       "next": "Форк Claude по D-017: проект-политика streams (selective-add + commit-lock сейчас; worktree-ручейки + merge-gate далее) + реализован tools/commit_lock.py (атомарный advisory-лок коммитов) + тест; нужен синтез с Codex"
     },
     {
@@ -1747,7 +1747,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "topic": "topics/commit-policy-streams-2026-06-21.md",
       "next": "Закрыто D-021/T-143 — Уровень 0 остаётся дефолтом, Уровень 1 worktree-streams принят как явный режим --worktree; merge-gate подтверждает Stefan/интегратор."
     },
     {
@@ -1758,7 +1758,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/opinion-synthesis-2026-06-21.md",
+      "topic": "topics/opinion-synthesis-2026-06-21.md",
       "next": "Закрыто D-021/T-143 — governance-пакет ратифицирован; T-020 остаётся отдельным blocked до read-only источника; PDF dependency остаётся отдельным будущим решением."
     },
     {
@@ -1802,7 +1802,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "topic": "topics/kotel-decision-material-2026-06-21.md",
       "next": "Добавить front-matter, ссылки из D-020/T-137, outbox; не принимать решения соло."
     },
     {
@@ -1813,7 +1813,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "topic": "topics/kotel-decision-material-2026-06-21.md",
       "next": "Реализовано read-only .docx extraction через zipfile + ElementTree; PDF оставлен gated; тесты test_text_extract/test_knowledge зелёные."
     },
     {
@@ -1824,7 +1824,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/kotel-decision-material-2026-06-21.md",
+      "topic": "topics/kotel-decision-material-2026-06-21.md",
       "next": "Закрыто — D-021/toolset проверены, T-136/T-137 переведены в done, отчёт и outbox записаны; T-020 остаётся blocked."
     },
     {
@@ -1835,7 +1835,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "topic": "topics/commit-policy-streams-2026-06-21.md",
       "next": "Реализовано top.py work-mode: auto/shared/worktree, причины --parallel/--dirty-mainline/--hot-files, тесты и документация обновлены."
     },
     {
@@ -1857,7 +1857,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/commit-policy-streams-2026-06-21.md",
+      "topic": "topics/commit-policy-streams-2026-06-21.md",
       "next": "Сравнить D-017/D-019/D-021/T-135/T-136/T-143/T-144 и свежие конфликты, вынести проблемы и вопросы в docs/outbox/Q-015."
     },
     {
@@ -1956,7 +1956,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-154]",
-      "topic": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "topic": "topics/assurance-and-doc-merge-2026-06-22.md",
       "next": "Исправить `instructions.py preflight <agent>` без T-id, перевести `test_doc_consensus.py` на project-safe temp и расширить `doc_consensus.py` на H1/абзацы для коротких Q-файлов."
     },
     {
@@ -2165,7 +2165,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-087, T-088]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Async stdio остаётся blocked-before-MCP в текущем Windows/Python runtime; sync gateway acceptance — рабочий regular gate; нужен runtime fix или отдельное wontfix-решение"
     },
     {
@@ -2187,7 +2187,7 @@
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-168]",
-      "topic": "темы/q017-semantic-consolidated-2026-06-23.md",
+      "topic": "topics/q017-semantic-consolidated-2026-06-23.md",
       "next": "Закрыто 2026-06-23 — `doc_consensus report --semantic` работает как opt-in гибрид; добавлен `--semantic-budget`, CLI/stub-agent regression-test и документация."
     },
     {
@@ -2198,7 +2198,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-176]",
-      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "topic": "topics/perspective-backlog-2026-06-23.md",
       "next": "Закрыто 2026-06-23 — perspective-backlog обновлён; stale Q-017/Q-016/F-020/T-166/T-173 кандидаты перенесены в shipped/closed; новые candidates отражают верхний слой intake/regulate/synthesis."
     },
     {
@@ -2209,7 +2209,7 @@
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-177]",
-      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "topic": "topics/perspective-backlog-2026-06-23.md",
       "next": "Закрыто 2026-06-23 — добавлен read-only `tools/result_intake.py classify <path> [--json]`, тесты, README и smoke-классификация T-175/T-176/T-177."
     },
     {
@@ -2220,7 +2220,7 @@
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-178]",
-      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "topic": "topics/perspective-backlog-2026-06-23.md",
       "next": "Закрыто 2026-06-23 — добавлен read-only `conveyor.py regulate [--json] [--no-assurance]`, pure `regulate()` и тесты target increase/hold/decrease/process-first."
     },
     {
@@ -2297,7 +2297,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Прочитать queues/failed/*.md, определить причины, предложить retry/close/workaround для каждой"
     },
     {
@@ -2308,7 +2308,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Закрыто 2026-06-23 — smoke-test friction/drift_check/onboard/commit_lock/top выполнен; quickstart обновлён; текущий drift после generate = 0."
     },
     {
@@ -2319,7 +2319,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки"
     },
     {
@@ -2330,7 +2330,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md"
     },
     {
@@ -2353,7 +2353,7 @@
       "risk": "medium",
       "depends_on": "[Q-017]",
       "topic": "",
-      "next": "Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md)"
+      "next": "Написать и интегрировать логику --semantic (см. topics/q017-docmerge-semantic-2026-06-23.md)"
     },
     {
       "id": "T-192",
@@ -2429,7 +2429,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Запустить каждый инструмент, зафиксировать баги, обновить quickstart"
     },
     {
@@ -2440,7 +2440,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Добавить папки в таблицу структуры README.md, обновить описание"
     },
     {
@@ -2451,7 +2451,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Выбрать файлы для коммита, запустить generate.py, git add selective, git commit"
     },
     {
@@ -2462,7 +2462,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Анализ каждого failed, принятие решения, очистка queues/failed/"
     },
     {
@@ -2473,7 +2473,7 @@
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Сделать selective-add коммит через commit_lock.py, validate.py, generate.py"
     },
     {
@@ -2484,7 +2484,7 @@
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Обновить или создать новый статус-отчёт с актуальными данными"
     },
     {
@@ -2495,7 +2495,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Добавить новые инструменты, pipeline.py, adoption.py, blocks.py, friction.py, top.py"
     },
     {
@@ -2506,7 +2506,7 @@
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "темы/ai-os-bridge.md",
+      "topic": "topics/ai-os-bridge.md",
       "next": "Обновить текущий фокус, активные темы, журнал изменений"
     },
     {
@@ -2588,7 +2588,7 @@
     },
     {
       "id": "T-213",
-      "title": "Q-010 — миграция папки темы/ → topics/ (атомарное переименование + sweep ссылок)",
+      "title": "Q-010 — миграция папки topics/ → topics/ (атомарное переименование + sweep ссылок)",
       "status": "doing",
       "owner": "Novax",
       "priority": "normal",
@@ -2596,6 +2596,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Атомарный коммит: git mv темы topics + скриптовый sweep 268 файлов / 956 строк + правка 19+ hardcode-литералов + regenerate + validate"
+    },
+    {
+      "id": "T-214",
+      "title": "Execute-Sandbox: Audit & Rollback Logger (P10)",
+      "status": "done",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-212]",
+      "topic": "",
+      "next": "Реализовать tools/execute_audit.py"
     }
   ],
   "questions": [
@@ -2603,7 +2614,7 @@
       "id": "Q-001",
       "title": "Какие имена файлов использовать: русские или ASCII?",
       "status": "answered",
-      "where": "темы/organization.md",
+      "where": "topics/organization.md",
       "outcome": "ASCII для новых файлов, кириллица в заголовке; существующие имена — Q-004/D-007. См. D-005."
     },
     {
@@ -2617,105 +2628,105 @@
       "id": "Q-003",
       "title": "Кто будет сборщиком итогов в больших темах: человек, главный AI-агент или скрипт?",
       "status": "answered",
-      "where": "темы/organization.md",
+      "where": "topics/organization.md",
       "outcome": "Гибрид — агент/скрипт готовит, человек утверждает. См. D-006."
     },
     {
       "id": "Q-004",
       "title": "Мигрировать ли существующие русские имена файлов к ASCII?",
       "status": "answered",
-      "where": "темы/migrate-file-names.md",
+      "where": "topics/migrate-file-names.md",
       "outcome": "Постепенная (ленивая) миграция: переименовывать при следующей правке файла. См. D-007."
     },
     {
       "id": "Q-005",
       "title": "Какие правки считать «значимыми» по D-003 (граница обоснования)?",
       "status": "answered",
-      "where": "темы/d003-scope.md",
+      "where": "topics/d003-scope.md",
       "outcome": "Только значимые (структура/правила/решения/задачи/статусы/протокол/права/очереди/шаблоны); мелочи — без. См. D-008."
     },
     {
       "id": "Q-006",
       "title": "Кто может регистрировать нового агента в реестр (AGENTS/Участники/permissions)?",
       "status": "answered",
-      "where": "темы/q006-agent-onboarding.md",
+      "where": "topics/q006-agent-onboarding.md",
       "outcome": "Принят вариант A (само-регистрация) на текущем этапе; запланирована эволюция к C. См. D-009."
     },
     {
       "id": "Q-007",
       "title": "Какой первый вариант реализации «информационных драйверов» выбираем?",
       "status": "answered",
-      "where": "темы/information-drivers.md",
+      "where": "topics/information-drivers.md",
       "outcome": "Принят D-010: вариант B с эволюцией к E; каноническая папка drivers/; сначала L1-манифесты, затем один read-only L2/MCP PoC."
     },
     {
       "id": "Q-008",
       "title": "Расширенная manifest schema для драйверов — какие поля обязательны?",
       "status": "answered",
-      "where": "темы/ai-os-bridge.md",
+      "where": "topics/ai-os-bridge.md",
       "outcome": "Принят вариант B (driver schema v1) — обязательные поля манифеста зафиксированы. См. D-013."
     },
     {
       "id": "Q-009",
       "title": "Где находятся репозитории svend4 (доступ для T-024)?",
       "status": "answered",
-      "where": "темы/ai-os-bridge.md",
+      "where": "topics/ai-os-bridge.md",
       "outcome": "D-020 §4 ратифицирован 2026-06-23 (svend4 = generic external-source intake, не special) — вопрос «где svend4» снят, см. Итог"
     },
     {
       "id": "Q-010",
-      "title": "Переименовать ли папку темы/ в ASCII (topics/)?",
+      "title": "Переименовать ли папку topics/ в ASCII (topics/)?",
       "status": "open",
-      "where": "темы/migrate-file-names.md",
+      "where": "topics/migrate-file-names.md",
       "outcome": ""
     },
     {
       "id": "Q-011",
       "title": "Как сделать динамический конвейер агентов для управляемой разработки?",
       "status": "answered",
-      "where": "темы/agent-pipeline.md",
+      "where": "topics/agent-pipeline.md",
       "outcome": "Принят D-011: комбинированный конвейер A+B+C — pipeline.py как pull-next/status/done/fail, PIPELINE.md для людей, logs/pipeline.json для агентов."
     },
     {
       "id": "Q-012",
       "title": "Делать ли обязательный heartbeat/live-room для агентов?",
       "status": "answered",
-      "where": "темы/agent-pipeline.md",
+      "where": "topics/agent-pipeline.md",
       "outcome": "Принят D-012: вариант B — добровольный heartbeat; pipeline.py heartbeat пишет per-agent JSON, LIVE.md и logs/heartbeat.json."
     },
     {
       "id": "Q-013",
       "title": "Как согласовать спорные пункты onboarding/manual roadmap?",
       "status": "answered",
-      "where": "темы/ai-os-bridge.md",
+      "where": "topics/ai-os-bridge.md",
       "outcome": "Закрыто через Котёл-синтез (см. streams/q013-divergences/divergence.md)"
     },
     {
       "id": "Q-014",
       "title": "Цель проекта — юридический workbench (домен) или универсальный generic-инструмент?",
       "status": "answered",
-      "where": "темы/opinion-synthesis-2026-06-21.md",
+      "where": "topics/opinion-synthesis-2026-06-21.md",
       "outcome": "Stefan — универсальное ядро + домен как тематический портал/плагин (модель Википедии). См. D-016."
     },
     {
       "id": "Q-015",
       "title": "Когда Level 1 worktree должен быть обязательным, а не рекомендацией?",
       "status": "answered",
-      "where": "темы/commit-policy-streams-2026-06-21.md",
+      "where": "topics/commit-policy-streams-2026-06-21.md",
       "outcome": "Принят D-022 — вариант B; Level 1 worktree обязателен по триггерам: чужие source-файлы, stale index не от своей работы, hot files, явная параллельная работа или same-file коллизия."
     },
     {
       "id": "Q-016",
       "title": "Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1",
       "status": "answered",
-      "where": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "where": "topics/assurance-and-doc-merge-2026-06-22.md",
       "outcome": "Утверждено котлом: S0 миграция выполнена (проставлен last_verified на D-001..D-023 и политиках)."
     },
     {
       "id": "Q-017",
       "title": "Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия",
       "status": "answered",
-      "where": "темы/q017-docmerge-semantic-2026-06-23.md",
+      "where": "topics/q017-docmerge-semantic-2026-06-23.md",
       "outcome": "Утверждено котлом. Создана задача T-191 на реализацию семантического гибрида."
     }
   ],
@@ -2905,7 +2916,7 @@
       "outputs": "[status, report, patch-summary]",
       "sandbox": "current-workspace-policy",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md"
+      "related": "topics/ai-os-bridge.md"
     },
     {
       "id": "data",
@@ -2922,7 +2933,7 @@
       "outputs": "[schema, rows, aggregates, summary]",
       "sandbox": "required-before-write-or-code-exec",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md"
+      "related": "topics/ai-os-bridge.md"
     },
     {
       "id": "file-inventory",
@@ -2939,7 +2950,7 @@
       "outputs": "[file-list, summary, json, markdown]",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, tasks/T-059.md"
+      "related": "topics/ai-os-bridge.md, tasks/T-059.md"
     },
     {
       "id": "files",
@@ -2956,7 +2967,7 @@
       "outputs": "[file-list, snippets, summary]",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md"
+      "related": "topics/ai-os-bridge.md"
     },
     {
       "id": "gateway",
@@ -2973,7 +2984,7 @@
       "outputs": "[listing, content, search-hits, repo-summary, memory-hits]",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md"
+      "related": "topics/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md"
     },
     {
       "id": "git-log",
@@ -2990,7 +3001,7 @@
       "outputs": "[commit-list, author-stats, file-history, summary]",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, drivers/repo-runner.md"
+      "related": "topics/ai-os-bridge.md, drivers/repo-runner.md"
     },
     {
       "id": "repo-runner",
@@ -3007,7 +3018,7 @@
       "outputs": "[repo-map, test-plan, risk-report, summary]",
       "sandbox": "required-before-run-or-test",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, tasks/T-024.md"
+      "related": "topics/ai-os-bridge.md, tasks/T-024.md"
     },
     {
       "id": "sqlite",
@@ -3024,7 +3035,7 @@
       "outputs": "[table-list, schema, rows]",
       "sandbox": "not-required-for-read-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, drivers/data.md, drivers/workbench.md"
+      "related": "topics/ai-os-bridge.md, drivers/data.md, drivers/workbench.md"
     },
     {
       "id": "workbench",
@@ -3041,7 +3052,7 @@
       "outputs": "[sqlite-db, document-list, audit-list]",
       "sandbox": "workspace-write-only",
       "secrets": "forbidden-in-repo",
-      "related": "темы/ai-os-bridge.md, tasks/T-052.md, tasks/T-054.md"
+      "related": "topics/ai-os-bridge.md, tasks/T-052.md, tasks/T-054.md"
     }
   ]
 }
