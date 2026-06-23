@@ -14,6 +14,30 @@ STATUS.md и темами, чтобы заменить ручную «переп
 import os
 import re
 import sys
+import datetime
+
+# Драйверы: манифест старше этого числа дней — WARN (advisory), пере-сверить с источником.
+# 30 дней — для драйверов (код-backed); решения/политики идут на своём SLA через assurance.py.
+DRIVER_FRESHNESS_DAYS = 30
+
+
+def driver_freshness_warning(date_str, today=None, max_days=DRIVER_FRESHNESS_DAYS):
+    """Текст WARN, если source_last_verified старше max_days; иначе None.
+
+    Формат YYYY-MM-DD валидируется отдельно (err); здесь только ВОЗРАСТ. `today`
+    параметризован для детерминированных тестов. Никогда не падает на мусоре.
+    """
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", date_str or ""):
+        return None
+    today = today or datetime.date.today()
+    try:
+        age = (today - datetime.date.fromisoformat(date_str)).days
+    except ValueError:
+        return None
+    if age > max_days:
+        return ("source_last_verified %s — %d дн. назад (> %d): пере-сверь манифест с источником"
+                % (date_str, age, max_days))
+    return None
 
 
 def configure_output():
@@ -335,6 +359,10 @@ def check_drivers():
             r"^\d{4}-\d{2}-\d{2}$", fm["source_last_verified"]
         ):
             err("%s: source_last_verified должен быть YYYY-MM-DD" % rel)
+        else:
+            _fresh = driver_freshness_warning(fm.get("source_last_verified", ""))
+            if _fresh:
+                warn("%s: %s" % (rel, _fresh))
         for field in ("timeout_seconds", "max_output_bytes"):
             if fm.get(field):
                 try:
