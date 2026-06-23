@@ -216,8 +216,8 @@
 | T-200 | Коммит — selective-add 145 изменённых строк git status | done | pool | `темы/ai-os-bridge.md` | Выбрать файлы для коммита, запустить generate.py, git add selective, git commit |
 | T-201 | Обработать 4 failed-маркера (T-048, T-136, T-174, T-175) — close или block | done | pool | `темы/ai-os-bridge.md` | Анализ каждого failed, принятие решения, очистка queues/failed/ |
 | T-202 | Коммит текущих изменений (selective-add) | doing | pool | `темы/ai-os-bridge.md` | Сделать selective-add коммит через commit_lock.py, validate.py, generate.py |
-| T-203 | Обновить статус-отчёт (docs/status-report-2026-06-23.md) | todo | pool | `темы/ai-os-bridge.md` | Обновить или создать новый статус-отчёт с актуальными данными |
+| T-203 | Обновить статус-отчёт (docs/status-report-2026-06-23.md) | doing | pool | `темы/ai-os-bridge.md` | Обновить или создать новый статус-отчёт с актуальными данными |
 | T-204 | Обновить quickstart-гайды (docs/quickstart.md и docs/agent-quickstart.md) | done | pool | `темы/ai-os-bridge.md` | Добавить новые инструменты, pipeline.py, adoption.py, blocks.py, friction.py, top.py |
-| T-205 | Проверить и обновить STATUS.md (текущий фокус) | doing | pool | `темы/ai-os-bridge.md` | Обновить текущий фокус, активные темы, журнал изменений |
-| T-206 | P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт) | todo | pool | — | Спроектировать строгое определение «safe-auto-apply» (что детектор может чинить БЕЗ человека) + гейт; реализовать только на доказанно-обратимом подмножестве |
+| T-205 | Проверить и обновить STATUS.md (текущий фокус) | done | pool | `темы/ai-os-bridge.md` | Обновить текущий фокус, активные темы, журнал изменений |
+| T-206 | P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт) | doing | pool | — | Спроектировать строгое определение «safe-auto-apply» (что детектор может чинить БЕЗ человека) + гейт; реализовать только на доказанно-обратимом подмножестве |
 <!-- GEN:tasks END -->

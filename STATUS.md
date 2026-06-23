@@ -4,17 +4,18 @@
 
 ## Текущий фокус
 
-- **Мультиагентная платформа вышла из фазы «мета-инфраструктуры».** 174 задачи (172 done), 23 решения, 36 тем — канон зрелый.
+- **Мультиагентная платформа и конвейер работают стабильно.** 205 задач, 24 решения, 41 тема — канон стабильно держится без ERROR.
 - **AI-OS Bridge работает на L1+L2:** 10 модулей `drivers/` (включая repo-inventory, files, sqlite, gateway, codex-local), 5 `skills/` (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator), 2 `portals/` (bridge-knowledge, repo-inventory).
-- **Governance-слой усилен коллективными решениями:** D-013 (driver schema v1), D-015 (technical status), D-016 (generic + домен Википедии-моделью), D-017 (fork-and-synthesize), **D-018** (котёл + двойная перепроверка тех./гуман.), D-022 (детальная политика параллельной работы с триггерами Level-1 worktree).
-- **Top-layer orchestrator (depth-3 reduce):** пирамидальная структура продюсеры → бригады → дирижёры → оркестр; методология — `docs/top-layer-throughput-methodology.md`.
-- **Conveyor:** серийная интеграция в одну историю; 138 done-маркеров за 3 дня — агенты реально используют pipeline.
-- **Следующий шаг:** T-174 (WinError-5 async-stdio MCP acceptance blocker, ready), T-176 (Q-017 semantic doc-consensus, открыт Mavis), ratify Q-013/Q-016/Q-017 разрешений через котёл (D-018).
+- **Governance-слой усилен коллективными решениями:** D-013..D-024 (драйверы, котёл, политика параллельной работы). Внедрены новые инструменты QA (`tools/backlog_rescan.py`, `tools/drift_check.py` и др.).
+- **Top-layer orchestrator (depth-3 reduce):** пирамидальная структура продюсеры → бригады → дирижёры → оркестр.
+- **Conveyor:** массовая автоматизированная серийная интеграция через `pipeline.py` (сотни закрытых задач агентами).
+- **Текущий фокус / Следующий шаг:** устранение последних failed-маркеров (T-201), полировка документации (T-204, T-205) и стабилизация AI-OS Bridge.
 
 ## Что изменилось недавно
 
 | Дата | Кто | Изменение | Ссылка |
 |---|---|---|---|
+| 2026-06-23 | Antigravity | **Полировка и коммиты:** T-204 (обновлены quickstart-гайды с новыми утилитами pipeline, friction, top), T-200 (selective-add 145 файлов в 3 коммита, статус чист). | `docs/quickstart.md`, `docs/agent-quickstart.md`, `STATUS.md` |
 | 2026-06-23 | Mavis | **Перепроверка + подключение:** открыт T-176 (Q-017 semantic doc-consensus implementation), STATUS.md обновлён (фокус на мультиагентную платформу), bug-report `driversrepo-runnerfixture-report.json` (0-байт typo, висит 3 дня). | `tasks/T-176.md`, `STATUS.md`, `dialog.md`, `темы/infrastructure-review.md` |
 | 2026-06-23 | Codex/Stefan | **3-дневная волна:** Q-008 закрыт через D-013 (driver schema v1, вариант B моего предложения); D-018 (котёл + двойная перепроверка); D-022 (политика параллельной работы); top-layer orchestrator; ~50 новых тестов; drivers+skills+portals; ~30 новых коммитов. | `decisions/D-013.md`, `decisions/D-018.md`, `decisions/D-022.md`, `docs/parallel-work-policy.md` |
 | 2026-06-20 | Codex | Импортирован внешний архитектурный документ `ai_middle_layer_architecture_ru.md` и подключён к работе AI-OS Bridge как roadmap для MVP; backlog драйверов добавлен в `drivers/README.md`, создана T-025. | `docs/ai_middle_layer_architecture_ru.md`, `темы/information-drivers.md`, `tasks/T-025.md` |

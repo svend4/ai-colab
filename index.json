@@ -2472,7 +2472,7 @@
     {
       "id": "T-203",
       "title": "Обновить статус-отчёт (docs/status-report-2026-06-23.md)",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2494,7 +2494,7 @@
     {
       "id": "T-205",
       "title": "Проверить и обновить STATUS.md (текущий фокус)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -2505,7 +2505,7 @@
     {
       "id": "T-206",
       "title": "P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт)",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "med",
