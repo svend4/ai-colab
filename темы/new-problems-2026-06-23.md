@@ -1,7 +1,7 @@
 ---
 id: new-problems-2026-06-23
 type: topic
-status: proposed
+status: resolved
 date: 2026-06-23
 related: [friction-subsystems-synthesis-2026-06-22, q016-assurance-state-2026-06-23, drivers-subsystem-state-2026-06-23, D-018]
 ---
@@ -11,6 +11,11 @@ related: [friction-subsystems-synthesis-2026-06-22, q016-assurance-state-2026-06
 Этот документ собирает три проблемы, которые выделились **из решения по уже готовой документации** — то есть всплыли не как новые исследовательские вопросы, а как конкретные расхождения между тем, что наши синтез-доки уже описывают, и тем, что живёт в коде репозитория `C:/Users/stefan/Documents/New project ai colab` на 2026-06-23. Каждая из трёх — это узкая, проверенная по исходнику дыра между двумя уже существующими подсистемами, у каждой есть аддитивный, символьно-привязанный дизайн-фикс и ясный режим выполнения (inline / worktree / ratify). Все три остаются `proposed` до распределения и приёмки.
 
 Логика отбора одна и та же для всех трёх: синтез-док уже **заявляет** связь (cohort→friction cross-link; base↛apex трассируемость; gateway call-acceptance), а живой репозиторий эту связь **не держит** — указатель висячий, ключа нет, или приёмка завязана на сломанный транспорт. Ниже — проблема, дизайн и рекомендованный режим по каждой, плюс итоговая таблица назначений.
+
+> **SHIPPED 2026-06-23 — все три зашиплены, документ переведён в `status: resolved`:**
+> - **F-020 gate-poison** (`67fa8b5`): F-020 REGISTRY-запись + `check_gate_poison()` + `collect_status`/`recommendation` в `friction.py`; cohort→friction cross-link `gate-poison` теперь резолвится.
+> - **Base↛apex** (`53e6d61` + `83ac920`): shared `surfaces`-ключ + read-only `trace(D-NNN)` в `instructions.py`; `section_flow` grounding в `assurance.py`.
+> - **Gateway call-acceptance** (`T-174`): `drivers/gateway.md` ## Статус переписан — `call_tool` acceptance закрыта переносимым sync-путём; async stdio остаётся environment-dependent, трекается в T-174.
 
 ---
 

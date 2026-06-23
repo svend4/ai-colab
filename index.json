@@ -230,6 +230,13 @@
       "file": "темы/session-state-2026-06-23.md",
       "status": "proposed",
       "next": ""
+    },
+    {
+      "id": "темы/finder-doc-vs-reality-2026-06-23.md",
+      "title": "\"FINDER — doc-vs-reality синтез (26 подтверждённых находок)\"",
+      "file": "темы/finder-doc-vs-reality-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
     }
   ],
   "tasks": [
@@ -2161,13 +2168,68 @@
     {
       "id": "T-176",
       "title": "Реализовать семантический гибрид doc_consensus (Q-017, opt-in --semantic)",
-      "status": "doing",
-      "owner": "Mavis",
+      "status": "done",
+      "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-168]",
       "topic": "темы/q017-semantic-consolidated-2026-06-23.md",
-      "next": "Реализовать `doc_consensus report --semantic` по дизайну из темы/q017-semantic-consolidated-2026-06-23.md: механический pre-cluster → agent-pass на резидууме → merge → render. Добавить regression-test «одна идея — разные слова». Stdlib + subprocess-agent (без ML/embeddings)."
+      "next": "Закрыто 2026-06-23 — `doc_consensus report --semantic` работает как opt-in гибрид; добавлен `--semantic-budget`, CLI/stub-agent regression-test и документация."
+    },
+    {
+      "id": "T-177",
+      "title": "Refresh perspective backlog after shipped assurance/Q-017 work",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-176]",
+      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "next": "Закрыто 2026-06-23 — perspective-backlog обновлён; stale Q-017/Q-016/F-020/T-166/T-173 кандидаты перенесены в shipped/closed; новые candidates отражают верхний слой intake/regulate/synthesis."
+    },
+    {
+      "id": "T-178",
+      "title": "Implement result_intake classifier for landed/outbox outputs",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-177]",
+      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "next": "Добавить read-only `tools/result_intake.py classify <path>` с JSON/text output, тесты и документацию; классы: read-only-report, variant, docs-change, build-change, governance, external-code."
+    },
+    {
+      "id": "T-179",
+      "title": "Add conveyor regulate advisory for workflow target sizing",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-178]",
+      "topic": "темы/perspective-backlog-2026-06-23.md",
+      "next": "После result-intake добавить advisory `conveyor regulate`: рекомендовать target +1/0/-1 по landed, missing-output, idle, verify health и assurance."
+    },
+    {
+      "id": "T-180",
+      "title": "derive_reuse grounding-качество — section_coverage l1_basis-резолв (#6) + structural l1_basis в portal.md (#7)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[Q-016]",
+      "topic": "",
+      "next": "Внедрить резолв l1_basis в assurance.py section_coverage (вместо any-non-empty) + перевести portal.md core: в структурный l1_basis; worktree, symbol-anchored"
+    },
+    {
+      "id": "T-181",
+      "title": "reconcile_state backlog — 38 done-missing-marker + 5 orphan-done-marker (конвенция queues/done)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-143]",
+      "topic": "",
+      "next": "Решить конвенцию done-marker (бэкфилл queues/done/T-NNN.done.md для 38 done-задач ИЛИ сделать marker опциональным в reconcile_state); подчистить 5 orphan-маркеров от переименованных timestamp-задач"
     }
   ],
   "questions": [

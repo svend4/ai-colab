@@ -10,13 +10,15 @@ verified_against: working tree @ master (HEAD 144bb7b)
 
 # SOLVER report — 2026-06-23
 
-Единый отчёт по четырём решённым задачам. Каждая секция — самодостаточная спека для applier'а: премиса (проверена против дерева/git-лога), режим применения, и точные правки. Все premises ниже подтверждены прямым чтением файлов на момент сборки (см. «Verification» в каждой секции). Статус отчёта: **proposed** — ничего не применено, это материал для оркестратора.
+Единый отчёт по четырём решённым задачам. Каждая секция — самодостаточная спека для applier'а: премиса (проверена против дерева/git-лога), режим применения, и точные правки. Все premises ниже подтверждены прямым чтением файлов на момент сборки (см. «Verification» в каждой секции).
+
+> **SHIPPED-UPDATE 2026-06-23:** P4 (cohort/flow `--strict`) **зашиплен** коммитом `e3907a4` — `MANDATORY_TRIGGERS@cohort.py:52`, `ship(strict=)@:259`, `turn(strict=)@:208`, `guard(strict=)@:386`. Заголовочный `verified_against: HEAD 144bb7b` (:9) — стейл-но-честный снимок на момент сборки; `e3907a4` лёг ПОСЛЕ него, поэтому @HEAD строка «ничего не применено» по P4 устарела.
 
 Сводка по режимам применения:
 
 | Problem | Тип | Режим | Файлы | Ratify? |
 |---|---|---|---|---|
-| **P4** | impl-spec | **inline** (additive, opt-in default-off) | `tools/cohort.py`, `tools/flow.py`, `tools/test_cohort.py` (+опц. `tools/test_flow.py`) | нет |
+| **P4** | impl-spec | **inline** (additive, opt-in default-off) — **SHIPPED `e3907a4`** | `tools/cohort.py`, `tools/flow.py`, `tools/test_cohort.py` (+опц. `tools/test_flow.py`) | нет |
 | **P8** | impl-spec | **worktree** (`doc_consensus.py` co-owned) | `tools/doc_consensus.py`, `tools/test_doc_consensus.py` (+ note в `docs/workflow-orchestration-policy.md`) | нет |
 | **P5+P6+P9** | doc-edits | **inline** (unique-match string replace) | 7 файлов (темы/* + docs/*) | нет (документация догоняет уже-зашедший код) |
 | **P7** | doc-edits + task-spec | **inline** | `drivers/gateway.md` + новый `tasks/T-174.md` | нет |
