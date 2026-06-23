@@ -16,6 +16,7 @@ CLI:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -269,6 +270,18 @@ REGISTRY = [
         "docs": ["docs/friction-complaints-suggestions.md", "skills/repo-friction-playbook/SKILL.md"],
         "aliases": ["yaml", "frontmatter", "skill-metadata"],
     },
+    {
+        "id": "F-020",
+        "name": "Gate-poison: общий validate-гейт КРАСНЫЙ",
+        "symptom": "tools/validate.py: ERROR=N>0 (часто чужая half-done задача: done-карточка без артефакта, битая topic-ссылка, дубль id) — pre-commit hook блокирует коммиты ВСЕМ (инцидент T-150).",
+        "recipe": [
+            "Запусти python tools/validate.py и прочитай ERROR: строки — найди, ЧТО/КТО отравил гейт.",
+            "Если источник — ТВОЙ claim, почини так, чтобы validate вернул ERROR=0; если чужой/unknown — не жди: эскалируй в Уровень-1 worktree от ЧИСТОЙ базы (python tools/cohort.py guard для вердикта).",
+            "Никогда не правь/не удаляй чужой gate-source, чтобы озеленить validate, — это прячет отраву, а не чистит её.",
+        ],
+        "docs": ["темы/gate-poison-situation-2026-06-22.md", "docs/parallel-work-policy.md", "tools/cohort.py"],
+        "aliases": ["gate-poison", "poison", "validate-error", "poisoned-gate"],
+    },
 ]
 
 BY_ID = {item["id"]: item for item in REGISTRY}
@@ -461,6 +474,24 @@ def check_drift(rc, out):
     return make_check("F-011", "ok", "drift_check reports no drift", evidence=first_lines(text, 2))
 
 
+def check_gate_poison(rc, out):
+    """F-020: общий validate-гейт КРАСНЫЙ (ERROR=N>0) — pre-commit блокирует коммиты всем.
+
+    Read-only детектор (тот же контракт ERROR=(\\d+), что cohort.py guard). Симптом T-150:
+    чужая half-done задача отравляет общий gate. Делает рабочим cross-link cohort→friction.
+    """
+    text = out or ""
+    m = re.search(r"ERROR=(\d+)", text)
+    errs = [ln.strip()[:90] for ln in text.splitlines() if ln.strip().startswith("ERROR:")][:3]
+    if (m and int(m.group(1)) > 0) or rc not in (0, None):
+        return make_check(
+            "F-020", "warn", "общий validate-гейт КРАСНЫЙ (коммиты заблокированы всем)",
+            evidence=errs or first_lines(text, 4),
+            recipe_hint="Чужая half-done? эскалируй в L1 worktree от чистой базы (cohort.py guard); слей, когда гейт очистится.",
+        )
+    return make_check("F-020", "ok", "общий validate-гейт зелёный")
+
+
 def check_stream(rc, out):
     text = out or ""
     if rc != 0:
@@ -573,6 +604,9 @@ def collect_status(args):
     drift = run_cmd(PY, os.path.join(ROOT, "tools", "drift_check.py"), timeout=45)
     checks.append(check_drift(drift["rc"], drift["out"]))
 
+    val = run_cmd(PY, os.path.join(ROOT, "tools", "validate.py"), timeout=45)
+    checks.append(check_gate_poison(val["rc"], val["out"]))
+
     stream = run_cmd(PY, os.path.join(ROOT, "tools", "stream.py"), "check", "--max-age-days", str(args.stream_max_age_days), timeout=30)
     checks.append(check_stream(stream["rc"], stream["out"]))
 
@@ -598,8 +632,8 @@ def recommendation(checks):
         return "STOP: fix runtime/temp first, then re-run friction status."
     if warn_ids & {"F-005"}:
         return "WAIT/COORDINATE: commit-lock is not free; do not stage or commit yet."
-    if warn_ids & {"F-006", "F-007", "F-011", "F-013", "F-015"}:
-        return "LEVEL 1 OR SELECTIVE-ADD: dirty/drift/stream signals exist; do not use git add -A."
+    if warn_ids & {"F-006", "F-007", "F-011", "F-013", "F-015", "F-020"}:
+        return "LEVEL 1 OR SELECTIVE-ADD: dirty/drift/stream/gate-poison signals exist; do not use git add -A."
     if warn_ids & {"F-008", "F-009", "F-010", "F-012", "F-014", "F-018"}:
         return "LEVEL 0 WITH CAUTION: fix listed governance/runtime warnings before commit."
     return "LEVEL 0 OK: shared tree is acceptable; use commit_lock + explicit staging for commits."
