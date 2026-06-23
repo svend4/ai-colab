@@ -80,6 +80,12 @@ BLOCKS = {
             ("portal.py", ["list"], "advisory"),
         ],
     },
+    "execute-preflight": {
+        "desc": "preflight-гейты для sandbox (P3, P5, P9): проверки изоляции до первого execute",
+        "steps": [
+            ("execute_preflight.py", ["check-probe"], "gate"),
+        ],
+    },
 }
 
 # Реестр безопасных авто-исправлений (SAFE_AUTO), применяемых при --auto-safe

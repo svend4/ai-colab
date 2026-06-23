@@ -2534,7 +2534,7 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "pool",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "high",
@@ -2574,6 +2574,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Написать тесты для permissions.match() и риск-тиринга."
+    },
+    {
+      "id": "T-212",
+      "title": "Execute-Sandbox: Inline Preflight Gates (P3, P5, P9) & D-014 check",
+      "status": "done",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[D-014, T-208]",
+      "topic": "",
+      "next": "Создать базовый preflight-чекер в blocks.py и validate.py"
     }
   ],
   "questions": [

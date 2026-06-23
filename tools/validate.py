@@ -447,6 +447,33 @@ def check_pipeline_d011():
         ok("D-011: конвейер pipeline.py + PIPELINE.md + logs/pipeline.json присутствуют, "
            "команды next/status/mine/done/fail/snapshot определены")
 
+def check_execute_d014():
+    """Инвариант D-014 (запрет mode: execute до реализации всех 10 гейтов).
+    
+    Защищает от включения execute-сценариев до тех пор, пока мы не достроим
+    все 10 гейтов из docs/execute-sandbox-runner-design-2026-06-23.md.
+    """
+    drivers_dir = os.path.join(ROOT, "drivers")
+    if not os.path.isdir(drivers_dir):
+        return
+        
+    has_execute = False
+    for fn in os.listdir(drivers_dir):
+        if not fn.endswith(".md") or fn in {"README.md", "SCHEMA.md"} or fn.startswith("_"):
+            continue
+        rel = "drivers/%s" % fn
+        text = read(rel)
+        if text is None:
+            continue
+        fm = parse_front_matter(text)
+        if fm.get("mode") == "execute":
+            has_execute = True
+            err("%s: mode: execute запрещен до полной реализации всех 10 гейтов D-014 "
+                "(в т.ч. P31 sandbox-runner ядро, которое еще не построено)" % rel)
+                
+    if not has_execute:
+        ok("D-014: execute-сценариев нет (система безопасна, гейты в процессе стройки)")
+
 def check_synthesis_reports():
     """Проверка структуры отчетов синтеза (T-182).
     
@@ -502,6 +529,7 @@ def main():
     check_drivers()
     check_driver_tools()
     check_pipeline_d011()
+    check_execute_d014()
     check_nav()
     check_naming()
     check_synthesis_reports()
