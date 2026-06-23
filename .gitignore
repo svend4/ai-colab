@@ -5,11 +5,7 @@ tmp-work/
 
 # runtime-артефакты драйверов (не версионируем)
 logs/driver-audit.jsonl
-logs/demo_bridge.db
-logs/_sync_acc.db
-logs/knowledge.db
-logs/knowledge.db
-logs/_kn_test*.db
+logs/*.db
 data/portals/*/*.db
 queues/commit.lock
 # volatile runtime snapshots (D-022/T-148)
