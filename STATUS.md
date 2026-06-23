@@ -4,15 +4,19 @@
 
 ## Текущий фокус
 
-- **AI-OS Bridge перешёл от обсуждения к первому практическому слою.** Q-007 закрыт через D-010: выбран поэтапный вариант B -> E / L1 -> ранний L2.
-- **Создан L1-каталог `drivers/`.** Есть README, шаблон и первые манифесты: `files`, `data`, `repo-runner`, `codex-local`.
-- **Система заморожена для продуктовой работы.** Текущий набор инструментов — sufficient; новые инструменты — только по явной потребности проекта.
-- **Следующий шаг:** T-023 — добавить машинный индекс драйверов; T-024 — спроектировать read-only repo inventory driver для Sven4/local repos.
+- **Мультиагентная платформа вышла из фазы «мета-инфраструктуры».** 174 задачи (172 done), 23 решения, 36 тем — канон зрелый.
+- **AI-OS Bridge работает на L1+L2:** 10 модулей `drivers/` (включая repo-inventory, files, sqlite, gateway, codex-local), 5 `skills/` (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator), 2 `portals/` (bridge-knowledge, repo-inventory).
+- **Governance-слой усилен коллективными решениями:** D-013 (driver schema v1), D-015 (technical status), D-016 (generic + домен Википедии-моделью), D-017 (fork-and-synthesize), **D-018** (котёл + двойная перепроверка тех./гуман.), D-022 (детальная политика параллельной работы с триггерами Level-1 worktree).
+- **Top-layer orchestrator (depth-3 reduce):** пирамидальная структура продюсеры → бригады → дирижёры → оркестр; методология — `docs/top-layer-throughput-methodology.md`.
+- **Conveyor:** серийная интеграция в одну историю; 138 done-маркеров за 3 дня — агенты реально используют pipeline.
+- **Следующий шаг:** T-174 (WinError-5 async-stdio MCP acceptance blocker, ready), T-176 (Q-017 semantic doc-consensus, открыт Mavis), ratify Q-013/Q-016/Q-017 разрешений через котёл (D-018).
 
 ## Что изменилось недавно
 
 | Дата | Кто | Изменение | Ссылка |
 |---|---|---|---|
+| 2026-06-23 | Mavis | **Перепроверка + подключение:** открыт T-176 (Q-017 semantic doc-consensus implementation), STATUS.md обновлён (фокус на мультиагентную платформу), bug-report `driversrepo-runnerfixture-report.json` (0-байт typo, висит 3 дня). | `tasks/T-176.md`, `STATUS.md`, `dialog.md`, `темы/infrastructure-review.md` |
+| 2026-06-23 | Codex/Stefan | **3-дневная волна:** Q-008 закрыт через D-013 (driver schema v1, вариант B моего предложения); D-018 (котёл + двойная перепроверка); D-022 (политика параллельной работы); top-layer orchestrator; ~50 новых тестов; drivers+skills+portals; ~30 новых коммитов. | `decisions/D-013.md`, `decisions/D-018.md`, `decisions/D-022.md`, `docs/parallel-work-policy.md` |
 | 2026-06-20 | Codex | Импортирован внешний архитектурный документ `ai_middle_layer_architecture_ru.md` и подключён к работе AI-OS Bridge как roadmap для MVP; backlog драйверов добавлен в `drivers/README.md`, создана T-025. | `docs/ai_middle_layer_architecture_ru.md`, `темы/information-drivers.md`, `tasks/T-025.md` |
 | 2026-06-20 | Codex | **AI-OS Bridge: старт L1-драйверов.** Q-007 закрыт через D-010; создан каталог `drivers/` с шаблоном и первыми манифестами; заведены T-022..T-024. | `темы/information-drivers.md`, `decisions/D-010.md`, `drivers/README.md` |
 | 2026-06-20 | Novax | **Новый проект: AI-OS Bridge.** Создана тема `ai-os-bridge.md`, задача T-020, вопрос Q-007 с разбором 3 вариантов архитектуры (A/B/C). Концепция: прослойка между ОС и AI-агентами для подключения локальных программ (Codex) и внешних репозиториев (svend4). | `темы/ai-os-bridge.md`, `tasks/T-020.md`, `questions/Q-007.md` |
@@ -82,6 +86,7 @@
 | Worktree-ready build specs (2026-06-23) | `темы/build-specs-2026-06-23.md` | proposed |  |
 | Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1) | `темы/collab-safety-subsystem-2026-06-23.md` | proposed |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
+| D-014 execute OFF ratification packet | `темы/d014-execute-off-ratification-2026-06-23.md` | proposed |  |
 | Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `темы/fleet-designs-2026-06-23.md` | proposed |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft |  |

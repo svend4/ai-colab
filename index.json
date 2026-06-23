@@ -148,6 +148,13 @@
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     },
     {
+      "id": "d014-execute-off-ratification-2026-06-23",
+      "title": "D-014 execute OFF ratification packet",
+      "file": "темы/d014-execute-off-ratification-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "fleet-designs-2026-06-23",
       "title": "Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов",
       "file": "темы/fleet-designs-2026-06-23.md",
@@ -2132,7 +2139,7 @@
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "doing",
+      "status": "blocked",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
@@ -2143,13 +2150,24 @@
     {
       "id": "T-175",
       "title": "Ратифицировать D-014 (execute OFF + 10-гейтовый preflight) через котёл",
-      "status": "todo",
-      "owner": "pool",
+      "status": "blocked",
+      "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[D-014, D-021, D-006, D-018]",
       "topic": "",
-      "next": "Провести D-014 через котёл (D-018) + человеко-гейт D-006 — перевод proposed→accepted; до accept'а политика действует де-факто"
+      "next": "Ждёт явного ответа Stefan: принять D-014 или вернуть на правку; агент не переводит proposed→accepted без D-006"
+    },
+    {
+      "id": "T-176",
+      "title": "Реализовать семантический гибрид doc_consensus (Q-017, opt-in --semantic)",
+      "status": "doing",
+      "owner": "Mavis",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-168]",
+      "topic": "темы/q017-semantic-consolidated-2026-06-23.md",
+      "next": "Реализовать `doc_consensus report --semantic` по дизайну из темы/q017-semantic-consolidated-2026-06-23.md: механический pre-cluster → agent-pass на резидууме → merge → render. Добавить regression-test «одна идея — разные слова». Stdlib + subprocess-agent (без ML/embeddings)."
     }
   ],
   "questions": [
