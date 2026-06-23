@@ -301,13 +301,13 @@ python tools/text_extract.py summary data/knowledge-corpus/README.md
 
 ## Верхняя панель (`top.py`, T-138)
 
-`top.py` группирует существующие инструменты в сценарии, удобные как людям, так и агентам:
+`top.py` группирует существующие инструменты в сценарии, удобные как людям, так и агентам. Если тема уже известна, `agent-start --context "..."` сразу запускает быстрый поиск по канону после onboarding/status.
 
 ```bash
 python tools/top.py buttons
 python tools/top.py status codex
 python tools/top.py health
-python tools/top.py agent-start codex
+python tools/top.py agent-start codex --context "parallel work policy"
 python tools/top.py take codex             # next
 python tools/top.py take codex T-152       # targeted claim
 python tools/top.py snapshot

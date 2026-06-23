@@ -19,6 +19,7 @@
   с поиском**, **конвейер задач**, **переносимая MCP-приёмка**, **skills**.
 - **3 команды, чтобы начать:**
   - `python tools/top.py buttons` — увидеть верхнюю панель сценариев/кнопок;
+  - `python tools/top.py agent-start codex --context "<тема>"` — старт агента + статус + быстрый поиск по канону;
   - `python tools/demo_bridge.py` — увидеть слой в действии (6 способностей за один запуск);
   - `python tools/pipeline.py status` — что сейчас в работе/готово/заблокировано;
   - `python tools/validate.py` — здоров ли канон (должно быть `ERROR=0`).
@@ -48,6 +49,7 @@
   ingest корпуса → состав по типам/рискам → ответ на запрос → markdown-отчёт.
 - `python tools/knowledge.py search <db> <текст>` — **ранжированный поиск (FTS5 + bm25)**;
   `query` — простой LIKE.
+- `python tools/top.py repo-search "<тема>" --limit 5` — быстрый поиск по канонической документации, решениям, вопросам, темам и задачам; runtime-БД в `logs/*.db` не версионируется.
 - `python tools/text_extract.py summary <file>` — безопасное извлечение текста для `.md/.txt/.html`;
   `knowledge.py` использует его, чтобы искать по содержимому документа, а не только по первой строке.
 
@@ -99,9 +101,10 @@
 
 **Агент, который только подключился:**
 1. Прочитай `STATUS.md` → `этот файл §0-1` → `AGENTS.md` (твои права/зона записи).
-2. Зарегистрируй присутствие: `pipeline.py heartbeat <agent> <T-id> --note "..."`.
-3. Возьми работу: `pipeline.py next <agent>` (или сделай то, о чём просил человек).
-4. Сделай → закрой с fencing (`done ... --claim <id>`) → `generate && validate && snapshot`.
+2. Если тема известна, подними контекст: `python tools/top.py agent-start <agent> --context "<тема>"` или `python tools/top.py repo-search "<тема>" --limit 5`.
+3. Зарегистрируй присутствие: `pipeline.py heartbeat <agent> <T-id> --note "..."`.
+4. Возьми работу: `pipeline.py next <agent>` (или сделай то, о чём просил человек).
+5. Сделай → закрой с fencing (`done ... --claim <id> --applied "AGENTS.md, PROTOCOL.md, Checks"`) → `generate && validate && snapshot`.
 5. Значимые правки служебных файлов объясняй в `dialog.md` (формат D-003).
 6. Не уверен — заведи вопрос в `QUESTIONS.md`, не меняй итоговые файлы молча.
 

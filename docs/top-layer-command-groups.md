@@ -8,12 +8,13 @@
 Внутри проекта уже есть много полезных функций: pipeline, validate, generate, capabilities, drift_check, knowledge, drivers, commit_lock. Для агента это нормально, но человеку и новому агенту неудобно помнить десятки отдельных команд.
 
 `tools/top.py` — верхняя панель управления. Она не заменяет низкоуровневые инструменты, а группирует их в сценарии, похожие на кнопки:
+Если агент знает тему задачи заранее, стартуйте так: `python tools\top.py agent-start codex --context "<тема или вопрос>"`. Это сразу показывает onboarding/status и поднимает релевантные решения, политики, вопросы и задачи через `repo-search`.
 
 ```powershell
 python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py health
-python tools\top.py agent-start codex
+python tools\top.py agent-start codex --context "parallel work policy"
 python tools\top.py instruction-preflight codex T-154
 python tools\top.py take codex
 python tools\top.py snapshot
@@ -29,7 +30,7 @@ python tools\top.py repo-search "parallel work policy" --limit 5
 
 | Сценарий | Для человека | Для агента | Что происходит |
 |---|---|---|---|
-| Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding и статус |
+| Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding, статус и опциональный `repo-search --context` |
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
 | Инструкции | понять применимые правила | собрать evidence перед задачей | `instruction-preflight` вызывает `instructions.py preflight` |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |

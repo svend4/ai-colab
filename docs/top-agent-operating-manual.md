@@ -26,7 +26,7 @@ safe_default: read-only
 control_plane: [AGENTS.md, PROTOCOL.md, TASKS.md, pipeline.py, validate.py, generate.py]
 capability_plane: [drivers/, skills/, tools/, docs/, reports/]
 dialog_plane: [темы/, queues/outbox/, docs/*result*.md]
-memory_plane: [drivers/workbench, tools/knowledge.py, reports/, logs/*.db runtime]
+memory_plane: [drivers/workbench, tools/knowledge.py, tools/repo_search.py, reports/, logs/*.db runtime]
 driver_acceptance: D-015, tests + MCP acceptance + second-agent verification
 current_l2_acceptance: sync MCP tools/call 27/27
 current_l6: SQLite workbench, text_extract .md/.txt/.html, FTS5 search, report --out, safe corpus, regression test
@@ -39,6 +39,7 @@ main_blocker: T-020 svend4/orphan claim, no read-only source provided
 ```powershell
 python tools\top.py buttons
 python tools\top.py status codex
+python tools\top.py agent-start codex --context "<task topic>"
 python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
@@ -60,6 +61,7 @@ python tools\test_knowledge.py
 | Skills | `skills/README.md`, `docs/skills-usage.md` | переносимые процедуры |
 | Safety | `docs/driver-safety-policy.md`, `drivers/SCHEMA.md`, `docs/execute-sandbox-preflight.md` | ограничения и запреты |
 | Knowledge workflow | `tools/knowledge.py`, `data/knowledge-corpus/`, `reports/` | обработка корпуса и отчёты |
+| Canon search | `tools/top.py repo-search`, `tools/repo_search.py` | быстрый поиск по docs/decisions/questions/темам/tasks |
 | Top command panel | `tools/top.py` | сценарии/кнопки для людей и агентов |
 | Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
 | История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
@@ -95,6 +97,7 @@ python tools\test_knowledge.py
 read current state
   -> pipeline.py status
   -> pipeline.py next <agent>
+  -> top.py repo-search "<topic/query>" --limit 5
   -> inspect task and related docs
   -> make small scoped change
   -> write docs/outbox/topic rationale
@@ -256,6 +259,7 @@ read current state
 git status --short --untracked-files=all
 python tools\top.py buttons
 python tools\top.py status codex
+python tools\top.py agent-start codex --context "<task topic>"
 python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
@@ -327,6 +331,7 @@ Task должен иметь `owner: pool`, зависимости, `next` и к
 ```powershell
 python tools\knowledge.py report <corpus> --query <term> --out reports\<name>.md
 python tools\knowledge.py search logs\knowledge.db <term>
+python tools\top.py repo-search "<term or topic>" --limit 5
 python tools\text_extract.py summary <file>
 ```
 

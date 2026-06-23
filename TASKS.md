@@ -173,4 +173,5 @@
 | T-157 | Instruction check-report accepts pipeline done applied marker | done | codex | `docs/instruction-assurance.md` | Научить `tools/instructions.py check-report` принимать не только outbox-секцию `## Applied instructions`, но и done-маркер `applied:` / `Applied instructions:`. |
 | T-158 | Pipeline warns when service tasks finish without applied evidence | done | codex | `docs/instruction-assurance.md` | Добавить мягкое предупреждение в `pipeline.py done`, если служебная задача закрывается без `--applied`, не ломая обратную совместимость. |
 | T-159 | Adopt repo_search as top-layer canonical documentation search | done | codex | `docs/top-layer-command-groups.md` | Принять `tools/repo_search.py` как read-mostly поиск по канону, исправить Windows temp в тесте, добавить top/capabilities/docs и не версионировать runtime DB. |
+| T-160 | Add contextual repo-search to agent-start workflow | done | codex | `docs/top-layer-command-groups.md` | Добавить `top.py agent-start --context ...`, обновить cycle/onboarding/manual, чтобы новый агент сразу поднимал релевантный контекст через repo-search. |
 <!-- GEN:tasks END -->

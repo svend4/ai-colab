@@ -30,6 +30,7 @@ def run():
     assert "Top command buttons" in rendered, rendered
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
+    assert "python tools/top.py agent-start <agent> [--context" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py repo-search" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
@@ -37,6 +38,8 @@ def run():
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
+    start_args = parser.parse_args(["agent-start", "codex", "--context", "repo", "search", "--context-limit", "4"])
+    assert start_args.cmd == "agent-start" and start_args.agent == "codex" and start_args.context == ["repo", "search"] and start_args.context_limit == 4, start_args
     ip_args = parser.parse_args(["instruction-preflight", "codex", "T-154", "--json"])
     assert ip_args.cmd == "instruction-preflight" and ip_args.agent == "codex" and ip_args.task == "T-154" and ip_args.json, ip_args
     take_args = parser.parse_args(["take", "codex", "T-152"])

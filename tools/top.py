@@ -10,7 +10,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py health                   # validation/generator/capability checks
-    python tools/top.py agent-start <agent>      # onboard + current state
+    python tools/top.py agent-start <agent> [--context QUERY]  # onboard + current state + repo search
     python tools/top.py instruction-preflight <agent> [T-id]  # applicable rules + evidence template
     python tools/top.py take <agent> [T-id]      # side effect: pipeline next or targeted claim
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
@@ -51,8 +51,8 @@ _BUTTONS = [
     {
         "id": "start-agent",
         "audience": "agent",
-        "command": "python tools/top.py agent-start <agent>",
-        "does": "Подключить агента: onboarding, конвейер, дрейф, активные задачи.",
+        "command": "python tools/top.py agent-start <agent> [--context <query>]",
+        "does": "Подключить агента: onboarding, конвейер, дрейф, активные задачи и быстрый поиск по канону.",
         "effect": "read-only",
     },
     {
@@ -286,6 +286,9 @@ def cmd_health(_args):
 def cmd_agent_start(args):
     rc = _run("onboard", _tool("onboard.py", args.agent), timeout=60)
     _run("top status", [PY, os.path.join(ROOT, "tools", "top.py"), "status", args.agent], timeout=90, fail_ok=True)
+    if args.context:
+        cmd = _tool("repo_search.py", "search", " ".join(args.context), "--limit", str(args.context_limit))
+        _run("repo context search", cmd, timeout=90, fail_ok=True)
     return rc
 
 
@@ -350,12 +353,13 @@ def cmd_cycle(args):
     print("")
     print("1. `python tools/top.py status %s`" % agent)
     print("2. `python tools/top.py take %s`  # save claim_id" % agent)
-    print("3. inspect task + related docs")
-    print("4. make scoped edits; write outbox/topic rationale")
-    print("5. `python tools/top.py health`")
-    print("6. `python tools/pipeline.py done %s <T-id> --claim <claim_id> --report \"...\"`" % agent)
-    print("7. `python tools/top.py snapshot`")
-    print("8. commit with `tools/commit_lock.py` + explicit `git add <files>`")
+    print("3. `python tools/top.py repo-search \"<topic/query>\" --limit 5`  # raise canonical context")
+    print("4. inspect task + related docs")
+    print("5. make scoped edits; write outbox/topic rationale")
+    print("6. `python tools/top.py health`")
+    print("7. `python tools/pipeline.py done %s <T-id> --claim <claim_id> --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\"`" % agent)
+    print("8. `python tools/top.py snapshot`")
+    print("9. commit with `tools/commit_lock.py` + explicit `git add <files>`")
     print("")
     print("Rule: if the decision is architectural or affects people/process, create a proposed decision and leave the task blocked for Stefan/integrator approval.")
     return 0
@@ -439,6 +443,8 @@ def build_parser():
 
     p = sub.add_parser("agent-start", help="onboard an agent")
     p.add_argument("agent")
+    p.add_argument("--context", nargs="+", help="canonical repo-search query to run after status")
+    p.add_argument("--context-limit", type=int, default=5)
     p.set_defaults(func=cmd_agent_start)
 
     p = sub.add_parser("instruction-preflight", help="show applicable instructions and evidence template")

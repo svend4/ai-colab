@@ -1897,6 +1897,17 @@
       "depends_on": "[T-138, T-158]",
       "topic": "docs/top-layer-command-groups.md",
       "next": "Принять `tools/repo_search.py` как read-mostly поиск по канону, исправить Windows temp в тесте, добавить top/capabilities/docs и не версионировать runtime DB."
+    },
+    {
+      "id": "T-160",
+      "title": "Add contextual repo-search to agent-start workflow",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-159]",
+      "topic": "docs/top-layer-command-groups.md",
+      "next": "Добавить `top.py agent-start --context ...`, обновить cycle/onboarding/manual, чтобы новый агент сразу поднимал релевантный контекст через repo-search."
     }
   ],
   "questions": [
