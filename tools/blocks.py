@@ -44,6 +44,22 @@ BLOCKS = {
             ("drift_check.py", [], "advisory"),
         ],
     },
+    "adoption": {
+        "desc": "само-мониторинг применения: dormant-инструменты + doc-only решения + orphan-доки",
+        "steps": [
+            ("adoption.py", [], "advisory"),
+        ],
+    },
+    "self": {
+        "desc": "рекурсивная самопроверка: audit (над ошибками) + adoption (над применением) вместе",
+        "steps": [
+            ("validate.py", [], "gate"),
+            ("generate.py", ["--check"], "gate"),
+            ("friction.py", ["status"], "advisory"),
+            ("assurance.py", [], "advisory"),
+            ("adoption.py", [], "advisory"),
+        ],
+    },
 }
 
 
