@@ -2051,6 +2051,17 @@
       "depends_on": "[T-165]",
       "topic": "docs/instruction-assurance.md",
       "next": "Добавить advisory-проверку ссылок на файлы и Checks-команды в `instructions.py check-report`, тесты, docs и отчёт"
+    },
+    {
+      "id": "T-167",
+      "title": "Normalize conveyor backlog candidate deduplication",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-166]",
+      "topic": "docs/workflow-conveyor-policy.md",
+      "next": "Исправить `conveyor.py next`, чтобы выполненные/запущенные backlog-кандидаты не повторялись из-за дефисов, пробелов или разных формулировок label"
     }
   ],
   "questions": [

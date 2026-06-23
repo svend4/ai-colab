@@ -92,6 +92,10 @@ def run():
         assert len(cands_all) == 2, cands_all
         cands_one = c.backlog_candidates({"workflows": [{"id": "w", "label": "Alpha thing", "state": "inflight"}]}, bpath)
         assert len(cands_one) == 1 and "Beta" in cands_one[0], cands_one
+        with open(bpath, "w", encoding="utf-8", newline="\n") as f:
+            f.write("# x\n\n## Готовы к запуску\n\n1. Instruction check-report: verify referenced files/commands exist\n2. Currency convention: adopt last_verified\n\n## Следующее\n")
+        cands_norm = c.backlog_candidates({"workflows": [{"id": "codex-T-166", "label": "instruction-check-report-refs", "state": "shipped"}]}, bpath)
+        assert len(cands_norm) == 1 and "Currency convention" in cands_norm[0], cands_norm
 
         # --- plan_hierarchy: reduce-дерево 3:1 (динамическое появление уровней) ---
         def top(n, span=3):
@@ -113,7 +117,7 @@ def run():
         assert top(20, span=4)["level"] == 2, c.plan_hierarchy(20, 4)
         assert "L2" in c.render_plan(27, 3, lay27)
 
-        print("TESTS OK conveyor: assess(refill/process/idle/healthy/output refs) + реестр + бэклог + plan(3:1 reduce-дерево)")
+        print("TESTS OK conveyor: assess(refill/process/idle/healthy/output refs) + реестр + нормализованный бэклог + plan(3:1 reduce-дерево)")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

@@ -190,8 +190,32 @@ def render_status(a):
     return "\n".join(L)
 
 
+def _backlog_key(text):
+    return re.split(r"[:(]", text or "")[0].strip()
+
+
+def _norm_key(text):
+    return re.sub(r"[^0-9a-zа-яё]+", " ", (text or "").lower()).strip()
+
+
+def _compact_key(text):
+    return re.sub(r"[^0-9a-zа-яё]+", "", (text or "").lower())
+
+
+def _workflow_index(workflows):
+    raw = " ".join((w.get("label", "") + " " + w.get("id", "")) for w in workflows)
+    return _norm_key(raw), _compact_key(raw)
+
+
+def _candidate_seen(item, launched_norm, launched_compact):
+    key = _backlog_key(item)
+    norm = _norm_key(key)
+    compact = _compact_key(key)
+    return bool((norm and norm in launched_norm) or (len(compact) >= 8 and compact in launched_compact))
+
+
 def backlog_candidates(d, path=BACKLOG):
-    """Темы из «Готовы к запуску» бэклога, ещё НЕ заведённые в реестр (по подстроке label)."""
+    """Темы из «Готовы к запуску» бэклога, ещё НЕ заведённые в реестр (нормализованный label/id dedup)."""
     if not os.path.exists(path):
         return []
     txt = open(path, encoding="utf-8", errors="replace").read()
@@ -199,11 +223,10 @@ def backlog_candidates(d, path=BACKLOG):
     if not m:
         return []
     items = re.findall(r"^\s*\d+\.\s*(.+?)\s*$", m.group(1), re.M)
-    launched = " ".join((w.get("label", "") + " " + w.get("id", "")) for w in d["workflows"]).lower()
+    launched_norm, launched_compact = _workflow_index(d.get("workflows", []))
     out = []
     for it in items:
-        key = re.split(r"[:(]", it)[0].strip().lower()[:18]
-        if key and key not in launched:
+        if not _candidate_seen(it, launched_norm, launched_compact):
             out.append(it.strip())
     return out
 

@@ -180,4 +180,5 @@
 | T-164 | Conveyor landed output refs | done | codex | — | Реализовать `conveyor.py land --output`, JSON-диагностику landed без результата, тест и отчёт |
 | T-165 | Wire assurance dashboard into top command panel | done | codex | `docs/top-layer-command-groups.md` | Добавить `top.py assurance` как advisory/read-only сценарий, обновить тесты, справку и отчёт |
 | T-166 | Add advisory reference checks to instruction reports | done | codex | `docs/instruction-assurance.md` | Добавить advisory-проверку ссылок на файлы и Checks-команды в `instructions.py check-report`, тесты, docs и отчёт |
+| T-167 | Normalize conveyor backlog candidate deduplication | done | codex | `docs/workflow-conveyor-policy.md` | Исправить `conveyor.py next`, чтобы выполненные/запущенные backlog-кандидаты не повторялись из-за дефисов, пробелов или разных формулировок label |
 <!-- GEN:tasks END -->
