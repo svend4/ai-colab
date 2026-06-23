@@ -81,6 +81,7 @@
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft |  |
+| Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed |  |
 <!-- GEN:topics-status END -->
 
 ## Как просить ИИ отреагировать

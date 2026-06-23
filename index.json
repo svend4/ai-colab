@@ -139,6 +139,13 @@
       "file": "темы/gate-poison-situation-2026-06-22.md",
       "status": "draft",
       "next": ""
+    },
+    {
+      "id": "parallel-work-divergences-2026-06-22",
+      "title": "Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017)",
+      "file": "темы/parallel-work-divergences-2026-06-22.md",
+      "status": "proposed",
+      "next": ""
     }
   ],
   "tasks": [
@@ -2112,6 +2119,13 @@
       "status": "accepted",
       "date": "2026-06-22",
       "file": "decisions/D-022.md"
+    },
+    {
+      "id": "D-023",
+      "title": "Ответственность за коммит генерируемых индексов — ownership-aware (commit-your-own / integrator-for-foreign)",
+      "status": "proposed",
+      "date": "2026-06-23",
+      "file": "decisions/D-023.md"
     }
   ],
   "drivers": [
