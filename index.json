@@ -2428,7 +2428,7 @@
     {
       "id": "T-199",
       "title": "Обновить README.md — добавить новые папки (skills, portals, reports, streams, sandbox, tmp-work, core, data)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -2439,7 +2439,7 @@
     {
       "id": "T-200",
       "title": "Коммит — selective-add 145 изменённых строк git status",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -2450,13 +2450,68 @@
     {
       "id": "T-201",
       "title": "Обработать 4 failed-маркера (T-048, T-136, T-174, T-175) — close или block",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Анализ каждого failed, принятие решения, очистка queues/failed/"
+    },
+    {
+      "id": "T-202",
+      "title": "Коммит текущих изменений (selective-add)",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Сделать selective-add коммит через commit_lock.py, validate.py, generate.py"
+    },
+    {
+      "id": "T-203",
+      "title": "Обновить статус-отчёт (docs/status-report-2026-06-23.md)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Обновить или создать новый статус-отчёт с актуальными данными"
+    },
+    {
+      "id": "T-204",
+      "title": "Обновить quickstart-гайды (docs/quickstart.md и docs/agent-quickstart.md)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Добавить новые инструменты, pipeline.py, adoption.py, blocks.py, friction.py, top.py"
+    },
+    {
+      "id": "T-205",
+      "title": "Проверить и обновить STATUS.md (текущий фокус)",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Обновить текущий фокус, активные темы, журнал изменений"
+    },
+    {
+      "id": "T-206",
+      "title": "P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "med",
+      "depends_on": "[D-006]",
+      "topic": "",
+      "next": "Спроектировать строгое определение «safe-auto-apply» (что детектор может чинить БЕЗ человека) + гейт; реализовать только на доказанно-обратимом подмножестве"
     }
   ],
   "questions": [

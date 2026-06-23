@@ -14,3 +14,4 @@ PIPELINE.md
 logs/heartbeat.json
 logs/pipeline.json
 logs/conveyor.json
+logs/adoption-baseline.json

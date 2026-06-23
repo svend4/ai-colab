@@ -219,6 +219,39 @@ def adopt(stream_id, commit, agent="stream", root=None):
         cl.release(agent)
     return {"id": stream_id, "path": p["path"], "adopted_commit": commit}
 
+def archive(apply=False, agent="stream", root=None, max_age_days=14):
+    """P16 (RSI auto-archive): перевести stale-потоки (открытые, старше N дней) в status: archived.
+
+    dry-run по умолчанию (только список); --apply пишет под общим commit-lock (как adopt). Обратимо
+    (git revert / повторный adopt). Закрывает P-11 «кладбище» автоматически, не вручную."""
+    stale = check(root=root, max_age_days=max_age_days)["stale"]
+    if not stale:
+        print("нет stale-потоков для архивации (порог %dд)" % max_age_days)
+        return 0
+    if not apply:
+        print("STALE для авто-архивации (dry-run; добавь --apply):")
+        for s in stale:
+            print("  %-22s status=%-9s age=%dд  %s" % (s["id"], s["status"], s["age_days"], s["path"]))
+        return 0
+    locked = cl.acquire(agent, wait=cl_wait()) == 0
+    if not locked:
+        print("не удалось взять commit-lock для archive")
+        return 1
+    n = 0
+    try:
+        for s in stale:
+            p = _find_packet(s["id"], root)
+            if p is None:
+                continue
+            _rewrite_front_matter(p["path"], {"status": "archived",
+                                              "archived_reason": "auto-archive: stale %dд (P16)" % s["age_days"]})
+            print("archived: %s (%dд)" % (s["id"], s["age_days"]))
+            n += 1
+    finally:
+        cl.release(agent)
+    print("заархивировано %d stale-потоков" % n)
+    return 0
+
 def cl_wait():
     # короткое ожидание лока: тесты герметичны, лок почти всегда свободен
     return 30
@@ -284,6 +317,9 @@ def main():
             for b in r["broken"]:
                 print("  БИТЫЙ  %-22s %s  %s" % (b["id"], b["reason"], b["path"]))
             return 1
+        if cmd == "archive":
+            max_age = int(_argval(argv, "--max-age-days") or 14)
+            return archive(apply="--apply" in argv, root=root, max_age_days=max_age)
     except Exception as exc:
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1

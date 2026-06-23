@@ -10,6 +10,8 @@ CLI:
     python tools/adoption.py            # человекочитаемая сводка
     python tools/adoption.py --json     # машинно
     python tools/adoption.py --list dormant   # списком: dormant|declarative|orphan
+    python tools/adoption.py --save-baseline  # зафиксировать снимок метрик (RSI re-measure)
+    python tools/adoption.py --delta [--json] # дельта vs baseline: сдвинулась ли игла применения
 """
 import os
 from _ioutil import configure_output
@@ -142,6 +144,61 @@ def collect():
     }
 
 
+BASELINE = os.path.join(ROOT, "logs", "adoption-baseline.json")
+
+
+def _flatten(summary):
+    """Сводку → плоские числа для дельты."""
+    return {
+        "tools_applied_pct": summary["tools_applied"][2],
+        "tools_dormant": summary["tools_dormant"],
+        "decisions_pct": summary["decisions_enforced"][2],
+        "docs_cited_pct": summary["docs_cited"][2],
+        "docs_orphan": summary["docs_orphan"],
+    }
+
+
+def save_baseline():
+    summary = collect()["summary"]
+    os.makedirs(os.path.dirname(BASELINE), exist_ok=True)
+    with open(BASELINE, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+    print("baseline сохранён: logs/adoption-baseline.json")
+    return 0
+
+
+def cmd_delta(as_json=False):
+    """RE-MEASURE (P15): дельта текущих метрик против baseline — сдвинулась ли игла применения."""
+    if not os.path.exists(BASELINE):
+        print("нет baseline — сначала `python tools/adoption.py --save-baseline`")
+        return 2
+    with open(BASELINE, encoding="utf-8") as f:
+        old = _flatten(json.load(f))
+    cur = _flatten(collect()["summary"])
+    # знак «лучше»: pct/cited вверх — хорошо; dormant/orphan вниз — хорошо
+    better_up = {"tools_applied_pct", "decisions_pct", "docs_cited_pct"}
+    delta = {}
+    for k in cur:
+        d = cur[k] - old.get(k, cur[k])
+        good = (d > 0) if k in better_up else (d < 0)
+        delta[k] = {"old": old.get(k), "new": cur[k], "delta": d,
+                    "dir": "↑" if d > 0 else ("↓" if d < 0 else "="),
+                    "good": bool(d == 0 or good)}
+    if as_json:
+        print(json.dumps(delta, ensure_ascii=False, indent=2))
+        return 0
+    print("=== ADOPTION ДЕЛЬТА (vs baseline) ===")
+    label = {"tools_applied_pct": "Инструменты применяются %", "tools_dormant": "dormant-инструменты",
+             "decisions_pct": "Решения code-linked %", "docs_cited_pct": "Доки cited %",
+             "docs_orphan": "orphan-доки"}
+    for k, v in delta.items():
+        mark = "" if v["delta"] == 0 else ("  ✓" if v["good"] else "  ⚠")
+        print("  %-26s %s → %s  (%s%d)%s" % (label[k], v["old"], v["new"], v["dir"], v["delta"], mark))
+    moved = sum(1 for v in delta.values() if v["delta"] != 0)
+    print("\nИгла сдвинулась по %d метрикам%s" % (moved, "" if moved else " (нет изменений vs baseline)"))
+    return 0
+
+
 def cmd_report(as_json=False, list_kind=None):
     data = collect()
     if list_kind:
@@ -179,6 +236,10 @@ def cmd_report(as_json=False, list_kind=None):
 def main(argv):
     args = list(argv)
     as_json = "--json" in args
+    if "--save-baseline" in args:
+        return save_baseline()
+    if "--delta" in args:
+        return cmd_delta(as_json=as_json)
     list_kind = None
     if "--list" in args:
         i = args.index("--list")
