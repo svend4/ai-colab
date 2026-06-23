@@ -23,11 +23,13 @@
 Для быстрой диагностики состояния перед работой:
 
 ```bash
-python tools/friction.py status
-python tools/drift_check.py
-python tools/onboard.py <agent>
-python tools/top.py buttons
-python tools/top.py health
+python tools/pipeline.py status     # посмотреть что в конвейере
+python tools/top.py health          # общая сводка по проекту
+python tools/friction.py status     # точки трения (заблокированные задачи и др.)
+python tools/drift_check.py         # проверка рассинхронизации
+python tools/onboard.py <agent>     # вводная для агента
+python tools/adoption.py check      # проверка внедрения новшеств (если применимо)
+python tools/blocks.py scan         # проверка D-016 (блочные артефакты)
 ```
 
 ## Шаг 3. Как взять задачу (для агентов)

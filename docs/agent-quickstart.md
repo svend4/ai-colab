@@ -102,21 +102,25 @@ Pre-commit hook (`tools/githooks/pre-commit`) автоматически зап�
 Перед большой правкой или коммитом агент может быстро проверить верхний слой и типовые проблемы:
 
 ```bash
+python tools/pipeline.py status
+python tools/top.py health
 python tools/friction.py status
 python tools/drift_check.py
 python tools/onboard.py <agent>
 python tools/commit_lock.py status
-python tools/top.py buttons
-python tools/top.py health
+python tools/adoption.py check
+python tools/blocks.py scan
 ```
 
 Назначение:
 
 | Инструмент | Что показывает |
 |---|---|
+| `pipeline.py status` | состояние конвейера: готовые к взятию, в работе, заблокированные задачи |
+| `top.py health` | validate/generate/capabilities/driver catalog как общий health-check |
 | `friction.py status` | грязное дерево, stale indexes, gate-poison, lock, temp-проблемы и рецепты |
 | `drift_check.py` | дрейф между документацией/индексом и текущими фактами |
 | `onboard.py <agent>` | краткий вход агента: стадия, драйверы, execute policy, конвейер, активные задачи |
 | `commit_lock.py status` | свободна ли серийная точка git commit |
-| `top.py buttons` | верхняя панель команд для людей и агентов |
-| `top.py health` | validate/generate/capabilities/driver catalog как общий health-check |
+| `adoption.py check` | проверка внедрения обязательных практик и инструментов |
+| `blocks.py scan` | поиск сиротских или нелегальных блочных артефактов (D-016) |
