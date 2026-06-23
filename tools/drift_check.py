@@ -14,6 +14,7 @@ import os
 import re
 import sys
 import glob
+import json
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,6 +64,25 @@ def scan_layer_drift(docs_dir):
     return out
 
 
+def _assurance_currency_drift(out):
+    """HIGH-находки секции currency из `assurance.py currency --json` как строки дрейфа.
+
+    Только HIGH (битые СТРУКТУРНЫЕ ссылки + ссылки на superseded-решения) — это настоящий
+    content-дрейф docs↔факт. Info-нудж «без last_verified» и структурные orphan-L1/flow сюда НЕ идут
+    (это не дрейф, а известное состояние) — чтобы drift_check не шумел. Никогда не падает.
+    """
+    drift = []
+    try:
+        data = json.loads(out or "")
+    except ValueError:
+        return drift
+    for s in data.get("sections", []):
+        for f in s.get("findings", []):
+            if f.get("level") == "high":
+                drift.append("assurance currency: %s" % (f.get("msg") or ""))
+    return drift
+
+
 def scan_legacy_queue(files):
     """Входные инструкции, всё ещё ссылающиеся на legacy queue.py (актуально pipeline.py)."""
     out = []
@@ -91,6 +111,10 @@ def run():
     m = re.search(r"ERROR=(\d+)", out)
     if m and int(m.group(1)) > 0:
         drift.append("validate: ERROR=%s" % m.group(1))
+
+    # 2b. content-дрейф ссылок (assurance currency: битые структурные / superseded)
+    rc, out = _run("assurance.py", "currency", "--json")
+    drift.extend(_assurance_currency_drift(out))
 
     # 3. дрейф нумерации слоёв (J)
     for fn in scan_layer_drift(os.path.join(ROOT, "docs")):
