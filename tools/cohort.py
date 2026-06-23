@@ -18,10 +18,13 @@ side-effect команды (`turn`, `ship`) только ПЕЧАТАЮТ пла
     python tools/cohort.py turn  <agent> [--run] # безопасная параллельная смена агента (взять→контекст→гейт→ship)
     python tools/cohort.py gate  <agent>         # пред-merge гейт (merge_gate: validate+generate --check+permissions)
     python tools/cohort.py guard                 # ТРИГГЕРЫ Уровня-1 (Q-015 B): стоит ли уйти в --worktree
-    python tools/cohort.py ship  <agent> <file...> [--run]  # коммит под commit_lock + selective-add (политика Ур.0)
+    python tools/cohort.py ship  <agent> <file...> [--run] [--strict]  # коммит под commit_lock + selective-add (Ур.0); --strict отказывает при foreign/same-file
     python tools/cohort.py self                  # САМОХОСТИНГ: движок проверяет/чинит сам себя, что улучшить дальше
 
 Добавь `--json` к board/plan/self для машинно-читаемого вывода.
+Добавь `--strict` к guard/ship/turn (opt-in, дефолт off — зеркало friction/pipeline --strict): обязательные
+триггеры Уровня-1 (foreign-source, same-file; Q-013/D-022 §1,§4) делают exit!=0 и заставляют ship ОТКАЗАТЬ
+в коммите в общее дерево. Прочие триггеры остаются recommended (печать, не блок).
 """
 import os
 import re
@@ -41,6 +44,12 @@ SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "те
 # Hot-files: генерируемые индексы и активно правимые соседом инструменты — править соло опасно.
 HOT_FILES = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json",
              "tools/top.py", "tools/portal.py", "tools/capabilities.py", "tools/generate.py"}
+
+# MANDATORY триггеры (Q-013:124 / D-022 §1 A,E §4 Вариант-1): только same-file коллизия и чужой
+# STALE-источник (foreign) — единственные ДОКАЗАННЫЕ потери. Остальные триггеры (hot-tool,
+# stale-index, gate-poison) — recommended (печать, не блок). В --strict только эти двое возвращают
+# nonzero и заставляют ship отказать в коммите в общее дерево.
+MANDATORY_TRIGGERS = ("foreign-source", "same-file")
 
 
 def configure_output():
@@ -196,14 +205,18 @@ def plan(n=2, as_json=False):
 
 # ---------------------------------------------------------------- turn
 
-def turn(agent, do_run=False):
+def turn(agent, do_run=False, strict=False):
     """Безопасная параллельная смена одного агента: контекст -> взять -> работать -> гейт -> ship.
 
     Авто-эскалация (D-022 п.1): перед сменой проверяем триггеры Уровня-1 (guard) — если активны,
     лучше уйти в свой worktree, а не коммитить в общее дерево."""
     print("=== СМЕНА АГЕНТА: %s ===" % agent)
     print("\nТриггеры Уровня-1 (guard) перед стартом:")
-    guard(agent=agent)
+    grc = guard(agent=agent, strict=strict)
+    if strict and grc != 0:
+        print("\n--strict: обязательный триггер Уровня-1 активен — смена остановлена. "
+              "Уйди в worktree (flow.py start --worktree --run), затем повтори turn.")
+        return grc
     _, mine = _run("pipeline.py", "mine", agent)
     print("\nТвои активные задачи:")
     for l in (mine.strip().splitlines() or ["  (нет)"])[:6]:
@@ -243,7 +256,7 @@ def gate(agent):
 
 # ---------------------------------------------------------------- ship
 
-def ship(agent, files, message=None, do_run=False):
+def ship(agent, files, message=None, do_run=False, strict=False):
     """Полный безопасный цикл коммита в общем дереве (политика Уровень 0):
     commit_lock (сериализация) → selective-add (только свои файлы) → regenerate (чтобы pre-commit hook
     не падал на устарелости от чужих незакоммиченных правок) → commit → release. Индексы regenerate
@@ -251,6 +264,18 @@ def ship(agent, files, message=None, do_run=False):
     if not files:
         print("ship: укажи файлы (selective-add; никогда git add -A в общем дереве)")
         return 2
+    if strict:  # opt-in blocking (mirrors friction/pipeline --strict): обязательный триггер -> ОТКАЗ
+        norm = [f.replace("\\", "/") for f in files]
+        foreign = set(own.summary(norm, agent=agent)["by"]["foreign"])
+        same_file = {p for p in norm if p in _foreign_branch_files(self_agent=agent)}
+        hit = sorted(foreign | same_file)
+        if hit:
+            kinds = (["foreign-source"] if foreign else []) + (["same-file"] if same_file else [])
+            print("ОТКАЗ (--strict): %s — обязательный триггер Уровня-1 (%s). "
+                  "Коммит в общее дерево запрещён: уйди в worktree "
+                  "(python tools/flow.py start %s <task> --worktree --run) и влей через merge_gate." %
+                  (", ".join(hit), ", ".join(kinds), agent))
+            return 1
     msg = message or "ship(%s): %s" % (agent, ", ".join(files))
     plan_cmds = [
         ("взять commit-lock (сериализация)", [sys.executable, "tools/commit_lock.py", "acquire", agent]),
@@ -333,7 +358,32 @@ def self_host(as_json=False):
 
 # ---------------------------------------------------------------- guard (триггеры Уровня-1)
 
-def guard(as_json=False, agent=None):
+def _foreign_branch_files(self_agent=None):
+    """Пути, затронутые незамёрженными ветками ДРУГИХ агентов (agent/<other>/<task>).
+
+    Read-only: для каждой ветки agent/* (кроме своей) берём файлы её коммитов, ещё не влитых
+    в HEAD (git diff --name-only HEAD...branch). Это «другой агент уже трогает этот файл в своём
+    притоке» — основа same-file детекта (LS-2, D-022 §4 Вариант-1). Никогда не бросает."""
+    rc, out = _git("for-each-ref", "--format=%(refname:short)", "refs/heads/agent")
+    files = set()
+    for br in (out or "").splitlines():
+        br = br.strip()
+        if not br.startswith("agent/"):
+            continue
+        # agent/<name>/<task> — пропустить СВОЮ ветку
+        parts = br.split("/")
+        if self_agent and len(parts) >= 2 and parts[1] == self_agent:
+            continue
+        rc2, diff = _git("diff", "--name-only", "HEAD...%s" % br)
+        if rc2 == 0:
+            for ln in diff.splitlines():
+                p = ln.strip().replace("\\", "/")
+                if p:
+                    files.add(p)
+    return files
+
+
+def guard(as_json=False, agent=None, strict=False):
     """Детектор триггеров Уровня-1 (Q-015 B / D-022): связывает ли текущее состояние агентов так,
     что лучше уйти в свой worktree (--worktree), а не коммитить в общее дерево. Снимает LS-5
     (нет видимости, что правит сосед). Ownership-aware (T-153): триггерит только на ЧУЖИЕ
@@ -347,6 +397,9 @@ def guard(as_json=False, agent=None):
     paths = [norm(p) for _code, p in changed]
     # foreign = source-файл, привязанный к задаче ДРУГОГО агента (не свой/generated/volatile/unknown).
     foreign = sorted(own.summary(paths, agent=agent)["by"]["foreign"])
+    # same-file = мой dirty-путь, который ДРУГОЙ агент уже трогает в своём притоке (LS-2, D-022 §4).
+    fb = _foreign_branch_files(self_agent=agent)
+    same_file = sorted({p for p in paths if p in fb})
     # hot-tools: общие ИНСТРУМЕНТЫ (не генерируемые индексы — те регенерируются) — правка соседом = коллизия.
     hot_set = {h for h in HOT_FILES if h.startswith("tools/")}
     hot_tools = sorted({p for p in paths if p in hot_set})
@@ -362,6 +415,8 @@ def guard(as_json=False, agent=None):
     triggers = []
     if foreign:
         triggers.append({"trigger": "foreign-source", "files": foreign, "recipe": "foreign"})
+    if same_file:
+        triggers.append({"trigger": "same-file", "files": same_file, "recipe": "foreign"})
     if hot_tools:
         triggers.append({"trigger": "hot-tool", "files": hot_tools, "recipe": "dirty"})
     if stale:
@@ -369,10 +424,15 @@ def guard(as_json=False, agent=None):
     if poison:
         triggers.append({"trigger": "gate-poison", "files": poison_errs or ["validate ERROR>0"], "recipe": "gate-poison"})
     level1 = bool(triggers)
+    # mandatory = подмножество, которое в --strict БЛОКИРУЕТ (foreign-source, same-file).
+    mandatory = [t for t in triggers if t["trigger"] in MANDATORY_TRIGGERS]
+    blocked = strict and bool(mandatory)
 
     if as_json:
-        print(json.dumps({"level1_recommended": level1, "triggers": triggers}, ensure_ascii=False, indent=2))
-        return 0
+        print(json.dumps({"level1_recommended": level1, "triggers": triggers,
+                          "mandatory": [t["trigger"] for t in mandatory],
+                          "strict": strict, "blocked": blocked}, ensure_ascii=False, indent=2))
+        return 1 if blocked else 0
     line = "=" * 60
     print(line); print("COHORT GUARD — триггеры Уровня-1 (Q-015 B / D-022)"); print(line)
     if not triggers:
@@ -390,8 +450,12 @@ def guard(as_json=False, agent=None):
         "УРОВЕНЬ-1 → `python tools/flow.py start <agent> <task> --worktree --run` (свой индекс/дерево)"
         if level1 else
         "УРОВЕНЬ-0 ок → `python tools/cohort.py ship <agent> <files> --message \"...\" --run`"))
+    if blocked:
+        print("\n  [STRICT BLOCK] обязательные триггеры: %s — коммит в общее дерево ОТКЛОНЁН. "
+              "Уйди в worktree (flow.py start --worktree) и вливай через merge_gate." %
+              ", ".join(t["trigger"] for t in mandatory))
     print(line)
-    return 0
+    return 1 if blocked else 0
 
 
 # ---------------------------------------------------------------- CLI
@@ -405,6 +469,7 @@ def main():
     rest = a[1:]
     as_json = _flag(rest, "--json")
     do_run = _flag(rest, "--run")
+    strict = _flag(rest, "--strict")
     pos = [x for x in rest if not x.startswith("--")]
     try:
         if cmd == "board":
@@ -413,11 +478,11 @@ def main():
             n = int(pos[0]) if pos and pos[0].isdigit() else 2
             return plan(n=n, as_json=as_json)
         if cmd == "turn" and pos:
-            return turn(pos[0], do_run=do_run)
+            return turn(pos[0], do_run=do_run, strict=strict)
         if cmd == "gate" and pos:
             return gate(pos[0])
         if cmd == "guard":
-            return guard(as_json=as_json, agent=pos[0] if pos else None)
+            return guard(as_json=as_json, agent=pos[0] if pos else None, strict=strict)
         if cmd == "ship":
             r = list(rest)
             msg = None
@@ -427,8 +492,8 @@ def main():
                 del r[i:i + 2]  # убрать флаг + значение, чтобы оно не попало в файлы
             p = [x for x in r if not x.startswith("--")]
             if len(p) >= 2:
-                return ship(p[0], p[1:], message=msg, do_run=do_run)
-            return ship(p[0] if p else "", [], message=msg, do_run=do_run)
+                return ship(p[0], p[1:], message=msg, do_run=do_run, strict=strict)
+            return ship(p[0] if p else "", [], message=msg, do_run=do_run, strict=strict)
         if cmd == "self":
             return self_host(as_json=as_json)
     except Exception as exc:  # noqa: BLE001 — единая точка, понятная ошибка вместо трейсбэка

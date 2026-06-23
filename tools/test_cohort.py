@@ -56,6 +56,17 @@ def run():
         assert "level1_recommended" in d and "triggers" in d, "guard json без триггеров"
         assert isinstance(d["triggers"], list), "guard triggers должен быть списком"
 
+        # guard --strict --json: surfaces strict/blocked/mandatory keys; на чистом репо НЕ блокирует
+        _, out = _run("guard", "--json", "--strict")
+        d = json.loads(out)
+        for k in ("strict", "blocked", "mandatory"):
+            assert k in d, "guard --strict json без %r" % k
+        assert d["strict"] is True, "guard --strict должен ставить strict=true"
+        # на репо без обязательных триггеров blocked=false и rc=0 (default-safe инвариант)
+        rc, _ = _run("guard", "--strict")
+        if not d["mandatory"]:
+            assert rc == 0, "guard --strict без обязательных триггеров не должен блокировать"
+
         # turn БЕЗ --run: только печать плана, ничего не делает
         _, out = _run("turn", "claude")
         assert "печать" in out, "turn должен быть dry без --run"
@@ -70,6 +81,14 @@ def run():
         # ship без файлов — подсказка
         _, out = _run("ship", "claude")
         assert "укажи файлы" in out, "ship без файлов — подсказка"
+
+        # ship --strict без файлов всё ещё даёт подсказку (флаг не ломает empty-guard)
+        _, out = _run("ship", "claude", "--strict")
+        assert "укажи файлы" in out, "ship --strict без файлов — подсказка"
+        # ship --strict не блокирует на ЧИСТОМ пути (не foreign, не same-file) — dry-план печатается
+        rc, out = _run("ship", "claude", "tools/cohort.py", "--strict")
+        # либо обычный dry-план (rc 0), либо ОТКАЗ если tools/cohort.py реально foreign/same-file в этот момент
+        assert ("печать" in out) or ("ОТКАЗ" in out), "ship --strict: либо план, либо явный отказ"
 
         print("TESTS OK cohort: board/self/plan --json валидны; turn/ship dry-by-default")
     except (AssertionError, ValueError) as e:

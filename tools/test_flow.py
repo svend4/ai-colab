@@ -46,6 +46,13 @@ def run():
         assert "git merge --no-ff agent/claude/T-140" in out, out
         assert "git worktree remove" in out and "git branch -D agent/claude/T-140" in out, out
 
+        # merge-back race close (P4 EDIT 6): пост-merge регенерация индексов в merge-commit (dry)
+        out = _run("finish", "mavis", "T-020", "--worktree")
+        assert out.count("tools/generate.py") >= 2, "merge-back: нужен пост-merge regenerate"
+        assert "commit --amend" in out, "merge-back: индексы должны вкладываться в merge-commit"
+        # post-merge gate присутствует после merge (закрытие гонки flow.py:141)
+        assert out.rfind("merge_gate.py") > out.find("git merge"), "пост-merge гейт после merge"
+
         # Внешний launcher запускает sub-agent, а repo-flow печатает воспроизводимый handoff.
         out = _run("launch-plan", "mavis", "T-200", "parallel", "policy", "--worktree")
         assert "# Sub-agent launch plan" in out, out

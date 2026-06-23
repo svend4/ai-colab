@@ -190,14 +190,25 @@ def main():
         )
     if cmd == "finish" and len(args) >= 3:
         b = branch_name(args[1], args[2])
-        if use_worktree:  # Уровень-1: регенерация (снять чужой generate-stale) -> гейт -> merge -> снять приток
+        if use_worktree:  # Уровень-1: регенерация -> гейт -> merge -> РЕГЕН-НА-MERGED -> verify -> снять приток
             import worktree as wt
             # generate.py перед гейтом сглаживает merge-back wall: чужая незакоммиченная задача делает
             # общий индекс STALE → merge_gate RED. Регенерируем индексы (не-staged) — merge приносит
-            # только ветку, индексы оставляем владельцу источников. (Узкая гонка остаётся — retry.)
+            # только ветку, индексы оставляем владельцу источников.
+            # Остаточная гонка (была flow.py:141): чужой коммит мог приземлиться МЕЖДУ пред-merge гейтом и
+            # самим merge → слитый HEAD снова STALE, хотя гейт был зелёным. Закрываем: после merge
+            # РЕГЕНЕРИРУЕМ индексы НА УЖЕ-СЛИТОМ коммите и amend'им их в merge-commit (changeset
+            # самосогласован), затем повторный merge_gate подтверждает green-после-merge. Если повторный
+            # гейт КРАСНЫЙ — run_or_print останавливается с nonzero ДО снятия притока (приток цел для retry).
             cmds = [[sys.executable, "tools/generate.py"],
                     [sys.executable, "tools/merge_gate.py", "check", args[1]],
-                    ["git", "merge", "--no-ff", b, "-m", "Merge %s" % b]] + wt.remove_cmds(args[1], args[2])
+                    ["git", "merge", "--no-ff", b, "-m", "Merge %s" % b],
+                    [sys.executable, "tools/generate.py"],
+                    ["git", "add",
+                     "TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json"],
+                    ["git", "commit", "--amend", "--no-edit"],
+                    [sys.executable, "tools/merge_gate.py", "check", args[1]]]
+            cmds += wt.remove_cmds(args[1], args[2])
             return run_or_print(cmds, do_run)
         return run_or_print(
             [

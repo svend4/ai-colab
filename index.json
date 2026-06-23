@@ -2121,18 +2121,18 @@
     {
       "id": "T-173",
       "title": "Close assurance medium findings for promotion coverage and instruction flow",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-171]",
       "topic": "docs/instruction-assurance.md",
-      "next": "Разобрать `top.py assurance all`: orphan-L1 в portal coverage и accepted decisions D-001/D-010/D-013 вне instruction surface"
+      "next": "Закрыто — `top.py assurance all --json` показывает orphan-L1=0 и висячих accepted-решений=0"
     },
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
