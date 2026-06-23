@@ -466,6 +466,65 @@ Max прислал исследовательскую версию разбор�
 
 Жду голосов Stefan: (1) закрыть Q-008? (2) перевести T-020 → done? (3) открыть T-029 (validate.py extensions)? (4) удалить typo-файл?
 
+### 2026-06-23 13:55 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений после 3-дневного простоя — масштабный рост архитектуры**
+
+Полный отчёт — в `темы/infrastructure-review.md` (новая запись после Mavis 12:55).
+
+**HEAD:** `b4457e9 feat: P8 (SOLVER) — Q-017 report --semantic в doc_consensus.py`
+
+**Масштаб изменений за 3 дня (×6 рост системы):**
+
+| Метрика | 2026-06-20 | 2026-06-23 | Рост |
+|---|---|---|---|
+| Tasks | 28 | **174** | ×6.2 |
+| Decisions | 12 | 23 (20 accepted, 3 proposed) | ×1.9 |
+| Questions | 12 | 17 (5 open) | ×1.4 |
+| Topics | 12 | 36 | ×3 |
+| Очередь done | 7 | **138** | ×19.7 |
+| Drivers | 4 | 10 | ×2.5 |
+| Skills | 0 | 5 | new |
+| Порталы | 0 | 2 | new |
+
+**Зелёное (стабильно):**
+- `validate.py`: **9 OK / 0 WARN / 0 ERROR** (добавили `drivers tools: 7 манифестов сверены с @mcp.tool() серверов`)
+- Pipeline: 1 ready (T-174), 1 blocked (T-020)
+- Validator чист на 174 задачах.
+
+**Главное за 3 дня:**
+
+1. **Q-008 закрыт через D-013!** Моё предложение (вариант B) принято: driver schema v1 с 18 обязательными полями (включая `source_last_verified`, `timeout_seconds`, `max_output_bytes`, `audit`). Front-matter Q-008.md обновлён.
+2. **D-018** — Коллективное принятие решений через «котёл»: спорные вопросы через конвейер + двойная перепроверка (техническая + гуманитарная).
+3. **D-022** — Детальная политика параллельной работы: триггеры Level-1 (worktree-на-агента), STALE-индекс авто-регенерация, разделение canonical/volatile (LIVE.md, PIPELINE.md, logs/* → gitignore), 3 варианта для same-file parallelism.
+4. **Архитектура:** drivers/SCHEMA.md v1, drivers/CATALOG.md + drivers/index.json, skills/ (5 штук), portals/ (2 L2-портала + example), tools/cohort.py / friction.py / instructions.py / top.py, ~50 новых тестов в tools/test_*.py.
+5. **Top-layer orchestrator (depth-3 reduce):** пирамидальная структура продюсеры → бригады → дирижёры → оркестр (3:1).
+6. **Conveyor pattern:** серийная интеграция в одну историю (138 done-маркеров — агенты реально используют pipeline).
+7. **Новые архитектурные доки:** top-layer-throughput-methodology, instruction-assurance, parallel-work-policy (50 под-случаев), project-audit-2026-06-23.
+8. **MCP infrastructure:** mcp_acceptance_test.py, mcp_sync_acceptance.py, mcp_handshake_test.py, gateway driver.
+
+**🔴 Всё ещё висит: `driversrepo-runnerfixture-report.json`** (0 байт, корень, ВНЕ ЗОНЫ, 3 дня без движения).
+
+**Что я НЕ делаю (по политике):**
+
+- Не открываю новые Q/T/D без явного голоса Stefan.
+- Не удаляю typo-файл (вне моей зоны).
+- Не беру T-174 (WinError-5 async-stdio MCP) — звучит как technical/maintainer.
+- Не правлю maintainer-файлы (`tools/`, `portals/`, `skills/`, `docs/project-audit*`).
+
+**Готов сделать по голосам:**
+
+1. Удалить `driversrepo-runnerfixture-report.json` (typo, mavis-trash).
+2. Взять T-174 (если Stefan подтвердит мою зону).
+3. Закрыть Q-009 формально (если svend4 суперсided).
+4. Закрыть Q-010 формально (если `темы/` → `topics/` решено).
+5. Открыть T-029 (validate.py extensions per SCHEMA.md).
+6. Краткий пересказ ключевых архитектурных решений (D-018, D-022, top-layer orchestrator) в `темы/infrastructure-review.md` для maintainer-контекста.
+
+**Моё мнение:** система выросла из «мета-инфраструктуры» в **полноценную мультиагентную платформу**: drivers, skills, portals, котёл/conveyor, двойная перепроверка. Моя роль — обозреватель/консолидатор. Канон зелёный (9/0/0), validator реально проверяет архитектуру (drivers v1 + mcp.tool servers).
+
+Жду голосов.
+
 ### 2026-06-20 09:15 - Novax (Europe/Berlin)
 
 **Результаты поиска svend4 + текущее состояние проекта**

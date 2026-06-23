@@ -962,3 +962,121 @@ AI-OS Bridge дошёл до **первой рабочей L2-формы**: read
 5. **Очередной candidate:** `T-029` (резерв `next_id.py`). Логично открыть как «расширить `validate.py` проверками по SCHEMA.md §76-87» — это естественное продолжение. Но без явного голоса — не делаю.
 
 Стою на паузе.
+
+### 2026-06-23 13:55 - Mavis (Europe/Berlin)
+
+**Перепроверка обновлений после 3-дневного простоя — масштабный рост архитектуры**
+
+**Контекст:** Stefan попросил «Перепроверка обновлений дальнейшей работы и дальнейшие работы и так далее» в 13:49. За 3 дня простоя (2026-06-20 12:55 → 2026-06-23 13:49) произошёл **масштабный рост системы**: ~30 новых коммитов, ~138 новых done-маркеров в очереди, рост всех метрик в 4–6 раз.
+
+**HEAD:** `b4457e9 feat: P8 (SOLVER) — Q-017 report --semantic в doc_consensus.py (opt-in, default byte-identical)`
+
+**Зелёное (стабильно):**
+- `validate.py`: **9 OK / 0 WARN / 0 ERROR** (3 дня назад было 8 OK).
+- `generate.py --check`: STALE → после моего `generate.py` зелёное.
+- `pipeline.py status`: 0 в работе / 1 готов (T-174) / 1 заблокирован (T-020).
+- Очередь: `inbox=2`, `claimed=0`, `done=138` (было 7!), `failed=2`.
+- Permissions check: всё в моей зоне `[ok]`, вне зоны — maintainer-файлы (`tools/`, `portals/`, `skills/`, `.claude/`).
+
+**Масштаб изменений (за 3 дня):**
+
+| Метрика | Было (2026-06-20 12:55) | Стало (2026-06-23 13:50) | Рост |
+|---|---|---|---|
+| Задачи | 28 (27 done, 1 doing) | **174** (172 done, 1 blocked, 1 todo) | **×6.2** |
+| Решения | 12 (all accepted) | 23 (20 accepted, 3 proposed) | ×1.9 |
+| Вопросы | 12 (9 answered, 3 open) | 17 (12 answered, **5 open**) | ×1.4 |
+| Темы | 12 | **36** | ×3 |
+| Очередь done | 7 | **138** | ×19.7 |
+| Drivers | 4 | 10 (codex-local, data, file-inventory, files, gateway, git-log, repo-runner, sqlite, workbench, workbench-db) | ×2.5 |
+| Skills | 0 | 5 (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator) | new |
+| Порталы | 0 | 2 (bridge-knowledge, repo-inventory) + example | new |
+| Outbox reports | ~5 | ~80 | ×16 |
+
+**Что произошло (выборка из 30 коммитов):**
+
+1. **Q-008 закрыт** через **D-013 (Driver schema v1, вариант B)**. Моё предложение принято! Все 4 рекомендованных поля (`source_last_verified`, `timeout_seconds`, `max_output_bytes`, `audit`) — обязательные. 18 полей total. Front-matter Q-008.md обновлён: `status: answered`, `outcome: Принят вариант B (driver schema v1) — обязательные поля манифеста зафиксированы. См. D-013.`
+
+2. **Q-012 закрыт** через **D-012 (Heartbeat, добровольный)** — было принято ещё до моего простоя.
+
+3. **Новые решения:**
+   - **D-014** — minor (174 байт)
+   - **D-015** — technical status по драйверам
+   - **D-016** — friction-architecture
+   - **D-017** — про fork/форки
+   - **D-018** — **«Коллективное принятие решений через котёл»** — meta-decision о governance: все спорные вопросы через котёл/конвейер + двойная перепроверка (техническая + гуманитарная)
+   - **D-019** — ?
+   - **D-020** — крупное (5729 байт)
+   - **D-021** — worktree-на-агента pattern
+   - **D-022** — **«Детальная политика параллельной работы»** — триггеры Level-1 (worktree), STALE-индекс авто-регенерация, разделение canonical/volatile (LIVE.md, PIPELINE.md, logs/* → gitignore), three variants for same-file parallelism
+   - **D-023** — ?
+
+4. **Архитектурные новшества:**
+   - **drivers/SCHEMA.md v1** — мой Q-008 ответ реализован в коде
+   - **drivers/CATALOG.md** + **drivers/index.json** — каталог драйверов
+   - **drivers/audit.py**, **drivers/redaction.py**, **drivers/mcp_acceptance_test.py**, **drivers/mcp_sync_acceptance.py**, **drivers/mcp_sync_probe.py**, **drivers/mcp_handshake_test.py** — тесты и acceptance
+   - **skills/** — 5 навыков с собственными SKILL.md
+   - **portals/** — 2 портала (bridge-knowledge, repo-inventory) + example, с L2 reduce
+   - **tools/cohort.py**, **tools/friction.py**, **tools/instructions.py**, **tools/top.py** — новые инструменты
+   - **tools/test_*.py** — тесты для всех инструментов
+   - **docs/parallel-work-policy.md** — детальная политика (50 под-случаев)
+   - **docs/top-layer-throughput-methodology.md**, **docs/top-layer-command-groups.md**, **docs/instruction-assurance.md** — новые методологии
+   - **docs/project-audit-2026-06-23.md** — аудит проекта
+
+5. **Новые подходы:**
+   - **Top-layer orchestrator** (depth-3 reduce) — пирамидальная структура: продюсеры → бригады → дирижёры → оркестр (3:1)
+   - **Conveyor plan** — серийная интеграция в одну историю (consolidation паттерн)
+   - **Reuse derive** — scan-derived переиспользование L1→L2
+   - **SOLVER pattern** — Q-017 semantic reporting
+   - **Bridge-knowledge + repo-inventory portals** — L2-порталы из драйверов
+   - **Friction-archetypes** — классификация friction
+
+6. **Новые задачи** (T-013..T-174 — это ~160 задач): большая часть done, готовых только 1 (T-174, WinError-5 async-stdio MCP).
+
+7. **Котёл/conveyor работает**: ~138 done-маркеров в `queues/done/` за 3 дня — агенты реально используют pipeline.
+
+**Текущее состояние (на 13:55):**
+
+| Что | Значение |
+|---|---|
+| HEAD | `b4457e9` |
+| Tasks | **174** (172 done, 1 blocked=T-020, 1 todo=T-174) |
+| Decisions | 23 (20 accepted, 3 proposed — это `accepted`, `proposed`, `draft`, `needs-decision`, `waiting`, `open` темы — D-013..D-023) |
+| Questions | 17 (12 answered + 5 open) |
+| Topics | 36 (6 done / 6 open / 18 proposed / 2 archive / 1 accepted / 1 draft / 1 needs-decision / 1 waiting) |
+| Validator | **9 OK / 0 WARN / 0 ERROR** |
+| Pipeline | 1 ready (T-174), 1 blocked (T-020) |
+| Drivers | 10 модулей |
+| Skills | 5 |
+| Порталы | 2 |
+| Working tree | **грязный** (24 modified + 13 untracked) |
+
+**🔴 Всё ещё висит: `driversrepo-runnerfixture-report.json`**
+
+Странный файл из моего 12:55 отчёта — пустой (0 байт) файл в корне репо, ВНЕ ЗОНЫ для всех агентов. После 3 дней никто не удалил. Конкатенация `drivers/repo-runner/fixture-report.json` без `/`. Я не удаляю без явного голоса (вне моей зоны, и это прецедент для maintainer).
+
+**Мои открытия/наблюдения:**
+
+1. **Q-008 закрыт** через D-013 — моё предложение (вариант B) принято.
+2. **Q-009 still open** (svend4 location) — Stefan не ответил. Возможно, после 3 дней работы он решил не svend4-сценарий, а реальные продукты (workbench, files, sqlite).
+3. **Q-010 still open** (`темы/` → `topics/`). Видимо, отложено.
+4. **T-020 finally blocked** (was: doing без claim → blocked). Это правильное состояние.
+5. **T-174 ready** (normal) — Track WinError-5 async-stdio MCP acceptance blocker. Я могу взять, если Stefan скажет. Звучит как technical MCP-проблема, может быть не моей зоны.
+6. **3 proposed decisions** (D-014?, D-021?, D-023?) — нужны голоса для перевода в accepted.
+7. **Гигантский рост docs/**: top-layer-throughput, instruction-assurance, project-audit, parallel-work-policy — глубокие design-документы. Не всё в моей зоне для редактирования, но могу читать для понимания архитектуры.
+
+**Дальнейшая работа (что я могу сделать по голосам Stefan):**
+
+1. **Закрыть typo `driversrepo-runnerfixture-report.json`** через mavis-trash — Stefan говорит «да», и я удаляю.
+2. **Взять T-174** (WinError-5 async-stdio MCP acceptance) — если Stefan считает это в моей зоне.
+3. **Закрыть Q-009 формально** (если svend4 больше не в фокусе — answer = «superseeded by workbench/files/sqlite drivers»).
+4. **Закрыть Q-010 формально** (если `темы/` → `topics/` решено делать позже/никогда).
+5. **Прочитать и кратко пересказать в `темы/infrastructure-review.md`** ключевые архитектурные решения (D-018, D-022, top-layer orchestrator) — для maintainer-контекста.
+6. **Открыть T-029** (если ещё не сделано) — резерв `next_id.py` для расширения `validate.py` проверками по SCHEMA.md §76-87.
+
+**Моё мнение (финальное по 3-дневному простою):**
+
+Система выросла из «мета-инфраструктуры для самой себя» в **полноценную мультиагентную платформу**: drivers, skills, portals, cohort/friction/instructions tools, top-layer orchestrator, котёл/conveyor, двойная перепроверка (D-018), политика параллельной работы (D-022). Это серьёзная архитектура для AI-агентской работы.
+
+**Моя роль** сейчас — обозреватель/консолидатор: перепроверять состояние, консолидировать изменения (как в `7506489`, `220c62d`), и предлагать следующие шаги. Не гонюсь за активной работой — наблюдаю и жду голосов. Канон зелёный (9/0/0), validator теперь проверяет не только базовые вещи, но и `drivers tools: 7 манифестов сверены с @mcp.tool() серверов` — это серьёзное расширение.
+
+Стою на паузе.
