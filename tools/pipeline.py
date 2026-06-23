@@ -54,6 +54,8 @@ LIVE_MD = os.path.join(ROOT, "LIVE.md")
 HEARTBEAT_JSON = os.path.join(LOGS, "heartbeat.json")
 PRANK = {"high": 0, "normal": 1, "low": 2, "": 1}
 DEFAULT_TTL_MIN = 30
+SERVICE_TOPIC_PREFIXES = ("docs/", "tools/", "decisions/", "drivers/", "core/", "portals/", "collab/", "sandbox/")
+SERVICE_TITLE_WORDS = ("pipeline", "instruction", "commit", "merge", "gate", "policy", "driver", "governance", "sandbox", "portal", "index", "evidence")
 
 
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
@@ -78,6 +80,8 @@ def collect_tasks():
             "status": fm.get("status", "todo"),
             "priority": fm.get("priority", "normal"),
             "owner": fm.get("owner", "—"),
+            "topic": fm.get("topic", ""),
+            "risk": fm.get("risk", ""),
             "deps": re.findall(r"T-\d+", fm.get("depends_on", "")),
             "path": path,
         }
@@ -318,6 +322,14 @@ def _check_holder(tid, agent, claim_id):
     return None
 
 
+def _needs_applied_evidence(task):
+    topic = (task.get("topic") or "").replace("\\", "/")
+    title = (task.get("title") or "").lower()
+    if any(topic.startswith(prefix) for prefix in SERVICE_TOPIC_PREFIXES):
+        return True
+    return any(word in title for word in SERVICE_TITLE_WORDS)
+
+
 def cmd_done(agent, tid, report, claim_id=None, applied=None):
     tasks = collect_tasks()
     if tid not in tasks:
@@ -327,6 +339,8 @@ def cmd_done(agent, tid, report, claim_id=None, applied=None):
     if err:
         print("ОШИБКА: " + err)
         return 1
+    if not applied and _needs_applied_evidence(tasks[tid]):
+        print("WARN: %s закрывается без --applied; для служебных задач добавляй evidence применённых инструкций" % tid)
     set_status(tasks[tid]["path"], "done")
     marker_text = report or "done"
     if applied:

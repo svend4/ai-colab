@@ -8,7 +8,8 @@
      без claim_id — backward-compatible (как раньше);
   2. done чужим агентом отклоняется (старое поведение сохранено);
   3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель;
-  4. targeted claim: success/busy/not-ready/placeholder без wrong-next.
+  4. applied-warning: служебная задача без --applied получает WARN, обычная нет;
+  5. targeted claim: success/busy/not-ready/placeholder без wrong-next.
 
 Изолированный COLLAB_ROOT во временной папке; pipeline импортируется ПОСЛЕ установки env.
 """
@@ -16,6 +17,8 @@ import os
 import sys
 import shutil
 import threading
+import contextlib
+import io
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(TOOLS)
@@ -31,12 +34,12 @@ sys.path.insert(0, TOOLS)  # tools/
 import pipeline as P
 
 
-def _make_task(tid, status="todo", title="t", deps="[]"):
+def _make_task(tid, status="todo", title="t", deps="[]", topic=""):
     path = os.path.join(ROOT, "tasks", "%s.md" % tid)
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write("---\nid: %s\ntype: task\ntitle: %s\nstatus: %s\nowner: pool\n"
-                "priority: normal\nrisk: low\ndepends_on: %s\nnext: x\n---\n# t\n"
-                % (tid, title, status, deps))
+                "priority: normal\nrisk: low\ntopic: %s\ndepends_on: %s\nnext: x\n---\n# t\n"
+                % (tid, title, status, topic, deps))
     return path
 
 
@@ -71,10 +74,24 @@ def run():
         p902 = _make_task("T-902")
         cid2 = P.try_claim("T-902", "claude")
         P.set_status(p902, "doing")
-        assert P.cmd_done("claude", "T-902", "r") == 0, \
-            "done без claim_id должен работать (backward compat)"
+        ordinary_done = io.StringIO()
+        with contextlib.redirect_stdout(ordinary_done):
+            assert P.cmd_done("claude", "T-902", "r") == 0, \
+                "done без claim_id должен работать (backward compat)"
+        assert "WARN:" not in ordinary_done.getvalue(), ordinary_done.getvalue()
 
-        # --- 3. атомарный перехват протухшего claim: ровно 1 победитель ---
+        # --- 3. applied-warning для служебных задач ---
+        p908 = _make_task("T-908", topic="docs/instruction-assurance.md")
+        cid3 = P.try_claim("T-908", "codex")
+        assert cid3, "service warning setup claim не выдан"
+        P.set_status(p908, "doing")
+        service_done = io.StringIO()
+        with contextlib.redirect_stdout(service_done):
+            assert P.cmd_done("codex", "T-908", "r", claim_id=cid3) == 0, \
+                "служебная задача без --applied должна закрываться мягко"
+        assert "WARN: T-908" in service_done.getvalue(), service_done.getvalue()
+
+        # --- 4. атомарный перехват протухшего claim: ровно 1 победитель ---
         # Гонка флакичная, поэтому гоняем МНОГО раундов: одиночный прогон её прятал
         # (ровно так баг двойного захвата дожил до перепроверки T-084).
         rounds = 16
@@ -115,7 +132,7 @@ def run():
                 % (rnd, len(winners), results)
             assert P.claim_is_fresh("T-901"), "раунд %d: после перехвата claim должен быть свежим" % rnd
 
-        # --- 4. targeted claim: success/busy/not-ready/placeholder ---
+        # --- 5. targeted claim: success/busy/not-ready/placeholder ---
         _make_task("T-903")
         assert P.cmd_claim("codex", "T-903") == 0, "targeted claim ready должен проходить"
         h = P.claim_holder("T-903") or {}
@@ -143,7 +160,7 @@ def run():
 
         assert P.cmd_claim("codex", "T-999") == 1, "missing task должен отклоняться"
 
-        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; claim success/busy/not-ready/placeholder ok"
+        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; applied-warning ok; claim success/busy/not-ready/placeholder ok"
               % rounds)
     except AssertionError as e:
         ok = False

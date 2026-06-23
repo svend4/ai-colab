@@ -171,4 +171,5 @@
 | T-155 | Harden instruction preflight and doc-consensus diagnostics | done | codex | `темы/assurance-and-doc-merge-2026-06-22.md` | Исправить `instructions.py preflight <agent>` без T-id, перевести `test_doc_consensus.py` на project-safe temp и расширить `doc_consensus.py` на H1/абзацы для коротких Q-файлов. |
 | T-156 | Pipeline done --applied evidence marker | done | codex | `docs/instruction-assurance.md` | Добавить мягкий флаг `--applied` в `pipeline.py done`, чтобы done-маркер хранил evidence применённых инструкций без поломки старого сценария. |
 | T-157 | Instruction check-report accepts pipeline done applied marker | done | codex | `docs/instruction-assurance.md` | Научить `tools/instructions.py check-report` принимать не только outbox-секцию `## Applied instructions`, но и done-маркер `applied:` / `Applied instructions:`. |
+| T-158 | Pipeline warns when service tasks finish without applied evidence | done | codex | `docs/instruction-assurance.md` | Добавить мягкое предупреждение в `pipeline.py done`, если служебная задача закрывается без `--applied`, не ломая обратную совместимость. |
 <!-- GEN:tasks END -->

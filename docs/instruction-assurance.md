@@ -88,7 +88,7 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --applied "AGENTS.md, PROTOCOL.md, docs/instruction-assurance.md, Checks"
 ```
 
-`--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`. `tools/instructions.py check-report` принимает оба формата: подробный outbox-блок `## Applied instructions` и короткий pipeline done-маркер.
+`--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`. `tools/instructions.py check-report` принимает оба формата: подробный outbox-блок `## Applied instructions` и короткий pipeline done-маркер. Начиная с T-158, `pipeline.py done` печатает warning для service/governance-задач без `--applied`; это промежуточная стадия перед возможным strict gate.
 
 ## Моё мнение
 
@@ -96,7 +96,7 @@ python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --ap
 
 ## Дальше
 
-1. Перевести `--applied` из мягкого маркера в проверяемое правило для новых служебных задач после нескольких успешных прогонов.
+1. После нескольких успешных warning-прогонов решить, какие service/governance-задачи можно переводить на strict `--applied` gate.
 2. Расширить `tools/instructions.py check-report`, чтобы проверять ссылки на реально существующие файлы и команды проверок.
 3. Связать preflight с `merge_gate.py`, но только после нескольких ручных прогонов.
 4. Добавить instruction freshness index: `status`, `last_verified`, `applies_to`, `supersedes` для ключевых docs.

@@ -1875,6 +1875,17 @@
       "depends_on": "[T-156]",
       "topic": "docs/instruction-assurance.md",
       "next": "Научить `tools/instructions.py check-report` принимать не только outbox-секцию `## Applied instructions`, но и done-маркер `applied:` / `Applied instructions:`."
+    },
+    {
+      "id": "T-158",
+      "title": "Pipeline warns when service tasks finish without applied evidence",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-156, T-157]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Добавить мягкое предупреждение в `pipeline.py done`, если служебная задача закрывается без `--applied`, не ломая обратную совместимость."
     }
   ],
   "questions": [
