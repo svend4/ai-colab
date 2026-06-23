@@ -1947,6 +1947,17 @@
       "depends_on": "[T-013, T-136, T-159, T-160]",
       "topic": "docs/agent-launch-workflow.md",
       "next": "Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест."
+    },
+    {
+      "id": "T-162",
+      "title": "Add JSON output for sub-agent handoff launch plans",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-161]",
+      "topic": "docs/agent-launch-workflow.md",
+      "next": "Реализовать `flow.py launch-plan --json` и `top.py subagent-handoff --json`, обновить тесты, docs и capabilities."
     }
   ],
   "questions": [

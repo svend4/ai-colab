@@ -3,6 +3,7 @@
 """Тест flow.py — обвязка Уровня-1 (--worktree) и сохранность ветко-режима (Уровень-0). Dry-by-default."""
 import os
 import sys
+import json
 import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +56,16 @@ def run():
         assert "python tools/pipeline.py claim mavis T-200" in out, out
         assert "python tools/flow.py finish mavis T-200 --worktree" in out, out
 
-        print("TESTS OK flow: --worktree обвязка + launch-plan handoff + Ур.0 цел")
+        out = _run("launch-plan", "mavis", "T-200", "parallel", "policy", "--worktree", "--json")
+        data = json.loads(out)
+        assert data["schema"] == "subagent_launch_plan.v1", data
+        assert data["agent"] == "mavis" and data["task"] == "T-200", data
+        assert data["repo_lane"]["mode"] == "worktree", data
+        assert data["commands"]["prepare"] == ["python", "tools/flow.py", "start", "mavis", "T-200", "--worktree"], data
+        assert data["commands"]["finish_text"] == "python tools/flow.py finish mavis T-200 --worktree", data
+        assert 'python tools/top.py agent-start mavis --context "parallel policy"' in data["worker_prompt"], data
+
+        print("TESTS OK flow: --worktree обвязка + launch-plan markdown/json handoff + Ур.0 цел")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

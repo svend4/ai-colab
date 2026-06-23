@@ -113,10 +113,13 @@ python tools\top.py work-mode <agent> <T-id> --parallel --hot-files
 
 ## Дальнейшее развитие
 
-Следующий практический шаг — JSON-режим. Желаемый будущий интерфейс:
+## JSON-режим для оркестратора
+
+После T-162 launch-пакет доступен не только как Markdown, но и как чистый JSON:
 
 ```powershell
 python tools\flow.py launch-plan mavis T-161 "context" --worktree --json
+python tools\top.py subagent-handoff mavis T-161 "context" --worktree --json
 ```
 
-Пока `--json` не реализован, Markdown-output уже полезен для людей и агентов. Позже JSON можно дать GUI-кнопке, ChatGPT App, MCP tool или серверному scheduler.
+JSON содержит `schema: subagent_launch_plan.v1`, `agent`, `task`, `context`, `repo_lane`, `commands.prepare`, `commands.finish`, `worker_prompt`, `policies` и `checks`. Это формат для GUI-кнопки, ChatGPT App, MCP tool или серверного scheduler. Markdown-output остаётся дефолтом для человека.

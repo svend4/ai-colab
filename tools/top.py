@@ -18,7 +18,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py repo-search <query> [--limit N] [--json]
     python tools/top.py cycle <agent>            # print safe work cycle template
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
-    python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree]
+    python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree] [--json]
 """
 import argparse
 import json
@@ -184,7 +184,7 @@ _BUTTONS = [
     {
         "id": "subagent-handoff",
         "audience": "both",
-        "command": "python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree]",
+        "command": "python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree] [--json]",
         "does": "Подготовить launch-пакет для внешнего sub-agent: repo lane, prompt, старт и finish-команды.",
         "effect": "read-only",
     },
@@ -377,6 +377,19 @@ def cmd_subagent_handoff(args):
     cmd = _tool("flow.py", "launch-plan", args.agent, args.task, *args.context)
     if args.worktree:
         cmd.append("--worktree")
+    if args.json:
+        cmd.append("--json")
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=45)
+            if p.stdout:
+                print(p.stdout.strip())
+            if p.stderr:
+                print(p.stderr.strip(), file=sys.stderr)
+            return p.returncode
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
     return _run("subagent handoff", cmd, timeout=45)
 
 
@@ -504,6 +517,7 @@ def build_parser():
     p.add_argument("task")
     p.add_argument("context", nargs="*")
     p.add_argument("--worktree", action="store_true")
+    p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_subagent_handoff)
 
     p = sub.add_parser("work-mode", help="recommend Level 0 shared tree or Level 1 worktree")
