@@ -25,6 +25,7 @@ CLI:
 """
 import os
 import sys
+import glob
 import shutil
 import datetime
 
@@ -89,6 +90,47 @@ def _list_field(value):
     return [x.strip() for x in s.split(",") if x.strip()]
 
 
+def _manifest_l1_tokens(base):
+    """Токены L1-инвентаря: basename из core/engine-manifest.md `files:` + все core/*.md."""
+    tokens = set()
+    man = os.path.join(base, L1_DIR, "engine-manifest.md")
+    for rel in _list_field(_read_fm(man).get("files")):
+        bn = os.path.basename(rel.replace("\\", "/").strip())
+        if bn:
+            tokens.add(bn)
+    for md in glob.glob(os.path.join(base, L1_DIR, "*.md")):
+        tokens.add(os.path.basename(md))
+    return tokens
+
+
+def derive_reuse(root=None):
+    """Вывести ФАКТИЧЕСКОЕ повторное использование L1-токенов порталами (scan-derived, не самодекларация).
+
+    Чинит two-channel grounding (Q-016/pyramid): `reused_in` не имел писателей и был непроходим/подделываем.
+    Для каждого `portals/*/portal.md` собираем его `l1_basis` + тела markdown каталога портала; токен L1
+    помечается reused-by-<portal_id>, если его basename встречается подстрокой. Возвращает {token: set(portal_ids)}.
+    """
+    base = _root(root)
+    tokens = _manifest_l1_tokens(base)
+    reuse = {t: set() for t in tokens}
+    for pm in glob.glob(os.path.join(base, L2_DIR, "*", "portal.md")):
+        pdir = os.path.dirname(pm)
+        fm = _read_fm(pm)
+        pid = (fm.get("id") or os.path.basename(pdir)).strip()
+        blob_parts = list(_list_field(fm.get("l1_basis")))
+        for md in glob.glob(os.path.join(pdir, "*.md")):
+            try:
+                with open(md, encoding="utf-8", errors="replace") as f:
+                    blob_parts.append(f.read())
+            except OSError:
+                pass
+        blob = "\n".join(blob_parts)
+        for t in tokens:
+            if t and t in blob:
+                reuse[t].add(pid)
+    return reuse
+
+
 def _has_decision_ref(fm):
     for k in ("decision_ref", "decision", "decisions"):
         v = (fm.get(k) or "").strip()
@@ -137,10 +179,17 @@ def _gate_L3_L2(path, fm, root):
 
 
 def _gate_L2_L1(path, fm, root):
-    reused = _list_field(fm.get("reused_in"))
+    # derived: считаем РАЗНЫЕ порталы, реально ссылающиеся на артефакт (scan), а не самодекларацию reused_in
+    token = os.path.basename(path)
+    reuse = derive_reuse(root)
+    portals = set()
+    for t, pids in reuse.items():
+        if token == t or token in t or t in token:
+            portals |= pids
+    decision_override = _has_decision_ref(fm)
     return [
-        ("reuse_across_portals", len(reused) >= 2,
-         "доказано повторное применение в >=2 порталах (поле reused_in)"),
+        ("reuse_across_portals", len(portals) >= 2 or decision_override,
+         "повторное применение в >=2 порталах (derive_reuse-скан), либо decision-ref override (D-NNN)"),
         ("verification", _has_verification(fm),
          "строгая проверка: тесты ядра зелёные / verification-ссылка"),
         ("no_domain_coupling",
