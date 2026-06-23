@@ -2333,7 +2333,7 @@
     {
       "id": "T-191",
       "title": "Реализация семантического гибрида для doc_consensus.py",
-      "status": "todo",
+      "status": "doing",
       "owner": "codex",
       "priority": "normal",
       "risk": "medium",
@@ -2351,6 +2351,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen"
+    },
+    {
+      "id": "T-193",
+      "title": "Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно"
     }
   ],
   "questions": [
