@@ -1,0 +1,2727 @@
+{
+  "path": "C:\\Users\\stefan\\Documents\\New project ai colab",
+  "mode": "read-only",
+  "max_files": 300,
+  "include_hidden": false,
+  "hash_files": false,
+  "truncated": true,
+  "summary": {
+    "total_files": 300,
+    "total_size_bytes": 1104646,
+    "by_extension": {
+      ".md": 252,
+      ".json": 11,
+      ".txt": 3,
+      ".csv": 1,
+      ".py": 32,
+      ".sql": 1
+    },
+    "by_type": {
+      "text": 268,
+      "code": 32
+    },
+    "risk_flags": {}
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "size_bytes": 4083,
+      "mtime": "2026-06-19T23:02:31",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "board.md",
+      "size_bytes": 4941,
+      "mtime": "2026-06-21T10:03:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "DECISIONS.md",
+      "size_bytes": 2404,
+      "mtime": "2026-06-20T17:15:45",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "dialog.md",
+      "size_bytes": 111581,
+      "mtime": "2026-06-21T11:59:49",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "driversrepo-runnerfixture-report.json",
+      "size_bytes": 0,
+      "mtime": "2026-06-20T12:31:30",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "index.json",
+      "size_bytes": 57523,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "LIVE.md",
+      "size_bytes": 690,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "participants.md",
+      "size_bytes": 853,
+      "mtime": "2026-06-19T23:02:31",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "PIPELINE.md",
+      "size_bytes": 1409,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "PROTOCOL.md",
+      "size_bytes": 8115,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "QUESTIONS.md",
+      "size_bytes": 4962,
+      "mtime": "2026-06-20T17:15:45",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 7156,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "STATUS.md",
+      "size_bytes": 19260,
+      "mtime": "2026-06-21T10:02:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "TASKS.md",
+      "size_bytes": 25985,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "code/README.md",
+      "size_bytes": 465,
+      "mtime": "2026-06-19T13:21:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "data/README.md",
+      "size_bytes": 2427,
+      "mtime": "2026-06-20T15:44:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/EXPECTED.md",
+      "size_bytes": 2103,
+      "mtime": "2026-06-20T15:52:03",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/README.md",
+      "size_bytes": 1433,
+      "mtime": "2026-06-20T15:45:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/sample-data.json",
+      "size_bytes": 250,
+      "mtime": "2026-06-20T15:45:40",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/sample-doc.md",
+      "size_bytes": 265,
+      "mtime": "2026-06-20T15:45:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/sample-notes.txt",
+      "size_bytes": 152,
+      "mtime": "2026-06-20T15:45:39",
+      "extension": ".txt",
+      "type": "text",
+      "mime": "text/plain",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/sample-table.csv",
+      "size_bytes": 156,
+      "mtime": "2026-06-20T15:45:41",
+      "extension": ".csv",
+      "type": "text",
+      "mime": "application/vnd.ms-excel",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/nested/case-outline.txt",
+      "size_bytes": 131,
+      "mtime": "2026-06-20T15:45:46",
+      "extension": ".txt",
+      "type": "text",
+      "mime": "text/plain",
+      "risk_flags": []
+    },
+    {
+      "path": "data/fixtures/nested/topic-summary.md",
+      "size_bytes": 149,
+      "mtime": "2026-06-20T15:45:43",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-001.md",
+      "size_bytes": 726,
+      "mtime": "2026-06-19T21:53:09",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-002.md",
+      "size_bytes": 806,
+      "mtime": "2026-06-19T21:53:11",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-003.md",
+      "size_bytes": 887,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-004.md",
+      "size_bytes": 891,
+      "mtime": "2026-06-19T21:53:17",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-005.md",
+      "size_bytes": 808,
+      "mtime": "2026-06-19T21:53:20",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-006.md",
+      "size_bytes": 913,
+      "mtime": "2026-06-19T21:53:24",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-007.md",
+      "size_bytes": 936,
+      "mtime": "2026-06-19T21:53:26",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-008.md",
+      "size_bytes": 1023,
+      "mtime": "2026-06-19T21:53:28",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-009.md",
+      "size_bytes": 1668,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-010.md",
+      "size_bytes": 2322,
+      "mtime": "2026-06-20T08:28:34",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-011.md",
+      "size_bytes": 2027,
+      "mtime": "2026-06-20T11:40:15",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-012.md",
+      "size_bytes": 1486,
+      "mtime": "2026-06-20T12:22:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-013.md",
+      "size_bytes": 2742,
+      "mtime": "2026-06-20T17:12:03",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "decisions/D-014.md",
+      "size_bytes": 174,
+      "mtime": "2026-06-20T16:59:46",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/agent-layer-design.md",
+      "size_bytes": 27728,
+      "mtime": "2026-06-20T07:46:49",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/agent-quickstart.md",
+      "size_bytes": 4399,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/agent-roles-matrix.md",
+      "size_bytes": 9350,
+      "mtime": "2026-06-20T15:14:20",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/ai_middle_layer_architecture_ru.md",
+      "size_bytes": 40723,
+      "mtime": "2026-06-19T12:18:29",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/data-folder-plan.md",
+      "size_bytes": 5363,
+      "mtime": "2026-06-20T15:17:55",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/driver-acceptance-batch-2026-06-21.md",
+      "size_bytes": 7677,
+      "mtime": "2026-06-21T08:44:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/driver-safety-policy.md",
+      "size_bytes": 4000,
+      "mtime": "2026-06-20T15:15:20",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/driver-schema-acceptance-checklist.md",
+      "size_bytes": 3216,
+      "mtime": "2026-06-20T15:53:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/driver-tests-result-2026-06-21.md",
+      "size_bytes": 4038,
+      "mtime": "2026-06-21T08:27:41",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/files-driver-hardening.md",
+      "size_bytes": 3578,
+      "mtime": "2026-06-20T16:14:48",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/files-mcp-acceptance-blocked-2026-06-21.md",
+      "size_bytes": 2447,
+      "mtime": "2026-06-21T10:48:51",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/glossary.md",
+      "size_bytes": 9493,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/implementation-stage-report-2026-06-20.md",
+      "size_bytes": 10471,
+      "mtime": "2026-06-20T18:24:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/ingest-acceptance-result-2026-06-21.md",
+      "size_bytes": 1770,
+      "mtime": "2026-06-21T12:04:40",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/ingest-hardening.md",
+      "size_bytes": 2977,
+      "mtime": "2026-06-20T16:54:30",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/l2-candidates.md",
+      "size_bytes": 5218,
+      "mtime": "2026-06-20T16:46:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/layers-coverage.md",
+      "size_bytes": 3476,
+      "mtime": "2026-06-20T14:13:02",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/mcp-handshake-result-2026-06-21.md",
+      "size_bytes": 1999,
+      "mtime": "2026-06-21T07:55:46",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/mcp-stdio-windows-pipe-diagnostics-2026-06-21.md",
+      "size_bytes": 1730,
+      "mtime": "2026-06-21T11:48:49",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/middle-layer-guide.md",
+      "size_bytes": 38132,
+      "mtime": "2026-06-20T09:06:56",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/mvp-roadmap.md",
+      "size_bytes": 11175,
+      "mtime": "2026-06-20T12:51:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/pipeline-guards-result-2026-06-21.md",
+      "size_bytes": 1174,
+      "mtime": "2026-06-21T08:43:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/pipeline-operator-guide.md",
+      "size_bytes": 3751,
+      "mtime": "2026-06-20T14:14:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/pipeline-orphan-doing-detection.md",
+      "size_bytes": 2764,
+      "mtime": "2026-06-20T18:07:26",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/pipeline-placeholder-gating.md",
+      "size_bytes": 3046,
+      "mtime": "2026-06-20T17:45:43",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/powershell-utf8-output.md",
+      "size_bytes": 2972,
+      "mtime": "2026-06-20T19:47:13",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/quickstart.md",
+      "size_bytes": 3355,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/README.md",
+      "size_bytes": 3083,
+      "mtime": "2026-06-20T15:53:49",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/repo-runner-mcp-hardening.md",
+      "size_bytes": 3242,
+      "mtime": "2026-06-20T16:28:58",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/runtime-diagnostics.md",
+      "size_bytes": 3778,
+      "mtime": "2026-06-20T19:39:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/runtime-powershell-check-2026-06-20.md",
+      "size_bytes": 3870,
+      "mtime": "2026-06-20T19:16:03",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/runtime-recovery-playbook.md",
+      "size_bytes": 4963,
+      "mtime": "2026-06-20T17:23:08",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/runtime-unblock-result-2026-06-21.md",
+      "size_bytes": 1667,
+      "mtime": "2026-06-21T10:00:38",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/runtime-validation-batch-2026-06-20.md",
+      "size_bytes": 4307,
+      "mtime": "2026-06-20T19:39:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/state-reconciliation-layer.md",
+      "size_bytes": 8054,
+      "mtime": "2026-06-20T17:34:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/status-report-2026-06-20.md",
+      "size_bytes": 37948,
+      "mtime": "2026-06-20T18:40:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/test-corpus-plan.md",
+      "size_bytes": 3911,
+      "mtime": "2026-06-20T15:18:09",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/workbench-acceptance-result-2026-06-21.md",
+      "size_bytes": 1642,
+      "mtime": "2026-06-21T12:00:50",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "docs/workbench-hardening.md",
+      "size_bytes": 3245,
+      "mtime": "2026-06-20T16:44:36",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/audit.py",
+      "size_bytes": 2586,
+      "mtime": "2026-06-21T10:31:29",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/CATALOG.md",
+      "size_bytes": 1173,
+      "mtime": "2026-06-21T08:25:29",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/codex-local.md",
+      "size_bytes": 1791,
+      "mtime": "2026-06-21T11:22:09",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/data.md",
+      "size_bytes": 1784,
+      "mtime": "2026-06-21T11:21:56",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/file-inventory.md",
+      "size_bytes": 1620,
+      "mtime": "2026-06-20T17:04:43",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files.md",
+      "size_bytes": 2530,
+      "mtime": "2026-06-21T08:25:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/gateway.md",
+      "size_bytes": 5411,
+      "mtime": "2026-06-21T08:25:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/index.json",
+      "size_bytes": 2446,
+      "mtime": "2026-06-21T08:25:29",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/mcp_acceptance_test.py",
+      "size_bytes": 7329,
+      "mtime": "2026-06-21T10:42:14",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/mcp_handshake_test.py",
+      "size_bytes": 1481,
+      "mtime": "2026-06-20T18:07:35",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/README.md",
+      "size_bytes": 4796,
+      "mtime": "2026-06-20T12:55:31",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/redaction.py",
+      "size_bytes": 2114,
+      "mtime": "2026-06-21T10:19:22",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/repo-runner.md",
+      "size_bytes": 3811,
+      "mtime": "2026-06-21T11:22:04",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/SCHEMA.md",
+      "size_bytes": 7123,
+      "mtime": "2026-06-21T11:24:41",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/test_audit.py",
+      "size_bytes": 1352,
+      "mtime": "2026-06-21T11:05:03",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/test_tmp.py",
+      "size_bytes": 812,
+      "mtime": "2026-06-21T10:42:00",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench-schema.md",
+      "size_bytes": 3768,
+      "mtime": "2026-06-20T13:57:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench.md",
+      "size_bytes": 2570,
+      "mtime": "2026-06-20T16:44:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/_template.md",
+      "size_bytes": 1056,
+      "mtime": "2026-06-20T12:55:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/codex-local/codex_local.py",
+      "size_bytes": 2640,
+      "mtime": "2026-06-20T17:45:15",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/codex-local/mcp_server.py",
+      "size_bytes": 1468,
+      "mtime": "2026-06-21T10:32:56",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/codex-local/test_codex_local.py",
+      "size_bytes": 974,
+      "mtime": "2026-06-20T17:45:55",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/data/data_driver.py",
+      "size_bytes": 5085,
+      "mtime": "2026-06-21T10:19:50",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/data/mcp_server.py",
+      "size_bytes": 1863,
+      "mtime": "2026-06-21T10:32:02",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/data/test_data.py",
+      "size_bytes": 2374,
+      "mtime": "2026-06-21T10:20:09",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/file-inventory/fixture-report.json",
+      "size_bytes": 132792,
+      "mtime": "2026-06-21T12:06:58",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/file-inventory/inventory.py",
+      "size_bytes": 7960,
+      "mtime": "2026-06-21T12:06:22",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/file-inventory/README.md",
+      "size_bytes": 359,
+      "mtime": "2026-06-20T17:04:40",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/file-inventory/test_inventory.py",
+      "size_bytes": 2349,
+      "mtime": "2026-06-21T12:06:23",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files/files_driver.py",
+      "size_bytes": 7572,
+      "mtime": "2026-06-21T08:29:06",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files/inventory.py",
+      "size_bytes": 6315,
+      "mtime": "2026-06-20T13:03:16",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files/mcp_server.py",
+      "size_bytes": 2619,
+      "mtime": "2026-06-20T16:14:30",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files/test_files.py",
+      "size_bytes": 2732,
+      "mtime": "2026-06-21T10:42:05",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/files/test_inventory.py",
+      "size_bytes": 3511,
+      "mtime": "2026-06-21T10:42:10",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/gateway/mcp_server.py",
+      "size_bytes": 3793,
+      "mtime": "2026-06-20T17:14:01",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/repo-runner/fixture-report.json",
+      "size_bytes": 5311,
+      "mtime": "2026-06-20T12:34:37",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/repo-runner/inventory.py",
+      "size_bytes": 7020,
+      "mtime": "2026-06-20T16:27:34",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/repo-runner/mcp_server.py",
+      "size_bytes": 2810,
+      "mtime": "2026-06-21T10:32:41",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/repo-runner/test_inventory.py",
+      "size_bytes": 2894,
+      "mtime": "2026-06-20T16:27:35",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/ingest.py",
+      "size_bytes": 5018,
+      "mtime": "2026-06-20T19:23:39",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/search.py",
+      "size_bytes": 2285,
+      "mtime": "2026-06-20T17:46:30",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/test_ingest.py",
+      "size_bytes": 2326,
+      "mtime": "2026-06-21T12:02:49",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/test_search.py",
+      "size_bytes": 1337,
+      "mtime": "2026-06-21T12:02:50",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/test_workbench.py",
+      "size_bytes": 2998,
+      "mtime": "2026-06-21T11:58:35",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench/workbench.py",
+      "size_bytes": 7121,
+      "mtime": "2026-06-20T16:40:43",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench-db/init.py",
+      "size_bytes": 1095,
+      "mtime": "2026-06-20T17:13:25",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench-db/query.py",
+      "size_bytes": 4304,
+      "mtime": "2026-06-20T17:13:25",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench-db/schema.sql",
+      "size_bytes": 2698,
+      "mtime": "2026-06-20T17:13:25",
+      "extension": ".sql",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "drivers/workbench-db/test_db.py",
+      "size_bytes": 2765,
+      "mtime": "2026-06-20T17:17:42",
+      "extension": ".py",
+      "type": "code",
+      "mime": "text/x-python",
+      "risk_flags": []
+    },
+    {
+      "path": "logs/heartbeat.json",
+      "size_bytes": 878,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "logs/pipeline.json",
+      "size_bytes": 1455,
+      "mtime": "2026-06-21T12:05:13",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "logs/heartbeat/claude.json",
+      "size_bytes": 233,
+      "mtime": "2026-06-21T11:29:43",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "logs/heartbeat/codex.json",
+      "size_bytes": 171,
+      "mtime": "2026-06-21T11:45:58",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "logs/heartbeat/mavis.json",
+      "size_bytes": 183,
+      "mtime": "2026-06-20T12:58:02",
+      "extension": ".json",
+      "type": "text",
+      "mime": "application/json",
+      "risk_flags": []
+    },
+    {
+      "path": "participants/claude.md",
+      "size_bytes": 1066,
+      "mtime": "2026-06-19T17:37:30",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "participants/codex.md",
+      "size_bytes": 991,
+      "mtime": "2026-06-19T17:37:15",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "participants/mavis.md",
+      "size_bytes": 2200,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "participants/novax.md",
+      "size_bytes": 2249,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "participants/README.md",
+      "size_bytes": 471,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-001.md",
+      "size_bytes": 748,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-002.md",
+      "size_bytes": 762,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-003.md",
+      "size_bytes": 683,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-004.md",
+      "size_bytes": 780,
+      "mtime": "2026-06-19T21:52:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-005.md",
+      "size_bytes": 753,
+      "mtime": "2026-06-19T21:52:39",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-006.md",
+      "size_bytes": 996,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-007.md",
+      "size_bytes": 7967,
+      "mtime": "2026-06-20T08:32:50",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-008.md",
+      "size_bytes": 7603,
+      "mtime": "2026-06-20T17:12:49",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-009.md",
+      "size_bytes": 1709,
+      "mtime": "2026-06-20T10:50:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-010.md",
+      "size_bytes": 2740,
+      "mtime": "2026-06-20T10:50:58",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-011.md",
+      "size_bytes": 7592,
+      "mtime": "2026-06-20T11:40:14",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "questions/Q-012.md",
+      "size_bytes": 2920,
+      "mtime": "2026-06-20T12:22:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/README.md",
+      "size_bytes": 1802,
+      "mtime": "2026-06-19T21:49:27",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/claimed/2026-06-19-2044-smoke-test-claude.md",
+      "size_bytes": 220,
+      "mtime": "2026-06-19T20:44:50",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/claimed/README.md",
+      "size_bytes": 598,
+      "mtime": "2026-06-19T17:47:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/claimed/T-059.claim.md",
+      "size_bytes": 80,
+      "mtime": "2026-06-21T12:05:45",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2044-smoke-test.done.md",
+      "size_bytes": 155,
+      "mtime": "2026-06-19T22:03:19",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2044-smoke-test.md",
+      "size_bytes": 593,
+      "mtime": "2026-06-19T20:45:05",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2300-glossary.done.md",
+      "size_bytes": 146,
+      "mtime": "2026-06-19T23:56:41",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2300-quickstart.done.md",
+      "size_bytes": 154,
+      "mtime": "2026-06-20T00:35:14",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2345-glossary.done.md",
+      "size_bytes": 146,
+      "mtime": "2026-06-20T00:06:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/2026-06-19-2345-quickstart.done.md",
+      "size_bytes": 154,
+      "mtime": "2026-06-19T23:54:03",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/README.md",
+      "size_bytes": 110,
+      "mtime": "2026-06-19T13:29:10",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-024.done.md",
+      "size_bytes": 341,
+      "mtime": "2026-06-20T12:37:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-025.done.md",
+      "size_bytes": 301,
+      "mtime": "2026-06-20T12:52:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-029.done.md",
+      "size_bytes": 201,
+      "mtime": "2026-06-21T10:00:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-030.done.md",
+      "size_bytes": 133,
+      "mtime": "2026-06-20T13:52:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-031.done.md",
+      "size_bytes": 72,
+      "mtime": "2026-06-20T13:59:19",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-032.done.md",
+      "size_bytes": 99,
+      "mtime": "2026-06-20T14:13:27",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-033.done.md",
+      "size_bytes": 234,
+      "mtime": "2026-06-20T14:13:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-034.done.md",
+      "size_bytes": 93,
+      "mtime": "2026-06-20T14:15:19",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-035.done.md",
+      "size_bytes": 235,
+      "mtime": "2026-06-20T15:14:24",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-036.done.md",
+      "size_bytes": 90,
+      "mtime": "2026-06-20T15:15:48",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-037.done.md",
+      "size_bytes": 228,
+      "mtime": "2026-06-20T15:17:58",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-038.done.md",
+      "size_bytes": 86,
+      "mtime": "2026-06-20T15:18:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-039.done.md",
+      "size_bytes": 233,
+      "mtime": "2026-06-21T10:00:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-040.done.md",
+      "size_bytes": 205,
+      "mtime": "2026-06-20T15:44:45",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-041.done.md",
+      "size_bytes": 211,
+      "mtime": "2026-06-20T15:46:07",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-042.done.md",
+      "size_bytes": 183,
+      "mtime": "2026-06-20T15:48:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-043.done.md",
+      "size_bytes": 160,
+      "mtime": "2026-06-20T15:49:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-044.done.md",
+      "size_bytes": 184,
+      "mtime": "2026-06-20T15:52:16",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-045.done.md",
+      "size_bytes": 146,
+      "mtime": "2026-06-20T15:53:16",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-046.done.md",
+      "size_bytes": 138,
+      "mtime": "2026-06-20T16:08:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-047.done.md",
+      "size_bytes": 399,
+      "mtime": "2026-06-20T16:13:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-049.done.md",
+      "size_bytes": 147,
+      "mtime": "2026-06-20T16:25:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-050.done.md",
+      "size_bytes": 387,
+      "mtime": "2026-06-20T16:29:07",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-052.done.md",
+      "size_bytes": 145,
+      "mtime": "2026-06-20T16:34:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-053.done.md",
+      "size_bytes": 105,
+      "mtime": "2026-06-20T16:49:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-054.done.md",
+      "size_bytes": 288,
+      "mtime": "2026-06-20T16:44:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-055.done.md",
+      "size_bytes": 250,
+      "mtime": "2026-06-21T12:01:14",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-056.done.md",
+      "size_bytes": 344,
+      "mtime": "2026-06-20T16:54:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-057.done.md",
+      "size_bytes": 257,
+      "mtime": "2026-06-21T12:04:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-058.done.md",
+      "size_bytes": 484,
+      "mtime": "2026-06-20T17:08:59",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-060.done.md",
+      "size_bytes": 341,
+      "mtime": "2026-06-20T17:21:33",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-061.done.md",
+      "size_bytes": 117,
+      "mtime": "2026-06-20T17:29:07",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-065.done.md",
+      "size_bytes": 345,
+      "mtime": "2026-06-20T17:23:12",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-066.done.md",
+      "size_bytes": 267,
+      "mtime": "2026-06-20T17:35:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-067.done.md",
+      "size_bytes": 232,
+      "mtime": "2026-06-21T08:43:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-068.done.md",
+      "size_bytes": 217,
+      "mtime": "2026-06-21T08:43:40",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-069.done.md",
+      "size_bytes": 331,
+      "mtime": "2026-06-20T18:24:39",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-070.done.md",
+      "size_bytes": 353,
+      "mtime": "2026-06-20T19:16:04",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-071.done.md",
+      "size_bytes": 271,
+      "mtime": "2026-06-20T19:19:08",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-072.done.md",
+      "size_bytes": 266,
+      "mtime": "2026-06-20T19:39:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-073.done.md",
+      "size_bytes": 243,
+      "mtime": "2026-06-20T19:47:12",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-074.done.md",
+      "size_bytes": 227,
+      "mtime": "2026-06-21T07:38:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-075.done.md",
+      "size_bytes": 273,
+      "mtime": "2026-06-21T07:55:47",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-076.done.md",
+      "size_bytes": 271,
+      "mtime": "2026-06-21T08:27:46",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-077.done.md",
+      "size_bytes": 132,
+      "mtime": "2026-06-21T08:43:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-078.done.md",
+      "size_bytes": 316,
+      "mtime": "2026-06-21T09:54:25",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-079.done.md",
+      "size_bytes": 163,
+      "mtime": "2026-06-21T10:00:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-080.done.md",
+      "size_bytes": 231,
+      "mtime": "2026-06-21T10:22:41",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-081.done.md",
+      "size_bytes": 236,
+      "mtime": "2026-06-21T11:50:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-082.done.md",
+      "size_bytes": 283,
+      "mtime": "2026-06-21T10:48:59",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-083.done.md",
+      "size_bytes": 190,
+      "mtime": "2026-06-21T11:06:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/done/T-084.done.md",
+      "size_bytes": 256,
+      "mtime": "2026-06-21T11:30:02",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/failed/README.md",
+      "size_bytes": 286,
+      "mtime": "2026-06-19T13:29:12",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/failed/T-048.failed.md",
+      "size_bytes": 158,
+      "mtime": "2026-06-21T10:48:05",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/inbox/2026-06-21-driver-acceptance-output.txt",
+      "size_bytes": 2496,
+      "mtime": "2026-06-21T08:33:39",
+      "extension": ".txt",
+      "type": "text",
+      "mime": "text/plain",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/inbox/2026-06-21-powershell-output-paste.md",
+      "size_bytes": 1151,
+      "mtime": "2026-06-21T08:18:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/inbox/documentoutput.md",
+      "size_bytes": 68048,
+      "mtime": "2026-06-21T08:35:40",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/inbox/README.md",
+      "size_bytes": 148,
+      "mtime": "2026-06-19T13:29:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-19-2044-smoke-test-result.md",
+      "size_bytes": 3066,
+      "mtime": "2026-06-19T20:45:02",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-20-claude-stage-review.md",
+      "size_bytes": 6559,
+      "mtime": "2026-06-20T18:30:35",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-20-driver-acceptance-batch.md",
+      "size_bytes": 1760,
+      "mtime": "2026-06-21T07:50:35",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-20-implementation-stage-report.md",
+      "size_bytes": 1714,
+      "mtime": "2026-06-20T18:24:26",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-20-runtime-validation-batch.md",
+      "size_bytes": 1050,
+      "mtime": "2026-06-20T19:39:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-claude-dev-continuation.md",
+      "size_bytes": 2729,
+      "mtime": "2026-06-21T10:23:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-claude-p1-batch.md",
+      "size_bytes": 3552,
+      "mtime": "2026-06-21T11:13:46",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-claude-repo-review.md",
+      "size_bytes": 2601,
+      "mtime": "2026-06-21T09:53:25",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-driver-acceptance-batch.md",
+      "size_bytes": 955,
+      "mtime": "2026-06-21T07:37:51",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-driver-tests-result.md",
+      "size_bytes": 729,
+      "mtime": "2026-06-21T08:27:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-files-mcp-acceptance-blocked.md",
+      "size_bytes": 782,
+      "mtime": "2026-06-21T10:48:53",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-ingest-acceptance-result.md",
+      "size_bytes": 687,
+      "mtime": "2026-06-21T12:04:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-mcp-handshake-result.md",
+      "size_bytes": 692,
+      "mtime": "2026-06-21T07:55:47",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-mcp-stdio-windows-pipe-diagnostics.md",
+      "size_bytes": 704,
+      "mtime": "2026-06-21T11:48:59",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-pipeline-guards-result.md",
+      "size_bytes": 713,
+      "mtime": "2026-06-21T08:43:34",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-runtime-unblock-result.md",
+      "size_bytes": 659,
+      "mtime": "2026-06-21T10:00:39",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/2026-06-21-workbench-acceptance-result.md",
+      "size_bytes": 769,
+      "mtime": "2026-06-21T12:00:54",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "queues/outbox/README.md",
+      "size_bytes": 355,
+      "mtime": "2026-06-19T13:29:08",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-001.md",
+      "size_bytes": 684,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-002.md",
+      "size_bytes": 692,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-003.md",
+      "size_bytes": 683,
+      "mtime": "2026-06-19T21:37:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-004.md",
+      "size_bytes": 714,
+      "mtime": "2026-06-19T21:37:09",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-005.md",
+      "size_bytes": 948,
+      "mtime": "2026-06-20T06:58:17",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-006.md",
+      "size_bytes": 585,
+      "mtime": "2026-06-19T21:37:15",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-007.md",
+      "size_bytes": 647,
+      "mtime": "2026-06-19T21:37:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-008.md",
+      "size_bytes": 1099,
+      "mtime": "2026-06-19T22:01:36",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-009.md",
+      "size_bytes": 1233,
+      "mtime": "2026-06-19T21:48:48",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-010.md",
+      "size_bytes": 1099,
+      "mtime": "2026-06-19T22:08:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-011.md",
+      "size_bytes": 1181,
+      "mtime": "2026-06-19T22:20:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-012.md",
+      "size_bytes": 1363,
+      "mtime": "2026-06-20T01:26:18",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-013.md",
+      "size_bytes": 1337,
+      "mtime": "2026-06-19T22:29:07",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-014.md",
+      "size_bytes": 1082,
+      "mtime": "2026-06-19T22:35:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-015.md",
+      "size_bytes": 1023,
+      "mtime": "2026-06-19T22:35:47",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-016.md",
+      "size_bytes": 925,
+      "mtime": "2026-06-19T22:35:58",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-017.md",
+      "size_bytes": 730,
+      "mtime": "2026-06-20T00:16:34",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-018.md",
+      "size_bytes": 766,
+      "mtime": "2026-06-20T00:16:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-019.md",
+      "size_bytes": 1740,
+      "mtime": "2026-06-20T01:01:05",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-020.md",
+      "size_bytes": 1266,
+      "mtime": "2026-06-20T08:28:30",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-021.md",
+      "size_bytes": 1719,
+      "mtime": "2026-06-20T08:21:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-022.md",
+      "size_bytes": 1510,
+      "mtime": "2026-06-20T08:24:13",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-023.md",
+      "size_bytes": 1926,
+      "mtime": "2026-06-20T11:05:31",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-024.md",
+      "size_bytes": 1181,
+      "mtime": "2026-06-20T12:37:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-025.md",
+      "size_bytes": 2416,
+      "mtime": "2026-06-20T12:52:44",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-026.md",
+      "size_bytes": 1911,
+      "mtime": "2026-06-20T10:57:51",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-027.md",
+      "size_bytes": 2984,
+      "mtime": "2026-06-20T11:40:16",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-028.md",
+      "size_bytes": 1420,
+      "mtime": "2026-06-20T12:23:02",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-029.md",
+      "size_bytes": 2840,
+      "mtime": "2026-06-21T10:01:04",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-030.md",
+      "size_bytes": 1017,
+      "mtime": "2026-06-20T13:52:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-031.md",
+      "size_bytes": 980,
+      "mtime": "2026-06-20T13:59:19",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-032.md",
+      "size_bytes": 897,
+      "mtime": "2026-06-20T14:13:27",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-033.md",
+      "size_bytes": 1305,
+      "mtime": "2026-06-20T14:13:31",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-034.md",
+      "size_bytes": 863,
+      "mtime": "2026-06-20T14:15:19",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-035.md",
+      "size_bytes": 1026,
+      "mtime": "2026-06-20T15:14:22",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-036.md",
+      "size_bytes": 762,
+      "mtime": "2026-06-20T15:15:48",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-037.md",
+      "size_bytes": 1178,
+      "mtime": "2026-06-20T15:17:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-038.md",
+      "size_bytes": 788,
+      "mtime": "2026-06-20T15:18:37",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-039.md",
+      "size_bytes": 4382,
+      "mtime": "2026-06-21T10:01:05",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-040.md",
+      "size_bytes": 1007,
+      "mtime": "2026-06-20T15:44:41",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-041.md",
+      "size_bytes": 1198,
+      "mtime": "2026-06-20T15:46:05",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-042.md",
+      "size_bytes": 1208,
+      "mtime": "2026-06-20T15:48:56",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-043.md",
+      "size_bytes": 1323,
+      "mtime": "2026-06-20T15:49:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-044.md",
+      "size_bytes": 916,
+      "mtime": "2026-06-20T15:52:15",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-045.md",
+      "size_bytes": 963,
+      "mtime": "2026-06-20T15:53:15",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-046.md",
+      "size_bytes": 1262,
+      "mtime": "2026-06-20T16:08:21",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-047.md",
+      "size_bytes": 939,
+      "mtime": "2026-06-20T16:13:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-048.md",
+      "size_bytes": 2395,
+      "mtime": "2026-06-21T11:49:32",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-049.md",
+      "size_bytes": 1119,
+      "mtime": "2026-06-20T16:25:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-050.md",
+      "size_bytes": 1022,
+      "mtime": "2026-06-20T16:29:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-051.md",
+      "size_bytes": 1701,
+      "mtime": "2026-06-21T11:53:42",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-052.md",
+      "size_bytes": 1148,
+      "mtime": "2026-06-20T16:34:06",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-053.md",
+      "size_bytes": 1312,
+      "mtime": "2026-06-20T16:49:00",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-054.md",
+      "size_bytes": 1043,
+      "mtime": "2026-06-20T16:44:39",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-055.md",
+      "size_bytes": 1888,
+      "mtime": "2026-06-21T12:01:14",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-056.md",
+      "size_bytes": 1030,
+      "mtime": "2026-06-20T16:54:43",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-057.md",
+      "size_bytes": 1900,
+      "mtime": "2026-06-21T12:04:57",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-058.md",
+      "size_bytes": 1602,
+      "mtime": "2026-06-20T17:08:58",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-059.md",
+      "size_bytes": 1745,
+      "mtime": "2026-06-21T12:05:45",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-060.md",
+      "size_bytes": 1716,
+      "mtime": "2026-06-20T17:21:33",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-061.md",
+      "size_bytes": 293,
+      "mtime": "2026-06-20T17:29:07",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-062.md",
+      "size_bytes": 293,
+      "mtime": "2026-06-20T16:58:39",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-063.md",
+      "size_bytes": 293,
+      "mtime": "2026-06-20T16:58:52",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-064.md",
+      "size_bytes": 293,
+      "mtime": "2026-06-20T16:59:01",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    },
+    {
+      "path": "tasks/T-065.md",
+      "size_bytes": 949,
+      "mtime": "2026-06-20T17:23:10",
+      "extension": ".md",
+      "type": "text",
+      "mime": "",
+      "risk_flags": []
+    }
+  ]
+}
