@@ -195,7 +195,7 @@
 | T-179 | Add conveyor regulate advisory for workflow target sizing | done | codex | `темы/perspective-backlog-2026-06-23.md` | Закрыто 2026-06-23 — добавлен read-only `conveyor.py regulate [--json] [--no-assurance]`, pure `regulate()` и тесты target increase/hold/decrease/process-first. |
 | T-180 | derive_reuse grounding-качество — section_coverage l1_basis-резолв (#6) + structural l1_basis в portal.md (#7) | done | pool | — | Внедрить резолв l1_basis в assurance.py section_coverage (вместо any-non-empty) + перевести portal.md core: в структурный l1_basis; worktree, symbol-anchored |
 | T-181 | reconcile_state backlog — 38 done-missing-marker + 5 orphan-done-marker (конвенция queues/done) | done | pool | — | Решить конвенцию done-marker (бэкфилл queues/done/T-NNN.done.md для 38 done-задач ИЛИ сделать marker опциональным в reconcile_state); подчистить 5 orphan-маркеров от переименованных timestamp-задач |
-| T-182 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
+| T-182 | Synthesis gate - validate consensus/disagreement report structure | doing | antigravity | — |  |
 | T-183 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
 | T-184 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
 | T-185 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
@@ -204,5 +204,6 @@
 | T-188 | Аудит мёртвого груза — неиспользуемая информация и устаревшие ссылки | done | pool | `темы/ai-os-bridge.md` | Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки |
 | T-189 | Стимулирование активности агентов — alive-пинги и использование ответов | done | pool | `темы/ai-os-bridge.md` | Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md |
 | T-190 | Self-improve отложенные (4): risk_gate/D-006 wire, D-020 supersede, sandbox_demo doc, race_test rename | done | pool | — | Провести governance-зависимые через котёл/Stefan; doc/rename — когда целевые файлы свободны от Codex |
-| T-191 | Реализация семантического гибрида для doc_consensus.py | open | codex | — | Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md) |
+| T-191 | Реализация семантического гибрида для doc_consensus.py | todo | codex | — | Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md) |
+| T-192 | Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма) | todo | pool | — | Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen |
 <!-- GEN:tasks END -->

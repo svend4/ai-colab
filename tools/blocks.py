@@ -18,8 +18,9 @@ import sys
 import json
 import threading
 import subprocess
-# NB: НЕ используем concurrent.futures — tools/queue.py затеняет stdlib `queue`
-# при запуске из tools/, ломая ThreadPoolExecutor. Сырые threading.Thread обходят это.
+# NB: сырые threading.Thread (не concurrent.futures). Историческая причина — tools/queue.py
+# затенял stdlib `queue`, ломая ThreadPoolExecutor из tools/; устранено переименованием в
+# agent_queue.py (ретро-improve), threading.Thread оставлен как рабочий и достаточный.
 
 os.environ.setdefault("PYTHONUTF8", "1")
 HERE = os.path.dirname(os.path.abspath(__file__))

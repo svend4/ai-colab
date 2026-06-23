@@ -7,12 +7,12 @@
 `queues/*` консистентно. Это лечит дефект смоук-теста T-004 (ручной move/delete).
 
 Команды:
-    python tools/queue.py list
-    python tools/queue.py claim    <task> <agent> [--ttl MIN]
-    python tools/queue.py complete <task> <agent> --claim-id ID [--result PATH]
-    python tools/queue.py fail     <task> <agent> --claim-id ID [--reason TEXT]
-    python tools/queue.py release  <task> <agent> --claim-id ID
-    python tools/queue.py check
+    python tools/agent_queue.py list
+    python tools/agent_queue.py claim    <task> <agent> [--ttl MIN]
+    python tools/agent_queue.py complete <task> <agent> --claim-id ID [--result PATH]
+    python tools/agent_queue.py fail     <task> <agent> --claim-id ID [--reason TEXT]
+    python tools/agent_queue.py release  <task> <agent> --claim-id ID
+    python tools/agent_queue.py check
 
 Где <task> — имя файла задания в `queues/inbox/<task>.md` (без .md).
 Для pipeline-режима check также признаёт claim на `tasks/<task>.md`.
@@ -249,7 +249,7 @@ def cmd_check(a):
 
 
 def main():
-    ap = argparse.ArgumentParser(prog="queue.py")
+    ap = argparse.ArgumentParser(prog="agent_queue.py")
     sub = ap.add_subparsers(dest="cmd")
 
     s = sub.add_parser("claim")

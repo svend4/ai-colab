@@ -3,7 +3,7 @@
 """
 Тест атомарности claim под реальной гонкой (предложение Mavis из dogfood-прогона).
 
-Запускает N параллельных `queue.py claim` на ОДНУ задачу во временной папке и
+Запускает N параллельных `agent_queue.py claim` на ОДНУ задачу во временной папке и
 проверяет, что побеждает ровно один (гарантия O_CREAT|O_EXCL). Рабочий
 репозиторий не трогает — всё во временной директории системы.
 
@@ -32,7 +32,7 @@ def configure_output():
 configure_output()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-QUEUE = os.path.join(HERE, "queue.py")
+QUEUE = os.path.join(HERE, "agent_queue.py")
 
 
 def temp_base():
