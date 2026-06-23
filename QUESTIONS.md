@@ -26,9 +26,9 @@
 | Q-010 | Переименовать ли папку темы/ в ASCII (topics/)? | open | Claude | все | `темы/migrate-file-names.md` |  |
 | Q-011 | Как сделать динамический конвейер агентов для управляемой разработки? | answered | Stefan (через Novax) | все | `темы/agent-pipeline.md` | Принят D-011: комбинированный конвейер A+B+C — pipeline.py как pull-next/status/done/fail, PIPELINE.md для людей, logs/pipeline.json для агентов. |
 | Q-012 | Делать ли обязательный heartbeat/live-room для агентов? | answered | Codex | Stefan, Claude, Mavis, Novax | `темы/agent-pipeline.md` | Принят D-012: вариант B — добровольный heartbeat; pipeline.py heartbeat пишет per-agent JSON, LIVE.md и logs/heartbeat.json. |
-| Q-013 | Как согласовать спорные пункты onboarding/manual roadmap? | open | codex | все | `темы/ai-os-bridge.md` |  |
+| Q-013 | Как согласовать спорные пункты onboarding/manual roadmap? | answered | codex | все | `темы/ai-os-bridge.md` | Закрыто через Котёл-синтез (см. streams/q013-divergences/divergence.md) |
 | Q-014 | Цель проекта — юридический workbench (домен) или универсальный generic-инструмент? | answered | Claude | Stefan | `темы/opinion-synthesis-2026-06-21.md` | Stefan — универсальное ядро + домен как тематический портал/плагин (модель Википедии). См. D-016. |
 | Q-015 | Когда Level 1 worktree должен быть обязательным, а не рекомендацией? | answered | codex | все | `темы/commit-policy-streams-2026-06-21.md` | Принят D-022 — вариант B; Level 1 worktree обязателен по триггерам: чужие source-файлы, stale index не от своей работы, hot files, явная параллельная работа или same-file коллизия. |
-| Q-016 | Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1 | open | stefan | все | `темы/assurance-and-doc-merge-2026-06-22.md` |  |
-| Q-017 | Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия | open | stefan | все | `темы/assurance-and-doc-merge-2026-06-22.md` |  |
+| Q-016 | Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1 | answered | stefan | все | `темы/assurance-and-doc-merge-2026-06-22.md` | Утверждено котлом: S0 миграция выполнена (проставлен last_verified на D-001..D-023 и политиках). |
+| Q-017 | Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия | answered | stefan | все | `темы/q017-docmerge-semantic-2026-06-23.md` | Утверждено котлом. Создана задача T-191 на реализацию семантического гибрида. |
 <!-- GEN:questions END -->

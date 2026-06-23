@@ -2146,18 +2146,18 @@
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "blocked",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-087, T-088]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Заблокировано до runtime-изменения; после апгрейда Python/Windows/mcp повторить `python drivers/mcp_async_stdio_monitor.py gateway --force-acceptance --out reports/mcp-async-stdio-monitor-<date>.md`"
+      "next": "Закрыто котлом как wontfix для async, sync признан официальным путём"
     },
     {
       "id": "T-175",
       "title": "Ратифицировать D-014 (execute OFF + 10-гейтовый preflight) через котёл",
-      "status": "blocked",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
@@ -2322,13 +2322,24 @@
     {
       "id": "T-190",
       "title": "Self-improve отложенные (4): risk_gate/D-006 wire, D-020 supersede, sandbox_demo doc, race_test rename",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[D-006]",
       "topic": "",
       "next": "Провести governance-зависимые через котёл/Stefan; doc/rename — когда целевые файлы свободны от Codex"
+    },
+    {
+      "id": "T-191",
+      "title": "Реализация семантического гибрида для doc_consensus.py",
+      "status": "open",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[Q-017]",
+      "topic": "",
+      "next": "Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md)"
     }
   ],
   "questions": [
@@ -2419,9 +2430,9 @@
     {
       "id": "Q-013",
       "title": "Как согласовать спорные пункты onboarding/manual roadmap?",
-      "status": "open",
+      "status": "answered",
       "where": "темы/ai-os-bridge.md",
-      "outcome": ""
+      "outcome": "Закрыто через Котёл-синтез (см. streams/q013-divergences/divergence.md)"
     },
     {
       "id": "Q-014",
@@ -2440,16 +2451,16 @@
     {
       "id": "Q-016",
       "title": "Гарантия применения и актуальности инструкций (existence != applied) + поток знания вверх L4->L1",
-      "status": "open",
+      "status": "answered",
       "where": "темы/assurance-and-doc-merge-2026-06-22.md",
-      "outcome": ""
+      "outcome": "Утверждено котлом: S0 миграция выполнена (проставлен last_verified на D-001..D-023 и политиках)."
     },
     {
       "id": "Q-017",
       "title": "Автоматизация слияния документации агентов — консенсус с cross-references + структурированные разногласия",
-      "status": "open",
-      "where": "темы/assurance-and-doc-merge-2026-06-22.md",
-      "outcome": ""
+      "status": "answered",
+      "where": "темы/q017-docmerge-semantic-2026-06-23.md",
+      "outcome": "Утверждено котлом. Создана задача T-191 на реализацию семантического гибрида."
     }
   ],
   "decisions": [
@@ -2547,7 +2558,7 @@
     {
       "id": "D-014",
       "title": "Execute OFF по умолчанию — 10-гейтовый preflight перед любым mode:execute",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-20",
       "file": "decisions/D-014.md"
     },

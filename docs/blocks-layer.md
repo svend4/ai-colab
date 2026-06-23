@@ -25,7 +25,9 @@ related: [adoption-statistics-2026-06-23, finder-solver-pipeline-methodology, wo
 |---|---|---|
 | `audit` | validate+generate ‖ friction+assurance+reconcile+drift | самопроверка над ошибками |
 | `adoption` | adoption.py | само-мониторинг применения |
-| `self` | validate+generate ‖ friction+assurance+adoption | рекурсивная самопроверка целиком |
+| `self` | validate+generate ‖ friction+assurance+adoption+metrics | рекурсивная самопроверка целиком |
+| `improve` | adoption+friction+assurance+drift ‖ validate+generate | петля само-улучшения → вход роутеру |
+| `pyramid` | assurance coverage/flow ‖ promote+portal | здоровье пирамиды L4→L1 |
 
 ```
 python tools/blocks.py list

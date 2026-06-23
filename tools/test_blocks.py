@@ -28,6 +28,14 @@ def main():
     if "gate" not in kinds:
         fails.append("audit без gate-шага")
 
+    # все блоки реестра (audit/adoption/self/improve/pyramid) валидны: kinds ∈ {gate,advisory} (hermetic)
+    for bname, b in blocks.BLOCKS.items():
+        for tool, args, kind in b["steps"]:
+            if kind not in ("gate", "advisory"):
+                fails.append("блок %s шаг %s: kind %r вне {gate,advisory}" % (bname, tool, kind))
+    if "improve" not in blocks.BLOCKS:
+        fails.append("нет блока 'improve' (петля само-улучшения)")
+
     # run_block возвращает корректную структуру (последовательно — детерминированнее в тесте)
     res = blocks.run_block("audit", parallel=False)
     for key in ("block", "gates_passed", "advisory_flags", "steps"):

@@ -61,6 +61,17 @@ BLOCKS = {
             ("metrics.py", [], "advisory"),
         ],
     },
+    "improve": {
+        "desc": "петля само-улучшения: adoption(применение)+audit(дефекты) → вход роутеру (что чинить/впаивать)",
+        "steps": [
+            ("adoption.py", ["--json"], "advisory"),
+            ("friction.py", ["status"], "advisory"),
+            ("assurance.py", [], "advisory"),
+            ("drift_check.py", [], "advisory"),
+            ("validate.py", [], "gate"),
+            ("generate.py", ["--check"], "gate"),
+        ],
+    },
     "pyramid": {
         "desc": "здоровье пирамиды L4->L1: assurance(coverage/flow) + promote/portal инвентарь -> единый вердикт (над структурой)",
         "steps": [
