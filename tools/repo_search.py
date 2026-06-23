@@ -52,6 +52,22 @@ def build_index(db=DEFAULT_DB, dirs=None):
     return total
 
 
+def _present(row):
+    """Привести строку результата к продукт-виду: реальный кликабельный путь + компактный сниппет."""
+    d = dict(row)
+    p = d.get("path") or ""
+    # id движка знаний `knowledge:<dir>:<file>` -> реальный путь `<dir>/<file>` (кликабельно)
+    if ":" in p:
+        parts = p.split(":")
+        if parts[0] in ("knowledge", "repo_search"):
+            parts = parts[1:]
+        p = "/".join(parts)
+    d["path"] = p
+    s = re.sub(r"\s+", " ", (d.get("summary") or "")).strip()
+    d["summary"] = s[:200]  # сниппет, а не всё тело дока (JSON не раздувается)
+    return d
+
+
 def search(query, db=DEFAULT_DB, limit=10):
     """Ранжированный FTS5+bm25 поиск (термы через OR — для recall); собирает индекс, если его нет."""
     full = os.path.join(ROOT, db)
@@ -67,9 +83,9 @@ def search(query, db=DEFAULT_DB, limit=10):
                 "SELECT d.path AS path, d.type AS type, d.summary AS summary, bm25(kn_fts) AS rank "
                 "FROM kn_fts f JOIN documents d ON d.id = f.doc_id "
                 "WHERE kn_fts MATCH ? ORDER BY rank LIMIT ?", (expr, int(limit))).fetchall()
-            return [dict(r) for r in rows]
+            return [_present(r) for r in rows]
         except sqlite3.OperationalError:
-            return kn.fts_search(conn, query, limit=limit)  # fallback на LIKE/phrase
+            return [_present(r) for r in kn.fts_search(conn, query, limit=limit)]  # fallback
     finally:
         conn.close()
 
