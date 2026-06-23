@@ -13,14 +13,18 @@ State reconciliation layer (T-066 → реализация).
     python tools/reconcile_state.py            # = report: посчитать + записать отчёт в queues/outbox/
     python tools/reconcile_state.py check      # посчитать и напечатать, НИЧЕГО не писать
     python tools/reconcile_state.py report      # посчитать и записать json+md отчёт
-    python tools/reconcile_state.py fix         # этап 1: не реализовано (подсказка по снимкам)
+    python tools/reconcile_state.py fix         # dry-run: что бы перегенерировал (производное); ничего не пишет
+    python tools/reconcile_state.py fix --apply # перегенерировать ТОЛЬКО производное (index/snapshot); primary не трогает
 
 Exit code: 0 — расхождений нет; 1 — есть warning; 2 — есть error.
+`fix` чинит лишь производные снимки (index.json/навигация, PIPELINE.md/logs/pipeline.json), детерминированно
+из primary; source of truth (tasks/*.md, queues/*) — никогда; primary-дрейф выводится как ручные action items.
 """
 import os
 import sys
 import json
 import time
+import subprocess
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pipeline as P
@@ -228,13 +232,67 @@ def exit_code(report):
     return 0
 
 
+# Производные коды, которые fix МОЖЕТ безопасно перегенерировать (детерминированно из primary).
+# Всё остальное (маркеры/claims/статусы задач) — PRIMARY, его fix НИКОГДА не трогает.
+DERIVED_CODES = {"index-status-drift", "pipeline-snapshot-drift"}
+_REGEN = {
+    "index-status-drift": ("index.json/навигация", ["generate.py"]),
+    "pipeline-snapshot-drift": ("PIPELINE.md/logs/pipeline.json", ["pipeline.py", "snapshot"]),
+}
+
+
+def _partition_fix(report):
+    """Разделить находки на derived (авто-чинимые) и primary (отказ; severity error/warning)."""
+    derived = [it for it in report["items"] if it["code"] in DERIVED_CODES]
+    primary = [it for it in report["items"]
+               if it["code"] not in DERIVED_CODES and it["severity"] in ("error", "warning")]
+    return derived, primary
+
+
+def _regen(cmd_tail):
+    p = subprocess.run([sys.executable, os.path.join(ROOT, "tools", cmd_tail[0]), *cmd_tail[1:]],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       stdin=subprocess.DEVNULL)
+    return p.returncode
+
+
+def cmd_fix(apply=False):
+    """Починить ТОЛЬКО производный дрейф (index/snapshot); dry-run по умолчанию, запись лишь при --apply.
+
+    Source of truth (tasks/*.md, queues/*) не трогается никогда; primary-дрейф — ручные action items.
+    Идемпотентно: регенерация детерминирована из primary, повтор на чистом дереве — no-op.
+    """
+    report = reconcile()
+    derived, primary = _partition_fix(report)
+    print("RECONCILE FIX (%s)" % ("apply" if apply else "dry-run"))
+    codes = sorted({it["code"] for it in derived})
+    if not derived:
+        print("  производного дрейфа нет — регенерировать нечего.")
+    elif not apply:
+        print("  would regenerate (dry-run, ничего не пишу):")
+        for code in codes:
+            print("    - %s (по %d находкам '%s') — запусти с --apply" %
+                  (_REGEN[code][0], sum(1 for it in derived if it["code"] == code), code))
+    else:
+        for code in codes:
+            label, tail = _REGEN[code]
+            rc = _regen(tail)
+            print("  регенерировал %s → rc=%d" % (label, rc))
+        report = reconcile()  # перепроверка: производный дрейф должен очиститься
+        derived2, primary = _partition_fix(report)
+        print("  после регенерации: производного дрейфа осталось %d" % len(derived2))
+    if primary:
+        print("  ОТКАЗ авто-чинить PRIMARY-дрейф (%d) — источник истины не трогаем, это ручные action items:"
+              % len(primary))
+        for it in primary:
+            print("    [%s] %s %s — %s" % (it["severity"], it["code"], it["task"], it["message"]))
+    return exit_code(report)
+
+
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "report"
     if cmd == "fix":
-        print("fix не реализован на этапе 1 (только отчёт). Для производных снимков используйте:")
-        print("  python tools/pipeline.py snapshot   # PIPELINE.md + logs/pipeline.json")
-        print("  python tools/generate.py            # index.json + навигация")
-        return 0
+        return cmd_fix(apply="--apply" in sys.argv[2:])
     report = reconcile()
     wrote = None
     if cmd != "check":          # check печатает, но не пишет; report/default/прочее — пишут
