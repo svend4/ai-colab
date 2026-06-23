@@ -24,6 +24,7 @@ CLI:
   python tools/conveyor.py dismiss <id> [--reason R]
   python tools/conveyor.py tick                  # оркестратор жив (обнови heartbeat)
   python tools/conveyor.py target <N>            # задать цель in-flight (масштаб под надобность; не зашито в 2)
+  python tools/conveyor.py plan <N> [--span 3]   # reduce-иерархия 3:1 для N продюсеров (бригады/дирижёры/глубина)
   python tools/conveyor.py status [--target N] [--idle M] [--json]
   python tools/conveyor.py next                  # кандидаты дозалива из перспективного бэклога
 """
@@ -207,6 +208,46 @@ def backlog_candidates(d, path=BACKLOG):
     return out
 
 
+def plan_hierarchy(n_producers, span=3):
+    """Reduce-дерево с фан-ином `span` (3:1 span-of-control): producers → integrators →
+    conductors → chief... Возвращает слои снизу вверх: {level, role, count, fan_in}.
+    Верхний слой (count <= span) коммитит оркестратор-человек."""
+    span = max(2, int(span))
+    n = max(0, int(n_producers))
+    roles = ["producer", "integrator (бригада)", "conductor (дирижёр)", "chief-conductor"]
+    layers = [{"level": 0, "role": "producer", "count": n, "fan_in": span}]
+    if n <= 0:
+        return layers
+    count, lvl = n, 0
+    while True:
+        lvl += 1
+        parents = -(-count // span)  # ceil(count/span)
+        role = roles[lvl] if lvl < len(roles) else "L%d-conductor" % lvl
+        layers.append({"level": lvl, "role": role, "count": parents, "fan_in": span})
+        if parents <= span:
+            break
+        count = parents
+    return layers
+
+
+def render_plan(n, span, layers):
+    integr = sum(L["count"] for L in layers if L["level"] >= 1)
+    top = layers[-1]["count"]
+    depth = layers[-1]["level"]
+    total = n + integr
+    overhead = (100.0 * integr / n) if n else 0.0
+    out = ["=" * 60,
+           "CONVEYOR PLAN — reduce-иерархия %d:1 (span of control)" % span, "=" * 60,
+           "producers: %d · глубина: %d уровн. · интеграторов: %d" % (n, depth, integr),
+           "воркфлоу всего: %d · накладные интеграции: ~%.0f%% (геом. предел ~50%%)" % (total, overhead),
+           "верх (≤%d) коммитит оркестратор-человек: %d артефакт(ов)" % (span, top),
+           "-" * 60]
+    for L in reversed(layers):
+        out.append("  L%d %-22s × %-5d %s" % (L["level"], L["role"], L["count"], "•" * min(L["count"], 42)))
+    out.append("=" * 60)
+    return "\n".join(out)
+
+
 def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
 
@@ -243,6 +284,10 @@ def main():
             save(d)
             print("target_min = %d (флот масштабируется под открытые вопросы; "
                   "потолок — полоса обработки оркестратора)" % d["target_min"])
+            return 0
+        if cmd == "plan" and len(a) >= 2:
+            span = int(_arg(a, "--span", 3))
+            print(render_plan(int(a[1]), span, plan_hierarchy(int(a[1]), span)))
             return 0
         if cmd == "status":
             target = int(_arg(a, "--target", d.get("target_min", DEFAULT_TARGET)))
