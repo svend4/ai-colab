@@ -46,6 +46,7 @@ COMMANDS = [
     {"cmd": "python tools/top.py agent-start <agent> --context <query>", "does": "старт агента + статус + быстрый поиск релевантного канона"},
     {"cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree [--json]", "does": "готовый repo lane + prompt/JSON для внешнего запуска sub-agent"},
     {"cmd": "python tools/top.py conveyor [--target N] [--json]", "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"},
+    {"cmd": "python tools/top.py assurance [section] [--json] [--strict]", "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
     {"cmd": "python tools/top.py instruction-preflight <agent> [T-id]", "does": "показать применимые инструкции и evidence-шаблон"},
     {"cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md", "does": "сравнить два knowledge-отчёта"},

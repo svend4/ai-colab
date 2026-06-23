@@ -127,6 +127,13 @@
       "next": ""
     },
     {
+      "id": "build-specs-2026-06-23",
+      "title": "Worktree-ready build specs (2026-06-23)",
+      "file": "темы/build-specs-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "commit-policy-streams-2026-06-21",
       "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
       "file": "темы/commit-policy-streams-2026-06-21.md",
@@ -1994,6 +2001,17 @@
       "depends_on": "[T-163]",
       "topic": "",
       "next": "Реализовать `conveyor.py land --output`, JSON-диагностику landed без результата, тест и отчёт"
+    },
+    {
+      "id": "T-165",
+      "title": "Wire assurance dashboard into top command panel",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-164]",
+      "topic": "docs/top-layer-command-groups.md",
+      "next": "Добавить `top.py assurance` как advisory/read-only сценарий, обновить тесты, справку и отчёт"
     }
   ],
   "questions": [

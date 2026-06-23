@@ -17,6 +17,7 @@ def run():
     ids = {r["id"] for r in rows}
     assert "health" in ids, ids
     assert "friction-status" in ids, ids
+    assert "assurance" in ids, ids
     assert "instruction-preflight" in ids, ids
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
@@ -35,6 +36,7 @@ def run():
     assert "Top command buttons" in rendered, rendered
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
+    assert "python tools/top.py assurance" in rendered, rendered
     assert "python tools/top.py agent-start <agent> [--context" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py repo-search" in rendered, rendered
@@ -45,6 +47,10 @@ def run():
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
+    aargs = parser.parse_args(["assurance", "currency", "--json", "--max-age", "90"])
+    assert aargs.cmd == "assurance" and aargs.section == "currency" and aargs.json and aargs.max_age == 90, aargs
+    sargs = parser.parse_args(["assurance", "flow", "--strict"])
+    assert sargs.cmd == "assurance" and sargs.section == "flow" and sargs.strict, sargs
     start_args = parser.parse_args(["agent-start", "codex", "--context", "repo", "search", "--context-limit", "4"])
     assert start_args.cmd == "agent-start" and start_args.agent == "codex" and start_args.context == ["repo", "search"] and start_args.context_limit == 4, start_args
     ip_args = parser.parse_args(["instruction-preflight", "codex", "T-154", "--json"])
@@ -72,7 +78,7 @@ def run():
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor parser+json")
+    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/assurance parser+json")
     return 0
 
 

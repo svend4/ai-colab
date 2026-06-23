@@ -9,6 +9,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py buttons                  # human/agent command groups
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
+    python tools/top.py assurance [section] [--json] [--strict]  # apex verifiability dashboard
     python tools/top.py health                   # validation/generator/capability checks
     python tools/top.py agent-start <agent> [--context QUERY]  # onboard + current state + repo search
     python tools/top.py instruction-preflight <agent> [T-id]  # applicable rules + evidence template
@@ -77,6 +78,13 @@ _BUTTONS = [
         "command": "python tools/top.py friction",
         "does": "Проверить повторяющиеся проблемы: dirty/stale/volatile/lock/pipeline/drift/streams/temp и получить рецепты.",
         "effect": "read-mostly",
+    },
+    {
+        "id": "assurance",
+        "audience": "both",
+        "command": "python tools/top.py assurance [section] [--json] [--strict] [--max-age N]",
+        "does": "Показать apex-проверяемость инструкций: applied/currency/coverage/flow; advisory по умолчанию.",
+        "effect": "read-only",
     },
     {
         "id": "health",
@@ -284,6 +292,17 @@ def cmd_friction(args):
     return _run("friction status", cmd, timeout=90)
 
 
+def cmd_assurance(args):
+    cmd = _tool("assurance.py", args.section or "all")
+    if args.json:
+        cmd.append("--json")
+    if args.strict:
+        cmd.append("--strict")
+    if args.max_age is not None:
+        cmd += ["--max-age", str(args.max_age)]
+    return _run("assurance", cmd, timeout=90, fail_ok=not args.strict)
+
+
 def cmd_health(_args):
     rc = 0
     for label, cmd in [
@@ -296,12 +315,14 @@ def cmd_health(_args):
         if step != 0:
             rc = step
     _run("drift check (warning layer)", _tool("drift_check.py"), timeout=60, fail_ok=True)
+    _run("assurance (warning layer)", _tool("assurance.py", "all"), timeout=90, fail_ok=True)
     return rc
 
 
 def cmd_agent_start(args):
     rc = _run("onboard", _tool("onboard.py", args.agent), timeout=60)
     _run("top status", [PY, os.path.join(ROOT, "tools", "top.py"), "status", args.agent], timeout=90, fail_ok=True)
+    _run("assurance (advisory)", _tool("assurance.py", "all"), timeout=90, fail_ok=True)
     if args.context:
         cmd = _tool("repo_search.py", "search", " ".join(args.context), "--limit", str(args.context_limit))
         _run("repo context search", cmd, timeout=90, fail_ok=True)
@@ -495,6 +516,13 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.add_argument("--strict", action="store_true")
     p.set_defaults(func=cmd_friction)
+
+    p = sub.add_parser("assurance", help="show instruction assurance apex dashboard")
+    p.add_argument("section", nargs="?", default="all", choices=["applied", "currency", "coverage", "flow", "all"])
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--strict", action="store_true")
+    p.add_argument("--max-age", type=int)
+    p.set_defaults(func=cmd_assurance)
 
     p = sub.add_parser("health", help="validate generated state and capability indexes")
     p.set_defaults(func=cmd_health)

@@ -14,6 +14,7 @@
 python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py health
+python tools\top.py assurance all --json
 python tools\top.py agent-start codex --context "parallel work policy"
 python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools\top.py instruction-preflight codex T-154
@@ -34,6 +35,7 @@ python tools\top.py conveyor --json
 |---|---|---|---|
 | Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding, статус и опциональный `repo-search --context` |
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
+| Проверяемость | увидеть, применяются ли инструкции и не устарел ли слой | поднять Q-016 applied/currency/coverage/flow к вершине | `assurance` вызывает `assurance.py` advisory по умолчанию, strict только явно |
 | Инструкции | понять применимые правила | собрать evidence перед задачей | `instruction-preflight` вызывает `instructions.py preflight` |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |
 | Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
@@ -43,6 +45,7 @@ python tools\top.py conveyor --json
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 | Надзор конвейера | увидеть, нужен ли дозалив/обработка | не держать workflow в голове | `conveyor` вызывает `conveyor.py status` и показывает REFILL/PROCESS/IDLE |
+| Assurance apex | увидеть applied/currency/coverage/flow | начать работу с проверяемого состояния инструкций | `assurance` вызывает `assurance.py`; `health` показывает его как warning-layer |
 
 ## Как это помогает параллельной работе
 
@@ -140,6 +143,28 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 | `top.py instruction-preflight` | read-only | та же процедура как верхняя кнопка для людей/агентов |
 
 Моё мнение: это правильная форма гарантии для текущей стадии. Не нужно сразу блокировать все действия большим policy-engine. Сначала агент должен явно видеть применимые инструкции и оставлять evidence. Потом часто повторяющиеся нарушения можно переносить в `friction.py`, `merge_gate.py` или pre-commit.
+
+## Расширение T-165: assurance apex
+
+После T-165 верхний слой показывает Q-016 проверяемость одной командой:
+
+```powershell
+python tools\top.py assurance
+python tools\top.py assurance currency --json
+python tools\top.py assurance flow --strict
+```
+
+Смысл:
+
+| Команда | Эффект | Что даёт |
+|---|---|---|
+| `top.py assurance` | read-only, advisory | общий снимок applied/currency/coverage/flow |
+| `top.py assurance <section> --json` | read-only, machine-readable | чистый вход для агента/дашборда |
+| `top.py assurance <section> --strict` | read-only, opt-in strict | nonzero exit только когда caller явно хочет gate |
+| `top.py health` | hard checks + warning layer | validate/generate/capabilities остаются hard, assurance печатается advisory |
+
+Моё мнение: это важная связь основания и вершины пирамиды. Инструкции, freshness и coverage уже существуют в нижнем слое; теперь они видны как стандартная верхняя команда, а не как отдельный забываемый скрипт.
+
 ## Расширение T-161: handoff для запуска sub-agent
 
 После T-161 верхний слой умеет готовить запуск внешнего worker-agent одной командой:

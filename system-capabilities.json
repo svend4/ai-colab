@@ -17,6 +17,10 @@
       "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"
     },
     {
+      "cmd": "python tools/top.py assurance [section] [--json] [--strict]",
+      "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"
+    },
+    {
       "cmd": "python tools/top.py health",
       "does": "групповая проверка здоровья канона"
     },
