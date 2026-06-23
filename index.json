@@ -2607,6 +2607,17 @@
       "depends_on": "[T-212]",
       "topic": "",
       "next": "Реализовать tools/execute_audit.py"
+    },
+    {
+      "id": "T-215",
+      "title": "Fix back-ref gap T-020 — добавить D-014 и D-021 в контекст задачи",
+      "status": "done",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Выполнено: D-014 и D-021 добавлены в T-020. T-020 больше не stale-blocker. validate.py без ERROR."
     }
   ],
   "questions": [

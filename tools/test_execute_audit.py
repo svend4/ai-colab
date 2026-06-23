@@ -4,17 +4,30 @@ import os
 import sys
 import unittest
 import shutil
-import tempfile
+import uuid
 import json
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
 import execute_audit
 
+def make_project_tmp(prefix):
+    base = os.path.join(ROOT, "tmp-work")
+    os.makedirs(base, exist_ok=True)
+    for _ in range(100):
+        path = os.path.join(base, prefix + uuid.uuid4().hex[:12])
+        try:
+            os.makedirs(path, exist_ok=False)
+            return path
+        except FileExistsError:
+            pass
+    raise RuntimeError("cannot create project temp dir")
+
 class TestExecuteAudit(unittest.TestCase):
     def setUp(self):
-        self.test_dir = tempfile.mkdtemp()
+        self.test_dir = make_project_tmp("execute_audit_test_")
         self.logger = execute_audit.AuditLogger(self.test_dir)
 
     def tearDown(self):
