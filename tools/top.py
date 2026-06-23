@@ -15,6 +15,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py take <agent> [T-id]      # side effect: pipeline next or targeted claim
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
     python tools/top.py knowledge <corpus> [--query TEXT] [--out reports/x.md]
+    python tools/top.py repo-search <query> [--limit N] [--json]
     python tools/top.py cycle <agent>            # print safe work cycle template
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
 """
@@ -102,6 +103,12 @@ _BUTTONS = [
         "command": "python tools/top.py knowledge <corpus> --query <term> --out reports/<name>.md",
         "does": "Собрать knowledge-отчёт по корпусу через text_extract + FTS/report.",
         "effect": "writes report if --out",
+    },    {
+        "id": "repo-search",
+        "audience": "both",
+        "command": "python tools/top.py repo-search <query> [--limit N] [--json]",
+        "does": "Найти решения, политики, вопросы и задачи в каноне через FTS/BM25 индекс.",
+        "effect": "read-mostly; builds ignored logs/repo-knowledge.db if missing",
     },
     {
         "id": "report-diff",
@@ -323,6 +330,12 @@ def cmd_knowledge(args):
         cmd += ["--out", args.out]
     return _run("knowledge report", cmd, timeout=90)
 
+def cmd_repo_search(args):
+    cmd = _tool("repo_search.py", "search", " ".join(args.query), "--limit", str(args.limit))
+    if args.json:
+        cmd.append("--json")
+    return _run("repo search", cmd, timeout=90)
+
 
 def cmd_report_diff(args):
     cmd = _tool("report_diff.py", args.a, args.b)
@@ -449,6 +462,11 @@ def build_parser():
     p.add_argument("--db")
     p.add_argument("--out")
     p.set_defaults(func=cmd_knowledge)
+    p = sub.add_parser("repo-search", help="ranked search across canonical repo documentation")
+    p.add_argument("query", nargs="+")
+    p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_repo_search)
 
     p = sub.add_parser("report-diff", help="compare two knowledge reports")
     p.add_argument("a")

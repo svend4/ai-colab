@@ -172,4 +172,5 @@
 | T-156 | Pipeline done --applied evidence marker | done | codex | `docs/instruction-assurance.md` | Добавить мягкий флаг `--applied` в `pipeline.py done`, чтобы done-маркер хранил evidence применённых инструкций без поломки старого сценария. |
 | T-157 | Instruction check-report accepts pipeline done applied marker | done | codex | `docs/instruction-assurance.md` | Научить `tools/instructions.py check-report` принимать не только outbox-секцию `## Applied instructions`, но и done-маркер `applied:` / `Applied instructions:`. |
 | T-158 | Pipeline warns when service tasks finish without applied evidence | done | codex | `docs/instruction-assurance.md` | Добавить мягкое предупреждение в `pipeline.py done`, если служебная задача закрывается без `--applied`, не ломая обратную совместимость. |
+| T-159 | Adopt repo_search as top-layer canonical documentation search | done | codex | `docs/top-layer-command-groups.md` | Принять `tools/repo_search.py` как read-mostly поиск по канону, исправить Windows temp в тесте, добавить top/capabilities/docs и не версионировать runtime DB. |
 <!-- GEN:tasks END -->

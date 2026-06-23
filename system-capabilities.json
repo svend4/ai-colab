@@ -17,6 +17,10 @@
       "does": "сравнить два knowledge-отчёта"
     },
     {
+      "cmd": "python tools/top.py repo-search <query> [--limit N]",
+      "does": "ранжированный поиск по канонической документации репозитория"
+    },
+    {
       "cmd": "python tools/cohort.py board",
       "does": "dashboard параллельной многоагентной работы"
     },

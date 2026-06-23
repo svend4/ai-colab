@@ -18,6 +18,7 @@ python tools\top.py instruction-preflight codex T-154
 python tools\top.py take codex
 python tools\top.py snapshot
 python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports\bridge.md
+python tools\top.py repo-search "parallel work policy" --limit 5
 ```
 
 ## Принцип
@@ -34,6 +35,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |
 | Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
+| Поиск по канону | найти решение/политику/задачу | быстро поднять контекст перед правкой | `repo-search` строит ignored FTS/BM25 индекс по docs/decisions/questions/темам/tasks |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 
@@ -50,7 +52,7 @@ python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports
 - единая точка входа снижает дрейф между инструкциями;
 - сценарии можно вызывать из других автоматизаций;
 - `buttons --json` даёт машинно-читаемый список действий;
-- side-effect команды явно названы (`take`, `snapshot`, `knowledge --out`).
+- side-effect команды явно названы (`take`, `snapshot`, `knowledge --out`); `repo-search` read-mostly и пишет только ignored runtime DB в `logs/`.
 
 ## Граница безопасности
 

@@ -3,11 +3,12 @@
 """Тест repo_search (tools/repo_search.py) — индекс + ранжированный поиск, герметично (temp-корпус)."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+sys.path.insert(0, os.path.join(ROOT, "drivers"))
+from test_tmp import make_temp_dir
 sys.path.insert(0, HERE)
 import repo_search as rs
 
@@ -24,9 +25,7 @@ configure_output()
 
 def run():
     ok = True
-    work = os.path.join(ROOT, "tmp-work")
-    os.makedirs(work, exist_ok=True)
-    cdir = tempfile.mkdtemp(prefix="rs_", dir=work)
+    cdir = make_temp_dir("rs_")
     rel = os.path.relpath(cdir, ROOT).replace("\\", "/")
     db = "tmp-work/_rs_test_%d.db" % os.getpid()
     try:

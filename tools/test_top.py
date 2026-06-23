@@ -17,6 +17,7 @@ def run():
     assert "instruction-preflight" in ids, ids
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
+    assert "repo-search" in ids, ids
     assert "report-diff" in ids, ids
     assert "cohort-board" in ids, ids
     assert "variants" in ids, ids
@@ -30,6 +31,7 @@ def run():
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
+    assert "python tools/top.py repo-search" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     parser = top.build_parser()
@@ -43,6 +45,8 @@ def run():
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])
     assert kargs.cmd == "knowledge" and kargs.db == "tmp-work/x.db", kargs
+    rsargs = parser.parse_args(["repo-search", "parallel", "policy", "--limit", "3", "--json"])
+    assert rsargs.cmd == "repo-search" and rsargs.query == ["parallel", "policy"] and rsargs.limit == 3 and rsargs.json, rsargs
     wargs = parser.parse_args(["work-mode", "codex", "T-144", "--parallel"])
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])

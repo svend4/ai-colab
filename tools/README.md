@@ -312,11 +312,12 @@ python tools/top.py take codex             # next
 python tools/top.py take codex T-152       # targeted claim
 python tools/top.py snapshot
 python tools/top.py knowledge data/knowledge-corpus --query bridge --out reports/bridge.md
+python tools/top.py repo-search "parallel work policy" --limit 5
 python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md
 python tools/top.py work-mode codex T-144 --parallel
 ```
 
-Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `drift_check.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе.
+Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
 
 ## Friction diagnostics (`friction.py`, T-150)
 
