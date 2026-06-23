@@ -1,0 +1,55 @@
+---
+id: execute-sandbox-runner-design-2026-06-23
+type: doc
+title: Execute-sandbox runner — поэтапный design-трек (вариант B, от D-014 к рабочей песочнице)
+status: proposed
+date: 2026-06-23
+related: [execute-sandbox-preflight, D-014, D-006, D-018, finder-frontier-2026-06-23]
+---
+
+# Execute-sandbox runner — staged design (вариант B)
+
+> FINDER-фронтир: execute-sandbox — крупнейший непостроенный слой (10 пунктов). D-014 **accepted**
+> (execute OFF + 10 гейтов), но в коде только read-only intake. Это **самый рискованный** рост:
+> исполнение чужого кода. Потому — **поэтапный design-трек**, каждый этап через котёл (D-018) +
+> человеко-гейт (D-006). НЕ казуальный билд. Этот док — карта; код per-этап ратифицируется отдельно.
+
+## Принцип: каждый гейт D-014 = отдельный buildable, исполнитель — последним
+
+Порядок снизу-вверх (preflight-проверки до runner'а; runner — только когда все гейты закрыты кодом):
+
+| Этап | Пункт | Что строить | Риск | Гейт |
+|---|---|---|---|---|
+| 1 | P3 | **anti-fake-sandbox** (Gate 9): probe runner-бэкенда (docker/vm реально есть), а не enum-ярлык | low | inline |
+| 2 | P5 | **mount/network preflight** (Gate 4/5): чекер «нет широких host-mount, --network none» | low | inline |
+| 3 | P9 | **лимиты** (Gate 6): валидатор CPU/RAM/PIDs/disk/timeout в manifest | low | inline |
+| 4 | P10 | **audit+rollback** (Gate 7/8): runner логирует команду/exit/diff в reports/, output в отд. папку | med | worktree |
+| 5 | P6 | **human-first-run** (Gate 10): механизм явного человеко-подтверждения первого запуска (D-006) | med | **котёл** |
+| 6 | P11 | **preflight-probe**: одна команда go/no-go по всем 10 гейтам (агрегат 1-5) | med | worktree |
+| 7 | P4 | **run-plan**: парсер+валидатор+исполнитель плана запуска (docker run форма из preflight-дока) | high | **котёл** |
+| 8 | P31 | **sandbox-runner ядро**: реальная изоляция (Gate 3), связывает всё; ПЕРВЫЙ mode:execute | high | **котёл+человек** |
+
+P30 (driver mode:execute), P32 (мост AI-OS execute), P33 (svend4 runner) — **переиспользуют P31** (общий runner), не отдельные.
+
+## Почему так, а не сразу runner
+
+- **Гейты — независимые preflight-проверки** (1-3 дёшевы, inline): строятся и тестируются БЕЗ исполнения.
+  Накапливают защиту до того, как появится хоть один execute.
+- **Runner (7-8) — последним**, когда 1-6 закрыты: до этого `preflight-probe` (6) всегда даёт no-go,
+  и `validate.py check_pipeline_d011`-стиль гейт держит mode:execute OFF.
+- **Governance не обходится**: этапы 5/7/8 (human-gate, исполнитель, runner) — через котёл D-018 +
+  человеко-подтверждение D-006. Каждый — отдельное accepted-решение на конкретный execute-сценарий
+  (гейт 1 из 10 в D-014).
+
+## Связь с уже-построенным
+
+- D-014 `check_pipeline_d011`-аналог: добавить `validate.py check_execute_d014` — ERROR, если найден
+  `mode: execute` драйвер, но не все 10 гейтов имеют код-реализацию (presence-инвариант, как D-011).
+- `blocks.py` блок `execute-preflight`: кластер гейт-чекеров (1-6) → единый go/no-go.
+- Карточка `decision-menu`: каждый execute-запуск подаётся человеку card-формой (тип decision,
+  responsibility=ВЫСОКАЯ) перед первым run (Gate 10).
+
+## Трекер
+
+T-208 ведёт этот трек поэтапно. Сейчас НЕ строим — это карта. Первый дешёвый этап (P3 anti-fake-probe)
+можно начать inline, но даже он — после явного «go» Stefan на execute-направление.

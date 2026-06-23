@@ -232,6 +232,13 @@
       "next": ""
     },
     {
+      "id": "safe-auto-apply-design-2026-06-23",
+      "title": "Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal)",
+      "file": "темы/safe-auto-apply-design-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "session-state-2026-06-23",
       "title": "Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture",
       "file": "темы/session-state-2026-06-23.md",
@@ -2472,7 +2479,7 @@
     {
       "id": "T-203",
       "title": "Обновить статус-отчёт (docs/status-report-2026-06-23.md)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2512,6 +2519,28 @@
       "depends_on": "[D-006]",
       "topic": "",
       "next": "Спроектировать строгое определение «safe-auto-apply» (что детектор может чинить БЕЗ человека) + гейт; реализовать только на доказанно-обратимом подмножестве"
+    },
+    {
+      "id": "T-207",
+      "title": "D (пирамида L2→L1) — knowledge.py второй core-export (P12) + move-путь (P13)",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "В ЧИСТОМ окне promote.py (сейчас Codex-hot): применить verification-гейт (test_<tool>.py = «тесты ядра») → knowledge.py L2→L1 READY → промоутнуть в core-export; затем тест move-пути (P13)"
+    },
+    {
+      "id": "T-208",
+      "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
+      "status": "blocked",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "high",
+      "depends_on": "[D-014, D-006, D-018]",
+      "topic": "",
+      "next": "Ждёт явного «go» Stefan на execute-направление. Первый дешёвый этап — P3 anti-fake-probe (Gate 9) inline; этапы 5/7/8 (human-gate/исполнитель/runner) — через котёл"
     }
   ],
   "questions": [

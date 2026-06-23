@@ -48,6 +48,7 @@
 | Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance) | `темы/pyramid-grounding-plan-2026-06-23.md` | proposed | — |  |
 | Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass) | `темы/q017-docmerge-semantic-2026-06-23.md` | proposed | — |  |
 | Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready) | `темы/q017-semantic-consolidated-2026-06-23.md` | proposed | — |  |
+| Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal) | `темы/safe-auto-apply-design-2026-06-23.md` | proposed | — |  |
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `темы/session-state-2026-06-23.md` | proposed | — |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `темы/finder-doc-vs-reality-2026-06-23.md` | proposed | — |  |
 <!-- GEN:topics-board END -->
