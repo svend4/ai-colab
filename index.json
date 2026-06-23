@@ -2618,6 +2618,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Выполнено: D-014 и D-021 добавлены в T-020. T-020 больше не stale-blocker. validate.py без ERROR."
+    },
+    {
+      "id": "T-216",
+      "title": "Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11)",
+      "status": "done",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-214]",
+      "topic": "",
+      "next": "Реализовать tools/execute_human_gate.py и check-all"
     }
   ],
   "questions": [

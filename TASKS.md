@@ -229,4 +229,5 @@
 | T-213 | Q-010 — миграция папки topics/ → topics/ (атомарное переименование + sweep ссылок) | done | Novax | — | Выполнено: sweep 353+8 файлов, 7 hardcode .py правок, generate + validate + tests green. Коммит отложен из-за geometric repack. |
 | T-214 | Execute-Sandbox: Audit & Rollback Logger (P10) | done | antigravity | — | Реализовать tools/execute_audit.py |
 | T-215 | Fix back-ref gap T-020 — добавить D-014 и D-021 в контекст задачи | done | Novax | — | Выполнено: D-014 и D-021 добавлены в T-020. T-020 больше не stale-blocker. validate.py без ERROR. |
+| T-216 | Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11) | done | antigravity | — | Реализовать tools/execute_human_gate.py и check-all |
 <!-- GEN:tasks END -->

@@ -62,14 +62,21 @@ BLOCKS = {
         ],
     },
     "improve": {
-        "desc": "петля само-улучшения: adoption(применение)+audit(дефекты) → вход роутеру (что чинить/впаивать)",
+        "desc": "петля само-улучшения: adoption(применение)+audit(дефекты)+propagation(решения→исполнение) → вход роутеру",
         "steps": [
             ("adoption.py", ["--json"], "advisory"),
             ("friction.py", ["status"], "advisory"),
             ("assurance.py", [], "advisory"),
             ("drift_check.py", [], "advisory"),
+            ("decision_propagation.py", [], "advisory"),
             ("validate.py", [], "gate"),
             ("generate.py", ["--check"], "gate"),
+        ],
+    },
+    "propagation": {
+        "desc": "решения→потребители: ловит «решение принято, но не дошло до исполнения» (корень svend4-провала)",
+        "steps": [
+            ("decision_propagation.py", [], "advisory"),
         ],
     },
     "pyramid": {
