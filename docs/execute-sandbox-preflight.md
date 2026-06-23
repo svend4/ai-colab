@@ -3,7 +3,7 @@ id: execute-sandbox-preflight
 title: Execute sandbox preflight — до запуска чужого кода
 status: draft
 owner: Codex
-related: tasks/T-114.md, tasks/T-020.md, drivers/SCHEMA.md, docs/driver-safety-policy.md, docs/bridge-usage.md
+related: tasks/T-114.md, tasks/T-020.md, decisions/D-014.md, decisions/D-006.md, decisions/D-018.md, drivers/SCHEMA.md, docs/driver-safety-policy.md, docs/bridge-usage.md
 ---
 
 # Execute sandbox preflight
@@ -13,6 +13,10 @@ related: tasks/T-114.md, tasks/T-020.md, drivers/SCHEMA.md, docs/driver-safety-p
 Назначение: описать, что должно быть проверено до любого запуска чужого или непроверенного кода, включая будущий кейс `svend4`.
 
 Это preflight-документ, а не разрешение на `mode: execute`. Текущий проект остается read-only для внешних репозиториев.
+
+## Ratification note 2026-06-23
+
+D-014 оформляет этот документ как proposed governance decision: execute OFF по умолчанию + 10 обязательных preflight-гейтов. До явного подтверждения Stefan по D-006/D-018 документ остаётся рабочей policy-поверхностью, но не становится самостоятельным разрешением на execute.
 
 Связанная рабочая зона: `sandbox/`. Её описание — `docs/external-code-sandbox.md`.
 `sandbox/` не даёт разрешение на запуск. Это quarantine/intake/workspace структура для любого внешнего

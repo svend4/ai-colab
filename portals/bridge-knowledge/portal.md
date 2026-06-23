@@ -4,7 +4,6 @@ type: portal
 level: L2
 title: Bridge-knowledge (L2 — поиск по operational knowledge-корпусу)
 description: L2-портал поверх универсального ядра (D-016) над РЕАЛЬНЫМ корпусом data/knowledge-corpus/ (8 файлов) — доказывает, что L2 обобщается за пределы 2-файлового demo.
-core: knowledge.py + text_extract.py (универсальное ядро L1)
 l1_basis: [tools/knowledge.py, tools/text_extract.py]
 corpus_ref: data/knowledge-corpus
 topics: [handbook, glossary, pipeline, risk, workflows]

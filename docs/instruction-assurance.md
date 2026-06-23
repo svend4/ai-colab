@@ -5,6 +5,7 @@ title: Instruction assurance — проверяемое применение и�
 status: draft
 owner: codex
 related: [T-154, T-121, T-122, T-138, T-150]
+last_verified: 2026-06-23
 ---
 
 # Instruction assurance
@@ -90,6 +91,29 @@ python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --ap
 
 `--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`. `tools/instructions.py check-report` принимает оба формата: подробный outbox-блок `## Applied instructions` и короткий pipeline done-маркер. Начиная с T-158, `pipeline.py done` печатает warning для service/governance-задач без `--applied`; это промежуточная стадия перед возможным strict gate. Начиная с T-166, `check-report` дополнительно печатает advisory-находки по ссылкам на repo-файлы и `Checks:` командам; этот слой read-only и не меняет exit-code evidence gate.
 
+### Post-hoc evidence addendum
+
+Нормальный путь — закрывать задачу сразу с `pipeline.py done ... --applied`. Если долг найден позже и исходный `queues/done/<T-id>.done.md` принадлежит другому агенту, не надо молча переписывать историю. Для этого есть отдельный read-only для `assurance.py` слой:
+
+```text
+queues/evidence/<T-id>.evidence.md
+```
+
+Минимальный front matter:
+
+```md
+---
+task: T-XXX
+type: evidence-addendum
+agent: reviewer
+date: YYYY-MM-DD
+source_done: queues/done/T-XXX.done.md
+applied: AGENTS.md, PROTOCOL.md, <task-specific files>, Checks
+---
+```
+
+`tools/assurance.py applied` объединяет исходный done-маркер и addendum только при проверке evidence. Это не меняет результат задачи, не утверждает новое решение и не заменяет `done`; это audit trail для пост-фактум закрытия слабого evidence.
+
 ## Моё мнение
 
 Правильный следующий шаг — не заставлять каждого агента читать всё подряд, а строить короткий task-scoped preflight. Большая система инструкций должна быть похожа на компилятор: она не просто хранит правила, а выбирает релевантные правила, показывает evidence и постепенно превращает повторяющиеся нарушения в машинные проверки.
@@ -100,3 +124,12 @@ python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --ap
 2. Сделано в T-166 как advisory: `tools/instructions.py check-report` проверяет ссылки на repo-файлы и форму `Checks:` команд без исполнения команд и без ужесточения exit-code.
 3. Связать preflight с `merge_gate.py`, но только после нескольких ручных прогонов.
 4. Добавить instruction freshness index: `status`, `last_verified`, `applies_to`, `supersedes` для ключевых docs.
+
+## T-173 assurance closure
+
+T-173 закрыл две проверяемые дырки в пути `основание -> инструкция -> вершина`.
+
+- Для decision-flow используется структурный ключ `INSTRUCTIONS[*].surfaces`: D-001 заземлён через `collab-protocol`, D-010/D-013 — через `driver-catalog-schema` (`drivers/SCHEMA.md`). Проверка: `python tools/instructions.py trace D-001|D-010|D-013`.
+- Для promotion-coverage `portals/README.md` содержит явный L1 grounding core-export: `_canon.py`, `validate.py`, `generate.py`, `next_id.py`, `commit_lock.py`, `pipeline.py`, `dispatch.py`, `merge_gate.py`, `engine-manifest.md`. Проверка: `python tools/top.py assurance all --json`.
+
+Методологический вывод: accepted decision считается дошедшим до вершины только тогда, когда оно либо прямо упомянуто в instruction surface, либо связано с инструкцией через `surfaces`. L1-модуль считается пригодным для портального слоя только тогда, когда хотя бы один portal-level документ объясняет, зачем этот модуль нужен L2/L3 работе.

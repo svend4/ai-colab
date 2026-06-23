@@ -109,7 +109,7 @@ WARN: claim без задания и без done: T-024
 
 Что изменено:
 
-- `tools/queue.py check` теперь признаёт claim валидным, если существует `tasks/<task>.md`;
+- `tools/agent_queue.py check` теперь признаёт claim валидным, если существует `tasks/<task>.md`;
 - старая логика для `queues/inbox/` сохранена;
 - `tools/README.md` получил короткое пояснение, почему pipeline-claim живёт рядом с `tasks/*.md`.
 

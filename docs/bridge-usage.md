@@ -66,6 +66,7 @@ python tools/validate.py                         # канон + манифест
 python drivers/gateway/test_gateway.py           # gateway in-process (быстро, любая среда)
 python drivers/mcp_handshake_test.py             # MCP handshake (async stdio)
 python drivers/mcp_acceptance_test.py            # legacy async call_tool batch; зависит от Windows stdio runtime
+python drivers/mcp_async_stdio_monitor.py gateway --force-acceptance --out reports/mcp-async-stdio-monitor.md
 python drivers/mcp_sync_probe.py gateway         # MCP через sync subprocess (обход WinError 5)
 python drivers/mcp_sync_acceptance.py            # MCP tools/call 27/27 через sync subprocess
 python drivers/mcp_sync_acceptance.py sqlite     # sqlite-only acceptance 4/4
@@ -77,6 +78,9 @@ python tools/knowledge.py search logs/knowledge.db bridge
 **Замечание по среде:** официальный async MCP stdio-клиент на части Windows-сред падает с
 `PermissionError [WinError 5]` (`docs/mcp-stdio-windows-pipe-diagnostics-2026-06-21.md`). Поэтому есть
 **синхронный** путь (`drivers/mcp_sync_probe.py` и sync-приёмка) — переносимый между средами.
+Для периодической перепроверки async-статуса используйте `drivers/mcp_async_stdio_monitor.py`: он
+сначала проверяет простой `asyncio.create_subprocess_exec` pipe, затем при необходимости запускает
+legacy async acceptance и сравнивает результат с sync acceptance.
 
 ## 6. Что сегодня работает / что в работе
 

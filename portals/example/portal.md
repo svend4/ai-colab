@@ -4,7 +4,7 @@ type: portal
 level: L2
 title: Пример портала (L2 — чистовая рабочая область)
 description: Первый L2-портал — present-tense область поверх универсального ядра (D-016).
-core: knowledge.py + драйвер files (универсальное ядро L1)
+l1_basis: [tools/knowledge.py]
 corpus_ref: data/portals/example/corpus
 topics: [alpha, beta, gamma]
 links:

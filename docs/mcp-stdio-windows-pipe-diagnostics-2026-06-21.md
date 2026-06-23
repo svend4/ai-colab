@@ -54,3 +54,26 @@ Short-term:
 
 Do not mark MCP-dependent acceptance tasks done until one of those paths is green.
 
+
+## Update 2026-06-23 — T-174 monitor
+
+Added `drivers/mcp_async_stdio_monitor.py` as the periodic retest command for this blocker.
+
+Checked command:
+
+```powershell
+python drivers\mcp_async_stdio_monitor.py gateway --force-acceptance --out reports\mcp-async-stdio-monitor-forced-2026-06-23.md --json
+```
+
+Result:
+
+```text
+async-pipe-probe: PermissionError [WinError 5]
+legacy async gateway acceptance: ACCEPTANCE pass=0 fail=6, RESULT FAIL
+sync gateway acceptance: SYNC ACCEPTANCE pass=6 fail=0, RESULT OK
+classification: async_state=blocked-before-mcp, sync_state=sync-ok
+```
+
+Interpretation is unchanged: the current runtime still fails before MCP server logic is reached.
+Regular gateway acceptance remains the sync `tools/call` path; retest async after Python/Windows/`mcp`
+runtime changes.

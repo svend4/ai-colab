@@ -96,3 +96,27 @@ Pre-commit hook (`tools/githooks/pre-commit`) автоматически зап�
 - Позовите агента: `@Claude`, `@Codex`, `@Mavis`, `@Novax`.
 - Прочтите `PROTOCOL.md` — полные правила масштабной работы.
 - Прочтите `tools/README.md` — описание всех инструментов.
+
+## Быстрая диагностика инструментов
+
+Перед большой правкой или коммитом агент может быстро проверить верхний слой и типовые проблемы:
+
+```bash
+python tools/friction.py status
+python tools/drift_check.py
+python tools/onboard.py <agent>
+python tools/commit_lock.py status
+python tools/top.py buttons
+python tools/top.py health
+```
+
+Назначение:
+
+| Инструмент | Что показывает |
+|---|---|
+| `friction.py status` | грязное дерево, stale indexes, gate-poison, lock, temp-проблемы и рецепты |
+| `drift_check.py` | дрейф между документацией/индексом и текущими фактами |
+| `onboard.py <agent>` | краткий вход агента: стадия, драйверы, execute policy, конвейер, активные задачи |
+| `commit_lock.py status` | свободна ли серийная точка git commit |
+| `top.py buttons` | верхняя панель команд для людей и агентов |
+| `top.py health` | validate/generate/capabilities/driver catalog как общий health-check |

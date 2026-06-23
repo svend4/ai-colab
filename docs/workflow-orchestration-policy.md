@@ -5,6 +5,7 @@ title: Политика оркестрации воркфлоу — агент-�
 status: proposed
 date: 2026-06-22
 related: [D-017, D-018, D-022, parallel-work-policy, engine-state-2026-06-22]
+last_verified: 2026-06-23
 ---
 
 # Политика оркестрации воркфлоу (агент-оркестратор)
@@ -138,3 +139,11 @@ commit**, с параллельными кластерами и без блок�
 - Integrator/lead-agent делает review, merge-gate, selective commit и решает конфликты через D-017/D-018.
 
 Смысл: локальный репозиторий готовит воспроизводимый lane и инструкции, но не привязывается к конкретному API запуска агентов. Это оставляет систему переносимой для людей, Codex sub-agents, других AI и будущего сервера-оркестратора. Подробный чистовой контракт: `docs/agent-launch-workflow.md`.
+
+## 11. DOC_CONSENSUS_AGENT semantic runtime
+
+`tools/doc_consensus.py report --semantic` — это частный reader/synthesizer для сравнения документов, а не отдельный workflow launcher. Он может вызвать только одну команду-фильтр из `DOC_CONSENSUS_AGENT`, ограниченную `--semantic-budget`, и рендерит результат как `status: proposed`.
+
+Безопасный runtime-рецепт и примеры PowerShell: `docs/doc-consensus-agent-runtime.md`.
+
+Правило для оркестратора: semantic consensus можно использовать как вход в D-017/D-018, но нельзя трактовать как auto-accepted решение или запускать скрытый fan-out из agent command.

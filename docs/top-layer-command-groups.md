@@ -8,14 +8,15 @@
 Внутри проекта уже есть много полезных функций: pipeline, validate, generate, capabilities, drift_check, knowledge, drivers, commit_lock. Для агента это нормально, но человеку и новому агенту неудобно помнить десятки отдельных команд.
 
 `tools/top.py` — верхняя панель управления. Она не заменяет низкоуровневые инструменты, а группирует их в сценарии, похожие на кнопки:
-Если агент знает тему задачи заранее, стартуйте так: `python tools\top.py agent-start codex --context "<тема или вопрос>"`. Это сразу показывает onboarding/status и поднимает релевантные решения, политики, вопросы и задачи через `repo-search`.
+Если агент знает тему задачи заранее, стартуйте так: `python tools\top.py agent-start codex --task T-id --context "<тема или вопрос>"`. Это сразу показывает onboarding/status, assurance/advice и поднимает релевантные решения, политики, вопросы и задачи через `repo-search`.
 
 ```powershell
 python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py health
 python tools\top.py assurance all --json
-python tools\top.py agent-start codex --context "parallel work policy"
+python tools\top.py advice codex T-188 --parallel --hot-files
+python tools\top.py agent-start codex --task T-188 --context "parallel work policy"
 python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools\top.py instruction-preflight codex T-154
 python tools\top.py take codex
@@ -33,9 +34,10 @@ python tools\top.py conveyor --json
 
 | Сценарий | Для человека | Для агента | Что происходит |
 |---|---|---|---|
-| Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding, статус и опциональный `repo-search --context` |
+| Старт | понять, что есть | подключиться без чтения 10 файлов | `agent-start` вызывает onboarding, статус, assurance/advice и опциональный `repo-search --context` |
 | Проверка | увидеть, всё ли живо | перед правкой/коммитом | `health` вызывает validate/generate/capabilities/catalog |
 | Проверяемость | увидеть, применяются ли инструкции и не устарел ли слой | поднять Q-016 applied/currency/coverage/flow к вершине | `assurance` вызывает `assurance.py` advisory по умолчанию, strict только явно |
+| Активация советов | увидеть, какие уже существующие рекомендации применимы сейчас | не забыть worktree/friction/assurance/preflight при текущих симптомах | `advice` связывает `friction`/`assurance` с командами активации |
 | Инструкции | понять применимые правила | собрать evidence перед задачей | `instruction-preflight` вызывает `instructions.py preflight` |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |
 | Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
@@ -45,6 +47,7 @@ python tools\top.py conveyor --json
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 | Надзор конвейера | увидеть, нужен ли дозалив/обработка | не держать workflow в голове | `conveyor` вызывает `conveyor.py status` и показывает REFILL/PROCESS/IDLE |
+| Обработка landed | увидеть следующий intake/verify/synthesis шаг | обработать output без потери контекста | `process-landed` строит read-only план по `landed` outputs |
 | Assurance apex | увидеть applied/currency/coverage/flow | начать работу с проверяемого состояния инструкций | `assurance` вызывает `assurance.py`; `health` показывает его как warning-layer |
 
 ## Как это помогает параллельной работе
@@ -119,7 +122,7 @@ python tools\sandbox_intake_demo.py --out tmp-work\sandbox-demo
 | `stream.py` | semi-commit пакет варианта в `streams/` | пишет отдельный пакет, mainline не трогает |
 | `merge_gate.py` | read-only проверка перед вливанием | read-only |
 | `promote.py` | gate подъёма L4→L3→L2→L1 | `check` read-only, `move` только после review |
-| `sandbox_intake_demo.py` | доказательство read-only intake без внешнего svend4 | пишет manifest/report в `--out` |
+| `sandbox_intake_demo.py` | доказательство read-only intake без внешнего svend4; manual-demo, не dead code | пишет manifest/report в `--out` |
 
 Моё мнение: это именно та “середина пирамиды”, которую стоит развивать сейчас. Она автоматизирует повторяемые действия агентов и людей, но не вводит тяжёлый router/RAG/execute слой до доказанной необходимости.
 
@@ -164,6 +167,25 @@ python tools\top.py assurance flow --strict
 | `top.py health` | hard checks + warning layer | validate/generate/capabilities остаются hard, assurance печатается advisory |
 
 Моё мнение: это важная связь основания и вершины пирамиды. Инструкции, freshness и coverage уже существуют в нижнем слое; теперь они видны как стандартная верхняя команда, а не как отдельный забываемый скрипт.
+
+## Расширение: advice activator
+
+После добавления `tools/advice.py` верхний слой умеет не только показать отдельные проверки, но и связать их с уже существующими рекомендациями:
+
+```powershell
+python tools\top.py advice codex T-188 --parallel --hot-files
+python tools\advice.py current codex T-188 --parallel --hot-files --json
+```
+
+Смысл:
+
+| Сигнал | Откуда берётся | Что активируется |
+|---|---|---|
+| dirty/stale/gate/stream warnings | `tools/friction.py status` | рецепты `friction.py recipe F-XXX` и `work-mode` |
+| assurance findings | `tools/assurance.py all` | `instruction-preflight`, applied-evidence, strict-gate-кандидаты |
+| parallel/hot work | флаги задачи/агента | `top.py work-mode ... --parallel/--hot-files` |
+
+Это решает классическую проблему "хороший совет уже лежит в документации, но не используется": совет считается живым только когда есть команда активации и текущий симптом, который его включает. После текущего усиления `agent-start` вызывает advice автоматически, поэтому новый агент видит рекомендации до claim/правок, а не после повторения старой ошибки.
 
 ## Расширение T-161: handoff для запуска sub-agent
 

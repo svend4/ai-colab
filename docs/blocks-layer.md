@@ -18,7 +18,7 @@ related: [adoption-statistics-2026-06-23, finder-solver-pipeline-methodology, wo
 ## `tools/blocks.py` — реестр + раннер блоков
 
 Блок = именованный кластер проверенных tools, запускаемых **параллельно** (`threading.Thread`;
-обходит коллизию `tools/queue.py`↔stdlib `queue`), сводимых в единый вердикт. Шаги классифицируются
+обходит коллизию `tools/agent_queue.py`↔stdlib `queue`), сводимых в единый вердикт. Шаги классифицируются
 `gate` (rc решает вердикт — `validate`, `generate --check`) или `advisory` (собираются, не валят).
 
 | Блок | Кластер | Назначение |

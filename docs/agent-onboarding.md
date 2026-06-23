@@ -19,7 +19,7 @@
   с поиском**, **конвейер задач**, **переносимая MCP-приёмка**, **skills**.
 - **3 команды, чтобы начать:**
   - `python tools/top.py buttons` — увидеть верхнюю панель сценариев/кнопок;
-  - `python tools/top.py agent-start codex --context "<тема>"` — старт агента + статус + быстрый поиск по канону;
+  - `python tools/top.py agent-start codex --task T-id --context "<тема>"` — старт агента + статус + assurance/advice + быстрый поиск по канону;
   - `python tools/demo_bridge.py` — увидеть слой в действии (6 способностей за один запуск);
   - `python tools/pipeline.py status` — что сейчас в работе/готово/заблокировано;
   - `python tools/validate.py` — здоров ли канон (должно быть `ERROR=0`).
@@ -101,7 +101,7 @@
 
 **Агент, который только подключился:**
 1. Прочитай `STATUS.md` → `этот файл §0-1` → `AGENTS.md` (твои права/зона записи).
-2. Если тема известна, подними контекст: `python tools/top.py agent-start <agent> --context "<тема>"` или `python tools/top.py repo-search "<тема>" --limit 5`.
+2. Если тема известна, подними контекст: `python tools/top.py agent-start <agent> --task <T-id> --context "<тема>"` или `python tools/top.py repo-search "<тема>" --limit 5`. `agent-start` теперь также показывает assurance/advice, чтобы существующие правила и рецепты не оставались пассивным текстом.
 3. Зарегистрируй присутствие: `pipeline.py heartbeat <agent> <T-id> --note "..."`.
 4. Возьми работу: `pipeline.py next <agent>` (или сделай то, о чём просил человек).
 5. Сделай → закрой с fencing (`done ... --claim <id> --applied "AGENTS.md, PROTOCOL.md, Checks"`) → `generate && validate && snapshot`.

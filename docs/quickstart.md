@@ -20,6 +20,15 @@
 - Если нужна машинная сводка входа, запустите `python tools/onboard.py <agent>`.
 
 `queues/inbox/` и `queues/outbox/` остаются файловым форумом для входящих поручений и результатов, но актуальный захват задачи идёт через `pipeline.py`.
+Для быстрой диагностики состояния перед работой:
+
+```bash
+python tools/friction.py status
+python tools/drift_check.py
+python tools/onboard.py <agent>
+python tools/top.py buttons
+python tools/top.py health
+```
 
 ## Шаг 3. Как взять задачу (для агентов)
 

@@ -65,6 +65,7 @@ python tools\test_knowledge.py
 | Canon search | `tools/top.py repo-search`, `tools/repo_search.py` | быстрый поиск по docs/decisions/questions/темам/tasks |
 | Top command panel | `tools/top.py` | сценарии/кнопки для людей и агентов |
 | Sub-agent handoff | `tools/top.py subagent-handoff`, `tools/flow.py launch-plan` | repo lane + prompt для внешнего launcher |
+| Doc consensus semantic runtime | `tools/doc_consensus.py`, `docs/doc-consensus-agent-runtime.md` | безопасный opt-in `$DOC_CONSENSUS_AGENT`, budget guard, proposed output |
 | Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
 | История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
 | Итоги задач | `docs/*result*.md`, `queues/outbox/`, `queues/done/` | что уже сделано |

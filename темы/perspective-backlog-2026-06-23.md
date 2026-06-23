@@ -4,52 +4,69 @@ type: topic
 title: Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение)
 status: proposed
 date: 2026-06-23
-related: [workflow-conveyor-policy, Q-016, Q-017, Q-013, Q-010, Q-009]
+last_verified: 2026-06-23
+related: [workflow-conveyor-policy, Q-016, Q-017, Q-013, Q-010, Q-009, T-166, T-173, T-176, T-177, T-178, T-179]
 ---
 
 # Перспективный бэклог конвейера
 
-> Стоячий источник будущих заданий (см. `docs/workflow-conveyor-policy.md` §3-bis): пополняется
-> рекуррентным воркфлоу-сканером поверхностей (открытые `Q-*`, `todo`, находки `assurance.py`,
-> разделы «Дальше»). Чтобы конвейер не осушался — следующая волна берётся отсюда.
+Этот файл — стоячий источник будущих заданий для `tools/conveyor.py next`. Он должен отражать не историю всех прежних предложений, а **актуальные** кандидаты дозалива. История выполненных пунктов остаётся ниже в секции shipped/closed, чтобы верхний слой не запускал повторно уже закрытую работу.
 
 ## Состояние конвейера и что запускать дальше
 
-Проверил репозиторий: assurance.py = ATTENTION (3 находки: currency-20, orphan-L1-12, flow-7); friction.py без gate-poison-пробы; doc_consensus.py без --semantic; instruction_freshness_check.py и promotion_coverage.py не построены; pre-commit hook существует (значит claim в parallel-work-policy устарел); открыто 5 вопросов (Q-009/010/013/016/017). В TASKS.md форвард-работы нет — всё живёт в котле.
+Проверка T-177 после закрытия T-176:
 
-После дедупликации 25 сырых пунктов свернулись в 13 ранжированных. Самые ценные независимые сборки можно запускать прямо сейчас, чтобы держать 2-4 потока в работе:
+- `python tools\top.py assurance all --json` показывает findings `[]` по applied-evidence, currency, promotion-coverage и flow;
+- Q-017 semantic doc-merge закрыт в T-176: `tools/doc_consensus.py` поддерживает opt-in `report --semantic`, `--semantic-budget`, CLI/stub-agent regression-test и `status: proposed` render;
+- Q-016 done-gate больше не является raw TODO: `pipeline.py done` имеет applied-evidence warning/strict gate через `_evidence_gaps`;
+- F-020 gate-poison detector присутствует в `tools/friction.py` и покрыт `tools/test_friction_f020.py`;
+- instruction check-report reference advisory закрыт T-166;
+- orphan-L1/promotion coverage закрыт T-173, текущий assurance metric: `orphan-L1: 0`.
 
-1. Q-016 done-gate (rank 1, S, build) — самый дешёвый высокорычажный фикс: cmd_done (pipeline.py:342-343) только печатает WARN, не зовёт check_report. Закрывает дыру «формальный evidence».
-2. friction F-020 gate-poison (rank 2, S, build) — детектор слеп к самому опасному состоянию shared-tree (класс инцидента T-150). Независим.
-3. Q-017 semantic doc-merge (rank 3, M, build) — направление ратифицировано, спека готова, остаётся реализация + fixture «одна идея — разные слова».
-
-Эти три не зависят друг от друга и покрывают разные подсистемы (gate / friction / doc-merge), поэтому параллелятся без конфликта по файлам. Четвёртым в волну — портал-наполнение orphan-L1 (rank 4, build), независимое и закрывающее главную машинную находку assurance; оно же разблокирует Wave-3 checker (rank 9). Параллельно дешёвый currency-rollout (rank 6) разблокирует Wave-2 freshness (rank 7). Решенческие пункты (Q-010 rename, Q-013 onboarding, gate-poison contract, two-commit divergences, T-020) идут через котёл/голосование отдельным decision-треком и не блокируют сборки — держим их параллельно, а не в основном конвейере.</answer_md>
-</invoke>
+Вывод: предыдущий список “готовы к запуску” был полезен как исторический снимок, но больше не должен кормить workflow-conveyor. Новые кандидаты ниже направлены на следующий слой автоматизации: приём результата, регулирование флота, синтез и классификация landed outputs.
 
 ## Готовы к запуску (независимые, по out-degree)
 
-1. Currency convention: adopt last_verified across accepted docs
-2. Populate L2 portals for orphan-L1 core modules
-3. Q-016 done-gate: wire check_report into cmd_done
-4. friction F-020 gate-poison detector
-5. Q-017 semantic doc-merge (report --semantic)
-6. Instruction check-report: verify referenced files/commands exist
+## Готовы к запуску (независимые, по out-degree)
+
+1. DOC_CONSENSUS_AGENT runtime recipe and safe examples
+2. Workflow backlog rescan tool
 
 ## Ранжированный бэклог
 
-| # | Тема | Value | Effort | Вид | Зависит |
-|---|---|---|---|---|---|
-| 1 | Q-016 done-gate: make pipeline.py cmd_done verify applied-instruction evidence (call check_report, block on empty/formal evidence for service/governance tasks) | high | S | worktree-build | none |
-| 2 | Wire gate-poison / validate-ERROR probe into friction.py as the F-020 detector | high | S | worktree-build | none |
-| 3 | Q-017 semantic doc-merge: add report --semantic to doc_consensus.py (mechanical high-thr pre-cluster + subprocess agent-pass over residue, _merge by unit-id, status:proposed output) + 'one idea, different words' fixture | high | M | worktree-build | none |
-| 4 | Populate L2 portals for the 12 orphan-L1 core modules (only portals/example/portal.md exists), closing the highest-signal assurance finding | high | M | worktree-build | none |
-| 5 | Instruction-assurance follow-up: extend instructions.py check-report to verify referenced files and check-commands actually exist (not just token presence) | medium | S | worktree-build | none |
-| 6 | Currency convention: adopt last_verified front-matter across the 20 accepted decisions/policies that lack it, moving currency-gate from observe to enforce | medium | S | cauldron-task | none |
-| 7 | Assurance Wave-2: build tools/instruction_freshness_check.py and integrate into drift_check.py + capabilities.json to catch stale-but-present instructions | medium | M | workflow | Currency convention: adopt last_verified across accepted docs (rank 6) |
-| 8 | Update stale 'not yet implemented' claims in docs/parallel-work-policy.md (stream.py check and selective-add pre-commit hook both already shipped) | medium | S | worktree-build | none |
-| 9 | Assurance Wave-3: build tools/promotion_coverage.py to verify L2 portals actually use L1 core knowledge (reverse upward-flow check) | medium | L | workflow | Populate L2 portals for orphan-L1 core modules (rank 4) |
-| 10 | ~~reconcile_state.py fix subcommand~~ — **SHIPPED 2026-06-23 (commit `94c3c35`)**: `cmd_fix` at `tools/reconcile_state.py:259` regenerates derived state (index + pipeline snapshot), dry-run by default with mandatory `--apply`; no longer a report-only stub | done | M | done | none |
-| 11 | Flow orphans: decide whether to wire the 7 dangling accepted decisions (D-001/002/004/008/009/010/013) into the instruction surface or mark them background-only | medium | S | cauldron-task | none |
-| 12 | Decision batch (vote-gated): Q-010 temy->topics rename, Q-013 onboarding/manual roadmap points, gate-poison shared-gate contract (S1 quarantine), two-commit worktree-timeline divergence (D-018) | medium | M | decision | none |
-| 13 | Q-009/T-020 svend4 source access: decide A (provide read-only source), B (generic local-repo inventory), or C (close as blocked/orphan) - the one remaining blocked task | low | S | decision | Stefan provides read-only svend4 source or chooses B/C |
+| # | Тема | Value | Effort | Вид | Зависит | Почему сейчас |
+|---|---|---|---|---|---|---|
+| 1 | ~~Result intake classifier: classify landed/outbox outputs before verification~~ | done | M | shipped T-178 | none | Реализовано: `tools/result_intake.py classify <path> [--json]` + `tools/test_result_intake.py` + README. |
+| 2 | ~~Conveyor regulate: advisory target recommendation from intake/verify/synthesis metrics~~ | done | S | shipped T-179 | T-178 | Реализовано: `tools/conveyor.py regulate` |
+| 3 | ~~Synthesis gate: validate consensus/disagreement report structure~~ | done | M | shipped T-182 | none | Реализовано: проверка структуры синтеза добавлена в `validate.py` |
+| 4 | ~~Process-landed classification hardening: use result-intake classes in `top.py process-landed`~~ | done | M | shipped T-183 | Result intake classifier | Реализовано: интеграция result_intake.py в команду process-landed |
+| 5 | DOC_CONSENSUS_AGENT runtime recipe and safe examples | medium | S | docs/test | T-176 | T-176 закрыл seam и budget guard, но широкая semantic-сборка требует безопасного рецепта настройки `DOC_CONSENSUS_AGENT`, без auto-accept и без скрытого fan-out. |
+| 6 | Workflow backlog rescan tool | medium | M | workflow | none | Этот файл пока обновляется вручную. Нужен scanner, который сверяет backlog с tasks done, assurance findings, shipped workflows и docs TODO, затем предлагает patch. |
+| 7 | D-014 execute OFF ratification follow-up | high | S | governance | human approval | D-014 подготовлен T-175, но остаётся blocked до явного решения человека. Не запускать execute-build до acceptance. |
+| 8 | MCP async stdio Windows follow-up | medium | M | blocked-build | T-174 unblocked | T-174 доказал, что sync gateway работает, а async stdio падает до MCP с WinError 5. Нужен отдельный runtime/env fix после появления нового факта. |
+| 9 | Q-009/T-020 external code source decision | medium | S | decision | Stefan provides source or chooses generic path | Старый долг svend4/внешнего кода остаётся blocked: нужен read-only source или решение закрыть как generic local-repo sandbox path. |
 
+## Shipped / closed после первичного бэклога
+
+| Тема | Статус | Доказательство |
+|---|---|---|
+| Q-016 done-gate | shipped | `pipeline.py done --strict`, `_evidence_gaps`, applied-evidence warning/strict path; см. `docs/engine-subsystems-overview-2026-06-23.md`. |
+| friction F-020 gate-poison detector | shipped | `tools/friction.py`, `tools/test_friction_f020.py`, `docs/engine-subsystems-overview-2026-06-23.md`. |
+| Q-017 semantic doc-merge | shipped T-176/T-191 | `tools/doc_consensus.py`, `tools/test_doc_consensus.py`, `tools/README.md`, `queues/outbox/2026-06-23-doc-consensus-semantic-t176.md`. |
+| Instruction check-report reference advisory | shipped T-166 | `tools/instructions.py`, `tools/test_instructions.py`, `tasks/T-166.md`. |
+| Promotion coverage orphan-L1 closure | shipped T-173 | `portals/README.md`, `tools/assurance.py`, `tasks/T-173.md`; current assurance `orphan-L1: 0`. |
+| Currency missing last_verified finding | closed/currently clean | current assurance: `0 находок актуальности; без last_verified: 0`. |
+| Result intake classifier | shipped T-178 | `tools/result_intake.py`, `tools/test_result_intake.py`, `tools/README.md`. |
+| Conveyor regulate advisory | shipped T-179 | `tools/conveyor.py regulate`, `tools/test_conveyor.py`, `tools/README.md`. |
+| Synthesis gate | shipped T-182 | Добавлена строгая проверка в `validate.py`. |
+| Process-landed classification hardening | shipped T-183 | Интеграция `result_intake.py` в `top.py process-landed`. |
+
+## Как пользоваться
+
+1. `python tools\conveyor.py next` должен показывать только секцию “Готовы к запуску”.
+2. Если пункт из этой секции реализован, его надо перенести в shipped/closed в этом же файле или завести workflow label, который `conveyor.py` сможет дедуплицировать.
+3. Если assurance/validate снова дают findings, scanner или агент должен добавить новый candidate с доказательством, а не возвращать старые закрытые формулировки.
+
+## Моё мнение
+
+Самая важная правка здесь не текстовая, а управленческая: бэклог не должен быть архивом старых диагнозов. Архив полезен в outbox, задачах и отчётах, но `conveyor.py next` питается именно этим файлом. Поэтому верхний слой обязан регулярно делать refresh: что закрыто — в shipped, что заблокировано — в blocked/decision, что реально следующее — в “Готовы к запуску”. Иначе система начинает тратить параллелизм на повторное выполнение уже закрытых работ.
