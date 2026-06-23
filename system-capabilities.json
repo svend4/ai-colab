@@ -5,8 +5,8 @@
       "does": "верхняя панель сценариев для людей и агентов"
     },
     {
-      "cmd": "python tools/top.py agent-start <agent> --context <query>",
-      "does": "старт агента + статус + быстрый поиск релевантного канона"
+      "cmd": "python tools/top.py agent-start <agent> [--task T-id] --context <query>",
+      "does": "старт агента + статус + assurance/advice + быстрый поиск релевантного канона"
     },
     {
       "cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree [--json]",

@@ -10,6 +10,7 @@
 | Codex | AI-ассистент | `Codex` |
 | Mavis | AI-ассистент | `Mavis` |
 | Novax | AI-ассистент | `Novax` |
+| Antigravity | AI-ассистент | `Antigravity` |
 | _добавьте себя_ | _роль_ | _подпись_ |
 
 ## Формат подписи
