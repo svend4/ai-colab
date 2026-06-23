@@ -1,7 +1,8 @@
 ---
 id: execute-sandbox-preflight
 title: Execute sandbox preflight — до запуска чужого кода
-status: draft
+status: accepted
+last_verified: 2026-06-23
 owner: Codex
 related: tasks/T-114.md, tasks/T-020.md, decisions/D-014.md, decisions/D-006.md, decisions/D-018.md, drivers/SCHEMA.md, docs/driver-safety-policy.md, docs/bridge-usage.md
 ---
@@ -16,7 +17,7 @@ related: tasks/T-114.md, tasks/T-020.md, decisions/D-014.md, decisions/D-006.md,
 
 ## Ratification note 2026-06-23
 
-D-014 оформляет этот документ как proposed governance decision: execute OFF по умолчанию + 10 обязательных preflight-гейтов. До явного подтверждения Stefan по D-006/D-018 документ остаётся рабочей policy-поверхностью, но не становится самостоятельным разрешением на execute.
+D-014 (accepted, 2026-06-23) формализует эту policy как binding 10-гейтовый preflight: execute OFF по умолчанию + 10 обязательных preflight-гейтов. До явного подтверждения Stefan по D-006/D-018 документ остаётся рабочей policy-поверхностью, но не становится самостоятельным разрешением на execute.
 
 Связанная рабочая зона: `sandbox/`. Её описание — `docs/external-code-sandbox.md`.
 `sandbox/` не даёт разрешение на запуск. Это quarantine/intake/workspace структура для любого внешнего

@@ -1,8 +1,10 @@
 # Commit streams policy
 
 Дата: 2026-06-21  
-Статус: draft policy  
-Связано: `PROTOCOL.md`, `docs/pipeline-operator-guide.md`, `docs/onboarding-opinions-comparison-2026-06-21.md`, `streams/README.md`
+Статус: superseded-by-decision (D-019 -> D-021/D-022, accepted)  
+Связано: `PROTOCOL.md`, `docs/pipeline-operator-guide.md`, `docs/onboarding-opinions-comparison-2026-06-21.md`, `streams/README.md`, `decisions/D-019.md`, `decisions/D-021.md`, `decisions/D-022.md`
+
+Postscript (governance 2026-06-23): политика принята как решения-of-record D-021 (Level-1 worktree-streams ПРИНЯТ) и D-022 (ОБЯЗАТЕЛЕН ПО ТРИГГЕРАМ); Level-0 selective-add детализирован в D-022 §1-2. Этот документ остаётся исходной записью/мнением Codex, не решением-of-record.
 
 ## Назначение
 

@@ -2,7 +2,7 @@
 id: instruction-assurance
 type: doc
 title: Instruction assurance — проверяемое применение инструкций агентами
-status: draft
+status: done
 owner: codex
 related: [T-154, T-121, T-122, T-138, T-150]
 last_verified: 2026-06-23

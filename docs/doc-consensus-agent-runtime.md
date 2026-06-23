@@ -2,7 +2,7 @@
 id: doc-consensus-agent-runtime
 type: doc
 title: DOC_CONSENSUS_AGENT runtime recipe and safe examples
-status: draft
+status: done
 owner: codex
 related: [T-176, T-196, D-017, D-018, workflow-orchestration-policy]
 last_verified: 2026-06-23

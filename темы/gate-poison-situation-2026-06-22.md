@@ -2,7 +2,8 @@
 id: gate-poison-situation-2026-06-22
 type: topic
 title: Отравление общего gate чужой half-done задачей — ситуация и слои решений
-status: draft
+status: resolved
+resolved_by: F-020 (tools/friction.py check_gate_poison), tools/test_friction_f020.py, cohort.py guard; план S1/B2/S3 — реализованная база
 date: 2026-06-22
 related: [D-017, D-022, Q-015, F-006, F-007, F-011, F-015, T-150]
 ---

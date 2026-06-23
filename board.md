@@ -40,7 +40,7 @@
 | FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов) | `темы/finder-frontier-2026-06-23.md` | proposed | — |  |
 | Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `темы/fleet-designs-2026-06-23.md` | proposed | — |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed | — |  |
-| Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft | — |  |
+| Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | resolved | — |  |
 | Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified | `темы/governance-proposals-2026-06-23.md` | proposed | — |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed | — |  |
 | Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `темы/perspective-backlog-2026-06-23.md` | proposed | — |  |

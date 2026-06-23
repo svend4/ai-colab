@@ -1,7 +1,7 @@
 ---
 id: agent-launch-workflow
 title: Agent launch workflow — handoff между repo-flow и внешним sub-agent launcher
-status: draft
+status: accepted
 owner: codex
 related: docs/workflow-orchestration-policy.md, docs/top-layer-command-groups.md, docs/parallel-work-policy.md, tools/top.py, tools/flow.py, T-161
 ---
@@ -111,8 +111,6 @@ python tools\top.py work-mode <agent> <T-id> --parallel --hot-files
 | `checks` | какие тесты/health обязательны |
 | `report` | что worker обязан вернуть |
 
-## Дальнейшее развитие
-
 ## JSON-режим для оркестратора
 
 После T-162 launch-пакет доступен не только как Markdown, но и как чистый JSON:
@@ -123,3 +121,5 @@ python tools\top.py subagent-handoff mavis T-161 "context" --worktree --json
 ```
 
 JSON содержит `schema: subagent_launch_plan.v1`, `agent`, `task`, `context`, `repo_lane`, `commands.prepare`, `commands.finish`, `worker_prompt`, `policies` и `checks`. Это формат для GUI-кнопки, ChatGPT App, MCP tool или серверного scheduler. Markdown-output остаётся дефолтом для человека.
+
+> Принято 2026-06-23: workflow реализован и протестирован (T-161 launch-plan, T-162 JSON-режим). flow.py launch-plan / top.py subagent-handoff покрыты test_flow.py + test_top.py.

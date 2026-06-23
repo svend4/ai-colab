@@ -1,7 +1,7 @@
 ---
 id: top-agent-operating-manual
 title: Top Agent Operating Manual — чистовая инструкция вершины пирамиды
-status: draft
+status: accepted
 owner: Codex
 related: docs/bridge-usage.md, docs/layers-coverage.md, docs/architecture-docs-recheck-2026-06-21.md, AGENTS.md, PROTOCOL.md
 ---
@@ -366,10 +366,10 @@ Runtime DB не коммитить; Markdown report можно коммитит�
 
 ### P0 — проще вход
 
-- `tools/onboard.py`;
+- ~~`tools/onboard.py`~~ — сделано (`tools/onboard.py`);
 - обновить quickstart на `pipeline.py`;
-- `system-capabilities.json`;
-- docs drift detector.
+- ~~`system-capabilities.json`~~ — сделано через `tools/capabilities.py snapshot`;
+- ~~docs drift detector~~ — сделано (`tools/drift_check.py`).
 
 ### P1 — реальные read-only данные
 
@@ -397,3 +397,5 @@ Runtime DB не коммитить; Markdown report можно коммитит�
 Система уже достаточно самостоятельна, чтобы улучшать себя в пределах workspace-safe/read-only задач. Её не нужно превращать в автономного исполнителя всего подряд.
 
 Сильная линия развития: лучше карта возможностей, меньше ручного выбора, больше автоматических проверок drift/safety, больше реальных read-only источников.
+
+> Принято 2026-06-23 как living operational-карта; команды проверены, roadmap-P0 синхронизирован с уже существующими tools/onboard.py, tools/capabilities.py, tools/drift_check.py.

@@ -179,7 +179,7 @@
       "id": "gate-poison-situation-2026-06-22",
       "title": "Отравление общего gate чужой half-done задачей — ситуация и слои решений",
       "file": "темы/gate-poison-situation-2026-06-22.md",
-      "status": "draft",
+      "status": "resolved",
       "next": ""
     },
     {
@@ -2160,13 +2160,13 @@
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "done",
+      "status": "blocked",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-087, T-088]",
       "topic": "темы/ai-os-bridge.md",
-      "next": "Закрыто котлом как wontfix для async, sync признан официальным путём"
+      "next": "Async stdio остаётся blocked-before-MCP в текущем Windows/Python runtime; sync gateway acceptance — рабочий regular gate; нужен runtime fix или отдельное wontfix-решение"
     },
     {
       "id": "T-175",
@@ -2512,7 +2512,7 @@
     {
       "id": "T-206",
       "title": "P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "med",
@@ -2523,7 +2523,7 @@
     {
       "id": "T-207",
       "title": "D (пирамида L2→L1) — knowledge.py второй core-export (P12) + move-путь (P13)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2541,6 +2541,39 @@
       "depends_on": "[D-014, D-006, D-018]",
       "topic": "",
       "next": "Ждёт явного «go» Stefan на execute-направление. Первый дешёвый этап — P3 anti-fake-probe (Gate 9) inline; этапы 5/7/8 (human-gate/исполнитель/runner) — через котёл"
+    },
+    {
+      "id": "T-209",
+      "title": "P1 agent_queue fencing-тест (test, 2.0)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Написать и запустить тесты на fencing для agent_queue.py"
+    },
+    {
+      "id": "T-210",
+      "title": "P2 T-174 статус-фикс (build, 2.0)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Исправить 4 поверхности статуса T-174 (frontmatter, index.json, TASKS.md vs Result+failed-queue)"
+    },
+    {
+      "id": "T-211",
+      "title": "P7+P8 Untested Risk tests (permissions.py, risk_gate.py)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "medium",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Написать тесты для permissions.match() и риск-тиринга."
     }
   ],
   "questions": [

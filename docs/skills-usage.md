@@ -1,7 +1,7 @@
 ---
 id: skills-usage
 title: Project skills usage and packaging
-status: draft
+status: accepted
 owner: Codex
 related: tasks/T-113.md, skills/README.md, docs/layers-coverage.md
 ---
@@ -36,6 +36,10 @@ related: tasks/T-113.md, skills/README.md, docs/layers-coverage.md
 | `driver-acceptance` | `skills/driver-acceptance/SKILL.md` | довести driver до `ready`: unit, MCP sync acceptance, manifest/tools, D-015 |
 | `pipeline-operator` | `skills/pipeline-operator/SKILL.md` | брать/закрывать задачи через pipeline, claim, done-marker, validate |
 | `repo-review` | `skills/repo-review/SKILL.md` | перепроверка репозитория, дрейф, плюсы/минусы, рекомендации |
+| `repo-friction-playbook` | `skills/repo-friction-playbook/SKILL.md` | плейбук по трению/friction репозитория |
+| `top-layer-orchestrator` | `skills/top-layer-orchestrator/SKILL.md` | управлять верхним слоем: приём результатов агентов, evidence, синтез вариантов, conveyor target, безопасный commit |
+
+> Принято 2026-06-23: T-113 done; таблица skills синхронизирована с фактическим skills/ (5 skills).
 
 ## Как применять внутри этого репозитория
 
