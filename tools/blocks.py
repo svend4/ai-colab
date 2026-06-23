@@ -58,6 +58,16 @@ BLOCKS = {
             ("friction.py", ["status"], "advisory"),
             ("assurance.py", [], "advisory"),
             ("adoption.py", [], "advisory"),
+            ("metrics.py", [], "advisory"),
+        ],
+    },
+    "pyramid": {
+        "desc": "здоровье пирамиды L4->L1: assurance(coverage/flow) + promote/portal инвентарь -> единый вердикт (над структурой)",
+        "steps": [
+            ("assurance.py", ["coverage", "--strict"], "gate"),
+            ("assurance.py", ["flow", "--strict"], "gate"),
+            ("promote.py", ["list"], "advisory"),
+            ("portal.py", ["list"], "advisory"),
         ],
     },
 }

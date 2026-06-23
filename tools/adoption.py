@@ -150,7 +150,7 @@ def collect():
 def cmd_report(as_json=False, list_kind=None):
     data = collect()
     if list_kind:
-        key = {"dormant": ("tools", "dormant"), "declarative": ("decisions", "declarative"),
+        key = {"dormant": ("tools", "dormant"), "declarative": ("decisions", "doc-only"),
                "orphan": ("docs", "orphan")}.get(list_kind)
         if not key:
             print("--list: dormant|declarative|orphan")

@@ -444,6 +444,38 @@ def check_driver_tools():
         ok("drivers tools: %d манифестов сверены с @mcp.tool() серверов" % checked)
 
 
+def check_pipeline_d011():
+    """Артефакт-presence инвариант D-011 (конвейер агентов).
+
+    Привязан к жизненному циклу решения: пока D-011 status=accepted — pipeline.py,
+    PIPELINE.md, logs/pipeline.json обязаны существовать, а pipeline.py обязан
+    определять шесть команд next/status/mine/done/fail/snapshot (символьный контракт).
+    superseded/rejected ⇒ инвариант снимается автоматически (no-op).
+    Enforce-ится только presence/contract артефактов, НЕ кооперативный workflow.
+    """
+    text = read("decisions/D-011.md")
+    if text is None:
+        return
+    fm = parse_front_matter(text)
+    if fm.get("status") != "accepted":
+        return
+    for rel in ("tools/pipeline.py", "PIPELINE.md", "logs/pipeline.json"):
+        if not os.path.exists(os.path.join(ROOT, rel)):
+            err("D-011: accepted, но нет артефакта %s" % rel)
+    src = read("tools/pipeline.py")
+    if src is None:
+        return
+    want = {"cmd_next", "cmd_status", "cmd_mine", "cmd_done", "cmd_fail", "cmd_snapshot"}
+    got = set(re.findall(r"^def (cmd_\w+)\(", src, re.M))
+    missing = want - got
+    if missing:
+        err("D-011: pipeline.py не покрывает команды %s (спека next/status/mine/done/fail/snapshot)"
+            % sorted(missing))
+    if not missing:
+        ok("D-011: конвейер pipeline.py + PIPELINE.md + logs/pipeline.json присутствуют, "
+           "команды next/status/mine/done/fail/snapshot определены")
+
+
 def main():
     decisions = parse_decisions()
     parse_questions(decisions)
@@ -451,6 +483,7 @@ def main():
     check_sources()
     check_drivers()
     check_driver_tools()
+    check_pipeline_d011()
     check_nav()
     check_naming()
 

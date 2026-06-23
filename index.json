@@ -2571,7 +2571,7 @@
     {
       "id": "D-019",
       "title": "Commit streams policy — Level 0 now, worktree-streams as proposed Level 1",
-      "status": "proposed",
+      "status": "superseded",
       "date": "2026-06-21",
       "file": "decisions/D-019.md"
     },
@@ -2602,6 +2602,13 @@
       "status": "accepted",
       "date": "2026-06-23",
       "file": "decisions/D-023.md"
+    },
+    {
+      "id": "D-024",
+      "title": "Формат синтеза с выносом разногласий (Structured Divergences)",
+      "status": "proposed",
+      "date": "2026-06-23",
+      "file": "decisions/D-024.md"
     }
   ],
   "drivers": [
