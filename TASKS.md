@@ -226,4 +226,5 @@
 | T-210 | P2 T-174 статус-фикс (build, 2.0) | done | pool | — | Исправить 4 поверхности статуса T-174 (frontmatter, index.json, TASKS.md vs Result+failed-queue) |
 | T-211 | P7+P8 Untested Risk tests (permissions.py, risk_gate.py) | done | pool | — | Написать тесты для permissions.match() и риск-тиринга. |
 | T-212 | Execute-Sandbox: Inline Preflight Gates (P3, P5, P9) & D-014 check | done | antigravity | — | Создать базовый preflight-чекер в blocks.py и validate.py |
+| T-213 | Q-010 — миграция папки темы/ → topics/ (атомарное переименование + sweep ссылок) | doing | Novax | — | Атомарный коммит: git mv темы topics + скриптовый sweep 268 файлов / 956 строк + правка 19+ hardcode-литералов + regenerate + validate |
 <!-- GEN:tasks END -->

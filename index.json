@@ -2585,6 +2585,17 @@
       "depends_on": "[D-014, T-208]",
       "topic": "",
       "next": "Создать базовый preflight-чекер в blocks.py и validate.py"
+    },
+    {
+      "id": "T-213",
+      "title": "Q-010 — миграция папки темы/ → topics/ (атомарное переименование + sweep ссылок)",
+      "status": "doing",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Атомарный коммит: git mv темы topics + скриптовый sweep 268 файлов / 956 строк + правка 19+ hardcode-литералов + regenerate + validate"
     }
   ],
   "questions": [
@@ -2647,9 +2658,9 @@
     {
       "id": "Q-009",
       "title": "Где находятся репозитории svend4 (доступ для T-024)?",
-      "status": "open",
+      "status": "answered",
       "where": "темы/ai-os-bridge.md",
-      "outcome": "proposed-answer D-020 §4 (svend4 = generic external-source intake, не special) — proposed, ждёт резолюции Stefan (card-меню 2026-06-23)"
+      "outcome": "D-020 §4 ратифицирован 2026-06-23 (svend4 = generic external-source intake, не special) — вопрос «где svend4» снят, см. Итог"
     },
     {
       "id": "Q-010",
@@ -2845,7 +2856,7 @@
     {
       "id": "D-020",
       "title": "T-137 consensus proposal — thin automation, streams, sandbox intake, promotion gate",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-21",
       "file": "decisions/D-020.md"
     },
