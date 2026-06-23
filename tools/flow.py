@@ -12,7 +12,7 @@ generate --check + permissions). Merge делает человек или mainta
     python tools/flow.py start  <agent> <task>   # создать ветку agent/<agent>/<task>
     python tools/flow.py gate   <agent>          # прогнать гейт перед merge
     python tools/flow.py finish <agent> <task>   # merge ветки в master (после зелёного гейта)
-    python tools/flow.py launch-plan <agent> <task> [context...] [--worktree]
+    python tools/flow.py launch-plan <agent> <task> [context...] [--worktree] [--json]
                                                 # prompt/commands для внешнего sub-agent launcher
 
 Уровень-1 (worktree-на-агента, принят Stefan 2026-06-21): добавь `--worktree`, тогда `start`
@@ -21,8 +21,10 @@ generate --check + permissions). Merge делает человек или mainta
 
 Пример: python tools/flow.py start mavis T-020 --worktree --run
 Пример launch-plan: python tools/flow.py launch-plan mavis T-160 repo search onboarding --worktree
+Пример JSON: python tools/flow.py launch-plan mavis T-160 repo search onboarding --worktree --json
 """
 import sys
+import json
 import subprocess
 
 
@@ -53,63 +55,117 @@ def run_or_print(cmds, do_run):
             return rc
     return 0
 
-def launch_plan(agent, task, context, use_worktree=False):
-    """План запуска внешнего sub-agent поверх repo flow.
+def _cmd_parts(action, agent, task, use_worktree=False):
+    parts = ["python", "tools/flow.py", action, agent, task]
+    if use_worktree:
+        parts.append("--worktree")
+    return parts
 
-    Локальный flow.py не может вызвать платформенный spawn_agent сам. Он готовит
-    воспроизводимый lane: branch/worktree, prompt для worker'а и finish-команду.
-    """
+
+def _cmd_text(parts):
+    return " ".join(parts)
+
+
+def launch_plan_data(agent, task, context, use_worktree=False):
+    """Машиночитаемый контракт handoff для внешнего sub-agent launcher."""
     context = (context or task).strip()
-    mode = " --worktree" if use_worktree else ""
     quoted_context = context.replace('"', "'")
+    prepare = _cmd_parts("start", agent, task, use_worktree)
+    finish = _cmd_parts("finish", agent, task, use_worktree)
+    worker_prompt_lines = [
+        "You are worker agent `%s` in the shared repository." % agent,
+        "You are not alone in the codebase: do not revert or overwrite changes made by other agents.",
+        "Task: `%s`." % task,
+        "Start by running: python tools/top.py agent-start %s --context \"%s\"" % (agent, quoted_context),
+        "Claim or confirm the task with: python tools/pipeline.py claim %s %s" % (agent, task),
+        "Use the existing repo policies: AGENTS.md, PROTOCOL.md, D-022/D-023, and docs/parallel-work-policy.md.",
+        "Keep edits scoped to the task, run focused tests plus python tools/top.py health, and finish with:",
+        "python tools/pipeline.py done %s %s --claim <claim_id> --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, docs/agent-launch-workflow.md, Checks\"" % (agent, task),
+        "Final reply must list changed files, tests run, and any blockers.",
+    ]
+    return {
+        "schema": "subagent_launch_plan.v1",
+        "agent": agent,
+        "task": task,
+        "context": context,
+        "repo_lane": {
+            "mode": "worktree" if use_worktree else "branch",
+            "label": "Level 1 worktree" if use_worktree else "Level 0 branch",
+        },
+        "boundary": [
+            "flow.py prepares git branch/worktree and merge-gate commands.",
+            "External platform sub-agent launcher starts the AI worker with the prompt.",
+            "The worker must not revert other agents' work and must report changed files/tests.",
+        ],
+        "commands": {
+            "prepare": prepare,
+            "prepare_text": _cmd_text(prepare),
+            "finish": finish,
+            "finish_text": _cmd_text(finish),
+        },
+        "worker_prompt_lines": worker_prompt_lines,
+        "worker_prompt": "\n".join(worker_prompt_lines),
+        "policies": [
+            "AGENTS.md",
+            "PROTOCOL.md",
+            "D-022",
+            "D-023",
+            "docs/parallel-work-policy.md",
+            "docs/agent-launch-workflow.md",
+        ],
+        "checks": [
+            "python tools/top.py health",
+            "focused tests for changed tools/docs",
+            "python tools/pipeline.py done <agent> <task> --claim <claim_id> --applied ...",
+        ],
+    }
+
+
+def launch_plan(agent, task, context, use_worktree=False, as_json=False):
+    """План запуска внешнего sub-agent поверх repo flow."""
+    data = launch_plan_data(agent, task, context, use_worktree)
+    if as_json:
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+        return 0
+
     print("# Sub-agent launch plan")
     print("")
-    print("agent: `%s`" % agent)
-    print("task: `%s`" % task)
-    print("context: `%s`" % context)
-    print("repo lane: `%s`" % ("Level 1 worktree" if use_worktree else "Level 0 branch"))
+    print("agent: `%s`" % data["agent"])
+    print("task: `%s`" % data["task"])
+    print("context: `%s`" % data["context"])
+    print("repo lane: `%s`" % data["repo_lane"]["label"])
     print("")
     print("## Boundary")
     print("")
-    print("- `flow.py` prepares git branch/worktree and merge-gate commands.")
-    print("- External platform sub-agent launcher starts the AI worker with the prompt below.")
-    print("- The worker must not revert other agents' work and must report changed files/tests.")
+    for item in data["boundary"]:
+        print("- %s" % item)
     print("")
     print("## 1. Prepare repo lane")
     print("")
     print("```powershell")
-    print("python tools/flow.py start %s %s%s" % (agent, task, mode))
+    print(data["commands"]["prepare_text"])
     print("# add --run only after reviewing the printed command and current git status")
     print("```")
     print("")
     print("## 2. External sub-agent prompt")
     print("")
     print("```text")
-    print("You are worker agent `%s` in the shared repository." % agent)
-    print("You are not alone in the codebase: do not revert or overwrite changes made by other agents.")
-    print("Task: `%s`." % task)
-    print("Start by running: python tools/top.py agent-start %s --context \"%s\"" % (agent, quoted_context))
-    print("Claim or confirm the task with: python tools/pipeline.py claim %s %s" % (agent, task))
-    print("Use the existing repo policies: AGENTS.md, PROTOCOL.md, D-022/D-023, and docs/parallel-work-policy.md.")
-    print("Keep edits scoped to the task, run focused tests plus python tools/top.py health, and finish with:")
-    print("python tools/pipeline.py done %s %s --claim <claim_id> --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, docs/agent-launch-workflow.md, Checks\"" % (agent, task))
-    print("Final reply must list changed files, tests run, and any blockers.")
+    print(data["worker_prompt"])
     print("```")
     print("")
     print("## 3. Finish repo lane")
     print("")
     print("```powershell")
-    print("python tools/flow.py finish %s %s%s" % (agent, task, mode))
+    print(data["commands"]["finish_text"])
     print("# add --run only after worker commit/review and green merge_gate")
     print("```")
     return 0
-
-
 def main():
-    flags = {"--run", "--worktree"}
+    flags = {"--run", "--worktree", "--json"}
     args = [a for a in sys.argv[1:] if a not in flags]
     do_run = "--run" in sys.argv
     use_worktree = "--worktree" in sys.argv
+    as_json = "--json" in sys.argv
     if not args:
         print(__doc__)
         return 2
@@ -121,7 +177,7 @@ def main():
         b = branch_name(args[1], args[2])
         return run_or_print([["git", "checkout", "-b", b]], do_run)
     if cmd == "launch-plan" and len(args) >= 3:
-        return launch_plan(args[1], args[2], " ".join(args[3:]), use_worktree)
+        return launch_plan(args[1], args[2], " ".join(args[3:]), use_worktree, as_json=as_json)
     if cmd == "gate" and len(args) >= 2:
         agent = args[1]
         return run_or_print(

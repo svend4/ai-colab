@@ -32,10 +32,13 @@
 | Слой драйверов (Treiber) — СЛИТО в ai-os-bridge | `темы/drivers-layer.md` | archive | — | Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md |
 | Информационные драйверы (трайберы) — СЛИТО в ai-os-bridge | `темы/information-drivers.md` | archive | — | Тема слита с `темы/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план). |
 | Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов | `темы/assurance-and-doc-merge-2026-06-22.md` | proposed | — |  |
+| Hardening assurance — лестница warn→block (S0..S4) + apex-подключение | `темы/assurance-hardening-plan-2026-06-23.md` | proposed | — |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | none | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed | — |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft | — |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed | — |  |
+| Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `темы/perspective-backlog-2026-06-23.md` | proposed | — |  |
+| Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance) | `темы/pyramid-grounding-plan-2026-06-23.md` | proposed | — |  |
 | Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass) | `темы/q017-docmerge-semantic-2026-06-23.md` | proposed | — |  |
 <!-- GEN:topics-board END -->
 

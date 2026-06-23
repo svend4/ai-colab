@@ -268,7 +268,7 @@ python tools/permissions.py mavis tasks/T-020.md темы/scaling-design.md
 
 Worker-агентам разрешены сгенерированные индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) как выход `generate.py`; вручную править содержимое между `GEN`-маркерами не нужно.
 
-`flow.py` печатает безопасные git-команды для модели "ветка-на-агента"; с `--worktree` печатает Level 1 worktree-приток; с `--run` выполняет их. `launch-plan` дополнительно печатает handoff-пакет для внешнего sub-agent launcher: repo lane, worker prompt и finish-команду.
+`flow.py` печатает безопасные git-команды для модели "ветка-на-агента"; с `--worktree` печатает Level 1 worktree-приток; с `--run` выполняет их. `launch-plan` дополнительно печатает handoff-пакет для внешнего sub-agent launcher: repo lane, worker prompt и finish-команду; с `--json` отдаёт тот же контракт как `subagent_launch_plan.v1`.
 
 ```bash
 python tools/flow.py start mavis T-020
@@ -276,6 +276,7 @@ python tools/flow.py gate mavis
 python tools/flow.py finish mavis T-020
 python tools/flow.py start mavis T-020 --worktree
 python tools/flow.py launch-plan mavis T-161 agent launch workflow --worktree
+python tools/flow.py launch-plan mavis T-161 agent launch workflow --worktree --json
 ```
 
 ## Метрики (`metrics.py`, T-016)
@@ -310,6 +311,7 @@ python tools/top.py status codex
 python tools/top.py health
 python tools/top.py agent-start codex --context "parallel work policy"
 python tools/top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
+python tools/top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree --json
 python tools/top.py take codex             # next
 python tools/top.py take codex T-152       # targeted claim
 python tools/top.py snapshot
@@ -319,7 +321,7 @@ python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md
 python tools/top.py work-mode codex T-144 --parallel
 ```
 
-Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
+Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent; с `--json` он проксирует чистый машинный launch-пакет без служебных заголовков. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
 
 ## Friction diagnostics (`friction.py`, T-150)
 

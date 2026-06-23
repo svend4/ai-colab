@@ -120,6 +120,13 @@
       "next": ""
     },
     {
+      "id": "assurance-hardening-plan-2026-06-23",
+      "title": "Hardening assurance — лестница warn→block (S0..S4) + apex-подключение",
+      "file": "темы/assurance-hardening-plan-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "commit-policy-streams-2026-06-21",
       "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
       "file": "темы/commit-policy-streams-2026-06-21.md",
@@ -144,6 +151,20 @@
       "id": "parallel-work-divergences-2026-06-22",
       "title": "Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017)",
       "file": "темы/parallel-work-divergences-2026-06-22.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "perspective-backlog-2026-06-23",
+      "title": "Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение)",
+      "file": "темы/perspective-backlog-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "pyramid-grounding-plan-2026-06-23",
+      "title": "Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance)",
+      "file": "темы/pyramid-grounding-plan-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
@@ -1926,6 +1947,17 @@
       "depends_on": "[T-013, T-136, T-159, T-160]",
       "topic": "docs/agent-launch-workflow.md",
       "next": "Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест."
+    },
+    {
+      "id": "T-162",
+      "title": "Add JSON output for sub-agent handoff launch plans",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-161]",
+      "topic": "docs/agent-launch-workflow.md",
+      "next": "Реализовать `flow.py launch-plan --json` и `top.py subagent-handoff --json`, обновить тесты, docs и capabilities."
     }
   ],
   "questions": [

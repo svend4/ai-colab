@@ -175,4 +175,5 @@
 | T-159 | Adopt repo_search as top-layer canonical documentation search | done | codex | `docs/top-layer-command-groups.md` | Принять `tools/repo_search.py` как read-mostly поиск по канону, исправить Windows temp в тесте, добавить top/capabilities/docs и не версионировать runtime DB. |
 | T-160 | Add contextual repo-search to agent-start workflow | done | codex | `docs/top-layer-command-groups.md` | Добавить `top.py agent-start --context ...`, обновить cycle/onboarding/manual, чтобы новый агент сразу поднимал релевантный контекст через repo-search. |
 | T-161 | Add sub-agent launch plan to flow workflow | done | codex | `docs/agent-launch-workflow.md` | Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест. |
+| T-162 | Add JSON output for sub-agent handoff launch plans | done | codex | `docs/agent-launch-workflow.md` | Реализовать `flow.py launch-plan --json` и `top.py subagent-handoff --json`, обновить тесты, docs и capabilities. |
 <!-- GEN:tasks END -->

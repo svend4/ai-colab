@@ -44,7 +44,7 @@ def _list(value):
 COMMANDS = [
     {"cmd": "python tools/top.py buttons", "does": "верхняя панель сценариев для людей и агентов"},
     {"cmd": "python tools/top.py agent-start <agent> --context <query>", "does": "старт агента + статус + быстрый поиск релевантного канона"},
-    {"cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree", "does": "готовый repo lane + prompt для внешнего запуска sub-agent"},
+    {"cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree [--json]", "does": "готовый repo lane + prompt/JSON для внешнего запуска sub-agent"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
     {"cmd": "python tools/top.py instruction-preflight <agent> [T-id]", "does": "показать применимые инструкции и evidence-шаблон"},
     {"cmd": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md", "does": "сравнить два knowledge-отчёта"},
