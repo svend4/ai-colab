@@ -2190,29 +2190,29 @@
     {
       "id": "T-178",
       "title": "Implement result_intake classifier for landed/outbox outputs",
-      "status": "doing",
-      "owner": "pool",
+      "status": "done",
+      "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-177]",
       "topic": "темы/perspective-backlog-2026-06-23.md",
-      "next": "Добавить read-only `tools/result_intake.py classify <path>` с JSON/text output, тесты и документацию; классы: read-only-report, variant, docs-change, build-change, governance, external-code."
+      "next": "Закрыто 2026-06-23 — добавлен read-only `tools/result_intake.py classify <path> [--json]`, тесты, README и smoke-классификация T-175/T-176/T-177."
     },
     {
       "id": "T-179",
       "title": "Add conveyor regulate advisory for workflow target sizing",
-      "status": "todo",
-      "owner": "pool",
+      "status": "done",
+      "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-178]",
       "topic": "темы/perspective-backlog-2026-06-23.md",
-      "next": "После result-intake добавить advisory `conveyor regulate`: рекомендовать target +1/0/-1 по landed, missing-output, idle, verify health и assurance."
+      "next": "Закрыто 2026-06-23 — добавлен read-only `conveyor.py regulate [--json] [--no-assurance]`, pure `regulate()` и тесты target increase/hold/decrease/process-first."
     },
     {
       "id": "T-180",
       "title": "derive_reuse grounding-качество — section_coverage l1_basis-резолв (#6) + structural l1_basis в portal.md (#7)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2223,13 +2223,101 @@
     {
       "id": "T-181",
       "title": "reconcile_state backlog — 38 done-missing-marker + 5 orphan-done-marker (конвенция queues/done)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-143]",
       "topic": "",
       "next": "Решить конвенцию done-marker (бэкфилл queues/done/T-NNN.done.md для 38 done-задач ИЛИ сделать marker опциональным в reconcile_state); подчистить 5 orphan-маркеров от переименованных timestamp-задач"
+    },
+    {
+      "id": "T-182",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-183",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-184",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-185",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "Novax",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-186",
+      "title": "Анализ 3 failed-задач в очереди — retry или close",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Прочитать queues/failed/*.md, определить причины, предложить retry/close/workaround для каждой"
+    },
+    {
+      "id": "T-187",
+      "title": "Smoke-test новых инструментов (friction, drift_check, onboard, commit_lock, top)",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Закрыто 2026-06-23 — smoke-test friction/drift_check/onboard/commit_lock/top выполнен; quickstart обновлён; текущий drift после generate = 0."
+    },
+    {
+      "id": "T-188",
+      "title": "Аудит мёртвого груза — неиспользуемая информация и устаревшие ссылки",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки"
+    },
+    {
+      "id": "T-189",
+      "title": "Стимулирование активности агентов — alive-пинги и использование ответов",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md"
     }
   ],
   "questions": [
