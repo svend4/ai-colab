@@ -23,6 +23,7 @@ def run():
     assert "repo-search" in ids, ids
     assert "report-diff" in ids, ids
     assert "cohort-board" in ids, ids
+    assert "conveyor-status" in ids, ids
     assert "variants" in ids, ids
     assert "merge-gate" in ids, ids
     assert "work-mode" in ids, ids
@@ -38,6 +39,7 @@ def run():
     assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py repo-search" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
+    assert "python tools/top.py conveyor" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     assert "python tools/top.py subagent-handoff" in rendered, rendered
     parser = top.build_parser()
@@ -55,6 +57,8 @@ def run():
     assert kargs.cmd == "knowledge" and kargs.db == "tmp-work/x.db", kargs
     rsargs = parser.parse_args(["repo-search", "parallel", "policy", "--limit", "3", "--json"])
     assert rsargs.cmd == "repo-search" and rsargs.query == ["parallel", "policy"] and rsargs.limit == 3 and rsargs.json, rsargs
+    cvargs = parser.parse_args(["conveyor", "--target", "2", "--idle", "10", "--json"])
+    assert cvargs.cmd == "conveyor" and cvargs.target == 2 and cvargs.idle == 10 and cvargs.json, cvargs
     hargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree"])
     assert hargs.cmd == "subagent-handoff" and hargs.agent == "mavis" and hargs.task == "T-200" and hargs.context == ["parallel", "policy"] and hargs.worktree and not hargs.json, hargs
     hjargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree", "--json"])
@@ -68,7 +72,7 @@ def run():
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff parser+json")
+    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor parser+json")
     return 0
 
 

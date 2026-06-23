@@ -21,6 +21,7 @@ python tools\top.py take codex
 python tools\top.py snapshot
 python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports\bridge.md
 python tools\top.py repo-search "parallel work policy" --limit 5
+python tools\top.py conveyor --json
 ```
 
 ## Принцип
@@ -41,6 +42,7 @@ python tools\top.py repo-search "parallel work policy" --limit 5
 | Поиск по канону | найти решение/политику/задачу | быстро поднять контекст перед правкой | `repo-search` строит ignored FTS/BM25 индекс по docs/decisions/questions/темам/tasks |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
+| Надзор конвейера | увидеть, нужен ли дозалив/обработка | не держать workflow в голове | `conveyor` вызывает `conveyor.py status` и показывает REFILL/PROCESS/IDLE |
 
 ## Как это помогает параллельной работе
 

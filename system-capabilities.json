@@ -13,6 +13,10 @@
       "does": "готовый repo lane + prompt/JSON для внешнего запуска sub-agent"
     },
     {
+      "cmd": "python tools/top.py conveyor [--target N] [--json]",
+      "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"
+    },
+    {
       "cmd": "python tools/top.py health",
       "does": "групповая проверка здоровья канона"
     },

@@ -19,6 +19,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py cycle <agent>            # print safe work cycle template
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
     python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree] [--json]
+    python tools/top.py conveyor [--target N] [--idle M] [--json]
 """
 import argparse
 import json
@@ -123,6 +124,13 @@ _BUTTONS = [
         "audience": "both",
         "command": "python tools/cohort.py board",
         "does": "Показать dashboard параллельной работы: котёл, claims, drift, recent commits.",
+        "effect": "read-only",
+    },
+    {
+        "id": "conveyor-status",
+        "audience": "both",
+        "command": "python tools/top.py conveyor [--target N] [--idle M] [--json]",
+        "does": "Показать надзирателя workflow-конвейера: REFILL/PROCESS/IDLE и кандидатов дозалива.",
         "effect": "read-only",
     },
     {
@@ -355,6 +363,28 @@ def cmd_report_diff(args):
     return _run("report diff", cmd, timeout=45)
 
 
+def cmd_conveyor(args):
+    cmd = _tool("conveyor.py", "status")
+    if args.target is not None:
+        cmd += ["--target", str(args.target)]
+    if args.idle is not None:
+        cmd += ["--idle", str(args.idle)]
+    if args.json:
+        cmd.append("--json")
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=45)
+            if p.stdout:
+                print(p.stdout.strip())
+            if p.stderr:
+                print(p.stderr.strip(), file=sys.stderr)
+            return p.returncode
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+    return _run("conveyor status", cmd, timeout=45, fail_ok=True)
+
+
 def cmd_cycle(args):
     agent = args.agent
     print("# Safe agent work cycle for %s" % agent)
@@ -507,6 +537,12 @@ def build_parser():
     p.add_argument("b")
     p.add_argument("--out")
     p.set_defaults(func=cmd_report_diff)
+
+    p = sub.add_parser("conveyor", help="show workflow conveyor supervisor status")
+    p.add_argument("--target", type=int)
+    p.add_argument("--idle", type=int)
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_conveyor)
 
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")

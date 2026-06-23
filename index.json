@@ -1958,6 +1958,17 @@
       "depends_on": "[T-161]",
       "topic": "docs/agent-launch-workflow.md",
       "next": "Реализовать `flow.py launch-plan --json` и `top.py subagent-handoff --json`, обновить тесты, docs и capabilities."
+    },
+    {
+      "id": "T-163",
+      "title": "Expose conveyor supervisor in top command panel",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-162]",
+      "topic": "docs/workflow-conveyor-policy.md",
+      "next": "Добавить `top.py conveyor` как верхнюю read-only кнопку над `tools/conveyor.py status`, обновить tests/docs/capabilities."
     }
   ],
   "questions": [
