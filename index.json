@@ -2156,7 +2156,7 @@
     {
       "id": "D-023",
       "title": "Ответственность за коммит генерируемых индексов — ownership-aware (commit-your-own / integrator-for-foreign)",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-23",
       "file": "decisions/D-023.md"
     }
