@@ -53,6 +53,11 @@ def run():
         assert a["deficit"] == 1 and a["n_landed"] == 1 and not a["healthy"], a
         assert any("PROCESS" in x for x in a["actions"]), a["actions"]
 
+        # --- assess: масштаб цели (флот) — target из ledger двигает deficit ---
+        a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "inflight")], target=5), NOW)
+        assert a["deficit"] == 3 and not a["healthy"], "target 5, 2 в полёте -> нужно ещё 3: %s" % a
+        assert a["target"] == 5, a
+
         # --- assess: stale heartbeat -> IDLE ---
         old = NOW - datetime.timedelta(minutes=30)
         a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "inflight")], hb=old), NOW)

@@ -21,6 +21,7 @@ CLI:
   python tools/conveyor.py ship  <id>            # обработан/отгружен (landed->shipped)
   python tools/conveyor.py dismiss <id> [--reason R]
   python tools/conveyor.py tick                  # оркестратор жив (обнови heartbeat)
+  python tools/conveyor.py target <N>            # задать цель in-flight (масштаб под надобность; не зашито в 2)
   python tools/conveyor.py status [--target N] [--idle M] [--json]
   python tools/conveyor.py next                  # кандидаты дозалива из перспективного бэклога
 """
@@ -211,6 +212,13 @@ def main():
             _touch(d)
             save(d)
             print("tick: heartbeat %s" % d["heartbeat"])
+            return 0
+        if cmd == "target" and len(a) >= 2:
+            d["target_min"] = max(1, int(a[1]))
+            _touch(d)
+            save(d)
+            print("target_min = %d (флот масштабируется под открытые вопросы; "
+                  "потолок — полоса обработки оркестратора)" % d["target_min"])
             return 0
         if cmd == "status":
             target = int(_arg(a, "--target", d.get("target_min", DEFAULT_TARGET)))
