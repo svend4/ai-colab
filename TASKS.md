@@ -196,7 +196,7 @@
 | T-180 | derive_reuse grounding-качество — section_coverage l1_basis-резолв (#6) + structural l1_basis в portal.md (#7) | done | pool | — | Внедрить резолв l1_basis в assurance.py section_coverage (вместо any-non-empty) + перевести portal.md core: в структурный l1_basis; worktree, symbol-anchored |
 | T-181 | reconcile_state backlog — 38 done-missing-marker + 5 orphan-done-marker (конвенция queues/done) | done | pool | — | Решить конвенцию done-marker (бэкфилл queues/done/T-NNN.done.md для 38 done-задач ИЛИ сделать marker опциональным в reconcile_state); подчистить 5 orphan-маркеров от переименованных timestamp-задач |
 | T-182 | Synthesis gate - validate consensus/disagreement report structure | done | antigravity | — |  |
-| T-183 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
+| T-183 | Process-landed classification hardening | done | antigravity | — |  |
 | T-184 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
 | T-185 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
 | T-186 | Анализ 3 failed-задач в очереди — retry или close | done | pool | `темы/ai-os-bridge.md` | Прочитать queues/failed/*.md, определить причины, предложить retry/close/workaround для каждой |

@@ -2244,14 +2244,14 @@
     },
     {
       "id": "T-183",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
-      "owner": "Novax",
+      "title": "Process-landed classification hardening",
+      "status": "done",
+      "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": ""
     },
     {
       "id": "T-184",
