@@ -81,9 +81,11 @@ def analyze():
             if ref == did or ref not in consumers:
                 continue
             if did not in _refs(consumers[ref]["body"]):
+                cstatus = consumers[ref]["status"]
                 back_ref_gaps.append({"decision": did, "consumer": ref,
-                                      "consumer_status": consumers[ref]["status"],
-                                      "decision_status": d["status"]})
+                                      "consumer_status": cstatus,
+                                      "decision_status": d["status"],
+                                      "active": cstatus in ("open", "blocked", "todo", "doing")})
 
     # B: stale-blocker (только accepted-решения — они уже binding)
     accepted = {k: v for k, v in decisions.items() if v["status"] == "accepted"}
@@ -114,22 +116,26 @@ def main(argv):
         print(json.dumps(data, ensure_ascii=False, indent=2))
         return 1 if (data["back_ref_gaps"] or data["stale_blockers"]) else 0
     g, s = data["back_ref_gaps"], data["stale_blockers"]
+    active = [x for x in g if x.get("active")]
+    cosmetic = [x for x in g if not x.get("active")]
     print("=== DECISION-PROPAGATION (решения → потребители) ===")
-    print("  решений (accepted/proposed): %d   back-ref-gaps: %d   stale-blockers: %d"
-          % (data["n_decisions"], len(g), len(s)))
-    if g:
-        print("\n  A. back-ref gaps (решение ссылается на X, X не цитирует решение):")
-        for x in g[:20]:
-            print("     %s → %s (%s) — %s не отражает решение" %
-                  (x["decision"], x["consumer"], x["consumer_status"], x["consumer"]))
+    print("  решений: %d   АКТИВНЫХ-провалов: %d   косметич.cross-link(done): %d   stale-blockers: %d"
+          % (data["n_decisions"], len(active), len(cosmetic), len(s)))
+    if active:
+        print("\n  A. АКТИВНЫЕ провалы (решение → open/blocked-потребитель, не цитирует обратно — реально не дошло):")
+        for x in active[:20]:
+            print("     %s → %s (%s) — не отражает решение" %
+                  (x["decision"], x["consumer"], x["consumer_status"]))
     if s:
         print("\n  B. stale-blockers (open/blocked несёт токен accepted-решения, не цитируя его):")
         for x in s[:20]:
             print("     %s (%s) ↮ %s  [общий токен: %s]" %
                   (x["consumer"], x["consumer_status"], x["decision"], ", ".join(x["shared_tokens"])))
-    if not g and not s:
-        print("\n  OK: все accepted/proposed-решения пропагированы до потребителей")
-    return 1 if (g or s) else 0
+    if cosmetic:
+        print("\n  (косметика: %d back-ref на done/answered — работа сделана, cross-link опционален)" % len(cosmetic))
+    if not active and not s:
+        print("\n  OK: решения дошли до всех АКТИВНЫХ потребителей (косметич.cross-link на done — опц.)")
+    return 1 if (active or s) else 0
 
 
 if __name__ == "__main__":
