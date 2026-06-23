@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Тест conveyor (tools/conveyor.py) — оценка состояния, реестр round-trip, кандидаты бэклога."""
+"""Тест conveyor (tools/conveyor.py) — оценка состояния, output refs, реестр round-trip, кандидаты."""
 import os
 import sys
 import shutil
@@ -31,8 +31,11 @@ def _ledger(workflows, hb=NOW, target=2, idle=20):
             "heartbeat": hb.isoformat() if hb else None, "workflows": workflows}
 
 
-def _wf(wid, state):
-    return {"id": wid, "label": wid, "state": state}
+def _wf(wid, state, output=None):
+    w = {"id": wid, "label": wid, "state": state}
+    if output:
+        w["output"] = output
+    return w
 
 
 def run():
@@ -48,10 +51,14 @@ def run():
         a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "inflight")]), NOW)
         assert a["healthy"] and a["deficit"] == 0, a
 
-        # --- assess: 1 in-flight + 1 landed -> REFILL(deficit 1) + PROCESS ---
-        a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "landed")]), NOW)
-        assert a["deficit"] == 1 and a["n_landed"] == 1 and not a["healthy"], a
+        # --- assess: landed с output и без output -> PROCESS + missing-output диагностика ---
+        a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "landed", "tmp-work/b.output.md"), _wf("c", "landed")]), NOW)
+        assert a["deficit"] == 1 and a["n_landed"] == 2 and not a["healthy"], a
+        assert a["landed_outputs"] == [{"id": "b", "label": "b", "output": "tmp-work/b.output.md"}], a
+        assert a["landed_without_output"] == ["c"], a
         assert any("PROCESS" in x for x in a["actions"]), a["actions"]
+        assert any("PROCESS-MISSING-OUTPUT" in x for x in a["actions"]), a["actions"]
+        assert "landed без output: c" in c.render_status(a), c.render_status(a)
 
         # --- assess: масштаб цели (флот) — target из ledger двигает deficit ---
         a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "inflight")], target=5), NOW)
@@ -71,9 +78,11 @@ def run():
         d2 = c.load(path)
         assert c._find(d2, "w1")["state"] == "inflight", d2
         assert d2["heartbeat"], "launch должен писать heartbeat"
-        c._set_state(d2, "w1", "landed")
+        c._set_state(d2, "w1", "landed", output="tmp-work/w1.output.md")
         c.save(d2, path)
-        assert c._find(c.load(path), "w1")["state"] == "landed"
+        w1 = c._find(c.load(path), "w1")
+        assert w1["state"] == "landed"
+        assert w1["output"] == "tmp-work/w1.output.md", w1
 
         # --- кандидаты бэклога: исключают уже запущенные по подстроке label ---
         bpath = os.path.join(base, "backlog.md")
@@ -84,7 +93,7 @@ def run():
         cands_one = c.backlog_candidates({"workflows": [{"id": "w", "label": "Alpha thing", "state": "inflight"}]}, bpath)
         assert len(cands_one) == 1 and "Beta" in cands_one[0], cands_one
 
-        print("TESTS OK conveyor: assess(refill/process/idle/healthy) + реестр round-trip + кандидаты бэклога")
+        print("TESTS OK conveyor: assess(refill/process/idle/healthy/output refs) + реестр round-trip + кандидаты бэклога")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

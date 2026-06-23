@@ -80,8 +80,10 @@
 | Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов | `темы/assurance-and-doc-merge-2026-06-22.md` | proposed |  |
 | Hardening assurance — лестница warn→block (S0..S4) + apex-подключение | `темы/assurance-hardening-plan-2026-06-23.md` | proposed |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
+| Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `темы/fleet-designs-2026-06-23.md` | proposed |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft |  |
+| Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified | `темы/governance-proposals-2026-06-23.md` | proposed |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed |  |
 | Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `темы/perspective-backlog-2026-06-23.md` | proposed |  |
 | Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance) | `темы/pyramid-grounding-plan-2026-06-23.md` | proposed |  |

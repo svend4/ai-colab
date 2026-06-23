@@ -177,4 +177,5 @@
 | T-161 | Add sub-agent launch plan to flow workflow | done | codex | `docs/agent-launch-workflow.md` | Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест. |
 | T-162 | Add JSON output for sub-agent handoff launch plans | done | codex | `docs/agent-launch-workflow.md` | Реализовать `flow.py launch-plan --json` и `top.py subagent-handoff --json`, обновить тесты, docs и capabilities. |
 | T-163 | Expose conveyor supervisor in top command panel | done | codex | `docs/workflow-conveyor-policy.md` | Добавить `top.py conveyor` как верхнюю read-only кнопку над `tools/conveyor.py status`, обновить tests/docs/capabilities. |
+| T-164 | Conveyor landed output refs | done | codex | — | Реализовать `conveyor.py land --output`, JSON-диагностику landed без результата, тест и отчёт |
 <!-- GEN:tasks END -->

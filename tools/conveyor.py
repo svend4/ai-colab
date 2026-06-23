@@ -7,17 +7,19 @@ conveyor — НАДЗИРАТЕЛЬ конвейера воркфлоу: сле�
 достаточно (>=цель) и что оркестратор вообще «тикает». Конвейер тихо встаёт до 0-1 ноды.
 Этот инструмент — внешняя память + сигнал дозалива (docs/workflow-conveyor-policy.md §3-bis, §6):
 
-  • реестр запущенных воркфлоу (logs/conveyor.json, runtime, gitignored): id, label, kind, state, depends;
+  • реестр запущенных воркфлоу (logs/conveyor.json, runtime, gitignored): id, label, kind, state, depends, output;
   • на каждом действии оркестратора пишется heartbeat — staleness ловит «оркестратор замолчал»;
   • `status` считает in-flight против цели и ПЕЧАТАЕТ ВЕРДИКТ: REFILL / PROCESS / IDLE + exit-код
     (1 = нужно действие) — чтобы за конвейером можно было следить и из hook/CI/wakeup.
 
 Дисциплина: landing воркфлоу переводит его inflight->landed (in-flight падает) => status сразу требует
-дозалить. Так «вернулся к первому + сразу долил следующий» становится проверяемым, а не на память.
+дозалить. Если `land` пришёл без `--output`, status отдельно подсветит missing-output: воркфлоу
+завершён, но оркестратору нечего машинно извлекать. Так «вернулся к первому + сразу долил следующий»
+становится проверяемым, а не на память.
 
 CLI:
   python tools/conveyor.py launch <id> <label> [--kind K] [--depends D]   # зарегистрировать запуск
-  python tools/conveyor.py land  <id>            # .output пришёл (inflight->landed)
+  python tools/conveyor.py land  <id> [--output PATH]  # .output пришёл (inflight->landed + ref)
   python tools/conveyor.py ship  <id>            # обработан/отгружен (landed->shipped)
   python tools/conveyor.py dismiss <id> [--reason R]
   python tools/conveyor.py tick                  # оркестратор жив (обнови heartbeat)
@@ -92,6 +94,7 @@ def cmd_launch(d, wid, label, kind="workflow", depends="none"):
     w = _find(d, wid)
     if w:
         w.update(label=label, kind=kind, depends_on=depends, state="inflight")
+        w.pop("output", None)
     else:
         d["workflows"].append({"id": wid, "label": label, "kind": kind,
                                "state": "inflight", "launched": _now_iso(), "depends_on": depends})
@@ -99,13 +102,18 @@ def cmd_launch(d, wid, label, kind="workflow", depends="none"):
     return "launch: %s (%s) inflight" % (label, wid)
 
 
-def _set_state(d, wid, state):
+def _set_state(d, wid, state, output=None):
     w = _find(d, wid)
     if not w:
         return "нет воркфлоу %s в реестре" % wid
     w["state"] = state
+    if output is not None:
+        w["output"] = output
     _touch(d)
-    return "%s -> %s (%s)" % (w.get("label", wid), state, wid)
+    msg = "%s -> %s (%s)" % (w.get("label", wid), state, wid)
+    if output is not None:
+        msg += " output=%s" % output
+    return msg
 
 
 def _age_min(ts, now):
@@ -125,6 +133,12 @@ def assess(d, now, target=None, idle_min=None):
     inflight = [w for w in d["workflows"] if w.get("state") == "inflight"]
     landed = [w for w in d["workflows"] if w.get("state") == "landed"]
     shipped = [w for w in d["workflows"] if w.get("state") == "shipped"]
+    landed_outputs = [
+        {"id": w["id"], "label": w.get("label", w["id"]), "output": w.get("output")}
+        for w in landed
+        if w.get("output")
+    ]
+    landed_without_output = [w for w in landed if not w.get("output")]
     idle_age = _age_min(d.get("heartbeat"), now)
     actions = []
     deficit = target - len(inflight)
@@ -134,6 +148,9 @@ def assess(d, now, target=None, idle_min=None):
     if landed:
         actions.append("PROCESS: %d приземлившихся ждут обработки: %s"
                        % (len(landed), ", ".join(w.get("label", w["id"]) for w in landed)))
+    if landed_without_output:
+        actions.append("PROCESS-MISSING-OUTPUT: %d landed без output/ref: %s — добавь `conveyor.py land <id> --output <path>` или dismiss с причиной"
+                       % (len(landed_without_output), ", ".join(w.get("label", w["id"]) for w in landed_without_output)))
     if idle_age is not None and idle_age > idle_min:
         actions.append("IDLE: оркестратор молчит %.0f мин (> %d) — тикни/долей или заверши конвейер" % (idle_age, idle_min))
     return {
@@ -141,6 +158,8 @@ def assess(d, now, target=None, idle_min=None):
         "n_inflight": len(inflight), "n_landed": len(landed), "n_shipped": len(shipped),
         "inflight": [w.get("label", w["id"]) for w in inflight],
         "landed": [w.get("label", w["id"]) for w in landed],
+        "landed_outputs": landed_outputs,
+        "landed_without_output": [w.get("label", w["id"]) for w in landed_without_output],
         "idle_age_min": idle_age,
         "deficit": max(0, deficit),
         "actions": actions,
@@ -154,6 +173,10 @@ def render_status(a):
          % (a["n_inflight"], a["target"], a["n_landed"], a["n_shipped"])]
     if a["inflight"]:
         L.append("  в полёте: " + ", ".join(a["inflight"]))
+    if a.get("landed_outputs"):
+        L.append("  landed output: " + ", ".join("%s -> %s" % (w["label"], w["output"]) for w in a["landed_outputs"]))
+    if a.get("landed_without_output"):
+        L.append("  landed без output: " + ", ".join(a["landed_without_output"]))
     if a["idle_age_min"] is not None:
         L.append("  heartbeat: %.0f мин назад" % a["idle_age_min"])
     L.append("-" * 56)
@@ -201,7 +224,8 @@ def main():
             save(d)
             return 0
         if cmd in ("land", "ship") and len(a) >= 2:
-            print(_set_state(d, a[1], "landed" if cmd == "land" else "shipped"))
+            output = _arg(a, "--output") if cmd == "land" else None
+            print(_set_state(d, a[1], "landed" if cmd == "land" else "shipped", output=output))
             save(d)
             return 0
         if cmd == "dismiss" and len(a) >= 2:

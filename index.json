@@ -134,6 +134,13 @@
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     },
     {
+      "id": "fleet-designs-2026-06-23",
+      "title": "Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов",
+      "file": "темы/fleet-designs-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "friction-subsystems-synthesis-2026-06-22",
       "title": "Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017",
       "file": "темы/friction-subsystems-synthesis-2026-06-22.md",
@@ -145,6 +152,13 @@
       "title": "Отравление общего gate чужой half-done задачей — ситуация и слои решений",
       "file": "темы/gate-poison-situation-2026-06-22.md",
       "status": "draft",
+      "next": ""
+    },
+    {
+      "id": "governance-proposals-2026-06-23",
+      "title": "Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified",
+      "file": "темы/governance-proposals-2026-06-23.md",
+      "status": "proposed",
       "next": ""
     },
     {
@@ -1969,6 +1983,17 @@
       "depends_on": "[T-162]",
       "topic": "docs/workflow-conveyor-policy.md",
       "next": "Добавить `top.py conveyor` как верхнюю read-only кнопку над `tools/conveyor.py status`, обновить tests/docs/capabilities."
+    },
+    {
+      "id": "T-164",
+      "title": "Conveyor landed output refs",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-163]",
+      "topic": "",
+      "next": "Реализовать `conveyor.py land --output`, JSON-диагностику landed без результата, тест и отчёт"
     }
   ],
   "questions": [
