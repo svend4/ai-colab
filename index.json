@@ -1842,6 +1842,17 @@
       "depends_on": "[T-121, T-122, T-138, T-150]",
       "topic": "docs/instruction-assurance.md",
       "next": "Добавить docs/instruction-assurance.md, tools/instructions.py preflight, top.py instruction-preflight и тест, чтобы агент видел обязательные правила и оставлял evidence их применения."
+    },
+    {
+      "id": "T-155",
+      "title": "Harden instruction preflight and doc-consensus diagnostics",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-154]",
+      "topic": "темы/assurance-and-doc-merge-2026-06-22.md",
+      "next": "Исправить `instructions.py preflight <agent>` без T-id, перевести `test_doc_consensus.py` на project-safe temp и расширить `doc_consensus.py` на H1/абзацы для коротких Q-файлов."
     }
   ],
   "questions": [

@@ -307,9 +307,10 @@ def build_preflight(agent=None, task_id=None, include_onboarding=False):
     if dirty:
         gates.append("commit stage: explicit file list only; no git add -A in dirty shared tree")
 
+    task_label = ctx["id"] if ctx else "<not specified>"
     evidence = [
         "`AGENTS.md` / `PROTOCOL.md`: zone/write rules respected; no чужие сообщения overwritten.",
-        "Task: `%s` %s." % (ctx["id"], "done criteria checked" if ctx else "not specified"),
+        "Task: `%s` %s." % (task_label, "done criteria checked" if ctx else "not specified"),
         "Instruction preflight: `python tools/instructions.py preflight %s%s`." % (
             agent or "<agent>", " " + ctx["id"] if ctx else ""),
         "Friction/work-mode: dirty tree checked; shared/worktree choice explained.",

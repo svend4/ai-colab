@@ -33,6 +33,13 @@ def run():
     assert "docs/top-agent-operating-manual.md" in paths, paths
     assert "docs/instruction-assurance.md" in paths, paths
 
+    agent_payload = instructions.build_preflight("codex")
+    agent_ids = {item["id"] for item in agent_payload["instructions"]}
+    assert agent_payload["task"] is None, agent_payload
+    assert "human-map" in agent_ids and "agent-onboarding" in agent_ids, agent_ids
+    assert "task-card" not in agent_ids, agent_ids
+    assert "<not specified>" in instructions.format_preflight(agent_payload), agent_payload
+
     payload = instructions.build_preflight("codex", "T-154")
     ids = {item["id"] for item in payload["instructions"]}
     assert "agent-rules" in ids, ids
@@ -47,6 +54,12 @@ def run():
     assert rc == 0, out
     data = json.loads(out)
     assert any(i["path"] == "AGENTS.md" for i in data["instructions"]), data
+
+    rc, out = _run("preflight", "codex", "--json")
+    assert rc == 0, out
+    data = json.loads(out)
+    assert data["task"] is None, data
+    assert any(i["path"] == "docs/agent-onboarding.md" for i in data["instructions"]), data
 
     rc, out = _run("preflight", "codex", "T-154", "--json")
     assert rc == 0, out

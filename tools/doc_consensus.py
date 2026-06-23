@@ -4,7 +4,7 @@
 doc_consensus (Q-017, слияние документации агентов) — находит ОБЩИЕ пункты и РАЗНОГЛАСИЯ между доками.
 
 Сканирует несколько markdown-документов (разных агентов/людей) по одной теме, выделяет «пункты»
-(буллеты / заголовки / строки таблиц), кластеризует похожие по содержанию (Jaccard на токенах) и даёт:
+(буллеты / заголовки / строки таблиц / содержательные абзацы), кластеризует похожие по содержанию (Jaccard на токенах) и даёт:
 - **Консенсус** — пункты, встречающиеся в >=2 документах, с cross-reference `file:line` где встречаются;
 - **Разногласия** — пункты только из одного документа (сгруппированы по файлу).
 
@@ -68,16 +68,36 @@ def _norm_tokens(text):
     return {_stem(w) for w in t.split() if len(w) > 2 and w not in STOP}
 
 
+def _append_unit(out, text, rel, line_no):
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) < 8 or set(text) <= set("-|: "):
+        return
+    toks = _norm_tokens(text)
+    if len(toks) >= 2:
+        out.append({"text": text[:160], "tokens": toks, "where": "%s:%d" % (rel, line_no), "doc": rel})
+
+
 def units(path, root=ROOT):
-    """Извлечь «пункты» дока: буллеты / заголовки ##-#### / строки таблиц (вне front-matter)."""
+    """Извлечь пункты дока: bullets, #/## headings, table rows and meaningful paragraphs."""
     rel = os.path.relpath(path, root).replace("\\", "/")
     out = []
     try:
         lines = open(path, encoding="utf-8", errors="replace").read().splitlines()
     except OSError:
         return out
+
     in_fm = False
     in_code = False
+    para = []
+    para_start = None
+
+    def flush_para():
+        nonlocal para, para_start
+        if para:
+            _append_unit(out, " ".join(para), rel, para_start or 1)
+            para = []
+            para_start = None
+
     for i, ln in enumerate(lines, 1):
         s = ln.strip()
         if i == 1 and s == "---":
@@ -88,20 +108,30 @@ def units(path, root=ROOT):
                 in_fm = False
             continue
         if s.startswith("```"):
+            flush_para()
             in_code = not in_code
             continue
         if in_code:
             continue
-        m = (re.match(r"^[-*+]\s+(.*)", s) or re.match(r"^#{2,4}\s+(.*)", s)
+        if not s:
+            flush_para()
+            continue
+
+        m = (re.match(r"^[-*+]\s+(.*)", s) or re.match(r"^#{1,4}\s+(.*)", s)
              or re.match(r"^\|\s*(.+?)\s*\|", s))
-        if not m:
+        if m:
+            flush_para()
+            _append_unit(out, m.group(1), rel, i)
             continue
-        text = re.sub(r"\s+", " ", m.group(1)).strip()
-        if len(text) < 8 or set(text) <= set("-|: "):
+
+        if set(s) <= set("-|: "):
+            flush_para()
             continue
-        toks = _norm_tokens(text)
-        if len(toks) >= 2:
-            out.append({"text": text[:160], "tokens": toks, "where": "%s:%d" % (rel, i), "doc": rel})
+        if para_start is None:
+            para_start = i
+        para.append(s)
+
+    flush_para()
     return out
 
 

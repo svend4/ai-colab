@@ -3,12 +3,15 @@
 """Тест doc_consensus (tools/doc_consensus.py) — консенсус (>=2 док.) + разногласия (1 док.)."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+DRIVERS = os.path.join(ROOT, "drivers")
 sys.path.insert(0, HERE)
+sys.path.insert(0, DRIVERS)
 import doc_consensus as dc
+from test_tmp import make_temp_dir
 
 
 def configure_output():
@@ -23,7 +26,7 @@ configure_output()
 
 def run():
     ok = True
-    base = tempfile.mkdtemp(prefix="doccons_")
+    base = make_temp_dir("doccons_")
     try:
         d1 = os.path.join(base, "agentA.md")
         d2 = os.path.join(base, "agentB.md")
@@ -48,6 +51,16 @@ def run():
         div_docs = {c["members"][0]["doc"] for c in res["divergent"]}
         assert "agentA.md" in div_docs and "agentB.md" in div_docs, "разногласия по обоим докам: %s" % div_docs
         assert len(res["divergent"]) >= 2, "ожидалось >=2 разногласия: %d" % len(res["divergent"])
+
+        q1 = os.path.join(base, "q1.md")
+        q2 = os.path.join(base, "q2.md")
+        with open(q1, "w", encoding="utf-8") as f:
+            f.write("---\nid: q1\n---\n\n# Q1\n\nОбщий пункт: применять инструкции через evidence gate.\n\nУникальная часть A: freshness metadata.\n")
+        with open(q2, "w", encoding="utf-8") as f:
+            f.write("# Q2\n\nОбщий пункт: применять инструкции через evidence gate.\n\nУникальная часть B: promotion coverage.\n")
+        res2 = dc.analyze([q1, q2], root=base, thr=0.4)
+        assert res2["n_units"] >= 4, "H1/абзацы должны извлекаться: %s" % res2
+        assert len(res2["consensus"]) >= 1, "ожидался consensus из абзацев: %s" % res2
 
         # render не падает и содержит секции
         txt = dc.render(res)
