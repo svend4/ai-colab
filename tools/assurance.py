@@ -286,13 +286,16 @@ def section_flow(root):
         else:
             surface.append(_read(p))
     surface_text = "\n".join(surface)
+    # two-spine join (piece 3): решение заземлено, если упомянуто в прозе ИЛИ объявлено в
+    # structured `surfaces`-ключе инструкции (точный join вместо fuzzy substring; см. instructions.trace).
+    surfaced_ids = {s.strip().upper() for item in ins.INSTRUCTIONS for s in item.get("surfaces", [])}
     orphan_dec = []
     for path in sorted(glob.glob(os.path.join(root, "decisions", "D-*.md"))):
         fm = _fm(path)
         if (fm.get("status") or "").strip().lower() != "accepted":
             continue
         did = (fm.get("id") or os.path.splitext(os.path.basename(path))[0]).strip()
-        if did not in surface_text:
+        if did not in surface_text and did.upper() not in surfaced_ids:
             orphan_dec.append(did)
     if orphan_dec:
         findings.append(_finding(
