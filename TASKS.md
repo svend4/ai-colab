@@ -221,7 +221,7 @@
 | T-205 | Проверить и обновить STATUS.md (текущий фокус) | done | pool | `темы/ai-os-bridge.md` | Обновить текущий фокус, активные темы, журнал изменений |
 | T-206 | P28 safe-auto-apply — детекторы чинят тривиальное сами (design + строгий safe-гейт) | done | pool | — | Спроектировать строгое определение «safe-auto-apply» (что детектор может чинить БЕЗ человека) + гейт; реализовать только на доказанно-обратимом подмножестве |
 | T-207 | D (пирамида L2→L1) — knowledge.py второй core-export (P12) + move-путь (P13) | done | pool | — | В ЧИСТОМ окне promote.py (сейчас Codex-hot): применить verification-гейт (test_<tool>.py = «тесты ядра») → knowledge.py L2→L1 READY → промоутнуть в core-export; затем тест move-пути (P13) |
-| T-208 | B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл | blocked | pool | — | Ждёт явного «go» Stefan на execute-направление. Первый дешёвый этап — P3 anti-fake-probe (Gate 9) inline; этапы 5/7/8 (human-gate/исполнитель/runner) — через котёл |
+| T-208 | B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл | pool | pool | — | Ждёт явного «go» Stefan на execute-направление. Первый дешёвый этап — P3 anti-fake-probe (Gate 9) inline; этапы 5/7/8 (human-gate/исполнитель/runner) — через котёл |
 | T-209 | P1 agent_queue fencing-тест (test, 2.0) | done | pool | — | Написать и запустить тесты на fencing для agent_queue.py |
 | T-210 | P2 T-174 статус-фикс (build, 2.0) | done | pool | — | Исправить 4 поверхности статуса T-174 (frontmatter, index.json, TASKS.md vs Result+failed-queue) |
 | T-211 | P7+P8 Untested Risk tests (permissions.py, risk_gate.py) | done | pool | — | Написать тесты для permissions.match() и риск-тиринга. |

@@ -4,8 +4,8 @@ type: core-export-manifest
 level: L1
 status: proposed
 title: Переносимое ядро — file-native agent-coordination engine
-files: [tools/_canon.py, tools/validate.py, tools/generate.py, tools/next_id.py, tools/commit_lock.py, tools/pipeline.py, tools/dispatch.py, tools/merge_gate.py]
-candidates: [tools/knowledge.py, tools/text_extract.py]
+files: [tools/_canon.py, tools/validate.py, tools/generate.py, tools/next_id.py, tools/commit_lock.py, tools/pipeline.py, tools/dispatch.py, tools/merge_gate.py, tools/knowledge.py]
+candidates: [tools/text_extract.py]
 tests: [tools/test_commit_lock.py, tools/test_merge_gate.py]
 ---
 

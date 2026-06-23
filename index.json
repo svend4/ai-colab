@@ -2534,7 +2534,7 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "blocked",
+      "status": "pool",
       "owner": "pool",
       "priority": "normal",
       "risk": "high",

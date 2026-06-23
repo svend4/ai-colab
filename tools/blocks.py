@@ -8,10 +8,13 @@ tools **параллельно** и сводит в единый вердикт 
 CLI:
     python tools/blocks.py list                 # реестр блоков
     python tools/blocks.py audit [--json] [--seq]   # запустить блок самопроверки
-    python tools/blocks.py run <block> [--json] [--seq]
+    python tools/blocks.py run <block> [--json] [--seq] [--auto-safe]
 
 Блок `audit` кластеризует: validate + generate --check (gate) + friction/assurance/reconcile/drift
 (advisory). Gate-шаг с rc!=0 валит блок (exit 1); advisory только считаются. По умолчанию — параллельно.
+
+Флаг `--auto-safe` (пока применяется в основном с `improve`) автоматически запускает
+ратифицированные обратимые фиксы (SAFE_AUTO_RULES) если обнаружены проблемы.
 """
 import os
 from _ioutil import configure_output
@@ -79,6 +82,14 @@ BLOCKS = {
     },
 }
 
+# Реестр безопасных авто-исправлений (SAFE_AUTO), применяемых при --auto-safe
+# Только идемпотентные и полностью обратимые (derived) операции.
+SAFE_AUTO_RULES = [
+    ("generate.py", [], "Восстановление индексов (TASKS, STATUS, board, index.json)"),
+    ("reconcile_state.py", ["fix", "--apply"], "Синхронизация derived-данных и snapshot"),
+    ("stream.py", ["archive", "--apply"], "Архивация заброшенных (stale) streams"),
+]
+
 
 def _run_step(step):
     tool, args, kind = step
@@ -129,11 +140,29 @@ def cmd_list():
     return 0
 
 
-def cmd_run(name, as_json=False, parallel=True):
+def cmd_run(name, as_json=False, parallel=True, auto_safe=False):
     if name not in BLOCKS:
         print("нет блока %r; доступны: %s" % (name, ", ".join(BLOCKS)))
         return 2
     res = run_block(name, parallel=parallel)
+    
+    if auto_safe and (not res["gates_passed"] or res["advisory_flags"] > 0):
+        if not as_json:
+            print("\n=== AUTO-SAFE APPLY ===")
+            print("Обнаружены проблемы, применяются безопасные авто-исправления (SAFE_AUTO_RULES)...")
+        safe_results = []
+        for tool, args, desc in SAFE_AUTO_RULES:
+            r = _run_step((tool, args, "auto"))
+            safe_results.append((desc, r))
+            if not as_json:
+                mark = "OK" if r["rc"] == 0 else "rc=%s" % r["rc"]
+                print("  [auto    ] %-22s %s" % (tool, mark))
+        
+        # Перепроверяем после авто-исправлений
+        if not as_json:
+            print("Перепроверка после auto-safe...")
+        res = run_block(name, parallel=parallel)
+
     if as_json:
         print(json.dumps(res, ensure_ascii=False, indent=2))
     else:
@@ -149,6 +178,8 @@ def cmd_run(name, as_json=False, parallel=True):
             print("  [%-8s] %-22s %s" % (r["kind"], r["tool"], mark))
         verdict = "BLOCK-OK" if res["gates_passed"] else "BLOCK-FAIL (gate rc!=0)"
         print("\nВердикт: %s; advisory-флагов: %d" % (verdict, res["advisory_flags"]))
+        if auto_safe:
+            print("Остальные PRIMARY/governance проблемы оставлены для решения человеку.")
     return 0 if res["gates_passed"] else 1
 
 
@@ -156,14 +187,15 @@ def main(argv):
     args = list(argv)
     as_json = "--json" in args
     parallel = "--seq" not in args
+    auto_safe = "--auto-safe" in args
     pos = [a for a in args if not a.startswith("--")]
     if not pos or pos[0] == "list":
         return cmd_list()
     cmd = pos[0]
     if cmd == "run" and len(pos) >= 2:
-        return cmd_run(pos[1], as_json=as_json, parallel=parallel)
+        return cmd_run(pos[1], as_json=as_json, parallel=parallel, auto_safe=auto_safe)
     # сокращение: `blocks.py audit` == `blocks.py run audit`
-    return cmd_run(cmd, as_json=as_json, parallel=parallel)
+    return cmd_run(cmd, as_json=as_json, parallel=parallel, auto_safe=auto_safe)
 
 
 if __name__ == "__main__":

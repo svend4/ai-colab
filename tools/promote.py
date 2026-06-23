@@ -171,10 +171,15 @@ def _gate_L2_L1(path, fm, root):
         if token == t or token in t or t in token:
             portals |= pids
     decision_override = _has_decision_ref(fm)
+    verified = _has_verification(fm)
+    # Для .py-инструментов: наличие test_<tool>.py = "тесты ядра зелёные" (P12)
+    if not verified and path.endswith(".py") and not token.startswith("test_"):
+        test_path = os.path.join(os.path.dirname(path), "test_" + token)
+        verified = os.path.exists(test_path)
     return [
         ("reuse_across_portals", len(portals) >= 2 or decision_override,
          "повторное применение в >=2 порталах (derive_reuse-скан), либо decision-ref override (D-NNN)"),
-        ("verification", _has_verification(fm),
+        ("verification", verified,
          "строгая проверка: тесты ядра зелёные / verification-ссылка"),
         ("no_domain_coupling",
          not any(fm.get(k) for k in ("portal", "domain", "corpus")),

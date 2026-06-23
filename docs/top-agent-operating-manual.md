@@ -3,6 +3,7 @@ id: top-agent-operating-manual
 title: Top Agent Operating Manual — чистовая инструкция вершины пирамиды
 status: accepted
 owner: Codex
+last_verified: 2026-06-23
 related: docs/bridge-usage.md, docs/layers-coverage.md, docs/architecture-docs-recheck-2026-06-21.md, AGENTS.md, PROTOCOL.md
 ---
 

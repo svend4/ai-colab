@@ -89,8 +89,41 @@ def run():
         except ValueError:
             pass
 
+        # --- move L2->L1: атомарный перенос + stamp + reuse + verification ---
+        l2_root = os.path.join(root, "tools")
+        os.makedirs(l2_root, exist_ok=True)
+        l2_art = os.path.join(l2_root, "aa.py")
+        with open(l2_art, "w", encoding="utf-8", newline="\n") as f:
+            f.write("# L2 artifact\n")
+        # test-файл для verification (P12)
+        l2_test = os.path.join(l2_root, "test_aa.py")
+        with open(l2_test, "w", encoding="utf-8", newline="\n") as f:
+            f.write("def test_aa(): pass\n")
+        # манифест + два портала для reuse_across_portals
+        man = os.path.join(root, "core", "engine-manifest.md")
+        with open(man, "w", encoding="utf-8", newline="\n") as f:
+            f.write("---\nfiles: [tools/aa.py]\n---\n")
+        for pid, basis in [("p1", ["tools/aa.py"]), ("p2", ["tools/aa.py"])]:
+            pdir = os.path.join(root, "portals", pid)
+            os.makedirs(pdir, exist_ok=True)
+            with open(os.path.join(pdir, "portal.md"), "w", encoding="utf-8", newline="\n") as f:
+                f.write("---\nid: %s\nl1_basis: %s\n---\n" % (pid, basis))
+        # проверка гейта
+        rep_l2 = pr.check(l2_art, frm="L2", to="L1", root=root)
+        assert rep_l2["ready"] is True, rep_l2
+        # move
+        r2 = pr.move(l2_art, "L2", "L1", reviewed_by="tester", decision_ref="D-TEST", root=root)
+        l1_path = r2["to_path"]
+        assert os.path.isfile(l1_path), l1_path
+        assert pr.level_of(l1_path, root) == "L1", l1_path
+        assert not os.path.exists(l2_art), "orphan L2: старый путь остался"
+        assert not os.path.exists(l1_path + ".tmp"), "остался .tmp half-move L2->L1"
+        fm2 = pr._read_fm(l1_path)
+        assert fm2.get("promoted_from") == "L2" and fm2.get("promoted_to") == "L1", fm2
+        assert fm2.get("reviewed_by") == "tester", fm2
+
         if ok:
-            print("TESTS OK promote: list/levels, check fail no-decision-ref, atomic move L4->L3 + stamp, no orphan")
+            print("TESTS OK promote: list/levels, check fail no-decision-ref, atomic move L4->L3 + stamp, no orphan, atomic move L2->L1 + reuse + verification")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

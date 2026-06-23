@@ -155,6 +155,7 @@ recipes: exact commands
 | F-016 | `pipeline.py next` берёт следующую задачу по приоритету/ID, а не “ту, которую агент имел в виду” | T-149: `next` взял T-148, пришлось вручную снять свой claim и повысить priority T-149 | 1, но высокий UX-риск | если нужна конкретная задача, не вызывать `next` вслепую; либо временно выставить priority/depends, либо нужен targeted claim | агент может случайно занять чужой/нежелательный work item и оставить claim | реализовано T-152: `pipeline.py claim <agent> <T-id>` и `top.py take <agent> <T-id>` с проверкой ready/placeholder/claim |
 | F-017 | Ручная бухгалтерия “сколько раз решали” пока приблизительная | T-147/T-149 ledger | 1 | вести оценку `1 / 2-3 / 4+ / 8+`, пока нет event log | невозможно точно приоритизировать автоматизацию | future: `logs/friction.jsonl` или `tools/friction.py note <F-id>` |
 | F-018 | Skill/документы могут разойтись | создание `repo-friction-playbook` после ledger/playbook | 1 | skill должен быть тонкой навигацией, а детали остаются в `docs/friction-*` | агент читает устаревший skill и не смотрит канон | в `validate.py` позже проверить наличие ссылок skill -> docs |
+| F-020 | Gate-poisoning from half-done task dependencies | T-150 битый topic-ref делал validate.py RED -> блок всех коммитов | high | задача со ссылкой на несуществующий topic -> blocked до файла (S1/B2) либо L1-worktree (T2/G1) | one half-done отравляет общий gate всем | реализовано: friction.py check_gate_poison + cohort.py guard + test_friction_f020.py; см. темы/gate-poison-situation-2026-06-22.md |
 
 ## Бухгалтерское правило для автоматизации
 
@@ -187,7 +188,7 @@ recipes: exact commands
 Что изменилось:
 
 - проведён глубокий retrospective audit по прошлым инцидентам и текущей сессии;
-- F-001..F-019 сохранены как стабильный реестр симптомов и рецептов;
+- F-001..F-020 сохранены как стабильный реестр симптомов и рецептов;
 - добавлен `tools/friction.py status` как read-mostly detector: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links;
 - добавлена команда верхнего уровня `python tools/top.py friction`;
 - тест `tools/test_friction.py` специально закрепляет правила F-004: не использовать системный `%TEMP%` в герметичных тестах этой среды.

@@ -74,9 +74,11 @@ def main():
         bb = reuse.get("bb.py", set())
         if bb != {"portal-p3"}:
             fails.append(f"bb.py reuse ожид {{p3}}, факт {sorted(bb)}")
-        # cc.py — кандидат (не в files:), не входит в L1-инвентарь orphan-скана
-        if "cc.py" in reuse:
-            fails.append("cc.py не должен быть в инвентаре files: (он candidate)")
+        # cc.py — кандидат, теперь входит в L1-инвентарь (candidates включены, D-022/P12)
+        if "cc.py" not in reuse:
+            fails.append("cc.py должен быть в инвентаре (candidates включены)")
+        if reuse.get("cc.py"):
+            fails.append("cc.py reuse должен быть пустым (нет порталов, ссылающихся)")
 
         # gate: aa.py проходит reuse_across_portals (>=2 портала)
         gate_aa = dict((n, ok) for n, ok, _ in
