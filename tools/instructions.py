@@ -44,6 +44,7 @@ INSTRUCTIONS = [
         "scope": "all",
         "why": "роли агентов, зоны записи, запрет переписывать чужую работу",
         "evidence": "указать, что зона записи и ограничения агента соблюдены",
+        "surfaces": ["D-008", "D-009"],
     },
     {
         "id": "collab-protocol",
@@ -51,6 +52,7 @@ INSTRUCTIONS = [
         "scope": "all",
         "why": "append-only полилог, D-003 обоснование правок, pipeline, streams, уровни папок",
         "evidence": "указать, где оставлен outbox/topic rationale и почему общие файлы менялись так",
+        "surfaces": ["D-002", "D-003", "D-004", "D-008"],
     },
     {
         "id": "human-map",
@@ -65,6 +67,7 @@ INSTRUCTIONS = [
         "scope": "onboarding",
         "why": "present-tense карта возможностей и ролей",
         "evidence": "если агент новый, указать, что использовал эту карту входа",
+        "surfaces": ["D-009"],
     },
     {
         "id": "top-manual",
@@ -213,7 +216,51 @@ def instruction_entry(item, reason=None):
         "scope": item["scope"],
         "why": reason or item["why"],
         "evidence": item["evidence"],
+        "surfaces": list(item.get("surfaces", [])),
     }
+
+
+def _instruction_level(path):
+    """Уровень пирамиды для файла инструкции (через promote.level_of); base-файлы → 'base'."""
+    try:
+        import promote
+        lvl = promote.level_of(os.path.join(ROOT, path))
+    except Exception:  # noqa: BLE001
+        lvl = None
+    return lvl or "base"
+
+
+def trace(decision_id):
+    """READ-ONLY: проследить базовое решение D-NNN → инструкция(и)-поверхность → уровень → апекс.
+
+    Закрывает «two-spine»-разрыв: реестр инструкций (`INSTRUCTIONS`) и пирамида (`promote`) не имели
+    общего ключа. Поле `surfaces` на записи инструкции — это shared join key (инструкция → базовое
+    D-NNN); уровень берётся из `promote.level_of`; апекс — дашборд `assurance.py` (section_flow).
+    Возвращает {decision, surfaced_by:[{id,path,level}], grounded, apex}.
+    """
+    did = (decision_id or "").strip().upper()
+    out = []
+    for item in INSTRUCTIONS:
+        if did in [s.strip().upper() for s in item.get("surfaces", [])]:
+            out.append({"id": item["id"], "path": item["path"], "level": _instruction_level(item["path"])})
+    return {"decision": did, "surfaced_by": out, "grounded": bool(out),
+            "apex": "tools/assurance.py section_flow (apex dashboard)"}
+
+
+def cmd_trace(args):
+    res = trace(args.decision)
+    if getattr(args, "json", False):
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+        return 0
+    if not res["surfaced_by"]:
+        print("%s: НЕ заземлено — ни одна инструкция не surface'ит это решение "
+              "(висячее; см. assurance.py flow / темы/governance-proposals-2026-06-23.md)" % res["decision"])
+        return 1
+    print("%s — путь база→вершина:" % res["decision"])
+    for s in res["surfaced_by"]:
+        print("  surface: %-18s (%s, уровень: %s)" % (s["id"], s["path"], s["level"]))
+    print("  → апекс: %s" % res["apex"])
+    return 0
 
 
 def task_context(task_id):
@@ -546,6 +593,11 @@ def build_parser():
     p = sub.add_parser("check-report", help="check that a report has an Applied instructions section")
     p.add_argument("path")
     p.set_defaults(func=cmd_check_report)
+
+    p = sub.add_parser("trace", help="trace a base decision D-NNN → instruction surface → level → apex (read-only)")
+    p.add_argument("decision")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_trace)
 
     return parser
 
