@@ -1853,6 +1853,17 @@
       "depends_on": "[T-154]",
       "topic": "темы/assurance-and-doc-merge-2026-06-22.md",
       "next": "Исправить `instructions.py preflight <agent>` без T-id, перевести `test_doc_consensus.py` на project-safe temp и расширить `doc_consensus.py` на H1/абзацы для коротких Q-файлов."
+    },
+    {
+      "id": "T-156",
+      "title": "Pipeline done --applied evidence marker",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-154, T-155]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Добавить мягкий флаг `--applied` в `pipeline.py done`, чтобы done-маркер хранил evidence применённых инструкций без поломки старого сценария."
     }
   ],
   "questions": [

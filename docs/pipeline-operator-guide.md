@@ -9,7 +9,7 @@ status            # посмотреть котёл
 next <Имя>        # атомарно занять следующую готовую задачу
 claim <Имя> <T-id> # атомарно занять конкретную готовую задачу
 # ...делаешь задачу...
-done <Имя> <T-id> --claim <claim_id> --report "что сделал"
+done <Имя> <T-id> --claim <claim_id> --report "что сделал" --applied "AGENTS.md, PROTOCOL.md, Checks"
 next <Имя>        # и снова — пока не «КОТЁЛ ПУСТ»
 ```
 
@@ -20,7 +20,7 @@ python tools/pipeline.py status                       # лента: в рабо�
 python tools/pipeline.py next   <Имя>                  # занять следующую готовую
 python tools/pipeline.py claim  <Имя> <T-id>           # занять конкретную ready-задачу
 python tools/pipeline.py mine   <Имя>                  # мои текущие задачи
-python tools/pipeline.py done   <Имя> <T-id> --claim <claim_id> --report "..."
+python tools/pipeline.py done   <Имя> <T-id> --claim <claim_id> --report "..." --applied "AGENTS.md, PROTOCOL.md, Checks"
 python tools/pipeline.py fail   <Имя> <T-id> --reason "..."
 python tools/pipeline.py snapshot                      # обновить PIPELINE.md + logs/pipeline.json
 python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --eta "..."
@@ -34,7 +34,7 @@ python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --
 3. **Готовая = `todo` + зависимости done + не занята.** Заблокированные зависимостями `next` не выдаёт — это нормально.
 4. **Заверши явно.** `done --report "..."` (успех) или `fail --reason "..."` (не вышло → задача в `blocked`). Не оставляй «висящий» claim — TTL 30 мин его потом отпустит, но лучше закрывать самому.
 5. **Длинную задачу — с heartbeat** (по желанию): `heartbeat <Имя> <T-id> --progress N` показывает остальным, что ты жив и на каком проценте. Пишется в `logs/heartbeat/<Имя>.json`, не в общий файл.
-6. **Отчёт — короткий и по делу:** что сделал, какой файл/результат. Он попадает в `queues/done/<T-id>.done.md`.
+6. **Отчёт — короткий и по делу:** что сделал, какой файл/результат. Для служебных задач добавляй `--applied "AGENTS.md, PROTOCOL.md, Checks"`; это попадёт в `queues/done/<T-id>.done.md` как машинное поле `applied` и как читаемая строка. Старый `done --report` оставлен для совместимости, но новый маркер удобнее для ревизии.
 7. **После задачи — синхронизируй канон:** `python tools/generate.py`, затем selective-add и коммит под `commit_lock.py` (pre-commit-гейт проверит `validate.py` + `generate.py --check`).
 8. **Новую задачу заводи через `next_id.py`** (`task`/`question`/`decision`), не выбирай номер вручную — иначе коллизии id.
 9. **Коммит — только своих файлов.** Если в workspace есть чужие half-done изменения, не делай `git add -A`; используй явный список файлов или оставь вариант в `streams/`.

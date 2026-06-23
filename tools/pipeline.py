@@ -12,7 +12,7 @@
 
     python tools/pipeline.py next   <agent>                 # атомарно занять след. готовую задачу
     python tools/pipeline.py claim  <agent> <T-id>          # атомарно занять конкретную ready-задачу
-    python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."]
+    python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."] [--applied "..."]
     python tools/pipeline.py fail   <agent> <T-id> [--claim ID] [--reason "..."]
     python tools/pipeline.py status                          # лента конвейера (одна форма)
     python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
@@ -228,7 +228,7 @@ def _claim_success(agent, task, cid):
     set_status(task["path"], "doing")
     print("ЗАНЯЛ: %s — %s" % (task["id"], task["title"]))
     print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, task["id"]))
-    print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\""
+    print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\""
           % (agent, task["id"], cid))
 
 
@@ -282,11 +282,23 @@ def _release(tid):
         os.remove(p)
 
 
-def _marker(dirpath, tid, suffix, agent, text):
+def _marker(dirpath, tid, suffix, agent, text, extra=None):
     os.makedirs(dirpath, exist_ok=True)
     p = os.path.join(dirpath, "%s.%s.md" % (tid, suffix))
+    extra = extra or {}
+    header = [
+        "---",
+        "task: %s" % tid,
+        "agent: %s" % agent,
+        "epoch: %d" % int(time.time()),
+    ]
+    for key in sorted(extra):
+        value = str(extra[key] or "").replace("\n", " ").strip()
+        if value:
+            header.append("%s: %s" % (key, value))
+    header.append("---")
     with open(p, "w", encoding="utf-8", newline="\n") as f:
-        f.write("---\ntask: %s\nagent: %s\nepoch: %d\n---\n\n%s\n" % (tid, agent, int(time.time()), text))
+        f.write("%s\n\n%s\n" % ("\n".join(header), text))
 
 
 def _check_holder(tid, agent, claim_id):
@@ -306,7 +318,7 @@ def _check_holder(tid, agent, claim_id):
     return None
 
 
-def cmd_done(agent, tid, report, claim_id=None):
+def cmd_done(agent, tid, report, claim_id=None, applied=None):
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
@@ -316,7 +328,10 @@ def cmd_done(agent, tid, report, claim_id=None):
         print("ОШИБКА: " + err)
         return 1
     set_status(tasks[tid]["path"], "done")
-    _marker(DONE, tid, "done", agent, report or "done")
+    marker_text = report or "done"
+    if applied:
+        marker_text = "%s\n\nApplied instructions: %s" % (marker_text, applied)
+    _marker(DONE, tid, "done", agent, marker_text, {"applied": applied})
     _release(tid)
     print("ГОТОВО: %s → done (%s). Бери следующую: python tools/pipeline.py next %s" % (tid, agent, agent))
     return 0
@@ -598,6 +613,8 @@ def main():
             flags["eta"] = a[i + 1]; i += 2
         elif a[i] == "--claim" and i + 1 < len(a):
             flags["claim"] = a[i + 1]; i += 2
+        elif a[i] == "--applied" and i + 1 < len(a):
+            flags["applied"] = a[i + 1]; i += 2
         else:
             pos.append(a[i]); i += 1
     if not pos:
@@ -609,7 +626,7 @@ def main():
     if cmd == "claim" and len(pos) >= 3:
         return cmd_claim(pos[1], pos[2])
     if cmd == "done" and len(pos) >= 3:
-        return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"))
+        return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"), flags.get("applied"))
     if cmd == "fail" and len(pos) >= 3:
         return cmd_fail(pos[1], pos[2], flags.get("reason"), flags.get("claim"))
     if cmd == "mine" and len(pos) >= 2:

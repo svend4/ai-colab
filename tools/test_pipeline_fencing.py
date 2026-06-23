@@ -4,6 +4,7 @@
 Тесты конкурентных гарантий pipeline (T-082, ревью T-078 находки H/I):
 
   1. fencing в done: чужой/протухший claim_id отклоняется, верный — проходит,
+     optional applied evidence пишется в done-маркер,
      без claim_id — backward-compatible (как раньше);
   2. done чужим агентом отклоняется (старое поведение сохранено);
   3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель;
@@ -58,9 +59,13 @@ def run():
             "done с чужим claim_id должен отклоняться"
         assert P.cmd_done("mavis", "T-900", "r") == 1, \
             "done чужим агентом должен отклоняться"
-        assert P.cmd_done("claude", "T-900", "r", claim_id=cid) == 0, \
+        assert P.cmd_done("claude", "T-900", "r", claim_id=cid, applied="AGENTS.md, PROTOCOL.md") == 0, \
             "done с верным claim_id должен проходить"
         assert P.collect_tasks()["T-900"]["status"] == "done", "статус не стал done"
+        with open(os.path.join(P.DONE, "T-900.done.md"), "r", encoding="utf-8") as f:
+            done_text = f.read()
+        assert "applied: AGENTS.md, PROTOCOL.md" in done_text, done_text
+        assert "Applied instructions: AGENTS.md, PROTOCOL.md" in done_text, done_text
 
         # --- 2. backward-compatible: done без claim_id ---
         p902 = _make_task("T-902")

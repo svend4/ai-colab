@@ -85,7 +85,10 @@ python tools\top.py instruction-preflight codex T-154
 
 ```powershell
 python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-assurance-and-synthesis.md
+python tools\pipeline.py done codex T-156 --claim <claim_id> --report "..." --applied "AGENTS.md, PROTOCOL.md, docs/instruction-assurance.md, Checks"
 ```
+
+`--applied` — мягкий evidence-маркер. Он не блокирует старые задачи, но делает `queues/done/<T-id>.done.md` проверяемым: в front matter появляется поле `applied`, а в теле отчёта — читаемая строка `Applied instructions:`.
 
 ## Моё мнение
 
@@ -93,7 +96,7 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 
 ## Дальше
 
-1. Добавить `Applied instructions` как обязательный блок для новых outbox/done отчётов по служебным задачам.
+1. Перевести `--applied` из мягкого маркера в проверяемое правило для новых служебных задач после нескольких успешных прогонов.
 2. Расширить `tools/instructions.py check-report`, чтобы проверять ссылки на реально существующие файлы и команды проверок.
 3. Связать preflight с `merge_gate.py`, но только после нескольких ручных прогонов.
 4. Добавить instruction freshness index: `status`, `last_verified`, `applies_to`, `supersedes` для ключевых docs.
