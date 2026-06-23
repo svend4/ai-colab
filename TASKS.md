@@ -203,4 +203,5 @@
 | T-187 | Smoke-test новых инструментов (friction, drift_check, onboard, commit_lock, top) | done | codex | `темы/ai-os-bridge.md` | Закрыто 2026-06-23 — smoke-test friction/drift_check/onboard/commit_lock/top выполнен; quickstart обновлён; текущий drift после generate = 0. |
 | T-188 | Аудит мёртвого груза — неиспользуемая информация и устаревшие ссылки | done | pool | `темы/ai-os-bridge.md` | Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки |
 | T-189 | Стимулирование активности агентов — alive-пинги и использование ответов | done | pool | `темы/ai-os-bridge.md` | Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md |
+| T-190 | Self-improve отложенные (4): risk_gate/D-006 wire, D-020 supersede, sandbox_demo doc, race_test rename | todo | pool | — | Провести governance-зависимые через котёл/Stefan; doc/rename — когда целевые файлы свободны от Codex |
 <!-- GEN:tasks END -->

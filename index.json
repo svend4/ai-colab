@@ -2318,6 +2318,17 @@
       "depends_on": "[]",
       "topic": "темы/ai-os-bridge.md",
       "next": "Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md"
+    },
+    {
+      "id": "T-190",
+      "title": "Self-improve отложенные (4): risk_gate/D-006 wire, D-020 supersede, sandbox_demo doc, race_test rename",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[D-006]",
+      "topic": "",
+      "next": "Провести governance-зависимые через котёл/Stefan; doc/rename — когда целевые файлы свободны от Codex"
     }
   ],
   "questions": [
