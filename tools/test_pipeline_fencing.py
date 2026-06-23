@@ -91,6 +91,48 @@ def run():
                 "служебная задача без --applied должна закрываться мягко"
         assert "WARN: T-908" in service_done.getvalue(), service_done.getvalue()
 
+        # --- 3b. strict applied-evidence gate (opt-in; дефолт остаётся мягким) ---
+        # без evidence + --strict => ОТКАЗ, задача НЕ закрывается
+        p909 = _make_task("T-909", topic="tools/x.py")
+        cid9 = P.try_claim("T-909", "codex")
+        P.set_status(p909, "doing")
+        sf_fail = io.StringIO()
+        with contextlib.redirect_stdout(sf_fail):
+            assert P.cmd_done("codex", "T-909", "r", claim_id=cid9, strict=True) == 1, \
+                "strict: служебная задача без applied должна ОТКЛОНЯТЬСЯ"
+        assert "ОТКАЗ: T-909" in sf_fail.getvalue(), sf_fail.getvalue()
+        assert P.collect_tasks()["T-909"]["status"] != "done", "strict-отказ не должен ставить done"
+
+        # полноценное (task-specific) evidence + --strict => проходит
+        p910 = _make_task("T-910", topic="tools/x.py")
+        cid10 = P.try_claim("T-910", "codex")
+        P.set_status(p910, "doing")
+        assert P.cmd_done("codex", "T-910", "r", claim_id=cid10,
+                          applied="AGENTS.md, PROTOCOL.md, tools/x.py, Checks", strict=True) == 0, \
+            "strict: полноценное evidence должно проходить"
+        assert P.collect_tasks()["T-910"]["status"] == "done", "strict+evidence должно ставить done"
+
+        # boilerplate-only evidence + --strict => ОТКАЗ (формальный отчёт не проходит)
+        p911 = _make_task("T-911", topic="tools/x.py")
+        cid11 = P.try_claim("T-911", "codex")
+        P.set_status(p911, "doing")
+        sf_boiler = io.StringIO()
+        with contextlib.redirect_stdout(sf_boiler):
+            assert P.cmd_done("codex", "T-911", "r", claim_id=cid11,
+                              applied="AGENTS.md, PROTOCOL.md, Checks", strict=True) == 1, \
+                "strict: формальное boilerplate evidence должно отклоняться"
+        assert "ОТКАЗ: T-911" in sf_boiler.getvalue(), sf_boiler.getvalue()
+        assert P.collect_tasks()["T-911"]["status"] != "done", "strict boilerplate-отказ не должен ставить done"
+
+        # тот же boilerplate БЕЗ --strict => мягко проходит (дефолт не сломан)
+        p912 = _make_task("T-912", topic="tools/x.py")
+        cid12 = P.try_claim("T-912", "codex")
+        P.set_status(p912, "doing")
+        assert P.cmd_done("codex", "T-912", "r", claim_id=cid12,
+                          applied="AGENTS.md, PROTOCOL.md, Checks") == 0, \
+            "без --strict формальное evidence закрывает задачу (backward-compat)"
+        assert P.collect_tasks()["T-912"]["status"] == "done", "не-strict должен ставить done"
+
         # --- 4. атомарный перехват протухшего claim: ровно 1 победитель ---
         # Гонка флакичная, поэтому гоняем МНОГО раундов: одиночный прогон её прятал
         # (ровно так баг двойного захвата дожил до перепроверки T-084).

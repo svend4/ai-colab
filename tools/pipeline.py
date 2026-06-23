@@ -12,7 +12,7 @@
 
     python tools/pipeline.py next   <agent>                 # атомарно занять след. готовую задачу
     python tools/pipeline.py claim  <agent> <T-id>          # атомарно занять конкретную ready-задачу
-    python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."] [--applied "..."]
+    python tools/pipeline.py done   <agent> <T-id> [--claim ID] [--report "..."] [--applied "..."] [--strict]
     python tools/pipeline.py fail   <agent> <T-id> [--claim ID] [--reason "..."]
     python tools/pipeline.py status                          # лента конвейера (одна форма)
     python tools/pipeline.py snapshot                        # записать PIPELINE.md + logs/pipeline.json
@@ -330,7 +330,30 @@ def _needs_applied_evidence(task):
     return any(word in title for word in SERVICE_TITLE_WORDS)
 
 
-def cmd_done(agent, tid, report, claim_id=None, applied=None):
+def _evidence_gaps(applied, marker_text):
+    """Причины, почему applied-evidence недостаточно (пустой список => evidence ок).
+
+    Переиспользует instructions.check_report_text (один валидатор evidence) и добавляет
+    проверку на «формальное» evidence — только boilerplate-троица без task-specific ссылки.
+    """
+    if not applied or applied.strip().lower() in ("none", "-", ""):
+        return ["нет applied-evidence (--applied)"]
+    try:
+        from instructions import check_report_text  # ленивый импорт: без циклов на загрузке
+        missing = check_report_text(marker_text)
+    except Exception:  # noqa: BLE001
+        missing = []
+    if missing:
+        return ["слабое evidence (нет: %s)" % ", ".join(missing)]
+    parts = [p.strip().lower() for p in re.split(r"[,\n]", applied) if p.strip()]
+    meaningful = [p for p in parts if p not in ("agents.md", "protocol.md", "checks", "checks:")]
+    if not any(("/" in p or p.endswith(".md") or p.endswith(".py") or re.search(r"\b[dft]-\d", p))
+               for p in meaningful):
+        return ["формальное evidence (нет task-specific ссылки)"]
+    return []
+
+
+def cmd_done(agent, tid, report, claim_id=None, applied=None, strict=False):
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
@@ -339,12 +362,19 @@ def cmd_done(agent, tid, report, claim_id=None, applied=None):
     if err:
         print("ОШИБКА: " + err)
         return 1
-    if not applied and _needs_applied_evidence(tasks[tid]):
-        print("WARN: %s закрывается без --applied; для служебных задач добавляй evidence применённых инструкций" % tid)
-    set_status(tasks[tid]["path"], "done")
     marker_text = report or "done"
     if applied:
         marker_text = "%s\n\nApplied instructions: %s" % (marker_text, applied)
+    if _needs_applied_evidence(tasks[tid]):
+        gaps = _evidence_gaps(applied, marker_text)
+        if gaps:
+            detail = "; ".join(gaps)
+            if strict:  # opt-in строгий гейт (warn->block, S3 лестницы Q-016) — дефолт остаётся мягким
+                print("ОТКАЗ: %s не закрыт — strict applied-evidence gate: %s. "
+                      "Добавь --applied с реальными ссылками (AGENTS.md, PROTOCOL.md, файл/решение, Checks)." % (tid, detail))
+                return 1
+            print("WARN: %s закрывается без полноценного evidence (%s); для служебных задач добавляй --applied" % (tid, detail))
+    set_status(tasks[tid]["path"], "done")
     _marker(DONE, tid, "done", agent, marker_text, {"applied": applied})
     _release(tid)
     print("ГОТОВО: %s → done (%s). Бери следующую: python tools/pipeline.py next %s" % (tid, agent, agent))
@@ -629,6 +659,8 @@ def main():
             flags["claim"] = a[i + 1]; i += 2
         elif a[i] == "--applied" and i + 1 < len(a):
             flags["applied"] = a[i + 1]; i += 2
+        elif a[i] == "--strict":
+            flags["strict"] = True; i += 1
         else:
             pos.append(a[i]); i += 1
     if not pos:
@@ -640,7 +672,8 @@ def main():
     if cmd == "claim" and len(pos) >= 3:
         return cmd_claim(pos[1], pos[2])
     if cmd == "done" and len(pos) >= 3:
-        return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"), flags.get("applied"))
+        return cmd_done(pos[1], pos[2], flags.get("report"), flags.get("claim"),
+                        flags.get("applied"), strict=flags.get("strict", False))
     if cmd == "fail" and len(pos) >= 3:
         return cmd_fail(pos[1], pos[2], flags.get("reason"), flags.get("claim"))
     if cmd == "mine" and len(pos) >= 2:
