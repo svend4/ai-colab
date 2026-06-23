@@ -4,16 +4,19 @@
 import json
 import os
 import sys
-import tempfile
 from pathlib import Path
 
-# Add repo-runner to path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+HERE = os.path.dirname(os.path.abspath(__file__))
+DRIVERS_ROOT = os.path.dirname(HERE)
+# Add repo-runner and shared driver test helpers to path
+sys.path.insert(0, HERE)
+sys.path.insert(0, DRIVERS_ROOT)
 from inventory import PathAccessError, scan_repo
+from test_tmp import temp_dir
 
 
 def test_scan_empty_repo():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("repo_runner_") as tmp:
         report = scan_repo(tmp)
         assert report["path"] == str(Path(tmp).resolve())
         assert report["summary"]["total_files"] == 0
@@ -23,7 +26,7 @@ def test_scan_empty_repo():
 
 
 def test_scan_python_repo():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("repo_runner_") as tmp:
         # Create mock Python repo
         (Path(tmp) / "setup.py").write_text("from setuptools import setup\nsetup(name='test')\n")
         (Path(tmp) / "requirements.txt").write_text("requests\npytest\n")
@@ -43,7 +46,7 @@ def test_scan_python_repo():
 
 
 def test_scan_risk_patterns():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("repo_runner_") as tmp:
         (Path(tmp) / "danger.py").write_text("eval('1+1')\n")
         report = scan_repo(tmp)
         assert any(r["risk"] == "potentially dangerous eval" for r in report["risks"])
@@ -57,7 +60,7 @@ def test_nonexistent_path():
 
 
 def test_max_files_and_allowed_root():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("repo_runner_") as tmp:
         root = Path(tmp)
         (root / "a.py").write_text("print('a')\n")
         (root / "b.py").write_text("print('b')\n")

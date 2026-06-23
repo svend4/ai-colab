@@ -23,6 +23,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -33,23 +34,13 @@ import knowledge as kn  # универсальный L6-движок ingest→qu
 PORTALS = os.path.join(ROOT, "data", "portals")  # legacy/runtime data root
 L2_PORTALS = os.path.join(ROOT, "portals")
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _list_field(value):
     s = (value or "").strip()
     if s.startswith("[") and s.endswith("]"):
         s = s[1:-1]
     return [x.strip() for x in s.split(",") if x.strip()]
-
 
 def _manifest_path(name):
     l2 = os.path.join(L2_PORTALS, name, "portal.md")
@@ -59,7 +50,6 @@ def _manifest_path(name):
     if os.path.exists(legacy):
         return legacy, "legacy"
     raise FileNotFoundError("нет портала: %s" % name)
-
 
 def _manifest(name):
     path, source = _manifest_path(name)
@@ -72,15 +62,12 @@ def _manifest(name):
     fm["_topics"] = _list_field(fm.get("topics"))
     return fm
 
-
 def _corpus_path(name, fm=None):
     fm = fm or _manifest(name)
     return fm["_corpus_ref"].replace("\\", "/")  # относительно ROOT
 
-
 def _db_path(name):
     return os.path.join("data", "portals", name, "%s.db" % name)
-
 
 def list_portals():
     names = set()
@@ -97,7 +84,6 @@ def list_portals():
                     "source": fm["_manifest_source"]})
     return out
 
-
 def new(name, desc="", corpus="corpus", topics=None):
     pdir = os.path.join(PORTALS, name)
     os.makedirs(os.path.join(pdir, corpus), exist_ok=True)
@@ -109,7 +95,6 @@ def new(name, desc="", corpus="corpus", topics=None):
                 % (name, name, desc, corpus, topics_str, name, desc, corpus, name))
     return pdir
 
-
 def build(name):
     fm = _manifest(name)
     corpus = _corpus_path(name, fm)
@@ -118,7 +103,6 @@ def build(name):
     db = _db_path(name)
     n = kn.build(db, corpus)
     return n, db, fm
-
 
 def report(name, query=None, out=None):
     n, db, fm = build(name)
@@ -142,7 +126,6 @@ def report(name, query=None, out=None):
     if out:
         kn.write_report(text, out)
     return text
-
 
 def main():
     a = sys.argv[1:]
@@ -176,7 +159,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

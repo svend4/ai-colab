@@ -19,44 +19,31 @@ worktree (Уровень-1 политики коммитов, T-136 — прин
 """
 import os
 import sys
+from _ioutil import configure_output
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def branch_name(agent, task):
     return "agent/%s/%s" % (agent, task)
-
 
 def worktree_path(agent, task, root=ROOT):
     """Каталог притока — сосед репозитория (git worktree нельзя вкладывать в тот же репо)."""
     parent = os.path.dirname(os.path.abspath(root))
     return os.path.join(parent, "%s-wt-%s-%s" % (os.path.basename(os.path.abspath(root)), agent, task))
 
-
 def spawn_cmds(agent, task, root=ROOT):
     return [["git", "worktree", "add", "-b", branch_name(agent, task),
              worktree_path(agent, task, root)]]
-
 
 def remove_cmds(agent, task, root=ROOT):
     return [["git", "worktree", "remove", worktree_path(agent, task, root)],
             ["git", "branch", "-D", branch_name(agent, task)]]
 
-
 def list_cmds():
     return [["git", "worktree", "list"]]
-
 
 def run_or_print(cmds, do_run, cwd=ROOT):
     for cmd in cmds:
@@ -70,7 +57,6 @@ def run_or_print(cmds, do_run, cwd=ROOT):
             print("Команда завершилась с кодом %d — остановка." % rc)
             return rc
     return 0
-
 
 def main():
     args = [a for a in sys.argv[1:] if a != "--run"]
@@ -91,7 +77,6 @@ def main():
         return run_or_print(remove_cmds(args[1], args[2]), do_run)
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

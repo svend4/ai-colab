@@ -14,12 +14,13 @@ doc_consensus (Q-017, слияние документации агентов) �
 CLI:
     python tools/doc_consensus.py report --files a.md b.md [c.md ...] [--out reports/x.md] [--thr 0.4]
     python tools/doc_consensus.py report --topic <topic> [--out ...]   # доки темы через variants.py
-    python tools/doc_consensus.py report --semantic --files a.md b.md  # концептуальный матч (opt-in)
+    python tools/doc_consensus.py report --semantic --files a.md b.md [--semantic-budget N]
         # --semantic шелит в $DOC_CONSENSUS_AGENT (LLM); по умолчанию — no-cost лексический путь.
 """
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import subprocess
 
@@ -32,16 +33,7 @@ STOP = set((
     "к у о а но если чтобы при над под между его её их мы вы они оно тот эта все весь"
 ).split())
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 # Лёгкий стемминг: чтобы «безопасность/безопасности», «коммит/коммиты» совпадали (cross-agent проза
 # одни идеи пишет разными формами). Грубо, без морфологии — отсечь частые окончания.
@@ -50,7 +42,6 @@ _RU_SUF = sorted((
     "ий", "ый", "ая", "ое", "ые", "ться", "ть", "ет", "ут", "ют", "ам", "ом", "ем", "ах", "и", "ы", "а", "у", "е",
 ), key=len, reverse=True)
 _EN_SUF = ("ings", "ing", "ies", "ed", "es", "s")
-
 
 def _stem(w):
     for suf in _RU_SUF:
@@ -61,14 +52,12 @@ def _stem(w):
             return w[:-len(suf)]
     return w
 
-
 def _norm_tokens(text):
     t = text.lower()
     t = re.sub(r"`[^`]*`", " ", t)
     t = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", t)
     t = re.sub(r"[^0-9a-zа-яё_-]+", " ", t)
     return {_stem(w) for w in t.split() if len(w) > 2 and w not in STOP}
-
 
 def _append_unit(out, text, rel, line_no):
     text = re.sub(r"\s+", " ", text).strip()
@@ -78,7 +67,6 @@ def _append_unit(out, text, rel, line_no):
     if len(toks) >= 2:
         where = "%s:%d" % (rel, line_no)
         out.append({"id": where, "text": text[:160], "tokens": toks, "where": where, "doc": rel})
-
 
 def units(path, root=ROOT):
     """Извлечь пункты дока: bullets, #/## headings, table rows and meaningful paragraphs."""
@@ -137,12 +125,10 @@ def units(path, root=ROOT):
     flush_para()
     return out
 
-
 def _jaccard(a, b):
     if not a or not b:
         return 0.0
     return len(a & b) / float(len(a | b))
-
 
 def analyze(paths, root=ROOT, thr=0.4):
     """Кластеризовать пункты; вернуть {consensus, divergent, docs}."""
@@ -167,14 +153,11 @@ def analyze(paths, root=ROOT, thr=0.4):
     docs = sorted({u["doc"] for u in all_units})
     return {"consensus": consensus, "divergent": divergent, "docs": docs, "n_units": len(all_units)}
 
-
 SEMANTIC_THR = 0.65  # high-thr pre-cluster: only obvious paraphrase+stem matches settle mechanically
-
 
 def _rep(cluster):
     """Longest-token member — same representative render() picks (:181)."""
     return max(cluster["members"], key=lambda u: len(u["tokens"]))
-
 
 def _residue(res):
     """Split analyze() result into settled high-confidence clusters and the residue
@@ -191,7 +174,6 @@ def _residue(res):
             seen.add(u["id"]); uniq.append(u)
     return settled, uniq
 
-
 AGENT_BATCH = 50            # ~40-60 units/call (cost bound, q017-...:70,103)
 AGENT_ENV = "DOC_CONSENSUS_AGENT"  # shell command template; absent => no agent configured
 
@@ -203,7 +185,6 @@ _AGENT_PROMPT = (
     '"reason":"why it stands alone","resolves":"what would settle it"}]}\n'
     "Units (JSON):\n"
 )
-
 
 def _run_agent(payload_json):
     """Shell out to the synthesizer agent; return raw stdout. Returns '' when no agent
@@ -217,7 +198,6 @@ def _run_agent(payload_json):
                        encoding="utf-8", errors="replace")
     return p.stdout or ""
 
-
 def _parse_agent(raw):
     """Tolerant: agent may wrap JSON in prose/fences. Extract outermost {...}."""
     if not raw:
@@ -229,13 +209,15 @@ def _parse_agent(raw):
         return {"consensus": [], "divergences": []}
     return {"consensus": d.get("consensus") or [], "divergences": d.get("divergences") or []}
 
-
-def _semantic_pass(residue):
+def _semantic_pass(residue, budget=None):
     """Batch residue (~50/call), call agent, union consensus groups by shared unit-id.
     Returns (groups, divergences):
       groups: [{"ids": set(unit-id), "rationale": str}]
       divergences: {unit-id: {claim, docs, reason, resolves}}"""
     groups, divergences = [], {}
+    n_batches = (len(residue) + AGENT_BATCH - 1) // AGENT_BATCH
+    if budget is not None and n_batches > budget:
+        raise ValueError("semantic budget exceeded: need %d agent calls, budget %d" % (n_batches, budget))
     for i in range(0, len(residue), AGENT_BATCH):
         batch = residue[i:i + AGENT_BATCH]
         payload = json.dumps(
@@ -260,7 +242,6 @@ def _semantic_pass(residue):
             if d.get("id"):
                 divergences[d["id"]] = d
     return groups, divergences
-
 
 def _merge(settled, groups, all_units):
     """Transitive union of mechanical clusters + semantic groups by unit-id.
@@ -292,21 +273,19 @@ def _merge(settled, groups, all_units):
     divergent_ids = {u["id"] for u in all_units} - used_ids
     return {"consensus": merged_consensus, "divergent_ids": divergent_ids}
 
-
-def analyze_semantic(paths, root=ROOT, thr=SEMANTIC_THR, agent_label=None):
+def analyze_semantic(paths, root=ROOT, thr=SEMANTIC_THR, agent_label=None, budget=None):
     all_units = []
     for p in paths:
         all_units.extend(units(p, root))
     res = analyze(paths, root=root, thr=thr)          # high-thr mechanical pre-cluster
     settled, residue = _residue(res)
-    groups, sem_div = _semantic_pass(residue)
+    groups, sem_div = _semantic_pass(residue, budget=budget)
     merged = _merge(settled, groups, all_units)
     by_id = {u["id"]: u for u in all_units}
     divergent = [by_id[i] for i in sorted(merged["divergent_ids"]) if i in by_id]
     return {"semantic": True, "consensus": merged["consensus"], "divergent": divergent,
             "divergence_detail": sem_div, "docs": sorted({u["doc"] for u in all_units}),
             "n_units": len(all_units), "agent": agent_label or os.environ.get(AGENT_ENV, "(none)")}
-
 
 def render(res):
     if res.get("semantic"):
@@ -342,7 +321,6 @@ def render(res):
             L.append("- … ещё %d" % (len(by_doc[doc]) - 30))
         L.append("")
     return "\n".join(L)
-
 
 def _render_semantic(res):
     """Семантический отчёт (--semantic). status: proposed — материал для котла,
@@ -404,7 +382,6 @@ def _render_semantic(res):
         L.append("")
     return "\n".join(L)
 
-
 def _topic_files(topic):
     p = subprocess.run([sys.executable, os.path.join(TOOLS, "variants.py"), "index"],
                        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
@@ -415,10 +392,8 @@ def _topic_files(topic):
         return []
     return [v["file"] for v in idx.get(topic, []) if v.get("file", "").endswith(".md")]
 
-
 def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
-
 
 def main():
     a = sys.argv[1:]
@@ -441,7 +416,17 @@ def main():
     abs_files = [os.path.join(ROOT, f) if not os.path.isabs(f) else f for f in files]
     if "--semantic" in a:
         sem_thr = float(_arg(a, "--thr", str(SEMANTIC_THR)))
-        res = analyze_semantic(abs_files, thr=sem_thr)
+        sem_budget = _arg(a, "--semantic-budget")
+        try:
+            budget = int(sem_budget) if sem_budget is not None else None
+        except ValueError:
+            print("--semantic-budget должен быть целым числом")
+            return 2
+        try:
+            res = analyze_semantic(abs_files, thr=sem_thr, budget=budget)
+        except ValueError as exc:
+            print(str(exc))
+            return 1
     else:
         res = analyze(abs_files, thr=thr)
     text = render(res)
@@ -454,7 +439,6 @@ def main():
     else:
         print(text)
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

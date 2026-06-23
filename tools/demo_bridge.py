@@ -16,28 +16,19 @@
 """
 import os
 import sys
+from _ioutil import configure_output
 import importlib.util
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DRIVERS = os.path.join(ROOT, "drivers")
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _load(name, *parts):
     spec = importlib.util.spec_from_file_location(name, os.path.join(DRIVERS, *parts))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
 
 def main():
     target = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(ROOT, "data", "fixtures")
@@ -130,7 +121,6 @@ def main():
     print("AI-агенту за одним MCP-разъёмом. svend4 (запуск чужого кода) — отдельный слой + песочница.")
     print(line)
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -12,16 +12,9 @@
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import glob
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -29,9 +22,7 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def load(sub):
     items = []
@@ -42,7 +33,6 @@ def load(sub):
             items.append(fm)
     return items
 
-
 def by_status(items):
     c = {}
     for it in items:
@@ -50,13 +40,11 @@ def by_status(items):
         c[s] = c.get(s, 0) + 1
     return c
 
-
 def count_dir(sub, suffix=".md"):
     d = os.path.join(ROOT, sub)
     if not os.path.isdir(d):
         return 0
     return sum(1 for f in os.listdir(d) if f.endswith(suffix) and f != "README.md")
-
 
 def ready_blocked(tasks):
     idx = {t["id"]: t for t in tasks}
@@ -70,7 +58,6 @@ def ready_blocked(tasks):
         else:
             blocked += 1
     return ready, blocked
-
 
 def build():
     tasks = load("tasks")
@@ -89,7 +76,6 @@ def build():
                   "done": count_dir("queues/done", ".done.md"),
                   "failed": count_dir("queues/failed", ".failed.md")},
     }
-
 
 def main():
     m = build()
@@ -111,7 +97,6 @@ def main():
           % (m["queue"]["inbox"], m["queue"]["claimed"],
              m["queue"]["done"], m["queue"]["failed"]))
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

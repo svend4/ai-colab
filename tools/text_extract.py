@@ -12,6 +12,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import re
 import json
 import zipfile
@@ -33,16 +34,7 @@ MAX_MEMORY_CHARS = 4000
 MAX_SUMMARY_CHARS = 240
 W_NS = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 class _HTMLText(HTMLParser):
     def __init__(self):
@@ -69,7 +61,6 @@ class _HTMLText(HTMLParser):
     def text(self):
         return "".join(self.parts)
 
-
 def _normalize(text):
     lines = []
     for line in text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
@@ -77,7 +68,6 @@ def _normalize(text):
         if compact:
             lines.append(compact)
     return "\n".join(lines)
-
 
 def _strip_markdown_noise(text):
     # Keep readable words, remove common Markdown syntax that hurts summaries/search snippets.
@@ -90,7 +80,6 @@ def _strip_markdown_noise(text):
     text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.M)
     text = re.sub(r"^[\s>*_`#-]+", "", text, flags=re.M)
     return text
-
 
 def _docx_read(path, base_dir):
     """Извлечь текст .docx чистой stdlib (zipfile + WordprocessingML), с confinement и redaction.
@@ -134,7 +123,6 @@ def _docx_read(path, base_dir):
         paragraphs = [node.text for node in root.iter(W_NS + "t") if node.text]
     return real, redact("\n".join(paragraphs))
 
-
 def extract(path, base_dir=ROOT, max_chars=MAX_EXTRACT_CHARS):
     ext = os.path.splitext(str(path))[1].lower()
     supported = ext in SUPPORTED
@@ -164,19 +152,16 @@ def extract(path, base_dir=ROOT, max_chars=MAX_EXTRACT_CHARS):
         "truncated": truncated or data_truncated,
     }
 
-
 def summary_from_text(text, max_chars=MAX_SUMMARY_CHARS):
     text = _normalize(text)
     if not text:
         return ""
     return text[:max_chars]
 
-
 def memory_text(path, base_dir=ROOT, max_chars=MAX_MEMORY_CHARS):
     """Text fragment safe to store in workbench.summary for FTS/search."""
     item = extract(path, base_dir=base_dir, max_chars=max_chars)
     return item["text"]
-
 
 def _arg_value(args, name, default=None):
     if name not in args:
@@ -185,7 +170,6 @@ def _arg_value(args, name, default=None):
     if pos >= len(args):
         raise ValueError("missing value for %s" % name)
     return args[pos]
-
 
 def main():
     a = sys.argv[1:]
@@ -207,7 +191,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

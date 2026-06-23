@@ -40,5 +40,25 @@
     "board.md",
     "index.json",
     "dialog.md"
+  ],
+  "antigravity": [
+    "tasks/**",
+    "questions/**",
+    "decisions/**",
+    "темы/**",
+    "queues/**",
+    "docs/**",
+    "code/**",
+    "drivers/**",
+    "logs/**",
+    "PIPELINE.md",
+    "LIVE.md",
+    "STATUS.md",
+    "TASKS.md",
+    "QUESTIONS.md",
+    "DECISIONS.md",
+    "board.md",
+    "index.json",
+    "dialog.md"
   ]
 }

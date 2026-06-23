@@ -21,6 +21,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import sqlite3
 import importlib.util
 from pathlib import Path
@@ -31,23 +32,13 @@ DEFAULT_DB = "logs/knowledge.db"
 MAX_FILES = 1000
 ALLOWED_REPORT_SUFFIXES = {".md", ".markdown"}
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _load(name, *parts):
     spec = importlib.util.spec_from_file_location(name, os.path.join(DRIVERS, *parts))
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
 
 def _arg_value(args, name, default=None):
     if name not in args:
@@ -57,14 +48,12 @@ def _arg_value(args, name, default=None):
         raise ValueError("missing value for %s" % name)
     return args[pos]
 
-
 def _is_relative_to(path, base):
     try:
         path.relative_to(base)
         return True
     except ValueError:
         return False
-
 
 def resolve_report_path(out_path):
     raw = Path(out_path).expanduser()
@@ -76,18 +65,15 @@ def resolve_report_path(out_path):
         raise ValueError("unsupported report suffix: %s" % resolved.suffix)
     return resolved
 
-
 def write_report(text, out_path):
     resolved = resolve_report_path(out_path)
     resolved.parent.mkdir(parents=True, exist_ok=True)
     resolved.write_text(text + "\n", encoding="utf-8", newline="\n")
     return resolved
 
-
 wb = _load("kn_wb", "workbench", "workbench.py")
 fd = _load("kn_files", "files", "files_driver.py")
 import text_extract as tx
-
 
 def _memory_text(rel, base):
     """Redacted text fragment for workbench.summary and FTS.
@@ -111,7 +97,6 @@ def _memory_text(rel, base):
         pass
     return ""
 
-
 def build(db, corpus, agent="knowledge"):
     """Сканирует корпус → заносит документы (с redacted summary) в память. Возвращает N."""
     conn = wb.init(db, base_dir=ROOT)
@@ -129,7 +114,6 @@ def build(db, corpus, agent="knowledge"):
     finally:
         conn.close()
 
-
 def _build_fts(conn):
     """Построить FTS5-индекс по documents (path+summary). Возвращает True, если FTS5 доступен."""
     try:
@@ -144,7 +128,6 @@ def _build_fts(conn):
         return True
     except sqlite3.OperationalError:
         return False  # сборка sqlite без FTS5 → поиск откатится на LIKE
-
 
 def fts_search(conn, query, limit=10):
     """Ранжированный полнотекстовый поиск (FTS5 + bm25); fallback на LIKE через workbench.
@@ -163,14 +146,12 @@ def fts_search(conn, query, limit=10):
     except sqlite3.OperationalError:
         return wb.query_documents(conn, text=query, limit=limit)
 
-
 def _counts(docs, field):
     out = {}
     for d in docs:
         k = d.get(field) or "(none)"
         out[k] = out.get(k, 0) + 1
     return dict(sorted(out.items(), key=lambda kv: (-kv[1], kv[0])))
-
 
 def report(corpus, db=DEFAULT_DB, query_text=None):
     n = build(db, corpus)
@@ -210,7 +191,6 @@ def report(corpus, db=DEFAULT_DB, query_text=None):
     out.append("")
     out.append("_Запросить позже: `python tools/knowledge.py query %s \"<текст>\"`_" % db)
     return "\n".join(out)
-
 
 def main():
     a = sys.argv[1:]
@@ -254,7 +234,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

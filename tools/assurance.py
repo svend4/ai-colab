@@ -25,6 +25,7 @@ CLI:
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import glob
 import datetime
@@ -38,14 +39,6 @@ import pipeline as pl                  # _needs_applied_evidence + SERVICE_* к�
 import instructions as ins             # INSTRUCTIONS реестр + check_report_text
 import promote as pr                   # level_of / _list_field / уровни пирамиды
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
 
 DOC_REF_RE = re.compile(
@@ -57,7 +50,6 @@ BOILERPLATE = {"agents.md", "protocol.md", "checks", "checks:"}
 CONVENTION_MIN = 156
 # Сколько находок показывать в тексте на секцию (полный список — в --json).
 DISPLAY_CAP = 8
-
 
 def _structural_refs(text):
     """Ссылки на файлы ТОЛЬКО из структурных позиций (front-matter + markdown-линки),
@@ -71,11 +63,9 @@ def _structural_refs(text):
         refs.update(DOC_REF_RE.findall(m.group(1)))
     return refs
 
-
 def _tid_num(tid):
     m = re.search(r"(\d+)", tid or "")
     return int(m.group(1)) if m else None
-
 
 def _read(path):
     try:
@@ -84,18 +74,14 @@ def _read(path):
     except OSError:
         return ""
 
-
 def _fm(path):
     return parse_front_matter(_read(path))
-
 
 def _finding(level, msg, where):
     return {"level": level, "msg": msg, "where": where}
 
-
 def _today():
     return datetime.date.today()
-
 
 def _age_days(datestr):
     """Возраст в днях по ISO-дате (YYYY-MM-DD) либо None."""
@@ -106,7 +92,6 @@ def _age_days(datestr):
         return (_today() - datetime.date.fromisoformat(s)).days
     except ValueError:
         return None
-
 
 # --- (а) applied-evidence ----------------------------------------------------
 
@@ -120,32 +105,76 @@ def _is_boilerplate(applied):
     return True
 
 
+def _evidence_addenda_by_task(root):
+    """Post-hoc evidence addenda keyed by task id.
+
+    This keeps queues/done/*.done.md immutable as execution history while allowing
+    later reviewers to attach missing Applied instructions evidence in a separate file.
+    """
+    evidence_dir = os.path.join(root, "queues", "evidence")
+    out = {}
+    for path in sorted(glob.glob(os.path.join(evidence_dir, "*.evidence.md"))):
+        text = _read(path)
+        meta = parse_front_matter(text)
+        tid = (meta.get("task") or "").strip().upper()
+        if not tid:
+            m = re.match(r"^(T-\d+)", os.path.basename(path), re.I)
+            if m:
+                tid = m.group(1).upper()
+        if not tid:
+            continue
+        out.setdefault(tid, []).append({"path": path, "text": text, "meta": meta})
+    return out
+
+
+def _combined_applied(meta, addenda):
+    parts = [(meta.get("applied") or "").strip()]
+    for item in addenda:
+        parts.append((item["meta"].get("applied") or "").strip())
+    return ", ".join(p for p in parts if p)
+
+
+def _combined_report_text(done_text, addenda):
+    if not addenda:
+        return done_text
+    return done_text + "\n\n" + "\n\n".join(item["text"] for item in addenda)
+
+
+def _evidence_where(default_where, addenda, root):
+    if not addenda:
+        return default_where
+    rels = [os.path.relpath(item["path"], root).replace("\\", "/") for item in addenda]
+    return default_where + " + " + ", ".join(rels)
+
 def section_applied(root):
     done_dir = os.path.join(root, "queues", "done")
     tasks_dir = os.path.join(root, "tasks")
+    addenda_by_task = _evidence_addenda_by_task(root)
     findings, era_total, era_ev, legacy_missing = [], 0, 0, 0
     for path in sorted(glob.glob(os.path.join(done_dir, "*.done.md"))):
         text = _read(path)
         meta = parse_front_matter(text)
-        tid = (meta.get("task") or "").strip()
+        tid = (meta.get("task") or "").strip().upper()
         task_fm = _fm(os.path.join(tasks_dir, "%s.md" % tid)) if tid else {}
         scope = {"topic": task_fm.get("topic", ""), "title": task_fm.get("title", "")}
         if not pl._needs_applied_evidence(scope):
             continue
-        applied = (meta.get("applied") or "").strip()
+        addenda = addenda_by_task.get(tid, [])
+        applied = _combined_applied(meta, addenda)
+        report_text = _combined_report_text(text, addenda)
         ok = (applied and applied.lower() not in ("none", "-")
-              and not ins.check_report_text(text) and not _is_boilerplate(applied))
+              and not ins.check_report_text(report_text) and not _is_boilerplate(applied))
         num = _tid_num(tid)
         if num is not None and num < CONVENTION_MIN:  # легаси до конвенции — не actionable
             if not ok:
                 legacy_missing += 1
             continue
         era_total += 1
-        where = "queues/done/%s" % os.path.basename(path)
+        where = _evidence_where("queues/done/%s" % os.path.basename(path), addenda, root)
         if not applied or applied.lower() in ("none", "-"):
             findings.append(_finding("high", "%s: служебная задача закрыта без applied-evidence" % tid, where))
             continue
-        missing = ins.check_report_text(text)
+        missing = ins.check_report_text(report_text)
         if missing:
             findings.append(_finding("medium", "%s: слабое evidence (нет: %s)" % (tid, ", ".join(missing)), where))
             continue
@@ -162,8 +191,13 @@ def section_applied(root):
         "findings": findings,
     }
 
-
 # --- (б) currency / freshness ------------------------------------------------
+
+TERMINAL_DECISION_STATUSES = {"rejected", "superseded", "superseded_by"}
+HISTORICAL_DREF_MARKERS = (
+    "связано", "related", "history", "истор", "context", "контекст",
+    "evidence", "postscript", "superseded", "source", "источник",
+)
 
 def _decision_status_index(root):
     idx = {}
@@ -173,6 +207,9 @@ def _decision_status_index(root):
         idx[did] = (fm.get("status") or "").strip().lower()
     return idx
 
+def _historical_dref_line(line):
+    low = (line or "").lower()
+    return any(marker in low for marker in HISTORICAL_DREF_MARKERS)
 
 def _currency_targets(root):
     """decisions/*.md + политики (docs/ цели реестра инструкций + явные политики)."""
@@ -187,7 +224,6 @@ def _currency_targets(root):
         if os.path.isfile(p):
             targets.append(p)
     return targets
-
 
 def section_currency(root, max_age):
     findings = []
@@ -206,11 +242,19 @@ def section_currency(root, max_age):
         age = _age_days(fm.get("last_verified") or fm.get("date"))
         if age is not None and age > max_age:
             findings.append(_finding("medium", "%s: не сверялось %d дн. (> %d)" % (rel, age, max_age), rel))
-        # 3) ссылки на rejected/superseded решения в живом доке
-        for dref in set(DREF_RE.findall(body)):
-            st = dstatus.get(dref)
-            if st in ("rejected", "superseded", "superseded_by"):
-                findings.append(_finding("high", "%s: ссылается на %s со статусом %s" % (rel, dref, st), rel))
+        # 3) Нормативные ссылки на rejected/superseded решения в живом доке.
+        # Исторические/related ссылки и сами terminal-документы не являются drift: они сохраняют provenance.
+        current_id = (fm.get("id") or os.path.splitext(os.path.basename(path))[0]).strip()
+        if status not in TERMINAL_DECISION_STATUSES:
+            for line in body.splitlines():
+                if _historical_dref_line(line):
+                    continue
+                for dref in set(DREF_RE.findall(line)):
+                    if dref == current_id:
+                        continue
+                    st = dstatus.get(dref)
+                    if st in TERMINAL_DECISION_STATUSES:
+                        findings.append(_finding("high", "%s: ссылается на %s со статусом %s" % (rel, dref, st), rel))
         # 4) битые ссылки на файлы/инструменты — ТОЛЬКО структурные (не примеры в прозе)
         for ref in _structural_refs(text):
             if not os.path.exists(os.path.join(root, ref)):
@@ -227,7 +271,6 @@ def section_currency(root, max_age):
         "findings": findings,
     }
 
-
 # --- (в) promotion-coverage --------------------------------------------------
 
 def _portal_text(root):
@@ -235,7 +278,6 @@ def _portal_text(root):
     for path in glob.glob(os.path.join(root, "portals", "**", "*.md"), recursive=True):
         parts.append(_read(path))
     return "\n".join(parts)
-
 
 def section_coverage(root):
     findings = []
@@ -257,22 +299,29 @@ def section_coverage(root):
             "orphan-L1: ядро без ссылок из порталов: %d (%s%s)" % (
                 len(orphans), ", ".join(orphans[:6]), " …" if len(orphans) > 6 else ""),
             "core/engine-manifest.md"))
-    # ungrounded-L2
+    # ungrounded-L2 and existence-checked grounding
+    l1_tokens = pr._manifest_l1_tokens(root)
     n_portals = 0
     for portal in glob.glob(os.path.join(root, "portals", "*", "portal.md")):
         n_portals += 1
         rel = os.path.relpath(portal, root).replace("\\", "/")
         text = _read(portal)
         fm = parse_front_matter(text)
-        grounded = any((fm.get(k) or "").strip() for k in ("l1_basis", "reused_in", "core"))
+
+        basis_list = pr._list_field(fm.get("l1_basis"))
+        grounded = bool(basis_list)
         if not grounded and "core/" not in text:
-            findings.append(_finding("high", "%s: портал без опоры на L1 (нет l1_basis/reused_in/core)" % rel, rel))
+            findings.append(_finding("high", "%s: портал без опоры на L1 (пустой l1_basis)" % rel, rel))
+
+        for token in basis_list:
+            bn = os.path.basename(token.replace("\\", "/").strip())
+            if bn and bn not in l1_tokens:
+                findings.append(_finding("high", "%s: заявленный базис '%s' не найден в L1-инвентаре (stale/unresolved)" % (rel, token), rel))
     return {
         "name": "promotion-coverage",
         "metric": "L1-инвентарь: %d, порталов: %d, orphan-L1: %d" % (len(l1_items), n_portals, len(orphans)),
         "findings": findings,
     }
-
 
 # --- base→apex flow ----------------------------------------------------------
 
@@ -309,7 +358,6 @@ def section_flow(root):
         "findings": findings,
     }
 
-
 SECTIONS = {
     "applied": lambda root, max_age: section_applied(root),
     "currency": lambda root, max_age: section_currency(root, max_age),
@@ -318,14 +366,11 @@ SECTIONS = {
 }
 ORDER = ["applied", "currency", "coverage", "flow"]
 
-
 def run(which, root, max_age):
     keys = ORDER if which in (None, "all") else [which]
     return [SECTIONS[k](root, max_age) for k in keys]
 
-
 _ICON = {"high": "✗", "medium": "!", "low": "·", "info": "i"}
-
 
 def render(results):
     L = ["=" * 60, "ASSURANCE — проверяемость инструкций (Q-016) · READ-ONLY", "=" * 60]
@@ -348,7 +393,6 @@ def render(results):
     L.append("Вердикт: %s · всего находок: %d (high/medium: %d)" % (verdict, total, hard))
     L.append("=" * 60)
     return "\n".join(L), hard
-
 
 def main():
     a = sys.argv[1:]
@@ -383,7 +427,6 @@ def main():
         text, hard = render(results)
         print(text)
     return 1 if (strict and hard > 0) else 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

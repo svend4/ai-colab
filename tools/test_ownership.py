@@ -3,12 +3,14 @@
 """Тест ownership (tools/ownership.py) — классификатор mine/generated/volatile/foreign/unknown."""
 import os
 import sys
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(ROOT, "drivers"))
 import ownership as own
+from test_tmp import make_temp_dir
 
 
 def configure_output():
@@ -30,7 +32,7 @@ def _claim(root, task, agent):
 
 def run():
     ok = True
-    base = tempfile.mkdtemp(prefix="ownership_")
+    base = make_temp_dir("ownership_")
     try:
         _claim(base, "T-150", "codex")   # чужая задача
         _claim(base, "T-153", "claude")  # моя задача

@@ -19,10 +19,27 @@ def base_dir():
     return os.path.abspath(base)
 
 
+def _probe_writable(path):
+    probe = os.path.join(path, ".write-probe")
+    with open(probe, "w", encoding="utf-8", newline="\n") as f:
+        f.write("ok\n")
+    with open(probe, encoding="utf-8") as f:
+        assert f.read() == "ok\n"
+    os.remove(probe)
+
+
 def make_temp_dir(prefix):
-    path = os.path.join(base_dir(), "%s%s" % (prefix, uuid.uuid4().hex[:12]))
-    os.makedirs(path, exist_ok=False)
-    return path
+    last_error = None
+    for _ in range(100):
+        path = os.path.join(base_dir(), "%s%s" % (prefix, uuid.uuid4().hex[:12]))
+        try:
+            os.makedirs(path, exist_ok=False)
+            _probe_writable(path)
+            return path
+        except OSError as exc:
+            last_error = exc
+            shutil.rmtree(path, ignore_errors=True)
+    raise OSError("cannot create writable project temp dir: %r" % (last_error,))
 
 
 @contextmanager

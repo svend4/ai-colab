@@ -24,20 +24,13 @@ CLI:
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from _canon import parse_front_matter  # единый парсер front-matter
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -69,7 +62,6 @@ _STATUS_BODY_RE = re.compile(
     re.IGNORECASE,
 )
 
-
 def _read(path):
     try:
         with open(path, encoding="utf-8", errors="replace") as f:
@@ -77,10 +69,8 @@ def _read(path):
     except OSError:
         return ""
 
-
 def _rel(path):
     return os.path.relpath(path, ROOT).replace("\\", "/")
-
 
 def normalize_topic(name):
     """Нормализованный ключ темы: режем даты и -agent суффиксы, .md, мусор по краям."""
@@ -92,7 +82,6 @@ def normalize_topic(name):
     key = re.sub(r"^\d{4}-\d{2}-\d{2}-?", "", key)
     key = key.strip("-_ ").lower()
     return key or name.lower()
-
 
 def _infer_agent(fm, filename, text):
     for field in ("author", "agent", "owner"):
@@ -113,7 +102,6 @@ def _infer_agent(fm, filename, text):
         return "codex"
     return "unknown"
 
-
 def _infer_status(fm, text):
     v = (fm.get("status") or "").strip()
     if v:
@@ -122,7 +110,6 @@ def _infer_status(fm, text):
     if m:
         return m.group(1).lower()
     return "unknown"
-
 
 def _entry(path, kind, agent_hint=None):
     text = _read(path)
@@ -137,7 +124,6 @@ def _entry(path, kind, agent_hint=None):
         "topic_raw": fm.get("topic") or fm.get("id") or filename,
     }
 
-
 def _scan_dir_flat(directory, kind):
     out = []
     if not os.path.isdir(directory):
@@ -147,7 +133,6 @@ def _scan_dir_flat(directory, kind):
             continue
         out.append(_entry(os.path.join(directory, name), kind))
     return out
-
 
 def _scan_streams():
     out = []
@@ -167,7 +152,6 @@ def _scan_streams():
                 out.append(e)
     return out
 
-
 def _scan_doc_pairs():
     out = []
     for pair in DOC_PAIRS:
@@ -179,7 +163,6 @@ def _scan_doc_pairs():
                 out.append(e)
     return out
 
-
 def discover():
     """Собрать все варианты из всех источников (плоский список dict)."""
     items = []
@@ -188,7 +171,6 @@ def discover():
     items += _scan_doc_pairs()
     items += _scan_dir_flat(OUTBOX_DIR, "outbox")
     return items
-
 
 def build_index():
     """тема(нормализованная) -> [{agent, file, status, kind}], отсортировано."""
@@ -205,13 +187,11 @@ def build_index():
         index[key].sort(key=lambda v: (v["kind"], v["file"]))
     return dict(sorted(index.items()))
 
-
 def _filter_topic(index, topic):
     if not topic:
         return index
     needle = topic.strip().lower()
     return {k: v for k, v in index.items() if needle in k}
-
 
 def render_table(index):
     lines = []
@@ -225,7 +205,6 @@ def render_table(index):
                          % (v["agent"], v["status"], v["kind"], v["file"]))
         lines.append("")
     return "\n".join(lines).rstrip()
-
 
 def main():
     a = sys.argv[1:]
@@ -251,7 +230,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

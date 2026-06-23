@@ -24,6 +24,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import json
 import datetime
 
@@ -33,14 +34,6 @@ sys.path.insert(0, HERE)
 from _canon import parse_front_matter  # единый парсер front-matter (T-085)
 import commit_lock as cl  # сериализация записи под общий commit-lock (Уровень 0)
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
 
 READY_STATUSES = ("ready", "adopted")
@@ -48,12 +41,10 @@ READY_STATUSES = ("ready", "adopted")
 TERMINAL_STATUSES = ("adopted", "superseded", "rejected", "archived")
 REQUIRED_FM = ("id", "topic", "agent", "status", "created")
 
-
 def streams_root(override=None):
     return os.path.abspath(
         override or os.environ.get("COLLAB_STREAMS_ROOT") or os.path.join(ROOT, "streams")
     )
-
 
 def _slug(text):
     keep = []
@@ -67,11 +58,9 @@ def _slug(text):
         s = s.replace("--", "-")
     return s or "stream"
 
-
 def _now_id(agent):
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M")
     return "%s-%s" % (stamp, _slug(agent))
-
 
 def packet_text(ident, topic, agent, reason, created, status="proposed"):
     return (
@@ -92,7 +81,6 @@ def packet_text(ident, topic, agent, reason, created, status="proposed"):
         "(governance-решение остаётся в котле, D-018).\n"
         % (ident, topic, agent, status, created, ident, reason or "(не указана)")
     )
-
 
 def create(topic, agent, reason, root=None):
     root = streams_root(root)
@@ -116,7 +104,6 @@ def create(topic, agent, reason, root=None):
             f.write(packet_text(ident, topic_slug, agent, reason, created))
         return {"id": ident, "topic": topic_slug, "path": path}
     raise RuntimeError("не удалось выдать свободный stream-id за 1000 попыток")
-
 
 def _iter_packets(root, topic=None):
     root = streams_root(root)
@@ -143,7 +130,6 @@ def _iter_packets(root, topic=None):
                 "path": path,
             }
 
-
 def list_packets(topic=None, ready_only=False, root=None):
     out = []
     for p in _iter_packets(root, topic=topic):
@@ -152,13 +138,11 @@ def list_packets(topic=None, ready_only=False, root=None):
         out.append(p)
     return out
 
-
 def _rel(path):
     try:
         return os.path.relpath(path, ROOT).replace("\\", "/")
     except ValueError:
         return path
-
 
 def check(root=None, max_age_days=14):
     """Гигиена потоков (P-11 «кладбище»): открытые (не terminal) пакеты старше N дней без adoption +
@@ -182,13 +166,11 @@ def check(root=None, max_age_days=14):
                           "status": p["status"], "age_days": age, "path": _rel(p["path"])})
     return {"stale": stale, "broken": broken}
 
-
 def _find_packet(stream_id, root):
     for p in _iter_packets(root):
         if p["id"] == stream_id:
             return p
     return None
-
 
 def _rewrite_front_matter(path, updates):
     with open(path, encoding="utf-8") as f:
@@ -223,7 +205,6 @@ def _rewrite_front_matter(path, updates):
         f.write(new_text)
     os.replace(tmp, path)
 
-
 def adopt(stream_id, commit, agent="stream", root=None):
     p = _find_packet(stream_id, root)
     if p is None:
@@ -238,11 +219,9 @@ def adopt(stream_id, commit, agent="stream", root=None):
         cl.release(agent)
     return {"id": stream_id, "path": p["path"], "adopted_commit": commit}
 
-
 def cl_wait():
     # короткое ожидание лока: тесты герметичны, лок почти всегда свободен
     return 30
-
 
 def _argval(argv, flag):
     if flag in argv:
@@ -250,7 +229,6 @@ def _argval(argv, flag):
         if i + 1 < len(argv):
             return argv[i + 1]
     return None
-
 
 def main():
     argv = sys.argv[1:]
@@ -311,7 +289,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

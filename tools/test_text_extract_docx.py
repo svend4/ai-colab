@@ -4,7 +4,6 @@
 import os
 import sys
 import zipfile
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -12,6 +11,7 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "drivers"))
 import text_extract as tx
+from test_tmp import make_temp_dir
 
 
 def configure_output():
@@ -35,7 +35,7 @@ def _make_docx(path, paragraphs):
 
 def run():
     ok = True
-    base = tempfile.mkdtemp(prefix="docx_")
+    base = make_temp_dir("docx_")
     try:
         p = os.path.join(base, "doc.docx")
         _make_docx(p, ["Первый абзац DeepNeedle", "token=SUPERSECRETXYZ123"])

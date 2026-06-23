@@ -17,23 +17,15 @@ Temp-папку можно задать через COLLAB_RACE_TMP (иначе C
 """
 import os
 import sys
+from _ioutil import configure_output
 import shutil
 import tempfile
 import subprocess
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 QUEUE = os.path.join(HERE, "agent_queue.py")
-
 
 def temp_base():
     base = os.environ.get("COLLAB_RACE_TMP")
@@ -42,7 +34,6 @@ def temp_base():
     if os.name == "nt" and os.path.isdir(r"C:\tmp"):
         return r"C:\tmp"
     return tempfile.gettempdir()
-
 
 def one_round(n):
     """Один раунд: n параллельных claim на одну задачу. Возвращает (winners, losers)."""
@@ -68,7 +59,6 @@ def one_round(n):
     finally:
         shutil.rmtree(root, ignore_errors=True)
 
-
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     n = int(args[0]) if len(args) > 0 else 8
@@ -86,7 +76,6 @@ def main():
           % ("OK" if all_ok else "FAIL",
              "подтверждена" if all_ok else "НАРУШЕНА", rounds, n))
     return 0 if all_ok else 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

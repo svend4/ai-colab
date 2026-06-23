@@ -16,6 +16,7 @@ CLI:
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import sqlite3
 
@@ -28,16 +29,7 @@ import knowledge as kn  # переиспользуем L6-движок (build/_b
 DOC_DIRS = ["docs", "decisions", "questions", "темы", "tasks"]
 DEFAULT_DB = "logs/repo-knowledge.db"
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def build_index(db=DEFAULT_DB, dirs=None):
     """Собрать свежий индекс по зонам документации. Возвращает число документов."""
@@ -50,7 +42,6 @@ def build_index(db=DEFAULT_DB, dirs=None):
         if os.path.isdir(os.path.join(ROOT, d)):
             total += kn.build(db, d, agent="repo_search")
     return total
-
 
 def _present(row):
     """Привести строку результата к продукт-виду: реальный кликабельный путь + компактный сниппет."""
@@ -66,7 +57,6 @@ def _present(row):
     s = re.sub(r"\s+", " ", (d.get("summary") or "")).strip()
     d["summary"] = s[:200]  # сниппет, а не всё тело дока (JSON не раздувается)
     return d
-
 
 def search(query, db=DEFAULT_DB, limit=10):
     """Ранжированный FTS5+bm25 поиск (термы через OR — для recall); собирает индекс, если его нет."""
@@ -88,7 +78,6 @@ def search(query, db=DEFAULT_DB, limit=10):
             return [_present(r) for r in kn.fts_search(conn, query, limit=limit)]  # fallback
     finally:
         conn.close()
-
 
 def main():
     a = sys.argv[1:]
@@ -144,7 +133,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

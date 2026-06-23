@@ -18,6 +18,7 @@ def run():
     assert "health" in ids, ids
     assert "friction-status" in ids, ids
     assert "assurance" in ids, ids
+    assert "advice-activator" in ids, ids
     assert "instruction-preflight" in ids, ids
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
@@ -37,7 +38,8 @@ def run():
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
     assert "python tools/top.py assurance" in rendered, rendered
-    assert "python tools/top.py agent-start <agent> [--context" in rendered, rendered
+    assert "python tools/top.py advice" in rendered, rendered
+    assert "python tools/top.py agent-start <agent> [--task T-id] [--context" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py repo-search" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
@@ -51,8 +53,10 @@ def run():
     assert aargs.cmd == "assurance" and aargs.section == "currency" and aargs.json and aargs.max_age == 90, aargs
     sargs = parser.parse_args(["assurance", "flow", "--strict"])
     assert sargs.cmd == "assurance" and sargs.section == "flow" and sargs.strict, sargs
-    start_args = parser.parse_args(["agent-start", "codex", "--context", "repo", "search", "--context-limit", "4"])
-    assert start_args.cmd == "agent-start" and start_args.agent == "codex" and start_args.context == ["repo", "search"] and start_args.context_limit == 4, start_args
+    adv_args = parser.parse_args(["advice", "codex", "T-188", "--parallel", "--hot-files", "--json"])
+    assert adv_args.cmd == "advice" and adv_args.agent == "codex" and adv_args.task == "T-188" and adv_args.parallel and adv_args.hot_files and adv_args.json, adv_args
+    start_args = parser.parse_args(["agent-start", "codex", "--task", "T-188", "--context", "repo", "search", "--context-limit", "4"])
+    assert start_args.cmd == "agent-start" and start_args.agent == "codex" and start_args.task == "T-188" and start_args.context == ["repo", "search"] and start_args.context_limit == 4, start_args
     ip_args = parser.parse_args(["instruction-preflight", "codex", "T-154", "--json"])
     assert ip_args.cmd == "instruction-preflight" and ip_args.agent == "codex" and ip_args.task == "T-154" and ip_args.json, ip_args
     take_args = parser.parse_args(["take", "codex", "T-152"])
@@ -78,7 +82,7 @@ def run():
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/assurance parser+json")
+    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/process-landed/assurance parser+json")
     return 0
 
 

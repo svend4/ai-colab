@@ -19,14 +19,7 @@
 """
 import os
 import sys
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
+from _ioutil import configure_output
 
 configure_output()
 
@@ -41,9 +34,7 @@ TIER = {
     "": "REVIEW — риск не указан: по умолчанию ревью.",
 }
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def find_entity(eid):
     for sub in ("tasks", "decisions", "questions"):
@@ -52,7 +43,6 @@ def find_entity(eid):
             with open(path, encoding="utf-8") as f:
                 return parse_fm(f.read())
     return None
-
 
 def main():
     args = sys.argv[1:]
@@ -72,7 +62,6 @@ def main():
     print("%s [risk=%s, status=%s]" % (eid, risk or "—", fm.get("status", "?")))
     print("  → " + TIER.get(risk, TIER[""]))
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -70,6 +70,34 @@ def run():
         a = c.assess(_ledger([_wf("a", "inflight"), _wf("b", "inflight")], hb=old), NOW)
         assert any("IDLE" in x for x in a["actions"]), a["actions"]
 
+        # --- regulate: advisory target sizing, no mutation ---
+        clean_assurance = {"ok": True, "findings": 0}
+        bad_assurance = {"ok": False, "findings": 2}
+        r = c.regulate(_ledger([_wf("a", "inflight"), _wf("b", "inflight")]), NOW,
+                       assurance=clean_assurance)
+        assert r["recommendation"] == "increase" and r["target_delta"] == 1 and not r["mutates"], r
+
+        r = c.regulate(_ledger([_wf("a", "inflight")]), NOW, assurance=clean_assurance)
+        assert r["recommendation"] == "hold" and r["target_delta"] == 0, r
+        assert any("refill" in x for x in r["reasons"]), r
+
+        r = c.regulate(_ledger([_wf("a", "inflight"), _wf("b", "landed")]), NOW,
+                       assurance=clean_assurance)
+        assert r["recommendation"] == "process-first" and r["target_delta"] == -1, r
+
+        r = c.regulate(_ledger([_wf("a", "inflight"), _wf("b", "landed", "tmp-work/b.output.md")]), NOW,
+                       assurance=clean_assurance,
+                       classifications=[{"label": "b", "class": "governance"}])
+        assert r["recommendation"] == "process-first", r
+        assert any("governance" in x for x in r["reasons"]), r
+
+        r = c.regulate(_ledger([_wf("a", "inflight"), _wf("b", "inflight")], hb=old), NOW,
+                       assurance=clean_assurance)
+        assert r["recommendation"] == "decrease" and r["target_delta"] == -1, r
+
+        r = c.regulate(_ledger([_wf("a", "inflight"), _wf("b", "inflight")]), NOW,
+                       assurance=bad_assurance)
+        assert r["recommendation"] == "hold" and any("assurance" in x for x in r["reasons"]), r
         # --- реестр round-trip через диск ---
         path = os.path.join(base, "conv.json")
         d = c.load(path)
@@ -117,7 +145,7 @@ def run():
         assert top(20, span=4)["level"] == 2, c.plan_hierarchy(20, 4)
         assert "L2" in c.render_plan(27, 3, lay27)
 
-        print("TESTS OK conveyor: assess(refill/process/idle/healthy/output refs) + реестр + нормализованный бэклог + plan(3:1 reduce-дерево)")
+        print("TESTS OK conveyor: assess/refill/process/idle + regulate advisory + реестр + нормализованный бэклог + plan(3:1 reduce-дерево)")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

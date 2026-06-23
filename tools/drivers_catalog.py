@@ -11,16 +11,9 @@
 """
 import os
 import sys
+from _ioutil import configure_output
 import glob
 import json
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -29,9 +22,7 @@ DRIVERS = os.path.join(ROOT, "drivers")
 SKIP = {"README.md", "_template.md", "SCHEMA.md", "CATALOG.md"}
 FIELDS = ["id", "title", "level", "mode", "risk", "status", "sandbox", "secrets", "activation"]
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def collect():
     items = []
@@ -46,7 +37,6 @@ def collect():
     items.sort(key=lambda d: d["id"])
     return items
 
-
 def render_catalog(items):
     out = [
         "# Каталог драйверов (Treiber)",
@@ -60,7 +50,6 @@ def render_catalog(items):
         out.append("| %s | %s | %s | %s | %s | %s |"
                    % (d["id"], d["title"], d["level"], d["mode"], d["risk"], d["status"]))
     return "\n".join(out) + "\n"
-
 
 def main():
     check = "--check" in sys.argv[1:]
@@ -92,7 +81,6 @@ def main():
         return 1
     print("Драйверов в каталоге: %d" % len(items))
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -13,6 +13,7 @@ Capability manifest (C1, консенсус Claude+Codex) — один маши�
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -22,16 +23,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DRIVERS = os.path.join(ROOT, "drivers")
 OUT = os.path.join(ROOT, "system-capabilities.json")
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _list(value):
     s = (value or "").strip()
@@ -39,11 +31,10 @@ def _list(value):
         s = s[1:-1]
     return [x.strip() for x in s.split(",") if x.strip()]
 
-
 # Курируемая карта ключевых команд входа (как пользоваться слоем).
 COMMANDS = [
     {"cmd": "python tools/top.py buttons", "does": "верхняя панель сценариев для людей и агентов"},
-    {"cmd": "python tools/top.py agent-start <agent> --context <query>", "does": "старт агента + статус + быстрый поиск релевантного канона"},
+    {"cmd": "python tools/top.py agent-start <agent> [--task T-id] --context <query>", "does": "старт агента + статус + assurance/advice + быстрый поиск релевантного канона"},
     {"cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree [--json]", "does": "готовый repo lane + prompt/JSON для внешнего запуска sub-agent"},
     {"cmd": "python tools/top.py conveyor [--target N] [--json]", "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"},
     {"cmd": "python tools/top.py assurance [section] [--json] [--strict]", "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"},
@@ -79,7 +70,6 @@ DOCS = {
     "rules": "AGENTS.md",
     "skills": "skills/README.md",
 }
-
 
 def build():
     drivers = []
@@ -117,10 +107,8 @@ def build():
         "note": "Производный файл: генерируется tools/capabilities.py из drivers/*.md. Не править руками.",
     }
 
-
 def _dumps(obj):
     return json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True)
-
 
 def snapshot():
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
@@ -128,7 +116,6 @@ def snapshot():
     print("SNAPSHOT: system-capabilities.json — драйверов %d (ready %d)"
           % (build()["drivers_total"], build()["drivers_ready"]))
     return 0
-
 
 def check():
     want = _dumps(build())
@@ -143,7 +130,6 @@ def check():
     print("OK: system-capabilities.json актуален")
     return 0
 
-
 def main():
     a = sys.argv[1:]
     if a and a[0] == "snapshot":
@@ -152,7 +138,6 @@ def main():
         return check()
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

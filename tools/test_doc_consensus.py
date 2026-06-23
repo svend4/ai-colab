@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import shutil
+import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -96,6 +97,35 @@ def run():
         # 4) semantic render is status: proposed, never auto-accepted
         stxt = dc.render(sem)
         assert "status: proposed" in stxt and "Консенсус" in stxt, "семантический отчёт proposed+консенсус"
+
+        # 5) CLI budget guard fails before agent fan-out when the residue needs > budget calls
+        p = subprocess.run([
+            sys.executable, os.path.join(HERE, "doc_consensus.py"), "report", "--semantic",
+            "--semantic-budget", "0", "--files", s1, s2,
+        ], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+        assert p.returncode == 1 and "semantic budget exceeded" in p.stdout, (p.returncode, p.stdout, p.stderr)
+
+        # 6) CLI --semantic uses DOC_CONSENSUS_AGENT subprocess seam and writes proposed output
+        stub = os.path.join(base, "agent_stub.py")
+        with open(stub, "w", encoding="utf-8") as f:
+            f.write("import json, sys\n"
+                    "raw = sys.stdin.read()\n"
+                    "payload = raw.split('Units (JSON):', 1)[-1].strip()\n"
+                    "items = json.loads(payload) if payload else []\n"
+                    "ids = [x['id'] for x in items]\n"
+                    "print(json.dumps({'consensus':[{'ids': ids, 'rationale':'stub semantic match'}], 'divergences': []}, ensure_ascii=False))\n")
+        sem_out = os.path.join(base, "semantic.md")
+        env = os.environ.copy()
+        env["DOC_CONSENSUS_AGENT"] = '"%s" "%s"' % (sys.executable, stub)
+        p = subprocess.run([
+            sys.executable, os.path.join(HERE, "doc_consensus.py"), "report", "--semantic",
+            "--semantic-budget", "1", "--files", s1, s2, "--out", sem_out,
+        ], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace",
+           stdin=subprocess.DEVNULL, env=env)
+        assert p.returncode == 0, (p.returncode, p.stdout, p.stderr)
+        with open(sem_out, encoding="utf-8") as f:
+            rendered_sem = f.read()
+        assert "status: proposed" in rendered_sem and "stub semantic match" in rendered_sem, rendered_sem
 
         # render не падает и содержит секции
         txt = dc.render(res)

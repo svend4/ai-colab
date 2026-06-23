@@ -17,6 +17,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import importlib.util
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,16 +26,7 @@ SANDBOX = os.path.join(ROOT, "sandbox")
 INBOX = os.path.join(SANDBOX, "inbox")
 REPORTS = os.path.join(SANDBOX, "reports")
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _load(name, *parts):
     spec = importlib.util.spec_from_file_location(name, os.path.join(DRIVERS, *parts))
@@ -42,9 +34,7 @@ def _load(name, *parts):
     spec.loader.exec_module(mod)
     return mod
 
-
 inv = _load("sb_inventory", "repo-runner", "inventory.py")
-
 
 def intake(source_id, from_path, note="", max_files=2000):
     src = os.path.abspath(os.path.expanduser(from_path))
@@ -86,7 +76,6 @@ def intake(source_id, from_path, note="", max_files=2000):
     return {"manifest": manifest, "report": rep, "files": summary.get("files"),
             "risks": len(risks)}
 
-
 def list_sources():
     out = []
     if os.path.isdir(INBOX):
@@ -94,7 +83,6 @@ def list_sources():
             if fn.endswith(".md") and fn != "README.md":
                 out.append(fn[:-3])
     return out
-
 
 def main():
     a = sys.argv[1:]
@@ -119,7 +107,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

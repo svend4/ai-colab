@@ -25,6 +25,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import glob
 import shutil
 import datetime
@@ -33,14 +34,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _canon import parse_front_matter  # единый парсер front-matter канона
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -52,10 +45,8 @@ L4_DIR = "sandbox"
 # collab логически = эти корневые каталоги (карта L3, без физического переноса).
 L3_DIRS = ["tasks", "decisions", "questions", "streams", "темы", "collab"]
 
-
 def _root(root=None):
     return os.path.abspath(root) if root else ROOT
-
 
 def level_of(artifact, root=None):
     """Определить уровень артефакта по его относительному пути под корнем пирамиды."""
@@ -72,7 +63,6 @@ def level_of(artifact, root=None):
         return "L3"
     return None
 
-
 def _read_fm(path):
     if not os.path.isfile(path):
         return {}
@@ -82,26 +72,25 @@ def _read_fm(path):
     except OSError:
         return {}
 
-
 def _list_field(value):
     s = (value or "").strip()
     if s.startswith("[") and s.endswith("]"):
         s = s[1:-1]
     return [x.strip() for x in s.split(",") if x.strip()]
 
-
 def _manifest_l1_tokens(base):
-    """Токены L1-инвентаря: basename из core/engine-manifest.md `files:` + все core/*.md."""
+    """Токены L1-инвентаря: basename из core/engine-manifest.md `files:` и `candidates:` + все core/*.md."""
     tokens = set()
     man = os.path.join(base, L1_DIR, "engine-manifest.md")
-    for rel in _list_field(_read_fm(man).get("files")):
-        bn = os.path.basename(rel.replace("\\", "/").strip())
-        if bn:
-            tokens.add(bn)
+    fm = _read_fm(man)
+    for k in ("files", "candidates"):
+        for rel in _list_field(fm.get(k)):
+            bn = os.path.basename(rel.replace("\\", "/").strip())
+            if bn:
+                tokens.add(bn)
     for md in glob.glob(os.path.join(base, L1_DIR, "*.md")):
         tokens.add(os.path.basename(md))
     return tokens
-
 
 def derive_reuse(root=None):
     """Вывести ФАКТИЧЕСКОЕ повторное использование L1-токенов порталами (scan-derived, не самодекларация).
@@ -130,7 +119,6 @@ def derive_reuse(root=None):
                 reuse[t].add(pid)
     return reuse
 
-
 def _has_decision_ref(fm):
     for k in ("decision_ref", "decision", "decisions"):
         v = (fm.get(k) or "").strip()
@@ -142,14 +130,12 @@ def _has_decision_ref(fm):
             return True
     return False
 
-
 def _has_verification(fm):
     for k in ("tests", "gate_checks_passed", "verification", "verified"):
         v = (fm.get(k) or "").strip()
         if v and v.lower() not in ("", "none", "no", "false", "-"):
             return True
     return False
-
 
 # --- gate-критерии по docs/promotion-rules.md -------------------------------
 
@@ -163,7 +149,6 @@ def _gate_L4_L3(path, fm, root):
          "подъём не требует запуска внешнего кода (execute-gate отдельный)"),
     ]
 
-
 def _gate_L3_L2(path, fm, root):
     blob = " ".join(str(v) for v in fm.values()).lower()
     history_markers = ("claim:", "done:", "fail:", "обсужд")
@@ -176,7 +161,6 @@ def _gate_L3_L2(path, fm, root):
         ("portal_target", True,
          "назначение — конкретный портал portals/<id>/ (проверяется при move --to L2)"),
     ]
-
 
 def _gate_L2_L1(path, fm, root):
     # derived: считаем РАЗНЫЕ порталы, реально ссылающиеся на артефакт (scan), а не самодекларацию reused_in
@@ -197,13 +181,10 @@ def _gate_L2_L1(path, fm, root):
          "не привязано к одному домену/пользователю/корпусу"),
     ]
 
-
 _GATES = {("L4", "L3"): _gate_L4_L3, ("L3", "L2"): _gate_L3_L2, ("L2", "L1"): _gate_L2_L1}
-
 
 def _adjacent(frm, to):
     return frm in LEVELS and to in LEVELS and LEVELS.index(to) == LEVELS.index(frm) - 1
-
 
 def check(artifact, frm=None, to=None, root=None):
     """Проверить готовность артефакта против promotion-rules. Возвращает dict."""
@@ -225,7 +206,6 @@ def check(artifact, frm=None, to=None, root=None):
     return {"artifact": path, "level": cur, "from": frm, "to": to,
             "criteria": results, "ready": all(r["passed"] for r in results)}
 
-
 def list_levels(root=None):
     """Перечислить уровни и артефакты со статусом."""
     base = _root(root)
@@ -246,7 +226,6 @@ def list_levels(root=None):
                     "count": len(artifacts), "artifacts": sorted(artifacts)})
     return out
 
-
 def _stamp_fm(text, stamp):
     """Добавить/обновить поля stamp во front-matter; вернуть новый текст."""
     keys = list(stamp.keys())
@@ -264,7 +243,6 @@ def _stamp_fm(text, stamp):
     body = text
     fm_lines = ["%s: %s" % (k, stamp[k]) for k in keys]
     return "---\n" + "\n".join(fm_lines) + "\n---\n\n" + body
-
 
 def move(artifact, frm, to, reviewed_by="unspecified", decision_ref="",
          root=None, dest=None, force=False):
@@ -321,7 +299,6 @@ def move(artifact, frm, to, reviewed_by="unspecified", decision_ref="",
     os.remove(src)
     return {"from_path": src, "to_path": new_path, "from": frm, "to": to, "stamp": stamp}
 
-
 def export(files, to, root=None, readme=None):
     """Курируемая КОПИЯ списка файлов в target-каталог (core-export), с сохранением repo-relative
     структуры. НЕ move: исходные файлы остаются. Возвращает {to, copied, missing}."""
@@ -346,10 +323,8 @@ def export(files, to, root=None, readme=None):
             f.write("- %s\n" % c)
     return {"to": dest_root, "copied": copied, "missing": missing}
 
-
 def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
-
 
 def main():
     a = sys.argv[1:]
@@ -400,7 +375,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

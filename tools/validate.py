@@ -14,12 +14,12 @@ STATUS.md и темами, чтобы заменить ручную «переп
 import os
 import re
 import sys
+from _ioutil import configure_output
 import datetime
 
 # Драйверы: манифест старше этого числа дней — WARN (advisory), пере-сверить с источником.
 # 30 дней — для драйверов (код-backed); решения/политики идут на своём SLA через assurance.py.
 DRIVER_FRESHNESS_DAYS = 30
-
 
 def driver_freshness_warning(date_str, today=None, max_days=DRIVER_FRESHNESS_DAYS):
     """Текст WARN, если source_last_verified старше max_days; иначе None.
@@ -39,15 +39,6 @@ def driver_freshness_warning(date_str, today=None, max_days=DRIVER_FRESHNESS_DAY
                 % (date_str, age, max_days))
     return None
 
-
-def configure_output():
-    for stream_name in ("stdout", "stderr"):
-        stream = getattr(sys, stream_name, None)
-        if stream is None or not hasattr(stream, "reconfigure"):
-            continue
-        stream.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
 
 ROOT = (
@@ -58,18 +49,14 @@ ROOT = (
 
 ERRORS, WARNS, OKS = [], [], []
 
-
 def err(m):
     ERRORS.append(m)
-
 
 def warn(m):
     WARNS.append(m)
 
-
 def ok(m):
     OKS.append(m)
-
 
 def read(rel):
     path = os.path.join(ROOT, rel)
@@ -82,16 +69,13 @@ def read(rel):
         err(f"{rel}: не читается как UTF-8 (повреждён/обрезан?): {e}")
         return None
 
-
 def strip_code_fences(text):
     """Убрать ```...``` блоки, чтобы примеры внутри не парсились как реальные записи."""
     return re.sub(r"```.*?```", "", text, flags=re.S)
 
-
 def md_paths(cell):
     """Все `путь.md` (в backticks) из ячейки."""
     return re.findall(r"`([^`]+?\.md)`", cell)
-
 
 def table_rows(text, id_prefix):
     """Строки markdown-таблицы, чья первая значащая ячейка начинается с id_prefix."""
@@ -105,9 +89,7 @@ def table_rows(text, id_prefix):
             rows.append(cells)
     return rows
 
-
 from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
-
 
 # ---------- DECISIONS ----------
 def parse_decisions():
@@ -133,7 +115,6 @@ def parse_decisions():
     if statuses:
         ok("DECISIONS: %d решений (индекс), id уникальны" % len(statuses))
     return statuses
-
 
 # ---------- QUESTIONS ----------
 def parse_questions(decisions):
@@ -172,7 +153,6 @@ def parse_questions(decisions):
     if seen:
         ok(f"QUESTIONS: {len(seen)} вопросов, id уникальны, ссылки и итоги проверены")
 
-
 # ---------- TASKS ----------
 def parse_tasks():
     text = read("TASKS.md")
@@ -203,7 +183,6 @@ def parse_tasks():
     if seen:
         ok(f"TASKS: {len(seen)} задач, id уникальны, ссылки проверены")
 
-
 # ---------- навигация: Доска / STATUS активные темы ----------
 def check_nav():
     for fname in ("board.md", "STATUS.md"):
@@ -222,7 +201,6 @@ def check_nav():
         if missing == 0:
             ok(f"{fname}: ссылки на темы валидны")
 
-
 # ---------- имена файлов (D-005/D-007) ----------
 def check_naming():
     cyr = []
@@ -240,7 +218,6 @@ def check_naming():
         )
     else:
         ok("Все имена файлов ASCII (D-005)")
-
 
 # ---------- источники: tasks/ questions/ decisions/ (валидатор v2) ----------
 def check_sources():
@@ -291,7 +268,6 @@ def check_sources():
             if ref not in task_ids:
                 err("tasks/%s.md: depends_on → несуществующая задача %s" % (fid, ref))
     ok("sources: tasks/questions/decisions проверены (front-matter, id, статусы, depends_on)")
-
 
 def check_drivers():
     drivers_dir = os.path.join(ROOT, "drivers")
@@ -383,14 +359,12 @@ def check_drivers():
     if checked:
         ok("drivers: %d манифестов проверены по draft schema v1" % checked)
 
-
 def _parse_inline_list(value):
     """`[a, b, c]` (как хранит наивный парсер front-matter) → ['a','b','c']."""
     s = (value or "").strip()
     if s.startswith("[") and s.endswith("]"):
         s = s[1:-1]
     return [x.strip() for x in s.split(",") if x.strip()]
-
 
 def _mcp_tool_names(server_text):
     """Имена функций, задекорированных @mcp.tool(), из текста mcp_server.py."""
@@ -404,7 +378,6 @@ def _mcp_tool_names(server_text):
                     names.append(m.group(1))
                     break
     return names
-
 
 def check_driver_tools():
     """Сверка манифестного поля `tools:` с реально зарегистрированными @mcp.tool().
@@ -443,7 +416,6 @@ def check_driver_tools():
     if checked:
         ok("drivers tools: %d манифестов сверены с @mcp.tool() серверов" % checked)
 
-
 def check_pipeline_d011():
     """Артефакт-presence инвариант D-011 (конвейер агентов).
 
@@ -475,6 +447,52 @@ def check_pipeline_d011():
         ok("D-011: конвейер pipeline.py + PIPELINE.md + logs/pipeline.json присутствуют, "
            "команды next/status/mine/done/fail/snapshot определены")
 
+def check_synthesis_reports():
+    """Проверка структуры отчетов синтеза (T-182).
+    
+    Отчеты/скелеты (type: synthesis-scaffold / synthesis-report) должны:
+    1. Не иметь status=accepted или auto-accepted (чтобы предотвратить обход D-006/D-018).
+    2. Содержать необходимые секции: Консенсус, Разногласия, Перепроверка.
+    """
+    checked = 0
+    for dirpath, _dirs, files in os.walk(ROOT):
+        if ".git" in dirpath:
+            continue
+        for fn in files:
+            if not fn.endswith(".md"):
+                continue
+            path = os.path.join(dirpath, fn)
+            rel = os.path.relpath(path, ROOT).replace("\\", "/")
+            try:
+                with open(path, encoding="utf-8") as f:
+                    text = f.read()
+            except Exception:
+                continue
+            
+            fm = parse_front_matter(text)
+            ftype = fm.get("type", "")
+            if ftype not in ("synthesis-scaffold", "synthesis-report"):
+                continue
+                
+            status = fm.get("status", "")
+            if status in ("accepted", "auto-accepted"):
+                err("%s: отчёты синтеза не могут быть accepted/auto-accepted напрямую (D-018), нужен D-файл" % rel)
+            
+            body = strip_code_fences(text)
+            
+            if not re.search(r"(?i)^#{2,4}\s+(Консенсус|Общее во всех вариантах)", body, re.M):
+                err("%s: отсутствует секция '## Консенсус'" % rel)
+            
+            if not re.search(r"(?i)^#{2,4}\s+(Разногласия|Расхождения)", body, re.M):
+                err("%s: отсутствует секция '## Разногласия' или '## Расхождения'" % rel)
+                
+            if not re.search(r"(?i)^#{2,4}\s+(Двойная перепроверка|Доказательства)", body, re.M):
+                err("%s: отсутствует секция '## Двойная перепроверка' (требование D-018)" % rel)
+                
+            checked += 1
+            
+    if checked > 0:
+        ok("synthesis: %d отчетов проверено на структуру консенсуса/разногласий" % checked)
 
 def main():
     decisions = parse_decisions()
@@ -486,6 +504,7 @@ def main():
     check_pipeline_d011()
     check_nav()
     check_naming()
+    check_synthesis_reports()
 
     for m in OKS:
         print("OK:   " + m)
@@ -496,7 +515,6 @@ def main():
     print("-" * 50)
     print(f"OK={len(OKS)} WARN={len(WARNS)} ERROR={len(ERRORS)}")
     sys.exit(1 if ERRORS else 0)
-
 
 if __name__ == "__main__":
     main()

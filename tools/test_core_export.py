@@ -9,7 +9,6 @@
 import os
 import sys
 import subprocess
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -18,6 +17,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(ROOT, "drivers"))
 import promote
 from _canon import parse_front_matter
+from test_tmp import make_temp_dir
 
 
 def configure_output():
@@ -32,18 +32,21 @@ configure_output()
 
 def run():
     ok = True
-    dest = tempfile.mkdtemp(prefix="coreexport_ci_")
+    dest = make_temp_dir("coreexport_ci_")
     try:
         manifest = os.path.join(ROOT, "core", "engine-manifest.md")
-        files = promote._list_field(parse_front_matter(open(manifest, encoding="utf-8").read()).get("files"))
+        fm = parse_front_matter(open(manifest, encoding="utf-8").read())
+        files = promote._list_field(fm.get("files"))
+        tests = promote._list_field(fm.get("tests"))
+        export_files = files + [t for t in tests if t not in files]
         assert files, "engine-manifest.md без поля files:"
 
         # 1) экспорт = курируемая копия, без потерь
-        r = promote.export(files, dest)
+        r = promote.export(export_files, dest)
         assert not r["missing"], "в экспорте отсутствуют: %s" % r["missing"]
 
         # 2) экспортированные тесты ядра запускаются STANDALONE (из временного каталога)
-        exported_tests = [f for f in files if "/test_" in f.replace("\\", "/")]
+        exported_tests = tests or [f for f in export_files if os.path.basename(f.replace("\\", "/")).startswith("test_")]
         assert exported_tests, "в манифесте нет тестов ядра для проверки переносимости"
         env = dict(os.environ, PYTHONUTF8="1")
         failures = []
@@ -59,7 +62,7 @@ def run():
             "%s rc=%d :: %s" % (t, rc, out.strip().splitlines()[-1] if out.strip() else "") for t, rc, out in failures)
 
         print("TESTS OK core_export: ядро экспортировано (%d файлов), %d тест(ов) зелёные STANDALONE — переносимо"
-              % (len(files), len(exported_tests)))
+              % (len(export_files), len(exported_tests)))
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

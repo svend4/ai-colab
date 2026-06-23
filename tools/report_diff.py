@@ -11,21 +11,13 @@ This is intentionally small and stdlib-only. It extracts stable metrics from rep
 import os
 import re
 import sys
+from _ioutil import configure_output
 from pathlib import Path
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALLOWED_SUFFIXES = {".md", ".markdown"}
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _is_relative_to(path, base):
     try:
@@ -33,7 +25,6 @@ def _is_relative_to(path, base):
         return True
     except ValueError:
         return False
-
 
 def resolve_md(path_value):
     root = Path(ROOT).resolve()
@@ -44,7 +35,6 @@ def resolve_md(path_value):
     if resolved.suffix.lower() not in ALLOWED_SUFFIXES:
         raise ValueError("unsupported markdown suffix: %s" % resolved.suffix)
     return resolved
-
 
 def _parse_type_table(text):
     out = {}
@@ -63,7 +53,6 @@ def _parse_type_table(text):
         out[key] = int(m.group(2))
     return out
 
-
 def parse_report(path_value):
     path = resolve_md(path_value)
     text = path.read_text(encoding="utf-8", errors="replace")
@@ -77,7 +66,6 @@ def parse_report(path_value):
         "query_hits": int(query.group(1)) if query else None,
         "types": _parse_type_table(text),
     }
-
 
 def render(a, b):
     keys = sorted(set(a["types"]) | set(b["types"]))
@@ -116,7 +104,6 @@ def render(a, b):
     ]
     return "\n".join(out)
 
-
 def _arg_value(args, name, default=None):
     if name not in args:
         return default
@@ -125,13 +112,11 @@ def _arg_value(args, name, default=None):
         raise ValueError("missing value for %s" % name)
     return args[pos]
 
-
 def write_out(text, out_path):
     path = resolve_md(out_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text + "\n", encoding="utf-8", newline="\n")
     return path
-
 
 def main():
     args = sys.argv[1:]
@@ -150,7 +135,6 @@ def main():
     except Exception as exc:
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1
-
 
 if __name__ == "__main__":
     sys.exit(main())

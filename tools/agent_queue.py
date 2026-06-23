@@ -26,17 +26,10 @@
 """
 import os
 import sys
+from _ioutil import configure_output
 import time
 import argparse
 import binascii
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -46,33 +39,25 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
 Q = os.path.join(ROOT, "queues")
 DEFAULT_TTL_MIN = 30
 
-
 def now_epoch():
     return int(time.time())
-
 
 def human(epoch):
     return time.strftime("%Y-%m-%d %H:%M", time.localtime(epoch))
 
-
 def token():
     return binascii.hexlify(os.urandom(8)).decode()
-
 
 def claim_path(task):
     return os.path.join(Q, "claimed", task + ".claim.md")
 
-
 def inbox_path(task):
     return os.path.join(Q, "inbox", task + ".md")
-
 
 def task_source_path(task):
     return os.path.join(ROOT, "tasks", task + ".md")
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def read_claim(task):
     pth = claim_path(task)
@@ -81,13 +66,11 @@ def read_claim(task):
     with open(pth, encoding="utf-8") as f:
         return parse_fm(f.read())
 
-
 def is_fresh(claim):
     try:
         return int(claim.get("lease_epoch", "0")) > now_epoch()
     except ValueError:
         return False
-
 
 def claim_text(d):
     return (
@@ -103,7 +86,6 @@ def claim_text(d):
         "Lease до %(lease_until)s. Fencing claim_id: %(claim_id)s.\n"
     ) % d
 
-
 def write_claim(task, d, overwrite):
     pth = claim_path(task)
     os.makedirs(os.path.dirname(pth), exist_ok=True)
@@ -115,7 +97,6 @@ def write_claim(task, d, overwrite):
         fd = os.open(pth, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
-
 
 def require_holder(task, agent, claim_id):
     c = read_claim(task)
@@ -129,7 +110,6 @@ def require_holder(task, agent, claim_id):
         print("ERROR: неверный claim_id (fencing) — возможно, claim перехвачен")
         return None
     return c
-
 
 def cmd_claim(a):
     task, agent = a.task, a.agent
@@ -168,7 +148,6 @@ def cmd_claim(a):
     print("claim_id=%s  (сохрани для complete/fail)" % cid)
     return 0
 
-
 def cmd_complete(a):
     if require_holder(a.task, a.agent, a.claim_id) is None:
         return 1
@@ -185,7 +164,6 @@ def cmd_complete(a):
     print("OK: %s завершена; done-маркер создан, inbox и claim очищены" % a.task)
     return 0
 
-
 def cmd_fail(a):
     if require_holder(a.task, a.agent, a.claim_id) is None:
         return 1
@@ -201,14 +179,12 @@ def cmd_fail(a):
     print("OK: %s → failed; claim снят (inbox оставлен для повтора)" % a.task)
     return 0
 
-
 def cmd_release(a):
     if require_holder(a.task, a.agent, a.claim_id) is None:
         return 1
     os.remove(claim_path(a.task))
     print("OK: claim на %s снят" % a.task)
     return 0
-
 
 def cmd_list(a):
     inbox_dir = os.path.join(Q, "inbox")
@@ -228,7 +204,6 @@ def cmd_list(a):
             print("[claim протух]  %s — был %s, можно перехватить" % (task, c.get("agent")))
     return 0
 
-
 def cmd_check(a):
     problems = 0
     cdir = os.path.join(Q, "claimed")
@@ -246,7 +221,6 @@ def cmd_check(a):
                 problems += 1
     print("check: проблем %d" % problems)
     return 1 if problems else 0
-
 
 def main():
     ap = argparse.ArgumentParser(prog="agent_queue.py")
@@ -279,7 +253,6 @@ def main():
         ap.print_help()
         return 2
     return a.fn(a)
-
 
 if __name__ == "__main__":
     sys.exit(main())

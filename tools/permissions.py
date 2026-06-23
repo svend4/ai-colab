@@ -18,23 +18,15 @@
 """
 import os
 import sys
+from _ioutil import configure_output
 import json
 import subprocess
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
-
 
 def load_policy():
     path = os.path.join(ROOT, "tools", "permissions.json")
@@ -43,7 +35,6 @@ def load_policy():
         return None
     with open(path, encoding="utf-8") as f:
         return json.load(f)
-
 
 def match(path, pattern):
     path = path.replace("\\", "/")
@@ -54,7 +45,6 @@ def match(path, pattern):
     if pattern.startswith("*."):
         return path.endswith(pattern[1:])  # "*.md" → ".md"
     return path == pattern
-
 
 def git_changes():
     files = set()
@@ -69,7 +59,6 @@ def git_changes():
             print("ERROR: git недоступен (%s) — передай файлы аргументами" % e)
             return None
     return sorted(files)
-
 
 def main():
     args = sys.argv[1:]
@@ -99,7 +88,6 @@ def main():
         return 1
     print("OK: все изменения (%d) в зоне агента %s" % (len(files), agent))
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

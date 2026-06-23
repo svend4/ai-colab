@@ -18,6 +18,7 @@ CLI:
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import subprocess
 
@@ -30,16 +31,7 @@ except ImportError:
     def parse_front_matter(text):
         return {}
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _variants_index():
     """Индекс форк-вариантов от variants.py (topic -> [{agent,file,status,kind}])."""
@@ -50,7 +42,6 @@ def _variants_index():
         return json.loads(p.stdout or "{}")
     except ValueError:
         return {}
-
 
 def _outline(rel):
     """Заголовки секций (## / ###) файла-варианта + первая содержательная строка каждого."""
@@ -70,7 +61,6 @@ def _outline(rel):
             cur["gist"] = ln.strip()[:100]
     return out[:12]
 
-
 def topics(as_json=False):
     idx = _variants_index()
     cand = {t: v for t, v in idx.items() if len(v) >= 2}
@@ -86,8 +76,7 @@ def topics(as_json=False):
     print("\nСкелет по теме: `python tools/synthesis_helper.py report <topic>`")
     return 0
 
-
-def report(topic, out_path=None):
+def report(topic, out_path=None, with_streams=False):
     idx = _variants_index()
     variants = idx.get(topic, [])
     if not variants:
@@ -133,6 +122,18 @@ def report(topic, out_path=None):
     L.append("")
     L.append("## Расхождения → в решение — ЗАПОЛНИТЬ")
     L.append("- [ ] пункт спора · варианты сторон · доказательная база · что выбрать")
+    if with_streams:
+        L.append("")
+        L.append("### Файлы для детальных разногласий (Streams)")
+        for a in agents:
+            stream_rel = "streams/%s/%s-divergence.md" % (topic, a)
+            L.append("- [%s: %s](file:///%s)" % (a, stream_rel, os.path.abspath(os.path.join(ROOT, stream_rel)).replace("\\", "/")))
+            # Create the stream file if requested
+            stream_abs = os.path.join(ROOT, "streams", topic, "%s-divergence.md" % a)
+            if not os.path.exists(stream_abs):
+                os.makedirs(os.path.dirname(stream_abs), exist_ok=True)
+                with open(stream_abs, "w", encoding="utf-8") as sf:
+                    sf.write("---\ntopic: %s\nagent: %s\ntype: divergence-stream\n---\n\n# Разногласия от %s\n\n- [ ] Детализируйте здесь пункты, по которым вы не согласны с mainline консенсусом.\n" % (topic, a, a))
     L.append("")
     L.append("## Двойная перепроверка (D-018)")
     L.append("- **Техническая:** [ ] корректность · [ ] тесты · [ ] нет новой поверхности риска")
@@ -156,7 +157,6 @@ def report(topic, out_path=None):
         print(text)
     return 0
 
-
 def main():
     a = sys.argv[1:]
     if not a:
@@ -171,17 +171,17 @@ def main():
         i = rest.index("--out")
         if i + 1 < len(rest):
             out_path = rest[i + 1]
+    with_streams = "--with-streams" in rest
     try:
         if cmd == "topics":
             return topics(as_json=as_json)
         if cmd == "report" and pos:
-            return report(pos[0], out_path=out_path)
+            return report(pos[0], out_path=out_path, with_streams=with_streams)
     except Exception as exc:  # noqa: BLE001 — единая понятная ошибка
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

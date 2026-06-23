@@ -22,6 +22,7 @@ CLI:
 """
 import os
 import sys
+from _ioutil import configure_output
 import importlib.util
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,16 +30,7 @@ TOOLS = os.path.join(ROOT, "tools")
 FIXTURES = os.path.join(ROOT, "data", "fixtures")
 DEMO_ID = "demo-fixtures"
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _load_sandbox():
     """Load tools/sandbox.py as a module (reuse its S1/S3/S7 functions)."""
@@ -47,7 +39,6 @@ def _load_sandbox():
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
 
 def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
     """
@@ -97,7 +88,6 @@ def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
     result["structure"] = scan.get("structure", []) if isinstance(scan, dict) else []
     return result
 
-
 def main():
     a = sys.argv[1:]
     if "--help" in a or "-h" in a:
@@ -120,7 +110,6 @@ def main():
     print("  манифест: %s" % r["manifest"])
     print("  отчёт:    %s" % r["report"])
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

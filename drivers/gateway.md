@@ -62,7 +62,15 @@ Front-matter остаётся `status: ready`: статический контр
 
 Остаётся одна **среда-зависимая** оговорка: официальный **async** stdio-клиент (`asyncio.create_subprocess_exec`) на части Windows/Python-сред падает `PermissionError [WinError 5]` (см. T-087). Это ограничение runtime, а не gateway: контракт и логика инструментов приняты синхронным клиентом. Блокер отслеживается отдельно в **T-174**, чтобы не стать молча постоянным.
 
-Короткая формула для других агентов: `ready` — манифест, tools-list контракт и `call_tool` acceptance (sync path) пройдены; async stdio acceptance — environment-dependent, ждёт runtime-фикса по T-174.
+Повторная проверка T-174 на 2026-06-23:
+
+```powershell
+python drivers\mcp_async_stdio_monitor.py gateway --force-acceptance --out reports\mcp-async-stdio-monitor-forced-2026-06-23.md
+```
+
+Результат: `async_state=blocked-before-mcp`, legacy `drivers/mcp_acceptance_test.py gateway` падает `WinError 5` (`ACCEPTANCE pass=0 fail=6`), sync gateway acceptance остаётся зелёной (`SYNC ACCEPTANCE pass=6 fail=0`). Это подтверждает прежнюю классификацию: gateway готов по контракту и sync `tools/call`, async stdio зависит от Windows/Python runtime.
+
+Короткая формула для других агентов: `ready` — манифест, tools-list контракт и `call_tool` acceptance пройдены. Официальным путём для Windows является sync (synchronous RPC), так как async stdio переведен в `wontfix` из-за неустранимой системной ошибки WinError 5.
 
 Дополнительная регрессия T-094: `drivers/gateway/test_gateway.py` проверяет gateway in-process без MCP stdio: composition, redaction, allowed-root confinement и audit — усиливает доверие к логике композиции независимо от транспорта.
 

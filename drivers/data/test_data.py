@@ -4,16 +4,18 @@
 import os
 import sys
 import json
-import tempfile
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+DRIVERS_ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+sys.path.insert(0, DRIVERS_ROOT)
 import data_driver as dd
+from test_tmp import make_temp_dir
 
 
 def run():
-    d = tempfile.mkdtemp(prefix="data_test_")
+    d = make_temp_dir("data_test_")
     csvp = os.path.join(d, "t.csv")
     with open(csvp, "w", encoding="utf-8", newline="") as f:
         f.write("name,age,city\nAlice,30,NY\nBob,,LA\n")

@@ -27,12 +27,15 @@ CLI:
   python tools/conveyor.py plan <N> [--span 3]   # reduce-иерархия 3:1 для N продюсеров (бригады/дирижёры/глубина)
   python tools/conveyor.py status [--target N] [--idle M] [--json]
   python tools/conveyor.py next                  # кандидаты дозалива из перспективного бэклога
+  python tools/conveyor.py regulate [--json]      # advisory: increase/hold/decrease/process-first target
 """
 import os
 import re
 import sys
+from _ioutil import configure_output
 import json
 import datetime
+import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER = os.path.join(ROOT, "logs", "conveyor.json")
@@ -40,20 +43,10 @@ BACKLOG = os.path.join(ROOT, "темы", "perspective-backlog-2026-06-23.md")
 DEFAULT_TARGET = 2
 DEFAULT_IDLE_MIN = 20
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _now_iso():
     return datetime.datetime.now().replace(microsecond=0).isoformat()
-
 
 def load(path=LEDGER):
     if os.path.exists(path):
@@ -70,7 +63,6 @@ def load(path=LEDGER):
     d.setdefault("workflows", [])
     return d
 
-
 def save(d, path=LEDGER):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
@@ -79,17 +71,14 @@ def save(d, path=LEDGER):
         f.write("\n")
     os.replace(tmp, path)
 
-
 def _find(d, wid):
     for w in d["workflows"]:
         if w.get("id") == wid:
             return w
     return None
 
-
 def _touch(d, now=None):
     d["heartbeat"] = now or _now_iso()
-
 
 def cmd_launch(d, wid, label, kind="workflow", depends="none"):
     w = _find(d, wid)
@@ -101,7 +90,6 @@ def cmd_launch(d, wid, label, kind="workflow", depends="none"):
                                "state": "inflight", "launched": _now_iso(), "depends_on": depends})
     _touch(d)
     return "launch: %s (%s) inflight" % (label, wid)
-
 
 def _set_state(d, wid, state, output=None):
     w = _find(d, wid)
@@ -116,7 +104,6 @@ def _set_state(d, wid, state, output=None):
         msg += " output=%s" % output
     return msg
 
-
 def _age_min(ts, now):
     if not ts:
         return None
@@ -125,7 +112,6 @@ def _age_min(ts, now):
     except ValueError:
         return None
     return round((now - t0).total_seconds() / 60.0, 1)
-
 
 def assess(d, now, target=None, idle_min=None):
     """Чистая оценка состояния конвейера. now — datetime; target/idle переопределяют ledger."""
@@ -167,7 +153,6 @@ def assess(d, now, target=None, idle_min=None):
         "healthy": not actions,
     }
 
-
 def render_status(a):
     L = ["=" * 56, "CONVEYOR — надзиратель конвейера воркфлоу", "=" * 56,
          "in-flight: %d / цель %d   landed-ждут: %d   shipped: %d"
@@ -189,30 +174,140 @@ def render_status(a):
     L.append("=" * 56)
     return "\n".join(L)
 
+def _assurance_summary():
+    """Read-only assurance summary for regulate. Failure is a hold signal, not a crash."""
+    p = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "assurance.py"), "all", "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", stdin=subprocess.DEVNULL)
+    try:
+        data = json.loads(p.stdout or "{}")
+        sections = data.get("sections") or []
+        findings = sum(len(s.get("findings") or []) for s in sections)
+        return {"ok": p.returncode == 0 and findings == 0,
+                "findings": findings,
+                "sections": [s.get("name") for s in sections],
+                "returncode": p.returncode}
+    except ValueError:
+        return {"ok": False, "findings": 1, "sections": [],
+                "returncode": p.returncode, "error": "assurance output is not JSON"}
 
+def classify_landed_outputs(d, root=ROOT):
+    """Classify landed outputs when paths are local and readable. Best-effort/read-only."""
+    out = []
+    try:
+        import result_intake
+    except Exception as exc:  # noqa: BLE001
+        return [{"error": "result_intake unavailable: %s" % exc}]
+    for w in d.get("workflows", []):
+        if w.get("state") != "landed" or not w.get("output"):
+            continue
+        raw = w.get("output")
+        path = raw if os.path.isabs(raw) else os.path.join(root, raw)
+        if not os.path.exists(path):
+            out.append({"id": w.get("id"), "label": w.get("label", w.get("id")),
+                        "output": raw, "error": "output path missing"})
+            continue
+        try:
+            r = result_intake.classify_path(path, root=root)
+            out.append({"id": w.get("id"), "label": w.get("label", w.get("id")),
+                        "output": raw, "class": r.get("class"),
+                        "confidence": r.get("confidence")})
+        except Exception as exc:  # noqa: BLE001
+            out.append({"id": w.get("id"), "label": w.get("label", w.get("id")),
+                        "output": raw, "error": str(exc)})
+    return out
+
+def regulate(d, now, target=None, idle_min=None, assurance=None, classifications=None):
+    """Advisory target sizing. Does not mutate ledger or launch agents.
+
+    Recommendations:
+      process-first: landed/missing output must be processed before scaling;
+      decrease: orchestration is stale, reduce pressure by one target slot;
+      hold: keep target and either refill to it or fix verification;
+      increase: clean/healthy enough to raise target by one.
+    """
+    a = assess(d, now, target=target, idle_min=idle_min)
+    target = a["target"]
+    classifications = classifications or []
+    assurance = assurance if assurance is not None else {"ok": True, "findings": 0}
+    reasons = []
+    recommendation = "hold"
+    delta = 0
+
+    if a.get("landed_without_output"):
+        recommendation = "process-first"
+        delta = -1 if target > 1 else 0
+        reasons.append("landed workflow without output reference: %s" % ", ".join(a["landed_without_output"]))
+    elif a.get("n_landed", 0) > 0:
+        recommendation = "process-first"
+        reasons.append("%d landed workflow(s) wait for intake/synthesis" % a["n_landed"])
+        if classifications:
+            reasons.append("landed classes: %s" % ", ".join(
+                "%s=%s" % (c.get("label", c.get("id", "?")), c.get("class", c.get("error", "unknown")))
+                for c in classifications))
+    elif a.get("idle_age_min") is not None and a["idle_age_min"] > a.get("idle_min", idle_min or DEFAULT_IDLE_MIN):
+        recommendation = "decrease"
+        delta = -1 if target > 1 else 0
+        reasons.append("orchestrator idle %.1f min; tick/land/ship before growing fleet" % a["idle_age_min"])
+    elif not assurance.get("ok", True):
+        recommendation = "hold"
+        reasons.append("assurance has %s finding(s); verify before scaling" % assurance.get("findings", "?"))
+    elif a.get("deficit", 0) > 0:
+        recommendation = "hold"
+        reasons.append("refill existing target first: deficit %d" % a["deficit"])
+    elif a.get("healthy"):
+        recommendation = "increase"
+        delta = 1
+        reasons.append("conveyor full, no landed backlog, assurance clean")
+    else:
+        reasons.append("no safe scaling signal; keep target")
+
+    return {
+        "schema": "conveyor_regulate.v1",
+        "recommendation": recommendation,
+        "target": target,
+        "target_delta": delta,
+        "recommended_target": max(1, target + delta),
+        "reasons": reasons,
+        "assessment": a,
+        "assurance": assurance,
+        "landed_classifications": classifications,
+        "mutates": False,
+    }
+
+def render_regulate(r):
+    lines = ["=" * 56, "CONVEYOR REGULATE — advisory target sizing", "=" * 56]
+    lines.append("recommendation: %s" % r["recommendation"])
+    lines.append("target: %d %+d -> %d" % (r["target"], r["target_delta"], r["recommended_target"]))
+    lines.append("mutates: %s" % r["mutates"])
+    lines.append("-")
+    for reason in r["reasons"]:
+        lines.append("- " + reason)
+    if r.get("landed_classifications"):
+        lines.append("")
+        lines.append("landed classifications:")
+        for c in r["landed_classifications"]:
+            lines.append("- %s: %s" % (c.get("label", c.get("id", "?")), c.get("class", c.get("error", "unknown"))))
+    lines.append("=" * 56)
+    return "\n".join(lines)
 def _backlog_key(text):
     return re.split(r"[:(]", text or "")[0].strip()
-
 
 def _norm_key(text):
     return re.sub(r"[^0-9a-zа-яё]+", " ", (text or "").lower()).strip()
 
-
 def _compact_key(text):
     return re.sub(r"[^0-9a-zа-яё]+", "", (text or "").lower())
-
 
 def _workflow_index(workflows):
     raw = " ".join((w.get("label", "") + " " + w.get("id", "")) for w in workflows)
     return _norm_key(raw), _compact_key(raw)
-
 
 def _candidate_seen(item, launched_norm, launched_compact):
     key = _backlog_key(item)
     norm = _norm_key(key)
     compact = _compact_key(key)
     return bool((norm and norm in launched_norm) or (len(compact) >= 8 and compact in launched_compact))
-
 
 def backlog_candidates(d, path=BACKLOG):
     """Темы из «Готовы к запуску» бэклога, ещё НЕ заведённые в реестр (нормализованный label/id dedup)."""
@@ -229,7 +324,6 @@ def backlog_candidates(d, path=BACKLOG):
         if not _candidate_seen(it, launched_norm, launched_compact):
             out.append(it.strip())
     return out
-
 
 def plan_hierarchy(n_producers, span=3):
     """Reduce-дерево с фан-ином `span` (3:1 span-of-control): producers → integrators →
@@ -252,7 +346,6 @@ def plan_hierarchy(n_producers, span=3):
         count = parents
     return layers
 
-
 def render_plan(n, span, layers):
     integr = sum(L["count"] for L in layers if L["level"] >= 1)
     top = layers[-1]["count"]
@@ -270,10 +363,8 @@ def render_plan(n, span, layers):
     out.append("=" * 60)
     return "\n".join(out)
 
-
 def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
-
 
 def main():
     a = sys.argv[1:]
@@ -321,6 +412,18 @@ def main():
             else:
                 print(render_status(res))
             return 1 if not res["healthy"] else 0
+        if cmd == "regulate":
+            target = int(_arg(a, "--target", d.get("target_min", DEFAULT_TARGET)))
+            idle = int(_arg(a, "--idle", d.get("idle_min", DEFAULT_IDLE_MIN)))
+            assurance = {"ok": True, "findings": 0, "sections": [], "skipped": True} if "--no-assurance" in a else _assurance_summary()
+            classes = classify_landed_outputs(d)
+            res = regulate(d, datetime.datetime.now(), target=target, idle_min=idle,
+                           assurance=assurance, classifications=classes)
+            if "--json" in a:
+                print(json.dumps(res, ensure_ascii=False, indent=2))
+            else:
+                print(render_regulate(res))
+            return 0
         if cmd == "next":
             cands = backlog_candidates(d)
             if not cands:
@@ -335,7 +438,6 @@ def main():
         return 1
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

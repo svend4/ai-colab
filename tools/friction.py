@@ -17,8 +17,11 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
+from _ioutil import configure_output
+import tempfile
 import time
 
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -87,9 +90,9 @@ REGISTRY = [
         "name": "TEMP PermissionError",
         "symptom": "%TEMP% or tempfile creates a directory that Python cannot write into.",
         "recipe": [
-            "Use project tmp-work/ or C:\\tmp for tests.",
-            "Prefer drivers/test_tmp.py for hermetic tests.",
-            "Do not close runtime acceptance until the project-safe temp path is tested.",
+            "Use drivers/test_tmp.py / project tmp-work for hermetic tests.",
+            "Do not rely on tempfile.mkdtemp() / TemporaryDirectory() in this Windows runtime unless probed.",
+            "Do not close runtime acceptance until nested temp-directory write is tested.",
         ],
         "docs": ["docs/friction-ledger.md", "docs/files-mcp-acceptance-blocked-2026-06-21.md"],
         "aliases": ["temp", "permissionerror", "tmp-work"],
@@ -291,20 +294,10 @@ for item in REGISTRY:
     for alias in item.get("aliases", []):
         ALIASES[alias.lower()] = item["id"]
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def rel(path):
     return path.replace("\\", "/")
-
 
 def run_cmd(*args, timeout=30):
     try:
@@ -327,11 +320,9 @@ def run_cmd(*args, timeout=30):
             out += str(exc.stderr)
         return {"rc": 124, "out": out, "timeout": True}
 
-
 def first_lines(text, limit=4):
     lines = [line.strip() for line in (text or "").splitlines() if line.strip()]
     return lines[:limit]
-
 
 def make_check(fid, status, summary, evidence=None, recipe_hint=None):
     item = BY_ID[fid]
@@ -345,13 +336,11 @@ def make_check(fid, status, summary, evidence=None, recipe_hint=None):
         "docs": item.get("docs", []),
     }
 
-
 def normalize_status_path(line):
     path = line[3:].strip() if len(line) >= 3 else line.strip()
     if " -> " in path:
         path = path.split(" -> ", 1)[1]
     return rel(path.strip('"'))
-
 
 def git_status_paths(status_text):
     rows = []
@@ -361,11 +350,9 @@ def git_status_paths(status_text):
         rows.append({"raw": raw, "path": normalize_status_path(raw)})
     return rows
 
-
 def path_matches(path, candidates):
     p = rel(path)
     return p in candidates or any(p.startswith(c.rstrip("/") + "/") for c in candidates)
-
 
 def check_git_status(status_text, agent=None, task_files=None):
     rows = git_status_paths(status_text)
@@ -418,7 +405,6 @@ def check_git_status(status_text, agent=None, task_files=None):
         checks.append(make_check("F-015", "ok", "working tree is clean at this check"))
     return checks
 
-
 def check_volatile_tracking(tracked_out, ignore_text):
     tracked = [rel(line.strip()) for line in (tracked_out or "").splitlines() if line.strip()]
     missing_ignore = [p for p in VOLATILE if p not in (ignore_text or "")]
@@ -433,7 +419,6 @@ def check_volatile_tracking(tracked_out, ignore_text):
         return make_check("F-008", "warn", "volatile files are not fully listed in .gitignore", evidence=evidence)
     return make_check("F-008", "ok", "volatile files are untracked and ignored")
 
-
 def check_generate(rc, out):
     if rc != 0 or "STALE" in (out or ""):
         return make_check(
@@ -443,7 +428,6 @@ def check_generate(rc, out):
         )
     return make_check("F-007", "ok", "generated indexes are current")
 
-
 def check_commit_lock(out):
     text = out or ""
     if "свободен" in text or "free" in text.lower():
@@ -451,7 +435,6 @@ def check_commit_lock(out):
     if "протух" in text or "stale" in text.lower():
         return make_check("F-005", "warn", "commit-lock appears stale", evidence=first_lines(text, 4))
     return make_check("F-005", "warn", "commit-lock may be held", evidence=first_lines(text, 4))
-
 
 def check_pipeline(out):
     text = out or ""
@@ -466,13 +449,11 @@ def check_pipeline(out):
         checks.append(make_check("F-010", "ok", "no orphan doing task found in pipeline output"))
     return checks
 
-
 def check_drift(rc, out):
     text = out or ""
     if rc != 0 or "ДРЕЙФ" in text or "STALE" in text:
         return make_check("F-011", "warn", "drift_check reports drift or failed", evidence=first_lines(text, 8))
     return make_check("F-011", "ok", "drift_check reports no drift", evidence=first_lines(text, 2))
-
 
 def check_gate_poison(rc, out):
     """F-020: общий validate-гейт КРАСНЫЙ (ERROR=N>0) — pre-commit блокирует коммиты всем.
@@ -491,37 +472,58 @@ def check_gate_poison(rc, out):
         )
     return make_check("F-020", "ok", "общий validate-гейт зелёный")
 
-
 def check_stream(rc, out):
     text = out or ""
     if rc != 0:
         return make_check("F-013", "warn", "stream lifecycle check reports stale/broken streams", evidence=first_lines(text, 8))
     return make_check("F-013", "ok", "stream lifecycle check is clean", evidence=first_lines(text, 2))
 
-
 def check_temp_probe(root=ROOT):
     base = os.path.join(root, "tmp-work")
     probe_dir = os.path.join(base, "friction-probe-%d-%d" % (int(time.time()), os.getpid()))
     probe_file = os.path.join(probe_dir, "probe.txt")
+    std_dir = None
     try:
         os.makedirs(probe_dir, exist_ok=False)
         with open(probe_file, "w", encoding="utf-8", newline="\n") as f:
             f.write("ok\n")
         with open(probe_file, encoding="utf-8") as f:
             f.read()
+
+        std_status = "ok"
+        std_evidence = []
+        try:
+            std_dir = tempfile.mkdtemp(prefix="stdlib-temp-probe_", dir=base)
+            std_file = os.path.join(std_dir, "probe.txt")
+            with open(std_file, "w", encoding="utf-8", newline="\n") as f:
+                f.write("ok\n")
+            with open(std_file, encoding="utf-8") as f:
+                f.read()
+        except OSError as exc:
+            std_status = "warn"
+            std_evidence = ["stdlib tempfile probe failed: %r" % (exc,), rel(std_dir or base)]
+
         try:
             os.remove(probe_file)
             os.rmdir(probe_dir)
+            if std_dir:
+                shutil.rmtree(std_dir, ignore_errors=True)
         except OSError:
             pass
-        return make_check("F-004", "ok", "project tmp-work is writable", evidence=[rel(os.path.relpath(base, root))])
+
+        if std_status == "warn":
+            return make_check(
+                "F-004", "warn", "project tmp-work helper works, but stdlib tempfile is unsafe",
+                evidence=[rel(os.path.relpath(base, root))] + std_evidence,
+                recipe_hint="Use drivers/test_tmp.py / project-safe os.makedirs helper instead of tempfile.mkdtemp().",
+            )
+        return make_check("F-004", "ok", "project tmp-work and stdlib tempfile probe are writable", evidence=[rel(os.path.relpath(base, root))])
     except OSError as exc:
         return make_check(
             "F-004", "fail", "project tmp-work probe failed",
             evidence=[repr(exc), rel(probe_dir)],
-            recipe_hint="Set TEMP/TMP/TMPDIR to project tmp-work or use C:\\tmp before running tests.",
+            recipe_hint="Use drivers/test_tmp.py / project tmp-work after fixing workspace temp permissions.",
         )
-
 
 def check_runtime_identity():
     return make_check(
@@ -529,7 +531,6 @@ def check_runtime_identity():
         evidence=[sys.executable, sys.version.split()[0]],
         recipe_hint="If larger commands hang, fall back to short timeout-wrapped checks.",
     )
-
 
 def check_sandbox_contract():
     required = [
@@ -543,7 +544,6 @@ def check_sandbox_contract():
         return make_check("F-012", "warn", "external-code sandbox contract is incomplete", evidence=missing)
     return make_check("F-012", "ok", "external-code sandbox contract exists", evidence=required)
 
-
 def check_top_wrapper():
     top_path = os.path.join(ROOT, "tools", "top.py")
     try:
@@ -554,7 +554,6 @@ def check_top_wrapper():
     if "friction" in text:
         return make_check("F-014", "ok", "top-level friction button is available", evidence=["python tools/top.py friction"])
     return make_check("F-014", "warn", "top-level friction button is not wired", evidence=["python tools/friction.py status"])
-
 
 def check_skill_links():
     path = os.path.join(ROOT, "skills", "repo-friction-playbook", "SKILL.md")
@@ -568,7 +567,6 @@ def check_skill_links():
     if missing:
         return make_check("F-018", "warn", "repo-friction skill misses canonical links", evidence=missing)
     return make_check("F-018", "ok", "repo-friction skill points to canonical docs/tool", evidence=required)
-
 
 def collect_status(args):
     checks = []
@@ -620,7 +618,6 @@ def collect_status(args):
     checks.append(check_skill_links())
     return checks
 
-
 def recommendation(checks):
     by_id = {}
     for ch in checks:
@@ -638,11 +635,9 @@ def recommendation(checks):
         return "LEVEL 0 WITH CAUTION: fix listed governance/runtime warnings before commit."
     return "LEVEL 0 OK: shared tree is acceptable; use commit_lock + explicit staging for commits."
 
-
 def status_payload(args):
     checks = collect_status(args)
     return {"root": ROOT, "recommendation": recommendation(checks), "checks": checks}
-
 
 def print_status(payload):
     print("FRICTION STATUS")
@@ -660,13 +655,11 @@ def print_status(payload):
     print("")
     print("Recipes: python tools/friction.py recipe <F-id>")
 
-
 def resolve_fid(value):
     if not value:
         return None
     key = value.strip().lower()
     return ALIASES.get(key)
-
 
 def recipe_text(fid):
     item = BY_ID[fid]
@@ -679,7 +672,6 @@ def recipe_text(fid):
             lines.append("- %s" % doc)
     return "\n".join(lines)
 
-
 def cmd_status(args):
     payload = status_payload(args)
     if args.json:
@@ -690,7 +682,6 @@ def cmd_status(args):
         return 1
     return 0
 
-
 def cmd_recipe(args):
     fid = resolve_fid(args.id_or_alias)
     if not fid:
@@ -698,7 +689,6 @@ def cmd_recipe(args):
         return 1
     print(recipe_text(fid))
     return 0
-
 
 def cmd_list(args):
     if args.json:
@@ -711,7 +701,6 @@ def cmd_list(args):
     for item in REGISTRY:
         print("| %s | %s | %s |" % (item["id"], item["name"], item["symptom"]))
     return 0
-
 
 def build_parser():
     parser = argparse.ArgumentParser(description="Diagnose repeated repository friction and print recipes.")
@@ -737,7 +726,6 @@ def build_parser():
 
     return parser
 
-
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -745,7 +733,6 @@ def main(argv=None):
         parser.print_help()
         return 2
     return args.func(args)
-
 
 if __name__ == "__main__":
     sys.exit(main())

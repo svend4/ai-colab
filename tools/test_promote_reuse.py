@@ -6,12 +6,15 @@ Hermetic: строит временную пирамиду (--root), реаль�
 """
 import os
 import sys
-import tempfile
+import shutil
 
 os.environ.setdefault("PYTHONUTF8", "1")
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(ROOT, "drivers"))
 import promote
+from test_tmp import make_temp_dir
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -58,7 +61,8 @@ def _build(root):
 
 def main():
     fails = []
-    with tempfile.TemporaryDirectory() as root:
+    root = make_temp_dir("promote_reuse_")
+    try:
         _build(root)
         reuse = promote.derive_reuse(root)
 
@@ -90,6 +94,8 @@ def main():
                                             {"decision_ref": "D-016"}, root))
         if not gate_bb2.get("reuse_across_portals"):
             fails.append("bb.py + decision-ref: reuse_across_portals должен пройти (override)")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
 
     if fails:
         print("FAIL test_promote_reuse:")

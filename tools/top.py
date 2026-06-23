@@ -10,8 +10,9 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py assurance [section] [--json] [--strict]  # apex verifiability dashboard
+    python tools/top.py advice <agent> [T-id]   # activate existing advice against current symptoms
     python tools/top.py health                   # validation/generator/capability checks
-    python tools/top.py agent-start <agent> [--context QUERY]  # onboard + current state + repo search
+    python tools/top.py agent-start <agent> [--task T-id] [--context QUERY]  # onboard + current advice + repo search
     python tools/top.py instruction-preflight <agent> [T-id]  # applicable rules + evidence template
     python tools/top.py take <agent> [T-id]      # side effect: pipeline next or targeted claim
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
@@ -27,21 +28,14 @@ import json
 import os
 import subprocess
 import sys
+from _ioutil import configure_output
+import result_intake
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable
 MAX_LINES = 140
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 _BUTTONS = [
     {
@@ -54,8 +48,8 @@ _BUTTONS = [
     {
         "id": "start-agent",
         "audience": "agent",
-        "command": "python tools/top.py agent-start <agent> [--context <query>]",
-        "does": "Подключить агента: onboarding, конвейер, дрейф, активные задачи и быстрый поиск по канону.",
+        "command": "python tools/top.py agent-start <agent> [--task T-id] [--context <query>]",
+        "does": "Подключить агента: onboarding, конвейер, дрейф, assurance, advice и быстрый поиск по канону.",
         "effect": "read-only",
     },
     {
@@ -64,6 +58,13 @@ _BUTTONS = [
         "command": "python tools/top.py instruction-preflight <agent> [T-id]",
         "does": "Показать task-scoped инструкции, evidence-блок и проверки перед работой/отчётом.",
         "effect": "read-only",
+    },
+    {
+        "id": "advice-activator",
+        "audience": "both",
+        "command": "python tools/top.py advice <agent> [T-id] [--parallel] [--hot-files]",
+        "does": "Найти уже существующие советы, применимые к текущим симптомам, и показать команды активации.",
+        "effect": "read-mostly",
     },
     {
         "id": "status",
@@ -142,6 +143,13 @@ _BUTTONS = [
         "effect": "read-only",
     },
     {
+        "id": "process-landed",
+        "audience": "both",
+        "command": "python tools/top.py process-landed [--json] [--all] [--topic <topic>]",
+        "does": "Составить read-only план обработки landed outputs: intake, evidence check, synthesis, commit/ship шаги.",
+        "effect": "read-only",
+    },
+    {
         "id": "cohort-self",
         "audience": "agent",
         "command": "python tools/cohort.py self --json",
@@ -189,6 +197,8 @@ _BUTTONS = [
         "command": "python tools/sandbox_intake_demo.py --out tmp-work/sandbox-demo",
         "does": "Показать read-only intake внешнего источника на безопасных fixture-данных.",
         "effect": "writes report under --out",
+        "status": "manual-demo",
+        "adoption": "keep-manual: fixture-only read-only proof; not dead code and not part of normal cycle",
     },
     {
         "id": "work-cycle",
@@ -213,10 +223,8 @@ _BUTTONS = [
     },
 ]
 
-
 def button_rows():
     return list(_BUTTONS)
-
 
 def format_buttons(rows=None):
     rows = rows or button_rows()
@@ -230,14 +238,11 @@ def format_buttons(rows=None):
         out.append("| {id} | {audience} | `{command}` | {effect} | {does} |".format(**row))
     return "\n".join(out)
 
-
 def _tool(script, *args):
     return [PY, os.path.join(ROOT, "tools", script), *args]
 
-
 def _driver(script, *args):
     return [PY, os.path.join(ROOT, "drivers", script), *args]
-
 
 def _run(label, cmd, timeout=45, fail_ok=False):
     print("\n===== %s =====" % label)
@@ -263,7 +268,6 @@ def _run(label, cmd, timeout=45, fail_ok=False):
             print(str(exc.stderr)[:4000])
         return 0 if fail_ok else 124
 
-
 def cmd_buttons(args):
     rows = button_rows()
     if args.json:
@@ -271,7 +275,6 @@ def cmd_buttons(args):
     else:
         print(format_buttons(rows))
     return 0
-
 
 def cmd_status(args):
     rc = 0
@@ -282,7 +285,6 @@ def cmd_status(args):
         rc = max(rc, _run("pipeline mine", _tool("pipeline.py", "mine", args.agent), timeout=20, fail_ok=True))
     return rc
 
-
 def cmd_friction(args):
     cmd = _tool("friction.py", "status")
     if args.json:
@@ -290,7 +292,6 @@ def cmd_friction(args):
     if args.strict:
         cmd.append("--strict")
     return _run("friction status", cmd, timeout=90)
-
 
 def cmd_assurance(args):
     cmd = _tool("assurance.py", args.section or "all")
@@ -302,6 +303,17 @@ def cmd_assurance(args):
         cmd += ["--max-age", str(args.max_age)]
     return _run("assurance", cmd, timeout=90, fail_ok=not args.strict)
 
+def cmd_advice(args):
+    cmd = _tool("advice.py", "current", args.agent)
+    if args.task:
+        cmd.append(args.task)
+    if args.parallel:
+        cmd.append("--parallel")
+    if args.hot_files:
+        cmd.append("--hot-files")
+    if args.json:
+        cmd.append("--json")
+    return _run("advice activator", cmd, timeout=120)
 
 def cmd_health(_args):
     rc = 0
@@ -318,16 +330,18 @@ def cmd_health(_args):
     _run("assurance (warning layer)", _tool("assurance.py", "all"), timeout=90, fail_ok=True)
     return rc
 
-
 def cmd_agent_start(args):
     rc = _run("onboard", _tool("onboard.py", args.agent), timeout=60)
     _run("top status", [PY, os.path.join(ROOT, "tools", "top.py"), "status", args.agent], timeout=90, fail_ok=True)
     _run("assurance (advisory)", _tool("assurance.py", "all"), timeout=90, fail_ok=True)
+    advice_cmd = _tool("advice.py", "current", args.agent)
+    if args.task:
+        advice_cmd.append(args.task)
+    _run("advice activator (advisory)", advice_cmd, timeout=120, fail_ok=True)
     if args.context:
         cmd = _tool("repo_search.py", "search", " ".join(args.context), "--limit", str(args.context_limit))
         _run("repo context search", cmd, timeout=90, fail_ok=True)
     return rc
-
 
 def cmd_instruction_preflight(args):
     cmd = _tool("instructions.py", "preflight", args.agent)
@@ -339,12 +353,10 @@ def cmd_instruction_preflight(args):
         cmd.append("--onboarding")
     return _run("instruction preflight", cmd, timeout=45)
 
-
 def cmd_take(args):
     if args.task:
         return _run("pipeline claim", _tool("pipeline.py", "claim", args.agent, args.task), timeout=45)
     return _run("pipeline next", _tool("pipeline.py", "next", args.agent), timeout=45)
-
 
 def cmd_snapshot(_args):
     rc = 0
@@ -358,7 +370,6 @@ def cmd_snapshot(_args):
         if step != 0:
             rc = step
     return rc
-
 
 def cmd_knowledge(args):
     cmd = _tool("knowledge.py", "report", args.corpus)
@@ -376,13 +387,11 @@ def cmd_repo_search(args):
         cmd.append("--json")
     return _run("repo search", cmd, timeout=90)
 
-
 def cmd_report_diff(args):
     cmd = _tool("report_diff.py", args.a, args.b)
     if args.out:
         cmd += ["--out", args.out]
     return _run("report diff", cmd, timeout=45)
-
 
 def cmd_conveyor(args):
     cmd = _tool("conveyor.py", "status")
@@ -405,24 +414,182 @@ def cmd_conveyor(args):
             return 124
     return _run("conveyor status", cmd, timeout=45, fail_ok=True)
 
+def _conveyor_status_payload(target=None, idle=None):
+    cmd = _tool("conveyor.py", "status", "--json")
+    if target is not None:
+        cmd += ["--target", str(target)]
+    if idle is not None:
+        cmd += ["--idle", str(idle)]
+    p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace", timeout=45)
+    if p.returncode not in (0, 1):
+        return {"error": "conveyor status failed", "returncode": p.returncode,
+                "stdout": p.stdout, "stderr": p.stderr}
+    try:
+        return json.loads(p.stdout or "{}")
+    except ValueError:
+        return {"error": "invalid conveyor json", "stdout": p.stdout, "stderr": p.stderr}
+
+def _load_conveyor_ledger():
+    path = os.path.join(ROOT, "logs", "conveyor.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (OSError, ValueError):
+        data = {}
+    return data.get("workflows", [])
+
+def _output_kind(path):
+    if not path or not os.path.exists(os.path.join(ROOT, path)):
+        return "result", []
+    try:
+        res = result_intake.classify_path(path)
+        return res["class"], res.get("recommended_next_checks", [])
+    except Exception:
+        # Fallback if parsing fails
+        p = (path or "").replace("\\", "/").lstrip("./")
+        if p.startswith("streams/"):
+            return "variant", []
+        if p.startswith("reports/"):
+            return "read-only-report", []
+        if p.startswith("queues/outbox/"):
+            return "agent-report", []
+        if p.startswith("docs/"):
+            return "docs-change", []
+        if p.startswith("tasks/") or p.startswith("questions/") or p.startswith("decisions/"):
+            return "governance-or-canon", []
+        return "result", []
+
+def _topic_slug(text):
+    chars = []
+    for ch in (text or "landed-result").lower():
+        if ch.isalnum():
+            chars.append(ch)
+        elif chars and chars[-1] != "-":
+            chars.append("-")
+    slug = "".join(chars).strip("-")
+    return slug[:64] or "landed-result"
+
+def _landed_plan_for(workflow, topic=None):
+    output = workflow.get("output") or "<missing-output>"
+    label = workflow.get("label") or workflow.get("id") or "landed-result"
+    kind, checks = _output_kind(output)
+    topic = topic or _topic_slug(label)
+
+    plan = []
+    if checks:
+        for c in checks:
+            plan.append(c.replace("<topic>", topic))
+    else:
+        plan = [
+            "python tools\\instructions.py check-report %s" % output,
+            "python tools\\validate.py",
+            "python tools\\generate.py --check",
+            "python tools\\top.py assurance all",
+        ]
+        if kind in {"variant", "agent-report", "read-only-report"}:
+            plan.append("python tools\\synthesis_helper.py report %s --out темы\\%s-synthesis.md" % (topic, topic))
+
+    plan.append("# after review/commit: python tools\\conveyor.py ship %s" % workflow.get("id", "<workflow-id>"))
+    return {"id": workflow.get("id"), "label": label, "output": output, "kind": kind,
+            "topic": topic, "output_exists": os.path.exists(os.path.join(ROOT, output)), "commands": plan}
+
+def _process_landed_payload(args):
+    status = _conveyor_status_payload(args.target, args.idle)
+    workflows = _load_conveyor_ledger()
+    landed = [w for w in workflows if w.get("state") == "landed"]
+    with_output = [w for w in landed if w.get("output")]
+    missing = [w for w in landed if not w.get("output")]
+    selected = with_output if args.all else with_output[:1]
+    plans = [_landed_plan_for(w, args.topic) for w in selected]
+    if missing:
+        state = "missing-output"
+    elif with_output:
+        state = "ready"
+    else:
+        state = "empty"
+    return {
+        "schema": "top_process_landed.v1",
+        "state": state,
+        "status": status,
+        "counts": {"landed": len(landed), "with_output": len(with_output), "missing_output": len(missing)},
+        "missing_output": [{"id": w.get("id"), "label": w.get("label")} for w in missing],
+        "plans": plans,
+        "advice": _process_landed_advice(state, status, missing),
+    }
+
+def _process_landed_advice(state, status, missing):
+    if state == "missing-output":
+        return [
+            "Stop new fan-out until every landed workflow has an output ref or a dismiss reason.",
+            "Attach output: python tools\\conveyor.py land <id> --output queues\\outbox\\<result>.md",
+            "Or dismiss: python tools\\conveyor.py dismiss <id> --reason \"no usable output\"",
+        ]
+    if state == "ready":
+        return [
+            "Process the selected output before raising target.",
+            "Verify evidence, classify the result, synthesize variants, then ship only after review/commit.",
+        ]
+    actions = status.get("actions") if isinstance(status, dict) else None
+    if actions:
+        return list(actions)
+    return ["No landed outputs. Keep target unchanged; wait for in-flight workflows or tick the conveyor."]
+
+def cmd_process_landed(args):
+    payload = _process_landed_payload(args)
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+    print("# Process landed plan")
+    print("")
+    status = payload.get("status", {})
+    if isinstance(status, dict) and "target" in status:
+        print("state: `%s`  target: `%s`  in-flight: `%s`  landed: `%s`" % (
+            payload["state"], status.get("target"), status.get("n_inflight"), status.get("n_landed")))
+    else:
+        print("state: `%s`" % payload["state"])
+    print("")
+    for item in payload["advice"]:
+        print("- %s" % item)
+    if payload["missing_output"]:
+        print("")
+        print("## Missing output refs")
+        for item in payload["missing_output"]:
+            print("- `%s` — %s" % (item.get("id") or "<id>", item.get("label") or "<label>"))
+    for plan in payload["plans"]:
+        print("")
+        print("## Selected landed output")
+        print("")
+        print("- workflow: `%s`" % plan["id"])
+        print("- label: %s" % plan["label"])
+        print("- output: `%s`" % plan["output"])
+        print("- class: `%s`" % plan["kind"])
+        print("- output exists: `%s`" % str(plan["output_exists"]).lower())
+        print("")
+        print("```powershell")
+        for cmd in plan["commands"]:
+            print(cmd)
+        print("```")
+    return 0
 
 def cmd_cycle(args):
     agent = args.agent
     print("# Safe agent work cycle for %s" % agent)
     print("")
     print("1. `python tools/top.py status %s`" % agent)
-    print("2. `python tools/top.py take %s`  # save claim_id" % agent)
-    print("3. `python tools/top.py repo-search \"<topic/query>\" --limit 5`  # raise canonical context")
-    print("4. inspect task + related docs")
-    print("5. make scoped edits; write outbox/topic rationale")
-    print("6. `python tools/top.py health`")
-    print("7. `python tools/pipeline.py done %s <T-id> --claim <claim_id> --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\"`" % agent)
-    print("8. `python tools/top.py snapshot`")
-    print("9. commit with `tools/commit_lock.py` + explicit `git add <files>`")
+    print("2. `python tools/top.py advice %s <T-id>`  # activate existing advice before repeating manual workarounds" % agent)
+    print("3. `python tools/top.py take %s`  # save claim_id" % agent)
+    print("4. `python tools/top.py instruction-preflight %s <T-id>`" % agent)
+    print("5. `python tools/top.py repo-search \"<topic/query>\" --limit 5`  # raise canonical context")
+    print("6. inspect task + related docs")
+    print("7. make scoped edits; write outbox/topic rationale")
+    print("8. `python tools/top.py health`")
+    print("9. `python tools/pipeline.py done %s <T-id> --claim <claim_id> --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\"`" % agent)
+    print("10. `python tools/top.py snapshot`")
+    print("11. commit with `tools/commit_lock.py` + explicit `git add <files>`")
     print("")
     print("Rule: if the decision is architectural or affects people/process, create a proposed decision and leave the task blocked for Stefan/integrator approval.")
     return 0
-
 
 def cmd_subagent_handoff(args):
     cmd = _tool("flow.py", "launch-plan", args.agent, args.task, *args.context)
@@ -443,14 +610,12 @@ def cmd_subagent_handoff(args):
             return 124
     return _run("subagent handoff", cmd, timeout=45)
 
-
 def _work_mode_choice(args):
     if args.mode in {"shared", "worktree"}:
         return args.mode
     if args.parallel or args.dirty_mainline or args.hot_files:
         return "worktree"
     return "shared"
-
 
 def cmd_work_mode(args):
     choice = _work_mode_choice(args)
@@ -499,7 +664,6 @@ def cmd_work_mode(args):
     print("Rule: D-021 keeps Level 0 as the default; Level 1 is explicit for real parallel load.")
     return 0
 
-
 def build_parser():
     parser = argparse.ArgumentParser(description="Top command panel for humans and agents.")
     sub = parser.add_subparsers(dest="cmd")
@@ -524,11 +688,20 @@ def build_parser():
     p.add_argument("--max-age", type=int)
     p.set_defaults(func=cmd_assurance)
 
+    p = sub.add_parser("advice", help="show existing advice applicable to current symptoms")
+    p.add_argument("agent")
+    p.add_argument("task", nargs="?")
+    p.add_argument("--parallel", action="store_true")
+    p.add_argument("--hot-files", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_advice)
+
     p = sub.add_parser("health", help="validate generated state and capability indexes")
     p.set_defaults(func=cmd_health)
 
     p = sub.add_parser("agent-start", help="onboard an agent")
     p.add_argument("agent")
+    p.add_argument("--task", help="optional T-id used by advice/preflight context")
     p.add_argument("--context", nargs="+", help="canonical repo-search query to run after status")
     p.add_argument("--context-limit", type=int, default=5)
     p.set_defaults(func=cmd_agent_start)
@@ -572,6 +745,14 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_conveyor)
 
+    p = sub.add_parser("process-landed", help="plan intake/verify/synthesis for landed workflow outputs")
+    p.add_argument("--target", type=int)
+    p.add_argument("--idle", type=int)
+    p.add_argument("--topic")
+    p.add_argument("--all", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_process_landed)
+
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")
     p.set_defaults(func=cmd_cycle)
@@ -595,7 +776,6 @@ def build_parser():
 
     return parser
 
-
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -603,7 +783,6 @@ def main(argv=None):
         parser.print_help()
         return 2
     return args.func(args)
-
 
 if __name__ == "__main__":
     sys.exit(main())

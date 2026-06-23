@@ -10,28 +10,19 @@ Onboard (C3, консенсус Claude+Codex) — одна команда вхо
 """
 import os
 import sys
+from _ioutil import configure_output
 import json
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CAPS = os.path.join(ROOT, "system-capabilities.json")
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
-
 configure_output()
-
 
 def _run(script, *args):
     p = subprocess.run([sys.executable, os.path.join(ROOT, "tools", script), *args],
                        cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
     return p.returncode, (p.stdout or "") + (p.stderr or "")
-
 
 def _caps():
     try:
@@ -39,7 +30,6 @@ def _caps():
             return json.load(f)
     except (OSError, ValueError):
         return None
-
 
 def onboard(agent=None):
     line = "=" * 60
@@ -86,12 +76,10 @@ def onboard(agent=None):
     print(line)
     return 0
 
-
 def main():
     a = sys.argv[1:]
     agent = a[0] if a and not a[0].startswith("-") else None
     return onboard(agent)
-
 
 if __name__ == "__main__":
     sys.exit(main())

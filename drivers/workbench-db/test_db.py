@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """Tests for workbench-db."""
 
-import tempfile
 import os
 import sys
 from pathlib import Path
 
-# Add parent to path
-sys.path.insert(0, str(Path(__file__).parent))
+# Add parent and shared driver test helpers to path
+HERE = str(Path(__file__).parent)
+DRIVERS_ROOT = str(Path(__file__).parent.parent)
+sys.path.insert(0, HERE)
+sys.path.insert(0, DRIVERS_ROOT)
 
 from init import init_db
 from query import insert_document, search_documents, list_documents, log_event, get_audit, upsert_driver, get_driver_stats
+from test_tmp import temp_dir
 
 
 def test_init():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("workbench_db_") as tmp:
         db = os.path.join(tmp, "test.db")
         init_db(db)
         assert os.path.exists(db)
@@ -22,7 +25,7 @@ def test_init():
 
 
 def test_insert_and_search():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("workbench_db_") as tmp:
         db = os.path.join(tmp, "test.db")
         init_db(db)
         
@@ -38,7 +41,7 @@ def test_insert_and_search():
 
 
 def test_list_by_risk():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("workbench_db_") as tmp:
         db = os.path.join(tmp, "test.db")
         init_db(db)
         
@@ -52,7 +55,7 @@ def test_list_by_risk():
 
 
 def test_audit_log():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("workbench_db_") as tmp:
         db = os.path.join(tmp, "test.db")
         init_db(db)
         
@@ -68,7 +71,7 @@ def test_audit_log():
 
 
 def test_driver_stats():
-    with tempfile.TemporaryDirectory() as tmp:
+    with temp_dir("workbench_db_") as tmp:
         db = os.path.join(tmp, "test.db")
         init_db(db)
         

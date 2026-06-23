@@ -15,15 +15,8 @@
 import os
 import re
 import sys
+from _ioutil import configure_output
 import glob
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -32,9 +25,7 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
 )
 PRIO = {"high": 0, "normal": 1, "low": 2, "": 3}
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def load_tasks():
     tasks = {}
@@ -52,7 +43,6 @@ def load_tasks():
             "deps": re.findall(r"T-\d+", fm.get("depends_on", "")),
         }
     return tasks
-
 
 def main():
     tasks = load_tasks()
@@ -76,7 +66,6 @@ def main():
     for t, unmet in blocked:
         print("  [%s] %s — ждёт: %s" % (t["priority"] or "—", t["id"], ", ".join(unmet)))
     return 0
-
 
 if __name__ == "__main__":
     sys.exit(main())

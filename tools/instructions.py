@@ -17,6 +17,7 @@ import os
 import re
 import subprocess
 import sys
+from _ioutil import configure_output
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
@@ -26,14 +27,6 @@ try:
 except ImportError:  # pragma: no cover - fallback for copied standalone use
     def parse_front_matter(text):
         return {}
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -52,7 +45,7 @@ INSTRUCTIONS = [
         "scope": "all",
         "why": "append-only полилог, D-003 обоснование правок, pipeline, streams, уровни папок",
         "evidence": "указать, где оставлен outbox/topic rationale и почему общие файлы менялись так",
-        "surfaces": ["D-002", "D-003", "D-004", "D-008"],
+        "surfaces": ["D-001", "D-002", "D-003", "D-004", "D-008"],
     },
     {
         "id": "human-map",
@@ -124,6 +117,15 @@ INSTRUCTIONS = [
         "scope": "external-code",
         "why": "условия до любого execute чужого кода",
         "evidence": "указать, что execute не включался без accepted decision",
+        "surfaces": ["D-014"],
+    },
+    {
+        "id": "driver-catalog-schema",
+        "path": "drivers/SCHEMA.md",
+        "scope": "drivers",
+        "why": "drivers/ как L1-каталог возможностей; schema v1, safety-поля и manifest-контракт драйвера",
+        "evidence": "для driver-задач указать schema v1/checks, catalog/generate и read-only/execute boundary",
+        "surfaces": ["D-010", "D-013"],
     },
     {
         "id": "instruction-assurance",
@@ -147,16 +149,14 @@ CORE_IDS = [
 ONBOARDING_IDS = ["human-map", "agent-onboarding"]
 DIRTY_IDS = ["parallel-work-policy", "commit-stream-policy"]
 EXTERNAL_IDS = ["external-sandbox", "execute-preflight"]
+DRIVER_IDS = ["driver-catalog-schema"]
 VARIANT_IDS = ["commit-stream-policy", "parallel-work-policy"]
-
 
 def rel(path):
     return path.replace("\\", "/")
 
-
 def repo_path(relpath):
     return os.path.join(ROOT, relpath.replace("/", os.sep))
-
 
 def read_text(relpath):
     try:
@@ -165,10 +165,8 @@ def read_text(relpath):
     except OSError:
         return ""
 
-
 def file_exists(relpath):
     return os.path.exists(repo_path(relpath))
-
 
 def run_cmd(*args, timeout=20):
     try:
@@ -191,7 +189,6 @@ def run_cmd(*args, timeout=20):
             out += str(exc.stderr)
         return 124, out
 
-
 def git_status_paths():
     rc, out = run_cmd("git", "status", "--short", "--untracked-files=all", timeout=20)
     if rc != 0:
@@ -206,7 +203,6 @@ def git_status_paths():
         paths.append(rel(path))
     return paths
 
-
 def instruction_entry(item, reason=None):
     path = item["path"]
     return {
@@ -219,7 +215,6 @@ def instruction_entry(item, reason=None):
         "surfaces": list(item.get("surfaces", [])),
     }
 
-
 def _instruction_level(path):
     """Уровень пирамиды для файла инструкции (через promote.level_of); base-файлы → 'base'."""
     try:
@@ -228,7 +223,6 @@ def _instruction_level(path):
     except Exception:  # noqa: BLE001
         lvl = None
     return lvl or "base"
-
 
 def trace(decision_id):
     """READ-ONLY: проследить базовое решение D-NNN → инструкция(и)-поверхность → уровень → апекс.
@@ -246,7 +240,6 @@ def trace(decision_id):
     return {"decision": did, "surfaced_by": out, "grounded": bool(out),
             "apex": "tools/assurance.py section_flow (apex dashboard)"}
 
-
 def cmd_trace(args):
     res = trace(args.decision)
     if getattr(args, "json", False):
@@ -261,7 +254,6 @@ def cmd_trace(args):
         print("  surface: %-18s (%s, уровень: %s)" % (s["id"], s["path"], s["level"]))
     print("  → апекс: %s" % res["apex"])
     return 0
-
 
 def task_context(task_id):
     if not task_id:
@@ -285,7 +277,6 @@ def task_context(task_id):
         "front_matter": fm,
     }
 
-
 def text_keywords(ctx):
     if not ctx:
         return ""
@@ -294,11 +285,9 @@ def text_keywords(ctx):
         fields.append(read_text(ctx["path"])[:4000])
     return "\n".join(fields).lower()
 
-
 def add_unique(out, item):
     if item["id"] not in {x["id"] for x in out}:
         out.append(item)
-
 
 def build_preflight(agent=None, task_id=None, include_onboarding=False):
     ctx = task_context(task_id) if task_id else None
@@ -341,6 +330,10 @@ def build_preflight(agent=None, task_id=None, include_onboarding=False):
         for ident in EXTERNAL_IDS:
             add_unique(selected, instruction_entry(BY_ID[ident]))
 
+    if any(word in kw for word in ["driver", "drivers", "mcp", "schema", "catalog", "драйвер", "драйверы", "каталог"]):
+        for ident in DRIVER_IDS:
+            add_unique(selected, instruction_entry(BY_ID[ident]))
+
     if any(word in kw for word in ["synthesis", "variant", "stream", "fork", "синтез", "вариант", "ручей", "расхожд"]):
         for ident in VARIANT_IDS:
             add_unique(selected, instruction_entry(BY_ID[ident]))
@@ -376,17 +369,14 @@ def build_preflight(agent=None, task_id=None, include_onboarding=False):
         "evidence_template": evidence,
     }
 
-
 def manifest_payload():
     return {"instructions": [instruction_entry(item) for item in INSTRUCTIONS]}
-
 
 def format_manifest(payload):
     lines = ["# Instruction manifest", "", "| ID | Scope | Exists | Path | Why |", "|---|---|---|---|---|"]
     for item in payload["instructions"]:
         lines.append("| {id} | {scope} | {exists} | `{path}` | {why} |".format(**item))
     return "\n".join(lines)
-
 
 def format_preflight(payload):
     task = payload.get("task") or {}
@@ -413,7 +403,6 @@ def format_preflight(payload):
     lines.extend(["```", ""])
     return "\n".join(lines)
 
-
 def check_report_text(text):
     """Return missing evidence tokens for an outbox report or pipeline done marker."""
     with_leading_nl = "\n" + text
@@ -429,7 +418,6 @@ def check_report_text(text):
         missing.append("Checks:")
     return missing
 
-
 KNOWN_REPO_EXTS = (".md", ".markdown", ".py", ".json", ".txt", ".text", ".ps1", ".yaml", ".yml")
 KNOWN_REPO_ROOTS = {
     "AGENTS.md", "PROTOCOL.md", "STATUS.md", "TASKS.md", "QUESTIONS.md", "DECISIONS.md",
@@ -437,7 +425,6 @@ KNOWN_REPO_ROOTS = {
     "collab", "sandbox", "streams", "reports", "tmp-work", "data", "skills", "темы",
 }
 CHECK_RUNNERS = {"python", "python3", "py", "pytest", "pwsh", "powershell", "git", "node", "npm", "bash", "sh"}
-
 
 def _clean_ref(value):
     ref = (value or "").strip().strip("`'\".,;:()[]{}<>").replace("\\", "/")
@@ -455,14 +442,12 @@ def _clean_ref(value):
         return None
     return ref
 
-
 def _ref_exists(root, ref):
     if os.path.exists(os.path.join(root, ref)):
         return True
     if "/" not in ref and ref.endswith(".py"):
         return os.path.exists(os.path.join(root, "tools", ref))
     return False
-
 
 def _candidate_refs(text):
     seen = set()
@@ -477,14 +462,12 @@ def _candidate_refs(text):
             refs.append(ref)
     return refs
 
-
 def _clean_check_command(value):
     cmd = (value or "").strip().lstrip("-* ").strip().strip("`")
     cmd = re.split(r"\s*(?:->|=>|#)\s*", cmd, maxsplit=1)[0].strip()
     if ":" in cmd and not re.match(r"^[A-Za-z]:", cmd):
         cmd = cmd.split(":", 1)[0].strip()
     return cmd.strip().strip("`.")
-
 
 def _check_commands(text):
     commands = []
@@ -507,7 +490,6 @@ def _check_commands(text):
             else:
                 break
     return [_clean_check_command(cmd) for cmd in commands if _clean_check_command(cmd)]
-
 
 def report_reference_findings(text, root=ROOT):
     """Return advisory path/command findings for a report. Read-only; never executes commands."""
@@ -534,7 +516,6 @@ def report_reference_findings(text, root=ROOT):
                 findings.append("checks command references missing script: %s" % script)
     return findings
 
-
 def cmd_manifest(args):
     payload = manifest_payload()
     if args.json:
@@ -542,7 +523,6 @@ def cmd_manifest(args):
     else:
         print(format_manifest(payload))
     return 0
-
 
 def cmd_preflight(args):
     payload = build_preflight(args.agent, args.task, include_onboarding=args.onboarding)
@@ -552,7 +532,6 @@ def cmd_preflight(args):
         print(format_preflight(payload))
     missing = [i["path"] for i in payload["instructions"] if not i.get("exists")]
     return 1 if missing else 0
-
 
 def cmd_check_report(args):
     path = args.path if os.path.isabs(args.path) else os.path.join(ROOT, args.path)
@@ -573,7 +552,6 @@ def cmd_check_report(args):
         for item in advisories:
             print("- " + item)
     return 1 if missing else 0
-
 
 def build_parser():
     parser = argparse.ArgumentParser(description="Instruction assurance preflight for agents and humans.")
@@ -601,7 +579,6 @@ def build_parser():
 
     return parser
 
-
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -609,7 +586,6 @@ def main(argv=None):
         parser.print_help()
         return 2
     return args.func(args)
-
 
 if __name__ == "__main__":
     sys.exit(main())

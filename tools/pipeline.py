@@ -27,17 +27,10 @@
 import os
 import re
 import sys
+from _ioutil import configure_output
 import time
 import uuid
 import json
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 
@@ -57,9 +50,7 @@ DEFAULT_TTL_MIN = 30
 SERVICE_TOPIC_PREFIXES = ("docs/", "tools/", "decisions/", "drivers/", "core/", "portals/", "collab/", "sandbox/")
 SERVICE_TITLE_WORDS = ("pipeline", "instruction", "commit", "merge", "gate", "policy", "driver", "governance", "sandbox", "portal", "index", "evidence")
 
-
 from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 
 def collect_tasks():
     out = {}
@@ -87,10 +78,8 @@ def collect_tasks():
         }
     return out
 
-
 def claim_path(tid):
     return os.path.join(CLAIMED, "%s.claim.md" % tid)
-
 
 def claim_is_fresh(tid):
     p = claim_path(tid)
@@ -102,7 +91,6 @@ def claim_is_fresh(tid):
         return int(fm.get("lease_epoch", "0")) > int(time.time())
     except Exception:
         return False
-
 
 def claim_holder(tid):
     p = claim_path(tid)
@@ -116,7 +104,6 @@ def claim_holder(tid):
         # claim. Treat this as a transient no-holder view; callers retry or fail
         # safe instead of crashing.
         return None
-
 
 def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
     """Атомарно занять задачу. Возвращает claim_id или None (занято свежим claim'ом).
@@ -190,7 +177,6 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
         f.write(body)
     return cid
 
-
 def set_status(path, new):
     with open(path, encoding="utf-8") as f:
         text = f.read()
@@ -205,11 +191,9 @@ def set_status(path, new):
         f.write(head2 + rest)
     return True
 
-
 def is_placeholder_task(t):
     title = (t.get("title") or "").strip()
     return title == "(зарезервировано — заполните)"
-
 
 def ready_sorted(tasks):
     done_ids = {t["id"] for t in tasks.values() if t["status"] == "done"}
@@ -227,14 +211,12 @@ def ready_sorted(tasks):
     ready.sort(key=lambda t: (PRANK.get(t["priority"], 1), t["id"]))
     return ready
 
-
 def _claim_success(agent, task, cid):
     set_status(task["path"], "doing")
     print("ЗАНЯЛ: %s — %s" % (task["id"], task["title"]))
     print("agent=%s claim_id=%s file=tasks/%s.md" % (agent, cid, task["id"]))
     print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\""
           % (agent, task["id"], cid))
-
 
 def cmd_next(agent):
     tasks = collect_tasks()
@@ -245,7 +227,6 @@ def cmd_next(agent):
             return 0
     print("КОТЁЛ ПУСТ: готовых задач нет (всё done / занято / заблокировано зависимостями).")
     return 0
-
 
 def targeted_claim_error(tid, tasks):
     if tid not in tasks:
@@ -264,7 +245,6 @@ def targeted_claim_error(tid, tasks):
         return "занято агентом %s" % h.get("agent", "?")
     return None
 
-
 def cmd_claim(agent, tid):
     """Атомарно занять конкретную ready-задачу без риска взять другую через next."""
     tasks = collect_tasks()
@@ -279,12 +259,10 @@ def cmd_claim(agent, tid):
     _claim_success(agent, tasks[tid], cid)
     return 0
 
-
 def _release(tid):
     p = claim_path(tid)
     if os.path.exists(p):
         os.remove(p)
-
 
 def _marker(dirpath, tid, suffix, agent, text, extra=None):
     os.makedirs(dirpath, exist_ok=True)
@@ -304,7 +282,6 @@ def _marker(dirpath, tid, suffix, agent, text, extra=None):
     with open(p, "w", encoding="utf-8", newline="\n") as f:
         f.write("%s\n\n%s\n" % ("\n".join(header), text))
 
-
 def _check_holder(tid, agent, claim_id):
     """Совещательная проверка держателя claim перед завершением задачи.
 
@@ -321,14 +298,12 @@ def _check_holder(tid, agent, claim_id):
                 % (tid, (h or {}).get("claim_id"), claim_id))
     return None
 
-
 def _needs_applied_evidence(task):
     topic = (task.get("topic") or "").replace("\\", "/")
     title = (task.get("title") or "").lower()
     if any(topic.startswith(prefix) for prefix in SERVICE_TOPIC_PREFIXES):
         return True
     return any(word in title for word in SERVICE_TITLE_WORDS)
-
 
 def _evidence_gaps(applied, marker_text):
     """Причины, почему applied-evidence недостаточно (пустой список => evidence ок).
@@ -351,7 +326,6 @@ def _evidence_gaps(applied, marker_text):
                for p in meaningful):
         return ["формальное evidence (нет task-specific ссылки)"]
     return []
-
 
 def cmd_done(agent, tid, report, claim_id=None, applied=None, strict=False):
     tasks = collect_tasks()
@@ -380,7 +354,6 @@ def cmd_done(agent, tid, report, claim_id=None, applied=None, strict=False):
     print("ГОТОВО: %s → done (%s). Бери следующую: python tools/pipeline.py next %s" % (tid, agent, agent))
     return 0
 
-
 def cmd_fail(agent, tid, reason, claim_id=None):
     tasks = collect_tasks()
     if tid not in tasks:
@@ -396,7 +369,6 @@ def cmd_fail(agent, tid, reason, claim_id=None):
     print("НЕ ВЫШЛО: %s → blocked (%s): %s" % (tid, agent, reason or ""))
     return 0
 
-
 def cmd_mine(agent):
     n = 0
     if os.path.isdir(CLAIMED):
@@ -411,7 +383,6 @@ def cmd_mine(agent):
     if not n:
         print("У %s нет активных задач." % agent)
     return 0
-
 
 def build_pipeline_state():
     tasks = collect_tasks()
@@ -474,7 +445,6 @@ def build_pipeline_state():
         "blocked": blocked,
     }
 
-
 def render_status_text(state):
     lines = ["=== КОНВЕЙЕР ==="]
     lines.append("\nВ РАБОТЕ (%d):" % len(state["doing"]))
@@ -487,7 +457,6 @@ def render_status_text(state):
     for item in state["blocked"]:
         lines.append("  %s ← %s" % (item["id"], item["reason"]))
     return "\n".join(lines)
-
 
 def render_pipeline_md(state):
     lines = [
@@ -534,11 +503,9 @@ def render_pipeline_md(state):
     lines.append("")
     return "\n".join(lines)
 
-
 def cmd_status():
     print(render_status_text(build_pipeline_state()))
     return 0
-
 
 def cmd_snapshot():
     state = build_pipeline_state()
@@ -552,10 +519,8 @@ def cmd_snapshot():
     print("SNAPSHOT: PIPELINE.md + logs/pipeline.json обновлены")
     return 0
 
-
 def safe_agent_name(agent):
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", agent.strip()) or "unknown"
-
 
 def collect_heartbeats():
     items = []
@@ -576,7 +541,6 @@ def collect_heartbeats():
         items.append(item)
     items.sort(key=lambda x: x.get("agent", ""))
     return items
-
 
 def render_live_md(items):
     lines = [
@@ -603,7 +567,6 @@ def render_live_md(items):
     lines.append("")
     return "\n".join(lines)
 
-
 def write_heartbeat_views():
     items = collect_heartbeats()
     os.makedirs(LOGS, exist_ok=True)
@@ -612,7 +575,6 @@ def write_heartbeat_views():
         f.write("\n")
     with open(LIVE_MD, "w", encoding="utf-8", newline="\n") as f:
         f.write(render_live_md(items))
-
 
 def cmd_heartbeat(agent, tid, progress, note, eta):
     os.makedirs(HEARTBEAT_DIR, exist_ok=True)
@@ -637,7 +599,6 @@ def cmd_heartbeat(agent, tid, progress, note, eta):
     write_heartbeat_views()
     print("HEARTBEAT: %s %s %s%%" % (agent, tid, progress_i))
     return 0
-
 
 def main():
     a = sys.argv[1:]
@@ -686,7 +647,6 @@ def main():
         return cmd_heartbeat(pos[1], pos[2], flags.get("progress"), flags.get("note"), flags.get("eta"))
     print(__doc__)
     return 2
-
 
 if __name__ == "__main__":
     sys.exit(main())

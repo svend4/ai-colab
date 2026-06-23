@@ -15,7 +15,7 @@
 - `permissions.py` — кооперативная проверка прав агента на измененные файлы по `tools/permissions.json`.
 - `flow.py` — безопасная подсказка git-flow команд: ветка-на-агента, gate, merge.
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
-- `top.py` — верхняя панель сценариев/“кнопок”: status, health, friction, agent-start, subagent-handoff, conveyor, take, snapshot, knowledge, report-diff, cycle, work-mode.
+- `top.py` — верхняя панель сценариев/“кнопок”: status, health, friction, advice, agent-start, subagent-handoff, conveyor, take, snapshot, knowledge, report-diff, cycle, work-mode.
 - `friction.py` — read-mostly диагностика повторяющихся проблем: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links + рецепты F-001..F-019.
 - `report_diff.py` — механическое сравнение двух `knowledge.py report` Markdown-отчётов: документы, типы, hit-count.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html`, `.docx` на stdlib, с redaction через `files`/canonical redaction. PDF оставлен отдельным dependency decision.
@@ -303,14 +303,14 @@ python tools/text_extract.py summary data/knowledge-corpus/README.md
 
 ## Верхняя панель (`top.py`, T-138)
 
-`top.py` группирует существующие инструменты в сценарии, удобные как людям, так и агентам. Если тема уже известна, `agent-start --context "..."` сразу запускает быстрый поиск по канону после onboarding/status.
+`top.py` группирует существующие инструменты в сценарии, удобные как людям, так и агентам. Если тема уже известна, `agent-start --task T-id --context "..."` запускает onboarding/status, assurance/advice и быстрый поиск по канону.
 
 ```bash
 python tools/top.py buttons
 python tools/top.py status codex
 python tools/top.py health
 python tools/top.py assurance all --json
-python tools/top.py agent-start codex --context "parallel work policy"
+python tools/top.py agent-start codex --task T-188 --context "parallel work policy"
 python tools/top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools/top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree --json
 python tools/top.py take codex             # next
@@ -324,7 +324,7 @@ python tools/conveyor.py land w123 --output queues/outbox/w123-output.md
 python tools/top.py work-mode codex T-144 --parallel
 ```
 
-Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `assurance.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent; с `--json` он проксирует чистый машинный launch-пакет без служебных заголовков. `conveyor` поднимает runtime-надзирателя workflow-конвейера (`REFILL`/`PROCESS`/`IDLE`) в ту же верхнюю панель; `conveyor.py land --output` привязывает приземлившийся workflow к durable результату для последующей обработки. `assurance` показывает applied/currency/coverage/flow как advisory apex-снимок; строгий режим включается только явным `--strict`. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
+Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `assurance.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent; с `--json` он проксирует чистый машинный launch-пакет без служебных заголовков. `conveyor` поднимает runtime-надзирателя workflow-конвейера (`REFILL`/`PROCESS`/`IDLE`) в ту же верхнюю панель; `conveyor.py land --output` привязывает приземлившийся workflow к durable результату для последующей обработки. `assurance` показывает applied/currency/coverage/flow как advisory apex-снимок; `advice` связывает текущие friction/assurance-сигналы с уже существующими рецептами, а `agent-start` вызывает его автоматически. Строгий режим включается только явным `--strict`. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
 
 ## Friction diagnostics (`friction.py`, T-150)
 
@@ -348,3 +348,62 @@ python tools/top.py friction
 - связь skill `repo-friction-playbook` с каноническими docs/tool.
 
 Если `friction.py` предупреждает про dirty/foreign/stale состояние, это не всегда ошибка: во время активной задачи дерево ожидаемо грязное. Смысл предупреждения — не использовать `git add -A`, не смешивать чужие stream/source изменения и перед commit снова проверить явный список файлов.
+## Semantic hybrid (`doc_consensus.py`, opt-in)
+
+`tools/doc_consensus.py report` остаётся по умолчанию чистым stdlib/лексическим режимом: unit extraction + token-Jaccard, без LLM/agent вызовов.
+
+Опциональный режим:
+
+```bash
+python tools/doc_consensus.py report --semantic --semantic-budget 3 --files a.md b.md --out reports/doc-consensus-semantic.md
+```
+
+Что делает `--semantic`:
+
+- запускает high-threshold механический pre-cluster;
+- отправляет только residuum в subprocess-agent из `$DOC_CONSENSUS_AGENT`;
+- ожидает JSON с `consensus` groups и `divergences`;
+- рендерит результат как `status: proposed`, то есть материал для котла D-017/D-018, не auto-accepted решение.
+
+`--semantic-budget N` ограничивает число agent-batches на один прогон и падает до вызова агента, если residuum требует больше вызовов. Без `$DOC_CONSENSUS_AGENT` semantic режим деградирует безопасно: агентный pass пустой, механические consensus сохраняются. Runtime-рецепт, безопасный stub-agent и auto-accept policy: `docs/doc-consensus-agent-runtime.md`.
+## Result intake classifier (`result_intake.py`)
+
+`tools/result_intake.py` — read-only preflight для верхнего слоя перед verify/synthesis. Он классифицирует один landed/outbox/report-файл и печатает, какой режим обработки нужен дальше.
+
+```powershell
+python tools/result_intake.py classify queues/outbox/2026-06-23-perspective-backlog-refresh-t177.md
+python tools/result_intake.py classify queues/outbox/2026-06-23-perspective-backlog-refresh-t177.md --json
+```
+
+Классы:
+
+| Class | Когда применять |
+|---|---|
+| `read-only-report` | аудит, обзор, статус без изменения канона |
+| `variant` | fork/stream/альтернативное мнение, которое надо синтезировать, а не схлопывать как дубль |
+| `docs-change` | документация, темы, методология, README |
+| `build-change` | код, инструменты, драйверы, тесты, CLI |
+| `governance` | решения, accepted/proposed policy, human approval |
+| `external-code` | sandbox/source intake/execute/svend4/внешний код |
+
+Инструмент не принимает решения и не запускает проверки сам. Он возвращает class, confidence, evidence flags, signals и recommended next checks. Это вход для будущих шагов `conveyor regulate` и усиленного `top.py process-landed`.
+## Conveyor regulate (`conveyor.py`)
+
+`tools/conveyor.py regulate` — read-only advisory для выбора target workflow-conveyor. Он не меняет `logs/conveyor.json`, не запускает агентов и не делает `conveyor.py target`; он только объясняет, что делать с размером флота.
+
+```powershell
+python tools/conveyor.py regulate
+python tools/conveyor.py regulate --json
+python tools/conveyor.py regulate --json --no-assurance
+```
+
+Рекомендации:
+
+| Recommendation | Meaning |
+|---|---|
+| `increase` | conveyor полный, landed backlog пуст, assurance чистый; target можно поднять на 1 |
+| `hold` | target менять не надо; чаще всего сначала нужно refill до текущей цели или закрыть advisory |
+| `decrease` | оркестратор stale/idle; лучше снизить давление или сначала tick/land/ship |
+| `process-first` | есть landed/missing-output; сначала обработать результат, потом масштабировать |
+
+Когда есть landed outputs с путями, команда best-effort использует `result_intake.py`, чтобы показать классы результатов. По умолчанию она также читает `assurance.py all --json`; `--no-assurance` нужен для быстрых smoke/tests.

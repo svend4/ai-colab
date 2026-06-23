@@ -37,7 +37,7 @@ def _build_pyramid(base):
         _w(os.path.join(base, item["path"]), body)
 
     # задачи (служебные: topic под tools/) + done-маркеры конвенц-эры (T>=156)
-    for tid in ("T-200", "T-201", "T-202"):
+    for tid in ("T-200", "T-201", "T-202", "T-203"):
         _w(os.path.join(base, "tasks", "%s.md" % tid),
            "---\nid: %s\ntype: task\ntitle: Service %s\nstatus: done\ntopic: tools/x.py\n---\n" % (tid, tid))
     _w(os.path.join(base, "queues", "done", "T-200.done.md"),
@@ -45,9 +45,16 @@ def _build_pyramid(base):
        "Applied instructions: AGENTS.md, PROTOCOL.md, tools/x.py, Checks\n")          # good
     _w(os.path.join(base, "queues", "done", "T-201.done.md"),
        "---\ntask: T-201\nagent: t\napplied: AGENTS.md, PROTOCOL.md, Checks\n---\n\n"
-       "Applied instructions: AGENTS.md, PROTOCOL.md, Checks\n")                       # boilerplate -> low
+       "Applied instructions: AGENTS.md, PROTOCOL.md, Checks\n")                       # rescued by addendum
+    _w(os.path.join(base, "queues", "evidence", "T-201.evidence.md"),
+       "---\ntask: T-201\ntype: evidence-addendum\nagent: reviewer\n"
+       "applied: AGENTS.md, PROTOCOL.md, tools/x.py, Checks\n---\n\n"
+       "Applied instructions: AGENTS.md, PROTOCOL.md, tools/x.py, Checks\n")
     _w(os.path.join(base, "queues", "done", "T-202.done.md"),
        "---\ntask: T-202\nagent: t\n---\n\ndone\n")                                    # no applied -> high
+    _w(os.path.join(base, "queues", "done", "T-203.done.md"),
+       "---\ntask: T-203\nagent: t\napplied: AGENTS.md, PROTOCOL.md, Checks\n---\n\n"
+       "Applied instructions: AGENTS.md, PROTOCOL.md, Checks\n")                       # boilerplate -> low
 
     # решения
     _w(os.path.join(base, "decisions", "D-100.md"),
@@ -58,6 +65,8 @@ def _build_pyramid(base):
        "---\nid: D-102\ntype: decision\nstatus: superseded\ndate: 2026-06-01\n---\n# old\n")
     _w(os.path.join(base, "decisions", "D-103.md"),
        "---\nid: D-103\ntype: decision\nstatus: accepted\nlast_verified: 2026-06-20\n---\n# refs\nзаменяет D-102 в этой части\n")
+    _w(os.path.join(base, "decisions", "D-104.md"),
+       "---\nid: D-104\ntype: decision\nstatus: accepted\nlast_verified: 2026-06-20\n---\n# related\nСвязано: D-102 как исторический источник\n")
 
     # пирамида: ядро + порталы
     _w(os.path.join(base, "core", "engine-manifest.md"),
@@ -77,14 +86,16 @@ def run():
         applied = asr.section_applied(base)
         msgs = [f["msg"] for f in applied["findings"]]
         assert any("T-202" in m and "без applied" in m for m in msgs), "T-202 без evidence: %s" % msgs
-        assert any("T-201" in m and "формальное" in m for m in msgs), "T-201 boilerplate: %s" % msgs
+        assert any("T-203" in m and "формальное" in m for m in msgs), "T-203 boilerplate: %s" % msgs
+        assert not any("T-201" in m for m in msgs), "T-201 должен быть закрыт addendum: %s" % msgs
         assert "5/5" not in applied["metric"], "метрика должна считать temp-пирамиду, не реальный репо"
-        assert "1/3" in applied["metric"] or "1/" in applied["metric"], "1 из 3 конвенц-эры с evidence: %s" % applied["metric"]
+        assert "2/4" in applied["metric"] or "2/" in applied["metric"], "2 из 4 конвенц-эры с evidence: %s" % applied["metric"]
 
         cur = asr.section_currency(base, max_age=180)
         cmsgs = [f["msg"] for f in cur["findings"]]
         assert any("docs/ghost.md" in m for m in cmsgs), "битая структурная ссылка: %s" % cmsgs
         assert any("D-102" in m and "superseded" in m for m in cmsgs), "ссылка на superseded: %s" % cmsgs
+        assert not any("D-104" in m and "D-102" in m for m in cmsgs), "related/history ссылка не drift: %s" % cmsgs
         assert any("last_verified" in m for m in cmsgs), "нудж по last_verified: %s" % cmsgs
 
         cov = asr.section_coverage(base)

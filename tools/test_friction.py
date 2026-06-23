@@ -56,7 +56,7 @@ def run():
         raise RuntimeError("no writable friction test root: %r" % (last_error,))
     try:
         temp_check = friction.check_temp_probe(tmp)
-        assert temp_check["status"] == "ok", temp_check
+        assert temp_check["status"] in ("ok", "warn"), temp_check
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
