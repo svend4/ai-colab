@@ -14,6 +14,7 @@ CLI:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -382,6 +383,111 @@ def check_report_text(text):
     return missing
 
 
+KNOWN_REPO_EXTS = (".md", ".markdown", ".py", ".json", ".txt", ".text", ".ps1", ".yaml", ".yml")
+KNOWN_REPO_ROOTS = {
+    "AGENTS.md", "PROTOCOL.md", "STATUS.md", "TASKS.md", "QUESTIONS.md", "DECISIONS.md",
+    "docs", "tools", "queues", "tasks", "decisions", "questions", "drivers", "core", "portals",
+    "collab", "sandbox", "streams", "reports", "tmp-work", "data", "skills", "темы",
+}
+CHECK_RUNNERS = {"python", "python3", "py", "pytest", "pwsh", "powershell", "git", "node", "npm", "bash", "sh"}
+
+
+def _clean_ref(value):
+    ref = (value or "").strip().strip("`'\".,;:()[]{}<>").replace("\\", "/")
+    if not ref or "://" in ref or os.path.isabs(ref):
+        return None
+    if ".." in ref.split("/"):
+        return None
+    if not re.match(r"^[\w./-]+$", ref, re.UNICODE):
+        return None
+    has_ext = ref.lower().endswith(KNOWN_REPO_EXTS)
+    first = ref.split("/", 1)[0]
+    if "/" not in ref and not has_ext:
+        return None
+    if "/" in ref and not has_ext and first not in KNOWN_REPO_ROOTS:
+        return None
+    return ref
+
+
+def _ref_exists(root, ref):
+    if os.path.exists(os.path.join(root, ref)):
+        return True
+    if "/" not in ref and ref.endswith(".py"):
+        return os.path.exists(os.path.join(root, "tools", ref))
+    return False
+
+
+def _candidate_refs(text):
+    seen = set()
+    refs = []
+    raw = []
+    raw.extend(re.findall(r"`([^`]+)`", text))
+    raw.extend(re.findall(r"(?<![\w./\\-])([\w./\\-]+(?:\.(?:md|markdown|py|json|txt|text|ps1|ya?ml)|[/\\][\w./\\-]+))(?![\w./\\-])", text, re.I | re.UNICODE))
+    for item in raw:
+        ref = _clean_ref(item)
+        if ref and ref not in seen:
+            seen.add(ref)
+            refs.append(ref)
+    return refs
+
+
+def _clean_check_command(value):
+    cmd = (value or "").strip().lstrip("-* ").strip().strip("`")
+    cmd = re.split(r"\s*(?:->|=>|#)\s*", cmd, maxsplit=1)[0].strip()
+    if ":" in cmd and not re.match(r"^[A-Za-z]:", cmd):
+        cmd = cmd.split(":", 1)[0].strip()
+    return cmd.strip().strip("`.")
+
+
+def _check_commands(text):
+    commands = []
+    in_checks = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        m = re.match(r"^(?:[-*]\s*)?Checks\s*:\s*(.*)$", stripped, re.I)
+        if m:
+            if m.group(1).strip():
+                commands.append(m.group(1).strip())
+            in_checks = True
+            continue
+        if in_checks:
+            if not stripped:
+                continue
+            if stripped.startswith("#"):
+                break
+            if stripped.startswith(("-", "*", "`")) or re.match(r"^(python3?|py|pytest|pwsh|powershell|git|node|npm|bash|sh)\b", stripped, re.I):
+                commands.append(stripped)
+            else:
+                break
+    return [_clean_check_command(cmd) for cmd in commands if _clean_check_command(cmd)]
+
+
+def report_reference_findings(text, root=ROOT):
+    """Return advisory path/command findings for a report. Read-only; never executes commands."""
+    findings = []
+    path_misses = []
+    for ref in _candidate_refs(text):
+        if not _ref_exists(root, ref):
+            path_misses.append("referenced path not found: %s" % ref)
+            if len(path_misses) >= 20:
+                break
+    findings.extend(path_misses)
+
+    for cmd in _check_commands(text):
+        parts = cmd.split()
+        if not parts:
+            continue
+        runner = parts[0].lower()
+        if runner not in CHECK_RUNNERS:
+            findings.append("checks command not runnable-shape: %s" % cmd)
+            continue
+        if runner in {"python", "python3", "py"} and len(parts) >= 2:
+            script = parts[1].replace("\\", "/")
+            if script.startswith("tools/") and script.endswith(".py") and not os.path.exists(os.path.join(root, script)):
+                findings.append("checks command references missing script: %s" % script)
+    return findings
+
+
 def cmd_manifest(args):
     payload = manifest_payload()
     if args.json:
@@ -410,11 +516,16 @@ def cmd_check_report(args):
         print("ERROR: cannot read report: %s" % exc)
         return 1
     missing = check_report_text(text)
+    advisories = report_reference_findings(text)
     if missing:
         print("MISSING Applied instructions evidence: %s" % ", ".join(missing))
-        return 1
-    print("OK: Applied instructions evidence present")
-    return 0
+    else:
+        print("OK: Applied instructions evidence present")
+    if advisories:
+        print("ADVISORY: reference findings")
+        for item in advisories:
+            print("- " + item)
+    return 1 if missing else 0
 
 
 def build_parser():

@@ -80,6 +80,7 @@
 | Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов | `темы/assurance-and-doc-merge-2026-06-22.md` | proposed |  |
 | Hardening assurance — лестница warn→block (S0..S4) + apex-подключение | `темы/assurance-hardening-plan-2026-06-23.md` | proposed |  |
 | Worktree-ready build specs (2026-06-23) | `темы/build-specs-2026-06-23.md` | proposed |  |
+| Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1) | `темы/collab-safety-subsystem-2026-06-23.md` | proposed |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
 | Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `темы/fleet-designs-2026-06-23.md` | proposed |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
@@ -87,8 +88,11 @@
 | Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified | `темы/governance-proposals-2026-06-23.md` | proposed |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed |  |
 | Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `темы/perspective-backlog-2026-06-23.md` | proposed |  |
+| Заземление пирамиды (L2→L1) — consolidated plan (derive_reuse + наполнение порталов) | `темы/pyramid-grounding-consolidated-2026-06-23.md` | proposed |  |
 | Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance) | `темы/pyramid-grounding-plan-2026-06-23.md` | proposed |  |
 | Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass) | `темы/q017-docmerge-semantic-2026-06-23.md` | proposed |  |
+| Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready) | `темы/q017-semantic-consolidated-2026-06-23.md` | proposed |  |
+| Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `темы/session-state-2026-06-23.md` | proposed |  |
 <!-- GEN:topics-status END -->
 
 ## Как просить ИИ отреагировать

@@ -139,7 +139,7 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 |---|---|---|
 | `instructions.py manifest` | read-only | курируемая карта инструкций и областей применения |
 | `instructions.py preflight <agent> [T-id]` | read-only | task-scoped список правил, gates и evidence-template |
-| `instructions.py check-report <path>` | read-only | мягкая проверка, что отчёт содержит `Applied instructions` |
+| `instructions.py check-report <path>` | read-only | мягкая проверка `Applied instructions` + advisory по ссылкам на файлы и `Checks:` команды |
 | `top.py instruction-preflight` | read-only | та же процедура как верхняя кнопка для людей/агентов |
 
 Моё мнение: это правильная форма гарантии для текущей стадии. Не нужно сразу блокировать все действия большим policy-engine. Сначала агент должен явно видеть применимые инструкции и оставлять evidence. Потом часто повторяющиеся нарушения можно переносить в `friction.py`, `merge_gate.py` или pre-commit.

@@ -134,6 +134,13 @@
       "next": ""
     },
     {
+      "id": "collab-safety-subsystem-2026-06-23",
+      "title": "Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1)",
+      "file": "темы/collab-safety-subsystem-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "commit-policy-streams-2026-06-21",
       "title": "Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию",
       "file": "темы/commit-policy-streams-2026-06-21.md",
@@ -183,6 +190,13 @@
       "next": ""
     },
     {
+      "id": "pyramid-grounding-consolidated-2026-06-23",
+      "title": "Заземление пирамиды (L2→L1) — consolidated plan (derive_reuse + наполнение порталов)",
+      "file": "темы/pyramid-grounding-consolidated-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "pyramid-grounding-plan-2026-06-23",
       "title": "Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance)",
       "file": "темы/pyramid-grounding-plan-2026-06-23.md",
@@ -193,6 +207,20 @@
       "id": "q017-docmerge-semantic-2026-06-23",
       "title": "Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass)",
       "file": "темы/q017-docmerge-semantic-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "q017-semantic-consolidated-2026-06-23",
+      "title": "Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready)",
+      "file": "темы/q017-semantic-consolidated-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "session-state-2026-06-23",
+      "title": "Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture",
+      "file": "темы/session-state-2026-06-23.md",
       "status": "proposed",
       "next": ""
     }
@@ -2012,6 +2040,17 @@
       "depends_on": "[T-164]",
       "topic": "docs/top-layer-command-groups.md",
       "next": "Добавить `top.py assurance` как advisory/read-only сценарий, обновить тесты, справку и отчёт"
+    },
+    {
+      "id": "T-166",
+      "title": "Add advisory reference checks to instruction reports",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-165]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Добавить advisory-проверку ссылок на файлы и Checks-команды в `instructions.py check-report`, тесты, docs и отчёт"
     }
   ],
   "questions": [

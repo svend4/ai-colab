@@ -76,7 +76,21 @@ def run():
     bad = instructions.check_report_text("# Report\n")
     assert "Applied instructions evidence" in bad, bad
 
-    print("TESTS OK instructions: manifest/preflight/check-report")
+    assert instructions.report_reference_findings(ok_report) == []
+    missing_doc = ok_report + "\nSee `docs/does-not-exist.md`.\n"
+    findings = instructions.report_reference_findings(missing_doc)
+    assert any("referenced path not found: docs/does-not-exist.md" in x for x in findings), findings
+    missing_script = ok_report.replace("tools/validate.py", "tools/nope.py")
+    findings = instructions.report_reference_findings(missing_script)
+    assert any("checks command references missing script: tools/nope.py" in x for x in findings), findings
+    bogus_cmd = ok_report.replace("python tools/validate.py", "frobnicate the repo")
+    findings = instructions.report_reference_findings(bogus_cmd)
+    assert any("checks command not runnable-shape: frobnicate the repo" in x for x in findings), findings
+    noisy_words = ok_report + "\nMention applied/currency/coverage/flow, ревью/CI, `top.py`, and Checks: as prose.\n"
+    findings = instructions.report_reference_findings(noisy_words)
+    assert findings == [], findings
+
+    print("TESTS OK instructions: manifest/preflight/check-report/advisory refs")
     return 0
 
 

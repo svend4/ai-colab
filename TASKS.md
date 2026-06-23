@@ -179,4 +179,5 @@
 | T-163 | Expose conveyor supervisor in top command panel | done | codex | `docs/workflow-conveyor-policy.md` | Добавить `top.py conveyor` как верхнюю read-only кнопку над `tools/conveyor.py status`, обновить tests/docs/capabilities. |
 | T-164 | Conveyor landed output refs | done | codex | — | Реализовать `conveyor.py land --output`, JSON-диагностику landed без результата, тест и отчёт |
 | T-165 | Wire assurance dashboard into top command panel | done | codex | `docs/top-layer-command-groups.md` | Добавить `top.py assurance` как advisory/read-only сценарий, обновить тесты, справку и отчёт |
+| T-166 | Add advisory reference checks to instruction reports | done | codex | `docs/instruction-assurance.md` | Добавить advisory-проверку ссылок на файлы и Checks-команды в `instructions.py check-report`, тесты, docs и отчёт |
 <!-- GEN:tasks END -->
