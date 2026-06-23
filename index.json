@@ -2062,6 +2062,83 @@
       "depends_on": "[T-166]",
       "topic": "docs/workflow-conveyor-policy.md",
       "next": "Исправить `conveyor.py next`, чтобы выполненные/запущенные backlog-кандидаты не повторялись из-за дефисов, пробелов или разных формулировок label"
+    },
+    {
+      "id": "T-168",
+      "title": "Document dynamic agent capacity methodology",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/agent-capacity-methodology.md",
+      "next": "Закрыто — методология динамической ёмкости агентов оформлена; следующий шаг: автоматизировать target-регулятор только после повторного применения на 2-3 волнах"
+    },
+    {
+      "id": "T-169",
+      "title": "Document top-layer result processing methodology",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-168]",
+      "topic": "docs/top-layer-throughput-methodology.md",
+      "next": "Закрыто — оформлены методология верхнего слоя и project skill top-layer-orchestrator; следующий шаг: после 2-3 ручных циклов сделать tools/top.py process-landed"
+    },
+    {
+      "id": "T-170",
+      "title": "Add top process-landed advisory command",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-169]",
+      "topic": "docs/top-layer-throughput-methodology.md",
+      "next": "Закрыто — `top.py process-landed` строит read-only intake/verify/synthesis plan для landed outputs; следующий шаг: result_intake classifier после 2-3 ручных циклов"
+    },
+    {
+      "id": "T-171",
+      "title": "Full technical and conceptual project audit",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-170]",
+      "topic": "docs/project-audit-2026-06-23.md",
+      "next": "Закрыто — полный аудит записан; follow-up задачи T-172/T-173 заведены"
+    },
+    {
+      "id": "T-172",
+      "title": "Fix Python tempfile PermissionError on Windows sandbox",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-171]",
+      "topic": "docs/project-audit-2026-06-23.md",
+      "next": "Воспроизвести и исправить `tempfile.mkdtemp(..., dir=tmp-work)` PermissionError; добавить safe temp helper и расширить friction F-004"
+    },
+    {
+      "id": "T-173",
+      "title": "Close assurance medium findings for promotion coverage and instruction flow",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[T-171]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "Разобрать `top.py assurance all`: orphan-L1 в portal coverage и accepted decisions D-001/D-010/D-013 вне instruction surface"
+    },
+    {
+      "id": "T-174",
+      "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
+      "status": "open",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-087, T-088]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Periodically re-test asyncio.create_subprocess_exec MCP path on Windows; close when official async stdio acceptance passes, or downgrade to wontfix if confirmed environment-permanent"
     }
   ],
   "questions": [

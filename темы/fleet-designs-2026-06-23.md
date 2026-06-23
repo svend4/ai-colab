@@ -14,7 +14,9 @@ buildable-дизайны** (proposed); реализация — отдельны
 
 ## 1. `reconcile_state.py fix` — небилд закрыт дизайном
 
-Сейчас `tools/reconcile_state.py:234` — заглушка («fix не реализован на этапе 1»). Дизайн:
+> **SHIPPED 2026-06-23 (commit `94c3c35`).** Дизайн ниже реализован: `cmd_fix(apply=False)` живёт в `tools/reconcile_state.py:259` (диспетчер `:295`), dry-run по умолчанию + обязательный `--apply`, derived-only, PRIMARY-refuse, exit через `exit_code(report)`. Раздел сохранён как историческая спека.
+
+Изначально `tools/reconcile_state.py` содержал заглушку («fix не реализован на этапе 1»). Дизайн (теперь реализованный):
 
 - **Dry-run по умолчанию; `--apply` обязателен для записи.** Без `--apply` — печатает «would regenerate: …»,
   не пишет ничего, exit-код из остаточного дрейфа.

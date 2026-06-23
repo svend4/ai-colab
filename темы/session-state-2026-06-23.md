@@ -55,7 +55,7 @@ The remaining open work is captured across four spec docs as a ranked backlog pl
 | 7 | Assurance Wave-2: build `tools/instruction_freshness_check.py` | M | `workflow` (depends on #6) |
 | 8 | Update stale "not yet implemented" claims in `docs/parallel-work-policy.md` | S | `worktree-build` |
 | 9 | Assurance Wave-3: build `tools/promotion_coverage.py` (reverse upward-flow check) | L | `workflow` (depends on #4) |
-| 10 | `reconcile_state.py` `fix` subcommand: implement stage-2 reconcile (currently report-only stub) | M | `worktree-build` |
+| 10 | ~~`reconcile_state.py` `fix` subcommand~~ — **SHIPPED 2026-06-23 (`94c3c35`)**: `cmd_fix` at `tools/reconcile_state.py:259`, dry-run + `--apply`, derived-only; no longer a stub | M | done |
 | 11 | Flow orphans: wire the 7 dangling accepted decisions into the instruction surface or mark background-only | S | `cauldron-task` |
 | 12 | Decision batch (vote-gated): Q-010 rename, Q-013 onboarding, gate-poison shared-gate contract, two-commit divergence (D-018) | M | `decision` (ratify) |
 | 13 | Q-009/T-020 svend4 source access: choose A / B / C | S | `decision` (ratify) |

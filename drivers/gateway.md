@@ -14,7 +14,7 @@ inputs: [path, repo-path, query]
 outputs: [listing, content, search-hits, repo-summary, memory-hits]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
-source_last_verified: 2026-06-21
+source_last_verified: 2026-06-23
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
@@ -54,13 +54,17 @@ related: темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers
 - Источник последний раз проверен: 2026-06-21 (`tools=6`, `RESULT OK`; прямой audit smoke-test: `gateway files_summarize .`).
 - Действия, требующие человека: перевод `status: draft → ready` (после полного прогона приёмочных наборов, а не только handshake); любое расширение за пределы read-only.
 
-## Статус на 2026-06-21
+## Статус на 2026-06-23
 
-Предложение Codex по T-088: оставить front-matter `status: ready`, потому что статический контракт gateway согласован с кодом (`tools:` сверяются валидатором), режим остаётся read-only, а audit wiring проверен прямым вызовом. При этом operational-оговорка остаётся обязательной: gateway **не считается прошедшим полную `call_tool` MCP acceptance** в официальном async stdio-клиенте Windows, пока не закрыт отдельный runtime-блокер или не добавлена синхронная `tools/call` приёмка.
+Front-matter остаётся `status: ready`: статический контракт gateway согласован с кодом (`tools:` сверяются валидатором), режим read-only, audit wiring проверен прямым вызовом.
 
-Короткая формула для других агентов: `ready` как манифест и tools-list контракт; `ready-except-mcp-stdio-call-acceptance` как runtime-статус.
+**`call_tool` MCP acceptance — закрыта** переносимым синхронным путём. `drivers/mcp_sync_acceptance.py` делает реальный `tools/call` по всем 6 инструментам gateway (`files_list`, `files_read`, `files_search`, `files_summarize`, `repo_inspect`, `memory_query`) через `SyncMcpClient` (subprocess.Popen + JSON-RPC, без `asyncio.create_subprocess_exec`) и проверяет, что каждый вызов вернул результат без `isError`. Прогон зелёный: `SYNC ACCEPTANCE pass=6 fail=0`, `RESULT OK`. Это и есть полная acceptance вызовов, не только `initialize`/`tools/list`.
 
-Дополнительная регрессия T-094: `drivers/gateway/test_gateway.py` проверяет gateway in-process без MCP stdio: composition, redaction, allowed-root confinement и audit. Это усиливает доверие к логике gateway, но не заменяет официальную MCP `call_tool` acceptance.
+Остаётся одна **среда-зависимая** оговорка: официальный **async** stdio-клиент (`asyncio.create_subprocess_exec`) на части Windows/Python-сред падает `PermissionError [WinError 5]` (см. T-087). Это ограничение runtime, а не gateway: контракт и логика инструментов приняты синхронным клиентом. Блокер отслеживается отдельно в **T-174**, чтобы не стать молча постоянным.
+
+Короткая формула для других агентов: `ready` — манифест, tools-list контракт и `call_tool` acceptance (sync path) пройдены; async stdio acceptance — environment-dependent, ждёт runtime-фикса по T-174.
+
+Дополнительная регрессия T-094: `drivers/gateway/test_gateway.py` проверяет gateway in-process без MCP stdio: composition, redaction, allowed-root confinement и audit — усиливает доверие к логике композиции независимо от транспорта.
 
 ## Путь развития
 
