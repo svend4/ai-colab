@@ -174,4 +174,5 @@
 | T-158 | Pipeline warns when service tasks finish without applied evidence | done | codex | `docs/instruction-assurance.md` | Добавить мягкое предупреждение в `pipeline.py done`, если служебная задача закрывается без `--applied`, не ломая обратную совместимость. |
 | T-159 | Adopt repo_search as top-layer canonical documentation search | done | codex | `docs/top-layer-command-groups.md` | Принять `tools/repo_search.py` как read-mostly поиск по канону, исправить Windows temp в тесте, добавить top/capabilities/docs и не версионировать runtime DB. |
 | T-160 | Add contextual repo-search to agent-start workflow | done | codex | `docs/top-layer-command-groups.md` | Добавить `top.py agent-start --context ...`, обновить cycle/onboarding/manual, чтобы новый агент сразу поднимал релевантный контекст через repo-search. |
+| T-161 | Add sub-agent launch plan to flow workflow | done | codex | `docs/agent-launch-workflow.md` | Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест. |
 <!-- GEN:tasks END -->

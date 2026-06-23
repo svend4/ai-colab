@@ -146,6 +146,13 @@
       "file": "темы/parallel-work-divergences-2026-06-22.md",
       "status": "proposed",
       "next": ""
+    },
+    {
+      "id": "q017-docmerge-semantic-2026-06-23",
+      "title": "Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass)",
+      "file": "темы/q017-docmerge-semantic-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
     }
   ],
   "tasks": [
@@ -1908,6 +1915,17 @@
       "depends_on": "[T-159]",
       "topic": "docs/top-layer-command-groups.md",
       "next": "Добавить `top.py agent-start --context ...`, обновить cycle/onboarding/manual, чтобы новый агент сразу поднимал релевантный контекст через repo-search."
+    },
+    {
+      "id": "T-161",
+      "title": "Add sub-agent launch plan to flow workflow",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-013, T-136, T-159, T-160]",
+      "topic": "docs/agent-launch-workflow.md",
+      "next": "Добавить `flow.py launch-plan`, который связывает repo flow/worktree с внешним запуском sub-agent: команды, prompt-пакет, границы ответственности и тест."
     }
   ],
   "questions": [

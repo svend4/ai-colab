@@ -9,6 +9,10 @@
       "does": "старт агента + статус + быстрый поиск релевантного канона"
     },
     {
+      "cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree",
+      "does": "готовый repo lane + prompt для внешнего запуска sub-agent"
+    },
+    {
       "cmd": "python tools/top.py health",
       "does": "групповая проверка здоровья канона"
     },

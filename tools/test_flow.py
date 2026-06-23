@@ -45,7 +45,17 @@ def run():
         assert "git merge --no-ff agent/claude/T-140" in out, out
         assert "git worktree remove" in out and "git branch -D agent/claude/T-140" in out, out
 
-        print("TESTS OK flow: --worktree обвязка (start приток / finish gate->merge->remove) + Ур.0 цел")
+        # Внешний launcher запускает sub-agent, а repo-flow печатает воспроизводимый handoff.
+        out = _run("launch-plan", "mavis", "T-200", "parallel", "policy", "--worktree")
+        assert "# Sub-agent launch plan" in out, out
+        assert "External sub-agent prompt" in out, out
+        assert "Task: `T-200`." in out, out
+        assert "python tools/flow.py start mavis T-200 --worktree" in out, out
+        assert 'python tools/top.py agent-start mavis --context "parallel policy"' in out, out
+        assert "python tools/pipeline.py claim mavis T-200" in out, out
+        assert "python tools/flow.py finish mavis T-200 --worktree" in out, out
+
+        print("TESTS OK flow: --worktree обвязка + launch-plan handoff + Ур.0 цел")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

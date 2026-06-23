@@ -127,3 +127,14 @@ commit**, с параллельными кластерами и без блок�
 - **Гуманитарная:** человек получает не сырой шум, а извлечённый структурированный результат; агенты
   получают воспроизводимый рецепт; коллектив — результаты в общий контур (котёл/D-017/D-018), а не в
   личный «чёрный ящик».
+## 10. T-161 — граница repo-flow и platform sub-agent launcher
+
+После T-161 воркфлоу запуска sub-agent фиксируется как явный handoff, а не как скрытая магия внутри `flow.py`.
+
+- `python tools/top.py subagent-handoff <agent> <T-id> "<context>" --worktree` — верхняя команда для людей и агентов.
+- `python tools/flow.py launch-plan <agent> <T-id> <context> --worktree` — низкоуровневый генератор launch-пакета.
+- Внешний platform launcher запускает worker-agent с prompt из launch-пакета.
+- Worker-agent обязан использовать `agent-start`, `pipeline claim/done`, scoped edits, tests и report.
+- Integrator/lead-agent делает review, merge-gate, selective commit и решает конфликты через D-017/D-018.
+
+Смысл: локальный репозиторий готовит воспроизводимый lane и инструкции, но не привязывается к конкретному API запуска агентов. Это оставляет систему переносимой для людей, Codex sub-agents, других AI и будущего сервера-оркестратора. Подробный чистовой контракт: `docs/agent-launch-workflow.md`.

@@ -15,6 +15,7 @@ python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py health
 python tools\top.py agent-start codex --context "parallel work policy"
+python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools\top.py instruction-preflight codex T-154
 python tools\top.py take codex
 python tools\top.py snapshot
@@ -35,6 +36,7 @@ python tools\top.py repo-search "parallel work policy" --limit 5
 | Инструкции | понять применимые правила | собрать evidence перед задачей | `instruction-preflight` вызывает `instructions.py preflight` |
 | Работа | видеть котёл | взять одну задачу | `take` вызывает pipeline next или targeted claim по T-id |
 | Выбор режима | понять shared/worktree | выбрать D-021 режим | `work-mode` печатает Level 0/Level 1 план |
+| Запуск sub-agent | получить готовый пакет запуска | выдать worker prompt и repo lane | `subagent-handoff` вызывает `flow.py launch-plan` |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
 | Поиск по канону | найти решение/политику/задачу | быстро поднять контекст перед правкой | `repo-search` строит ignored FTS/BM25 индекс по docs/decisions/questions/темам/tasks |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
@@ -136,3 +138,15 @@ python tools\instructions.py check-report queues\outbox\2026-06-22-instruction-a
 | `top.py instruction-preflight` | read-only | та же процедура как верхняя кнопка для людей/агентов |
 
 Моё мнение: это правильная форма гарантии для текущей стадии. Не нужно сразу блокировать все действия большим policy-engine. Сначала агент должен явно видеть применимые инструкции и оставлять evidence. Потом часто повторяющиеся нарушения можно переносить в `friction.py`, `merge_gate.py` или pre-commit.
+## Расширение T-161: handoff для запуска sub-agent
+
+После T-161 верхний слой умеет готовить запуск внешнего worker-agent одной командой:
+
+```powershell
+python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
+python tools\flow.py launch-plan mavis T-161 agent launch workflow --worktree
+```
+
+Команда не запускает агента сама. Она печатает воспроизводимый launch-пакет: repo lane, start-команду, prompt для worker-agent и finish-команду. Реальный запуск делает внешний Codex/platform launcher, человек или будущий сервер-оркестратор.
+
+Моё мнение: это правильная середина между ручной перепиской и тяжёлой серверной платформой. Репозиторий уже знает правила, задачи, worktree и проверки; внешний launcher знает, как создать AI-worker. Handoff связывает эти два мира без жёсткой зависимости.

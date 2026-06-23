@@ -40,6 +40,7 @@ main_blocker: T-020 svend4/orphan claim, no read-only source provided
 python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py agent-start codex --context "<task topic>"
+python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
@@ -63,6 +64,7 @@ python tools\test_knowledge.py
 | Knowledge workflow | `tools/knowledge.py`, `data/knowledge-corpus/`, `reports/` | обработка корпуса и отчёты |
 | Canon search | `tools/top.py repo-search`, `tools/repo_search.py` | быстрый поиск по docs/decisions/questions/темам/tasks |
 | Top command panel | `tools/top.py` | сценарии/кнопки для людей и агентов |
+| Sub-agent handoff | `tools/top.py subagent-handoff`, `tools/flow.py launch-plan` | repo lane + prompt для внешнего launcher |
 | Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
 | История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
 | Итоги задач | `docs/*result*.md`, `queues/outbox/`, `queues/done/` | что уже сделано |
@@ -132,6 +134,7 @@ read current state
 | Audit | `drivers/audit.py`, JSONL для risk>=medium | рабочее |
 | L6 memory | `drivers/workbench`, `tools/knowledge.py`, `tools/text_extract.py` | рабочее на малых corpus |
 | Reports | `reports/*.md`, `report --out`, regression test | рабочее |
+| Sub-agent handoff | `top.py subagent-handoff`, `flow.py launch-plan` | рабочее как read-only launch-пакет |
 | Skills | `skills/*/SKILL.md` | рабочее как project-local procedures |
 | Execute sandbox | `docs/execute-sandbox-preflight.md` | только preflight |
 | Plugin packaging | `docs/skills-usage.md` | будущий уровень |
@@ -260,6 +263,7 @@ git status --short --untracked-files=all
 python tools\top.py buttons
 python tools\top.py status codex
 python tools\top.py agent-start codex --context "<task topic>"
+python tools\top.py subagent-handoff mavis T-161 "agent launch workflow" --worktree
 python tools\top.py health
 python tools\pipeline.py status
 python tools\validate.py
@@ -275,6 +279,15 @@ python tools\top.py work-mode <agent> <T-id> --parallel --hot-files
 ```
 
 Правило D-021: Level 0 shared tree остаётся дефолтом; Level 1 worktree включается явно, если задача параллельная, mainline грязная или ожидаются конфликты generated files.
+
+### launch-subagent-handoff
+
+```powershell
+python tools\top.py subagent-handoff <agent> <T-id> "<topic/context>" --worktree
+```
+
+Использовать, когда нужно дать задачу внешнему worker-agent. Команда печатает repo lane, prompt, start/finish-команды и не делает side effects. Реальный запуск выполняет Codex/platform launcher или человек.
+
 ### take-one-task
 
 ```powershell

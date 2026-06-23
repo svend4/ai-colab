@@ -36,6 +36,7 @@
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed | — |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft | — |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `темы/parallel-work-divergences-2026-06-22.md` | proposed | — |  |
+| Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass) | `темы/q017-docmerge-semantic-2026-06-23.md` | proposed | — |  |
 <!-- GEN:topics-board END -->
 
 ## Как добавить новую тему

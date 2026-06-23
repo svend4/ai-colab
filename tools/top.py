@@ -18,6 +18,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py repo-search <query> [--limit N] [--json]
     python tools/top.py cycle <agent>            # print safe work cycle template
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
+    python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree]
 """
 import argparse
 import json
@@ -178,6 +179,13 @@ _BUTTONS = [
         "audience": "agent",
         "command": "python tools/top.py cycle <agent>",
         "does": "Показать безопасный цикл работы агента с claim, проверками и отчётом.",
+        "effect": "read-only",
+    },
+    {
+        "id": "subagent-handoff",
+        "audience": "both",
+        "command": "python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree]",
+        "does": "Подготовить launch-пакет для внешнего sub-agent: repo lane, prompt, старт и finish-команды.",
         "effect": "read-only",
     },
     {
@@ -365,6 +373,13 @@ def cmd_cycle(args):
     return 0
 
 
+def cmd_subagent_handoff(args):
+    cmd = _tool("flow.py", "launch-plan", args.agent, args.task, *args.context)
+    if args.worktree:
+        cmd.append("--worktree")
+    return _run("subagent handoff", cmd, timeout=45)
+
+
 def _work_mode_choice(args):
     if args.mode in {"shared", "worktree"}:
         return args.mode
@@ -483,6 +498,13 @@ def build_parser():
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")
     p.set_defaults(func=cmd_cycle)
+
+    p = sub.add_parser("subagent-handoff", help="print repo lane and prompt for external sub-agent launch")
+    p.add_argument("agent")
+    p.add_argument("task")
+    p.add_argument("context", nargs="*")
+    p.add_argument("--worktree", action="store_true")
+    p.set_defaults(func=cmd_subagent_handoff)
 
     p = sub.add_parser("work-mode", help="recommend Level 0 shared tree or Level 1 worktree")
     p.add_argument("agent")
