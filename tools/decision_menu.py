@@ -11,15 +11,11 @@ CLI:
     python tools/decision_menu.py -                    # читать меню из stdin
 """
 import os
+from _ioutil import configure_output
 import sys
 import json
 
-os.environ.setdefault("PYTHONUTF8", "1")
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
-except Exception:
-    pass
+configure_output()
 
 
 def _tags(o):

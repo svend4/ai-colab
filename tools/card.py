@@ -13,15 +13,11 @@ CLI:
     python tools/card.py - [--toc]                    # из stdin (--toc = только каталог-верхушки)
 """
 import os
+from _ioutil import configure_output
 import sys
 import json
 
-os.environ.setdefault("PYTHONUTF8", "1")
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
-except Exception:
-    pass
+configure_output()
 
 # Тип → (человеко-метка, упорядоченные поля середины)
 CARD_TYPES = {

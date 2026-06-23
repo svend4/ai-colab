@@ -12,20 +12,15 @@ CLI:
     python tools/adoption.py --list dormant   # списком: dormant|declarative|orphan
 """
 import os
+from _ioutil import configure_output
 import re
 import sys
 import json
 import glob
 
-os.environ.setdefault("PYTHONUTF8", "1")
+configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
-except Exception:
-    pass
 
 
 def _read(path):

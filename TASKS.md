@@ -204,7 +204,8 @@
 | T-188 | Аудит мёртвого груза — неиспользуемая информация и устаревшие ссылки | done | pool | `темы/ai-os-bridge.md` | Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки |
 | T-189 | Стимулирование активности агентов — alive-пинги и использование ответов | done | pool | `темы/ai-os-bridge.md` | Проверить использование D-001..D-014, спроектировать alive-пинг, зафиксить в dialog.md |
 | T-190 | Self-improve отложенные (4): risk_gate/D-006 wire, D-020 supersede, sandbox_demo doc, race_test rename | done | pool | — | Провести governance-зависимые через котёл/Stefan; doc/rename — когда целевые файлы свободны от Codex |
-| T-191 | Реализация семантического гибрида для doc_consensus.py | doing | codex | — | Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md) |
-| T-192 | Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма) | todo | pool | — | Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen |
-| T-193 | Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output) | todo | pool | — | Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно |
+| T-191 | Реализация семантического гибрида для doc_consensus.py | done | codex | — | Написать и интегрировать логику --semantic (см. темы/q017-docmerge-semantic-2026-06-23.md) |
+| T-192 | Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма) | done | pool | — | Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen |
+| T-193 | Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output) | done | pool | — | Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно |
+| T-194 | (зарезервировано — заполните) | todo | unknown | — | зарезервировано через tools/next_id.py — заполните |
 <!-- GEN:tasks END -->

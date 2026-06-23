@@ -21,15 +21,9 @@ import sys
 import glob
 import subprocess
 
+from _ioutil import configure_output
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
-
 
 configure_output()
 

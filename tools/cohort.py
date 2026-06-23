@@ -33,6 +33,8 @@ import json
 import glob
 import subprocess
 
+from _ioutil import configure_output
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
 CAPS = os.path.join(ROOT, "system-capabilities.json")
@@ -50,13 +52,6 @@ HOT_FILES = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md"
 # stale-index, gate-poison) — recommended (печать, не блок). В --strict только эти двое возвращают
 # nonzero и заставляют ship отказать в коммите в общее дерево.
 MANDATORY_TRIGGERS = ("foreign-source", "same-file")
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
 
 
 configure_output()

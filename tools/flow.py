@@ -27,13 +27,7 @@ import sys
 import json
 import subprocess
 
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        stream = getattr(sys, name, None)
-        if stream is not None and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
-
+from _ioutil import configure_output
 
 configure_output()
 

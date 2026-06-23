@@ -14,6 +14,7 @@ CLI:
 (advisory). Gate-шаг с rc!=0 валит блок (exit 1); advisory только считаются. По умолчанию — параллельно.
 """
 import os
+from _ioutil import configure_output
 import sys
 import json
 import threading
@@ -22,15 +23,9 @@ import subprocess
 # затенял stdlib `queue`, ломая ThreadPoolExecutor из tools/; устранено переименованием в
 # agent_queue.py (ретро-improve), threading.Thread оставлен как рабочий и достаточный.
 
-os.environ.setdefault("PYTHONUTF8", "1")
+configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-
-try:
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
-except Exception:
-    pass
 
 # Блоки = кластеры проверенных примитивов. kind: gate (rc решает вердикт) | advisory (собираем, не валим).
 BLOCKS = {

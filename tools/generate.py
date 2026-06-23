@@ -26,16 +26,9 @@ Front-matter темы (наш простой парсер: key: value, value —
 """
 import os
 import sys
+from _ioutil import configure_output
 import glob
 import json
-
-
-def configure_output():
-    for stream_name in ("stdout", "stderr"):
-        stream = getattr(sys, stream_name, None)
-        if stream is None or not hasattr(stream, "reconfigure"):
-            continue
-        stream.reconfigure(encoding="utf-8", errors="replace")
 
 
 configure_output()

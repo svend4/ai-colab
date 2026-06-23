@@ -2333,7 +2333,7 @@
     {
       "id": "T-191",
       "title": "Реализация семантического гибрида для doc_consensus.py",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "medium",
@@ -2344,7 +2344,7 @@
     {
       "id": "T-192",
       "title": "Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2355,13 +2355,24 @@
     {
       "id": "T-193",
       "title": "Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "low",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
       "next": "Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно"
+    },
+    {
+      "id": "T-194",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "unknown",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

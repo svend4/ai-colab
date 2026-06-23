@@ -11,20 +11,14 @@ validate) и добавляет текстовые проверки дрейфа
     python tools/drift_check.py
 """
 import os
-import re
 import sys
+from _ioutil import configure_output
+import re
 import glob
 import json
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def configure_output():
-    for name in ("stdout", "stderr"):
-        s = getattr(sys, name, None)
-        if s is not None and hasattr(s, "reconfigure"):
-            s.reconfigure(encoding="utf-8", errors="replace")
 
 
 configure_output()
