@@ -14,7 +14,7 @@ date: 2026-06-23
 
 Сделано:
 
-- создан `темы/d014-execute-off-ratification-2026-06-23.md` с proposal, технической проверкой, гуманитарной проверкой, минусами и точным human gate;
+- создан `topics/d014-execute-off-ratification-2026-06-23.md` с proposal, технической проверкой, гуманитарной проверкой, минусами и точным human gate;
 - `tools/instructions.py` теперь surface'ит D-014 через `execute-preflight`;
 - `docs/execute-sandbox-preflight.md` получил ratification note и ссылки на D-014/D-006/D-018;
 - `tasks/T-175.md` переведён в `blocked`, потому D-006 требует человека.

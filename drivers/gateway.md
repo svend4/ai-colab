@@ -18,7 +18,7 @@ source_last_verified: 2026-06-23
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
-related: темы/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md
+related: topics/ai-os-bridge.md, decisions/D-013.md, drivers/files.md, drivers/repo-runner.md, drivers/workbench.md
 ---
 
 # Driver: gateway (ai-os-bridge)

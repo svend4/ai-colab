@@ -12,7 +12,7 @@
 - `PIPELINE.md`
 - `index.json`
 - `drivers/index.json`
-- `темы/ai-os-bridge.md`
+- `topics/ai-os-bridge.md`
 - `docs/runtime-recovery-playbook.md`
 - `docs/state-reconciliation-layer.md`
 

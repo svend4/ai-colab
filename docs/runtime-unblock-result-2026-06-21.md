@@ -25,7 +25,7 @@ Evidence already recorded in the repository:
 - `docs/driver-tests-result-2026-06-21.md` confirms Batch B driver tests passed.
 - `docs/pipeline-guards-result-2026-06-21.md` confirms Batch C pipeline guards passed.
 - `docs/mcp-handshake-result-2026-06-21.md` confirms Batch D MCP smoke passed.
-- `темы/repo-review-2026-06-21.md` independently confirms Python, validation, generation, and runtime driver tests are working.
+- `topics/repo-review-2026-06-21.md` independently confirms Python, validation, generation, and runtime driver tests are working.
 
 ## Actions
 

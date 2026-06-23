@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Commit-lock (Уровень 0 политики коммитов, темы/commit-policy-streams-2026-06-21.md).
+Commit-lock (Уровень 0 политики коммитов, topics/commit-policy-streams-2026-06-21.md).
 
 Атомарный короткоживущий advisory-лок, чтобы агенты НЕ дрались за git `index.lock`: перед
 `generate + git add + git commit` агент берёт лок, после — отпускает. Коммиты сериализуются —

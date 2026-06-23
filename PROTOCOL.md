@@ -16,12 +16,12 @@
 
 ### 2. Темы
 
-Папка: `темы/`
+Папка: `topics/`
 
 Одна тема может иметь не один файл, а папку:
 
 ```text
-темы/
+topics/
   big-topic/
     README.md
     summary.md
@@ -245,7 +245,7 @@ Raw input не должен сразу попадать в `core/` или `porta
   AGENTS.md
   PROTOCOL.md
 
-  темы/
+  topics/
     topic-name/
       README.md
       summary.md

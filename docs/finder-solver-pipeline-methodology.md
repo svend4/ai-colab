@@ -70,7 +70,7 @@ W1 FINDER (большой, много агентов)        РОУТЕР (я, �
 3. **questions/decisions** — `questions/Q-*` (open) + `decisions/` (нератифицированное, висячее).
 4. **tasks-backlog** — `TASKS.md`/`board.md`/`tasks/` (todo/doing/blocked) + перспективный бэклог vs git log.
 5. **machine-findings** — прогон `assurance.py` / `drift_check.py` / `friction.py status` / `reconcile_state.py check`.
-6. **corpus-conflicts** — `темы/` + subsystem-доки + `data/`: синтез-док заявляет связь, которой нет в коде (паттерн F-020).
+6. **corpus-conflicts** — `topics/` + subsystem-доки + `data/`: синтез-док заявляет связь, которой нет в коде (паттерн F-020).
 7. **test-coverage** — `tools/*.py` без `test_*.py`; тесты только happy-path; свежие тулзы без тестов.
 8. **bridge/MCP** — `drivers/`/gateway: draft-vs-ready, acceptance-блокеры, `mode:execute` гейты, неимплемент. MCP-инструменты.
 
@@ -103,7 +103,7 @@ W1 FINDER (большой, много агентов)        РОУТЕР (я, �
 3. **На приземлении W1** — РОУТЕР: триаж (§4), отобрать решаемые сейчас.
 4. **Запустить W2 SOLVER** по отобранным (фан-аут solver + интегратор). Зарегистрировать.
 5. **На приземлении W2** — смотреть результаты, перепроверить, извлечь в канон, **батч-commit**.
-6. **Зациклить:** следующий FINDER по остатку/по новому слою (как `темы/new-problems-2026-06-23.md` →
+6. **Зациклить:** следующий FINDER по остатку/по новому слою (как `topics/new-problems-2026-06-23.md` →
    назначение группы). FINDER может быть **рекуррентной** нодой (само-кормление, §3-bis).
 
 ## 7. Сбои и границы

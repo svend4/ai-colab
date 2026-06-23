@@ -45,7 +45,7 @@ COMMANDS = [
     {"cmd": "python tools/cohort.py board", "does": "dashboard параллельной многоагентной работы"},
     {"cmd": "python tools/cohort.py self --json", "does": "самопроверка движка и next maintenance hints"},
     {"cmd": "python tools/variants.py list --topic <topic>", "does": "найти fork-варианты для синтеза"},
-    {"cmd": "python tools/synthesis_helper.py report <topic> --out темы/<topic>-synthesis.md", "does": "собрать scaffold синтеза из fork-вариантов"},
+    {"cmd": "python tools/synthesis_helper.py report <topic> --out topics/<topic>-synthesis.md", "does": "собрать scaffold синтеза из fork-вариантов"},
     {"cmd": "python tools/merge_gate.py check <agent>", "does": "read-only merge gate перед вливанием"},
     {"cmd": "python tools/stream.py list [topic]", "does": "список semi-commit stream-пакетов"},
     {"cmd": "python tools/promote.py check --artifact <path>", "does": "проверить promotion L4→L3→L2→L1"},

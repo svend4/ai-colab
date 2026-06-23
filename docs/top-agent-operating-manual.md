@@ -13,7 +13,7 @@ related: docs/bridge-usage.md, docs/layers-coverage.md, docs/architecture-docs-r
 
 Назначение: дать человеку или AI-агенту на "вершине пирамиды" чистовую инструкцию: что эта система умеет сейчас, как ей пользоваться, где лежат функции, что автоматизировано, что запрещено, какие вопросы уже возникали и как развивать середину пирамиды дальше.
 
-Это не история разработки. История остаётся в `темы/`, `tasks/`, `queues/`, commit log. Этот документ — текущая operational-карта.
+Это не история разработки. История остаётся в `topics/`, `tasks/`, `queues/`, commit log. Этот документ — текущая operational-карта.
 
 Связанный человеко-читабельный онбординг: `docs/agent-onboarding.md`. Если нужно быстро понять систему за 5-10 минут, начинайте с него. Если нужно действовать как агент и выбирать команды/микро-инструкции, используйте этот manual.
 
@@ -26,7 +26,7 @@ current_stage: Рабочий read-only прототип, не execute-плат�
 safe_default: read-only
 control_plane: [AGENTS.md, PROTOCOL.md, TASKS.md, pipeline.py, validate.py, generate.py]
 capability_plane: [drivers/, skills/, tools/, docs/, reports/]
-dialog_plane: [темы/, queues/outbox/, docs/*result*.md]
+dialog_plane: [topics/, queues/outbox/, docs/*result*.md]
 memory_plane: [drivers/workbench, tools/knowledge.py, tools/repo_search.py, reports/, logs/*.db runtime]
 driver_acceptance: D-015, tests + MCP acceptance + second-agent verification
 current_l2_acceptance: sync MCP tools/call 27/27
@@ -68,7 +68,7 @@ python tools\test_knowledge.py
 | Sub-agent handoff | `tools/top.py subagent-handoff`, `tools/flow.py launch-plan` | repo lane + prompt для внешнего launcher |
 | Doc consensus semantic runtime | `tools/doc_consensus.py`, `docs/doc-consensus-agent-runtime.md` | безопасный opt-in `$DOC_CONSENSUS_AGENT`, budget guard, proposed output |
 | Text extraction | `tools/text_extract.py` | redacted `.md/.txt/.html` text для поиска и порталов |
-| История обсуждения | `темы/ai-os-bridge.md`, `темы/*.md` | полилог и решения |
+| История обсуждения | `topics/ai-os-bridge.md`, `topics/*.md` | полилог и решения |
 | Итоги задач | `docs/*result*.md`, `queues/outbox/`, `queues/done/` | что уже сделано |
 
 ## 3. Что может делать агент на вершине пирамиды
@@ -163,7 +163,7 @@ read current state
 - control plane: `AGENTS.md`, `PROTOCOL.md`, `TASKS.md`, `pipeline.py`;
 - capability plane: `drivers/`, `skills/`, `tools/`;
 - memory plane: `workbench`, `knowledge.py`, `reports/`;
-- dialog plane: `темы/`, `queues/outbox/`;
+- dialog plane: `topics/`, `queues/outbox/`;
 - safety plane: `drivers/SCHEMA.md`, `driver-safety-policy.md`, `execute-sandbox-preflight.md`.
 
 ### 7.2. Это уже движок или набор файлов?

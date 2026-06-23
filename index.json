@@ -2534,7 +2534,7 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "todo",
+      "status": "blocked",
       "owner": "pool",
       "priority": "normal",
       "risk": "high",
@@ -2589,13 +2589,13 @@
     {
       "id": "T-213",
       "title": "Q-010 — миграция папки topics/ → topics/ (атомарное переименование + sweep ссылок)",
-      "status": "doing",
+      "status": "done",
       "owner": "Novax",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "",
-      "next": "Атомарный коммит: git mv темы topics + скриптовый sweep 268 файлов / 956 строк + правка 19+ hardcode-литералов + regenerate + validate"
+      "next": "Выполнено: sweep 353+8 файлов, 7 hardcode .py правок, generate + validate + tests green. Коммит отложен из-за geometric repack."
     },
     {
       "id": "T-214",
@@ -2676,9 +2676,9 @@
     {
       "id": "Q-010",
       "title": "Переименовать ли папку topics/ в ASCII (topics/)?",
-      "status": "open",
+      "status": "answered",
       "where": "topics/migrate-file-names.md",
-      "outcome": ""
+      "outcome": "Выполнена атомарная миграция T-213: папка переименована в topics/, sweep 353 файлов (темы/→topics/), 8 файлов с backslash-путями, правка 7 hardcode в .py. validate.py: 11 OK 0 WARN 0 ERROR. Тесты ядра зелёные. D-007 закрыт."
     },
     {
       "id": "Q-011",

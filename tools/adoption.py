@@ -1,6 +1,6 @@
 """adoption.py — статические метрики ПРИМЕНЕНИЯ (повторяемый блок само-мониторинга).
 
-Операционализирует один-разовый adoption-аудит (`темы/adoption-statistics-2026-06-23.md`,
+Операционализирует один-разовый adoption-аудит (`topics/adoption-statistics-2026-06-23.md`,
 30 агентов) в дешёвый детерминированный детектор: dormant-инструменты, декларативные решения,
 orphan-доки. Рекурсивное само-улучшение — «применяется ли накопленное» мерится автоматически
 одной командой, а не воркфлоу. Встроен нюанс FINDER: manual-CLI (есть main + doc-ссылки, но
@@ -93,7 +93,7 @@ def classify_decisions():
         did = os.path.basename(path)[:-3]
         # ЧЕСТНО: static не отличает enforcement от цитаты в docstring → ярлык «code-linked» (упомянут
         # в неком не-test инструменте) vs «doc-only» (ни в одном .py). Прокси нижней границы; точное
-        # «enforced» — судит FINDER (темы/adoption-statistics-2026-06-23.md, там 5/23).
+        # «enforced» — судит FINDER (topics/adoption-statistics-2026-06-23.md, там 5/23).
         code_refs = len(re.findall(re.escape(did) + r"\b", code_text))
         rows.append({"name": did, "status": "code-linked" if code_refs > 0 else "doc-only",
                      "code_refs": code_refs})
@@ -106,7 +106,7 @@ def classify_docs():
     rows = []
     for path in md_paths:
         rel = os.path.relpath(path, ROOT).replace("\\", "/")
-        if not (rel.startswith("docs/") or rel.startswith("темы/")):
+        if not (rel.startswith("docs/") or rel.startswith("topics/")):
             continue
         fname = os.path.basename(path)
         slug = fname[:-3]

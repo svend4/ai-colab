@@ -18,7 +18,7 @@ source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
-related: темы/ai-os-bridge.md, drivers/data.md, drivers/workbench.md
+related: topics/ai-os-bridge.md, drivers/data.md, drivers/workbench.md
 ---
 
 # Driver: sqlite

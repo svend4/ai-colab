@@ -110,7 +110,7 @@ type: report
 
 # Documentation update
 
-Updated docs/top-layer-throughput-methodology.md and темы/perspective-backlog-2026-06-23.md.
+Updated docs/top-layer-throughput-methodology.md and topics/perspective-backlog-2026-06-23.md.
 """)
         r = ri.classify_path(docs, root=base)
         assert r["class"] == "docs-change", r

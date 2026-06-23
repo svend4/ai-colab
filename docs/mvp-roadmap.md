@@ -1,7 +1,7 @@
 # MVP-roadmap: Information Workbench Layer
 
 Дата: 2026-06-20
-Связано: `docs/ai_middle_layer_architecture_ru.md`, `темы/ai-os-bridge.md`, `темы/agent-pipeline.md`, `tasks/T-025.md`
+Связано: `docs/ai_middle_layer_architecture_ru.md`, `topics/ai-os-bridge.md`, `topics/agent-pipeline.md`, `tasks/T-025.md`
 
 ## Короткий вывод
 

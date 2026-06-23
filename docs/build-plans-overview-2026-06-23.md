@@ -11,11 +11,11 @@ related: [q017-semantic-consolidated-2026-06-23, pyramid-grounding-consolidated-
 Этот документ — L2-сведение трёх ратифицированных-к-сборке планов в один обзор с единой
 таблицей порядка сборки. Источники — три condensed-артефакта одной сессии:
 
-- **Q-017 — semantic** (`темы/q017-semantic-consolidated-2026-06-23.md`): семантический гибрид
+- **Q-017 — semantic** (`topics/q017-semantic-consolidated-2026-06-23.md`): семантический гибрид
   для слияния документации в `tools/doc_consensus.py`.
-- **Pyramid grounding** (`темы/pyramid-grounding-consolidated-2026-06-23.md`): честное
+- **Pyramid grounding** (`topics/pyramid-grounding-consolidated-2026-06-23.md`): честное
   scan-derived покрытие L2→L1 (`derive_reuse`) + наполнение реальными порталами.
-- **Build-specs** (`темы/build-specs-2026-06-23.md`): три symbol-anchored, строго аддитивных,
+- **Build-specs** (`topics/build-specs-2026-06-23.md`): три symbol-anchored, строго аддитивных,
   advisory edit-спеки, готовые в worktree без повторной разведки.
 
 **Общая позиция всех трёх планов.** Аддитивно, advisory/non-blocking, symbol-anchored,
@@ -154,7 +154,7 @@ LLM-вызова; cost ограничен high-thr pre-cluster + батчами 
 ## План 3 — Build-specs: три symbol-anchored advisory спеки
 
 **Что строим.** Три symbol-anchored, строго аддитивных, advisory/non-blocking edit-спеки из
-`темы/build-specs-2026-06-23.md`, готовые к передаче в worktree без повторной разведки.
+`topics/build-specs-2026-06-23.md`, готовые к передаче в worktree без повторной разведки.
 
 ### S1 — Подключить `assurance.py` в апекс `top.py` [worktree / Codex-hot]
 
@@ -184,7 +184,7 @@ LLM-вызова; cost ограничен high-thr pre-cluster + батчами 
 - **`AGENTS.md`** (3): D-008 после novax-строки реестра, кончающейся «…правки служебных файлов — с
   обоснованием по D-003» (`AGENTS.md:26-27`); D-009 после «Автоматический агент может добавлять
   решения со статусом `proposed`…»; D-002 inline `<!-- -->` на «Для больших тем писать отдельные
-  сообщения в `темы/<topic>/messages/`.»
+  сообщения в `topics/<topic>/messages/`.»
 - **`PROTOCOL.md`** (3): D-008 конец §7 после абзаца «видимый след» (`PROTOCOL.md:133,161`); D-004 в
   §8 рядом с «Правило D-006:» (`PROTOCOL.md:173`, template `templates/decision-options.md`); D-002
   inline на «Правило: **одно сообщение = один файл**.» (`PROTOCOL.md:42`).

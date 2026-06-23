@@ -3,7 +3,7 @@
 """
 repo_search (продукт) — ранжированный полнотекстовый поиск по ДОКУМЕНТАЦИИ репозитория.
 
-Репо вырос (десятки docs/decisions/questions/темы/tasks). Этот инструмент индексирует их содержимое
+Репо вырос (десятки docs/decisions/questions/topics/tasks). Этот инструмент индексирует их содержимое
 в FTS5-память (поверх L6-движка `tools/knowledge.py`: files-драйвер + workbench + bm25) и даёт
 ранжированный поиск — чтобы агент или человек находил нужное (решение, политику, тему) одной командой,
 а не grep'ом вслепую. READ-ONLY; БД в gitignored `logs/`.
@@ -26,7 +26,7 @@ sys.path.insert(0, TOOLS)
 import knowledge as kn  # переиспользуем L6-движок (build/_build_fts/fts_search/workbench)
 
 # Зоны документации (содержательная проза/канон); код/драйверы намеренно не индексируем.
-DOC_DIRS = ["docs", "decisions", "questions", "темы", "tasks"]
+DOC_DIRS = ["docs", "decisions", "questions", "topics", "tasks"]
 DEFAULT_DB = "logs/repo-knowledge.db"
 
 configure_output()

@@ -47,7 +47,7 @@ _(общих пунктов не найдено при текущем порог
 - Дата: 2026-06-22 · Статус: **accepted** (ратифицировано `D-022`, Stefan по D-006). Источник: 4 решения Stefan + требование детализировать под-случаи. История и   _(docs/parallel-work-policy.md:3)_
 - Цель — однозначное правило на каждую конкретную ситуацию параллельной много-агентной работы, чтобы убрать «ожидание другого агента» и потерю работы при коллизия  _(docs/parallel-work-policy.md:5)_
 - Матрица быстрого выбора: ситуация → механизм  _(docs/parallel-work-policy.md:7)_
-- Чужие незакоммиченные source-файлы (tasks/ decisions/ questions/ tools/ drivers/ docs/ темы/ streams/*/STREAM.md) в git status  _(docs/parallel-work-policy.md:11)_
+- Чужие незакоммиченные source-файлы (tasks/ decisions/ questions/ tools/ drivers/ docs/ topics/ streams/*/STREAM.md) в git status  _(docs/parallel-work-policy.md:11)_
 - generate.py --check краснеет (STALE), и stale-источник НЕ мои staged-изменения  _(docs/parallel-work-policy.md:12)_
 - Планирую правку HOT-файла (TASKS.md, QUESTIONS.md, DECISIONS.md, index.json, PIPELINE.md, tools/top.py, tools/portal.py, генераторы, _canon/*)  _(docs/parallel-work-policy.md:13)_
 - Stefan/owner явно просит параллельную многоагентную работу / fork-and-synthesize над одной темой  _(docs/parallel-work-policy.md:14)_
@@ -65,7 +65,7 @@ _(общих пунктов не найдено при текущем порог
 - commit_lock BUSY >2 раз / >120с ИЛИ generate.py пришлось гонять >5 раз из-за чужого stale  _(docs/parallel-work-policy.md:26)_
 - 1. Уровень-1 (worktree) vs Уровень-0 (общее дерево) — триггеры  _(docs/parallel-work-policy.md:28)_
 - **Принцип:** Level-1 (per-agent git worktree with isolated index, branch `agent/<agent>/<task>`) is MANDATORY when any of three trigger-conditions are met: (1)   _(docs/parallel-work-policy.md:30)_
-- Coworker has uncommitted source-files AND they touch Source-Dirs (tasks/, decisions/, questions/, tools/, drivers/, docs/, темы/)  _(docs/parallel-work-policy.md:34)_
+- Coworker has uncommitted source-files AND they touch Source-Dirs (tasks/, decisions/, questions/, tools/, drivers/, docs/, topics/)  _(docs/parallel-work-policy.md:34)_
 - generate --check returns non-zero (STALE detected) and stale changes are NOT from current agent's own staged work  _(docs/parallel-work-policy.md:35)_
 - Task size is LARGE (multi-file change across 5+ files OR touches multiple source-directories) AND coworker is currently active (has live claim OR uncommitted wo  _(docs/parallel-work-policy.md:37)_
 - same-file collision: both current agent AND coworker have uncommitted changes to the SAME file (e.g., tools/text_extract.py, portals/example/config.md)  _(docs/parallel-work-policy.md:38)_

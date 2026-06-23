@@ -3,7 +3,7 @@
 """
 Workflow backlog rescan tool.
 
-Читает `темы/perspective-backlog-*.md`, ищет задачи, которые упоминаются в таблице `Ранжированный бэклог`
+Читает `topics/perspective-backlog-*.md`, ищет задачи, которые упоминаются в таблице `Ранжированный бэклог`
 или списке `Готовы к запуску`, и сверяет их статусы с `tasks/*.md`.
 Если задача выполнена (`status: done` или `closed`), скрипт предлагает перенести строку
 в `Shipped / closed`.
@@ -27,7 +27,7 @@ def rescan():
     done_tasks = {t_id: t for t_id, t in tasks.items() if t["status"] in ("done", "closed")}
     
     # Find backlog files
-    backlogs = glob.glob(os.path.join(ROOT, "темы", "perspective-backlog-*.md"))
+    backlogs = glob.glob(os.path.join(ROOT, "topics", "perspective-backlog-*.md"))
     if not backlogs:
         print("Не найдены файлы perspective-backlog-*.md")
         return

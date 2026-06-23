@@ -50,7 +50,7 @@ python tools/permissions.py <agent>
 python tools/permissions.py <agent> file1.md file2.md
 ```
 
-Worker-зона (`novax`, `mavis`): `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/`, `docs/`, `code/`, `STATUS.md`, `dialog.md`.  
+Worker-зона (`novax`, `mavis`): `tasks/`, `questions/`, `decisions/`, `topics/`, `queues/`, `docs/`, `code/`, `STATUS.md`, `dialog.md`.  
 Generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) могут измениться после `python tools/generate.py`; не редактируйте их вручную между `GEN`-маркерами.
 Не пишите в `PROTOCOL.md`, `AGENTS.md`, `tools/` без явного запроса.
 
@@ -60,7 +60,7 @@ Generated-индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`
 # 1. Проверить канон
 python tools/validate.py
 
-# 2. Обновить навигацию (если меняли темы/задачи/вопросы/решения)
+# 2. Обновить навигацию (если меняли topics/задачи/вопросы/решения)
 python tools/generate.py
 
 # 3. Проверить, что навигация актуальна

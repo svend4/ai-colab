@@ -43,7 +43,7 @@ def _gen(marker):
     return "<!-- GEN:%s START -->\nстарое\n<!-- GEN:%s END -->\n" % (marker, marker)
 
 
-STATUS = "# Статус\n\n## Активные темы\n\n" + _gen("topics-status")
+STATUS = "# Статус\n\n## Активные topics\n\n" + _gen("topics-status")
 BOARD = "# Доска\n\n## Темы\n\n" + _gen("topics-board")
 TASKS = "# Задачи\n\n" + _gen("tasks")
 QUESTIONS = "# Вопросы\n\n" + _gen("questions")
@@ -63,8 +63,8 @@ def _build_root(root):
     _write(root, "TASKS.md", TASKS)
     _write(root, "QUESTIONS.md", QUESTIONS)
     _write(root, "DECISIONS.md", DECISIONS)
-    # темы/ — путь как в проде (кириллица), один источник правды
-    _write(root, "темы/x.md", "---\nid: x\ntitle: Тема X\nstatus: open\nnext: шаг\n---\n# X\n")
+    # topics/ — путь как в проде (кириллица), один источник правды
+    _write(root, "topics/x.md", "---\nid: x\ntitle: Тема X\nstatus: open\nnext: шаг\n---\n# X\n")
     _write(root, "tasks/T-001.md",
            "---\nid: T-001\ntitle: Задача 1\nstatus: todo\nowner: pool\ntopic: themes/x\n---\n# t\n")
     _write(root, "questions/Q-001.md",
@@ -123,7 +123,7 @@ def run():
         assert "STALE" not in chk_out, "ложный дрейф:\n%s" % chk_out
 
         # правим источник темы → навигация устаревает → --check ловит дрейф
-        _write(root, "темы/x.md",
+        _write(root, "topics/x.md",
                "---\nid: x\ntitle: Тема X ИЗМЕНЕНА\nstatus: open\nnext: шаг\n---\n# X\n")
         rc, drift_out = _run_generate(root, "--check")
         assert rc == 1, "--check после правки источника должен валить (rc=%d):\n%s" % (rc, drift_out)

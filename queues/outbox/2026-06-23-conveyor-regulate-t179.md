@@ -54,6 +54,6 @@ python tools\generate.py --check
 - `tools/test_conveyor.py`: добавлены сценарии increase/hold/process-first/decrease/assurance-hold.
 - `tools/result_intake.py`: используется best-effort для классификации landed outputs.
 - `tools/README.md` и `docs/top-layer-throughput-methodology.md`: документация обновлена.
-- `темы/perspective-backlog-2026-06-23.md`: T-179 перенесён в shipped/closed.
+- `topics/perspective-backlog-2026-06-23.md`: T-179 перенесён в shipped/closed.
 - Checks: команды перечислены выше; результаты проверяются перед закрытием задачи.
 - Commit safety: commit и staging не выполнялись в dirty shared tree.

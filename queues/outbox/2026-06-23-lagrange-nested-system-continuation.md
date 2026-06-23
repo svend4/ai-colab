@@ -49,7 +49,7 @@ queues/done/              # выполненные задачи
 queues/failed/            # провалы / blocked
 docs/                     # чистовая документация
 reports/                  # отчёты анализа
-темы/                     # полилог, обсуждения, synthesis
+topics/                     # полилог, обсуждения, synthesis
 streams/                  # fork-варианты до принятия
 logs/                     # runtime-снимки, не как источник решения
 ```

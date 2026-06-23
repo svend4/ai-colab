@@ -4,7 +4,7 @@
 Генератор навигации (T-007).
 
 Собирает таблицы тем в `STATUS.md` («Активные темы») и `board.md` («Темы»)
-из YAML-front-matter каждого файла `темы/*.md`. Один источник правды на тему —
+из YAML-front-matter каждого файла `topics/*.md`. Один источник правды на тему —
 нет ручной синхронизации двух таблиц, значит нет класса дрейфа между ними.
 
 Запуск из корня проекта:
@@ -45,7 +45,7 @@ from _canon import parse_front_matter  # единый парсер front-matter 
 
 def collect_topics():
     topics = []
-    for path in glob.glob(os.path.join(ROOT, "темы", "*.md")):
+    for path in glob.glob(os.path.join(ROOT, "topics", "*.md")):
         with open(path, encoding="utf-8") as f:
             fm = parse_front_matter(f.read())
         if not fm.get("title"):

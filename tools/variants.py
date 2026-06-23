@@ -8,7 +8,7 @@ Variants (D-018) — READ-ONLY реестр/дискавери параллел�
 сканирует известные места обитания форков и строит индекс `тема -> [варианты]`.
 
 Сканируются:
-  - темы/*.md                         — тематические обсуждения/форки (kind=topic-note)
+  - topics/*.md                         — тематические обсуждения/форки (kind=topic-note)
   - docs/*.md взаимодополняющие пары   — Claude ↔ Codex онбординг/манул (kind=doc)
   - streams/<topic>/<id>/STREAM.md     — draft-пакеты вариантов (kind=stream)
   - queues/outbox/*.md                 — форк-артефакты в исходящих (kind=outbox)
@@ -35,7 +35,7 @@ from _canon import parse_front_matter  # единый парсер front-matter
 configure_output()
 
 # Темы (русское имя папки) и прочие сканируемые директории.
-TOPICS_DIR = os.path.join(ROOT, "темы")
+TOPICS_DIR = os.path.join(ROOT, "topics")
 DOCS_DIR = os.path.join(ROOT, "docs")
 STREAMS_DIR = os.path.join(ROOT, "streams")
 OUTBOX_DIR = os.path.join(ROOT, "queues", "outbox")

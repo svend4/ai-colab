@@ -39,7 +39,7 @@ import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER = os.path.join(ROOT, "logs", "conveyor.json")
-BACKLOG = os.path.join(ROOT, "темы", "perspective-backlog-2026-06-23.md")
+BACKLOG = os.path.join(ROOT, "topics", "perspective-backlog-2026-06-23.md")
 DEFAULT_TARGET = 2
 DEFAULT_IDLE_MIN = 20
 

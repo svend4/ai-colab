@@ -166,7 +166,7 @@ _BUTTONS = [
     {
         "id": "synthesis-helper",
         "audience": "both",
-        "command": "python tools/synthesis_helper.py report <topic> --out темы/<topic>-synthesis.md",
+        "command": "python tools/synthesis_helper.py report <topic> --out topics/<topic>-synthesis.md",
         "does": "Собрать scaffold синтеза из найденных fork-вариантов без принятия решения.",
         "effect": "writes report if --out",
     },
@@ -488,7 +488,7 @@ def _landed_plan_for(workflow, topic=None):
             "python tools\\top.py assurance all",
         ]
         if kind in {"variant", "agent-report", "read-only-report"}:
-            plan.append("python tools\\synthesis_helper.py report %s --out темы\\%s-synthesis.md" % (topic, topic))
+            plan.append("python tools\\synthesis_helper.py report %s --out topics\\%s-synthesis.md" % (topic, topic))
 
     plan.append("# after review/commit: python tools\\conveyor.py ship %s" % workflow.get("id", "<workflow-id>"))
     return {"id": workflow.get("id"), "label": label, "output": output, "kind": kind,

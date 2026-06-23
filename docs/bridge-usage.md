@@ -94,5 +94,5 @@ legacy async acceptance и сравнивает результат с sync accep
 - ⛔ Отдельно (с песочницей): запуск непроверенного кода (svend4) — требует контейнера/изоляции,
   `mode: execute` закрыт гардом до её реализации.
 
-Связано: `docs/middle-layer-guide.md`, `docs/layers-coverage.md`, `темы/ai-os-bridge.md`,
+Связано: `docs/middle-layer-guide.md`, `docs/layers-coverage.md`, `topics/ai-os-bridge.md`,
 `decisions/D-010.md`, `decisions/D-013.md`, `decisions/D-015.md`.

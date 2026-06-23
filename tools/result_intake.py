@@ -47,7 +47,7 @@ def _bump(scores, signals, cls, points, reason):
 def _extract_repo_paths(text):
     hits = []
     # Conservative: repo-like paths, not arbitrary prose with slashes.
-    pat = r"(?<![A-Za-z0-9_./-])(?:tools|docs|tasks|queues|reports|drivers|core|portals|sandbox|streams|темы)/[^\s`'\")]+"
+    pat = r"(?<![A-Za-z0-9_./-])(?:tools|docs|tasks|queues|reports|drivers|core|portals|sandbox|streams|topics)/[^\s`'\")]+"
     for m in re.finditer(pat, text):
         item = m.group(0).rstrip(".,;:")
         if item not in hits:
@@ -76,7 +76,7 @@ def _recommended(relpath, cls, fm):
         ]
     elif cls == "variant":
         checks += [
-            "python tools\\synthesis_helper.py report <topic> --out темы\\<topic>-synthesis.md",
+            "python tools\\synthesis_helper.py report <topic> --out topics\\<topic>-synthesis.md",
             "python tools\\doc_consensus.py report --files <a.md> <b.md> --out reports\\doc-consensus.md",
             "python tools\\validate.py",
         ]
@@ -166,7 +166,7 @@ def classify_path(path, root=ROOT):
     elif re.search(r"(?mi)^python\s+tools[\\/].+\.py", text):
         _bump(scores, signals, "build-change", 1, "tool command mentioned in checks")
 
-    docs_terms = ["docs/", "темы/", "documentation", "документац", "readme", "manual", "методолог"]
+    docs_terms = ["docs/", "topics/", "documentation", "документац", "readme", "manual", "методолог"]
     if any(term in low for term in docs_terms):
         _bump(scores, signals, "docs-change", 3, "documentation/topic vocabulary")
 

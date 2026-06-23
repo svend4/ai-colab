@@ -195,7 +195,7 @@ def check_nav():
             if not line.strip().startswith("|"):
                 continue
             for p in md_paths(line):
-                if p.startswith("темы/") and not os.path.exists(os.path.join(ROOT, p)):
+                if p.startswith("topics/") and not os.path.exists(os.path.join(ROOT, p)):
                     err(f"{fname}: ссылка на отсутствующую тему {p}")
                     missing += 1
         if missing == 0:

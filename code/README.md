@@ -7,7 +7,7 @@
 Пример:
 
 ```md
-Обсуждение: `темы/api-design.md`
+Обсуждение: `topics/api-design.md`
 Код: `code/server/app.py`
 ```
 

@@ -42,7 +42,7 @@ last_verified: 2026-06-23
 
 ## 3. Несколько воркфлоу: кластеры и параллелизм
 
-- **Один кластер вопросов = один воркфлоу.** Разные несвязанные кластеры (разные темы/вопросы) —
+- **Один кластер вопросов = один воркфлоу.** Разные несвязанные кластеры (разные topics/вопросы) —
   **отдельные** воркфлоу, запущенные **параллельно в фоне**. Пример из сессии: пока шла консолидация
   движка, параллельно шёл анализ двух открытых вопросов — два независимых воркфлоу одновременно.
 - Оркестратор **запускает в фон → не ждёт впустую → делает безопасную параллельную работу** (например,
@@ -68,7 +68,7 @@ last_verified: 2026-06-23
   (парсит JSON-результат) и **компонует** чистый структурированный документ.
 - **Промежуточные рабочие файлы**, если нужны в репо, — в **gitignored `tmp-work/`** (черновики, скрипты
   компоновки). Их тоже не коммитят; после использования — удаляют (как `_compose_*.py` в этой сессии).
-- **Финальный структурированный результат** — в **канон**: `темы/<topic>-<date>.md` (анализ/синтез/история),
+- **Финальный структурированный результат** — в **канон**: `topics/<topic>-<date>.md` (анализ/синтез/история),
   `docs/<name>.md` (политика/карта), `decisions/D-XXX.md` (если это решение), задача в `tasks/` (если работа).
   Только это коммитится.
 - **Правило:** черновое и сырое — во временное (temp/tmp-work, gitignored); только **извлечённое,
@@ -87,7 +87,7 @@ last_verified: 2026-06-23
 ## 7. Интеграция с коллективной работой (люди + агенты)
 
 - Воркфлоу — это **личный оркестратор одного агента**; его результаты вливаются в **общий** контур:
-  документ в `темы/`/`docs/` для людей и агентов; спорные пункты — в **котёл** (`pipeline`) и через
+  документ в `topics/`/`docs/` для людей и агентов; спорные пункты — в **котёл** (`pipeline`) и через
   `D-018` (коллективное решение); форк-варианты — через `D-017` (`stream.py`).
 - Результат должен быть **перепроверен** (синтезатор + при необходимости adversarial-верификация) и
   **помечен** (proposed/accepted) — агент не утверждает спорное соло (D-006/D-018).
@@ -111,11 +111,11 @@ last_verified: 2026-06-23
 |---|---|---|---|
 | themes-state-map | Map (read-only) | состояние 6 тем + git/tests | план (в работу) |
 | collab-tools-build | Build (verify) | 5 инструментов + adversarial verify | 5 tools + tests (commit) |
-| kotel-decision-material | Synthesize (read-only) | 7 котёл-пунктов | `темы/kotel-decision-material…` |
-| parallel-forks-history | Analyze (read-only) | история форков/ручейков | `темы/parallel-forks-history…` |
+| kotel-decision-material | Synthesize (read-only) | 7 котёл-пунктов | `topics/kotel-decision-material…` |
+| parallel-forks-history | Analyze (read-only) | история форков/ручейков | `topics/parallel-forks-history…` |
 | parallel-work-policy | Draft (read-only) | 4 области политики, 50 под-случаев | `docs/parallel-work-policy.md` |
-| gate-poison-situation | Analyze (read-only) | ситуация + 15 вариантов | `темы/gate-poison-situation…` |
-| friction-subsystems-synthesis | Synthesize (read-only) | сверка двух подсистем | `темы/friction-subsystems-synthesis…` |
+| gate-poison-situation | Analyze (read-only) | ситуация + 15 вариантов | `topics/gate-poison-situation…` |
+| friction-subsystems-synthesis | Synthesize (read-only) | сверка двух подсистем | `topics/friction-subsystems-synthesis…` |
 | engine-consolidation | Map (read-only) | карта движка + onboarding | `docs/engine-state-2026-06-22.md` |
 
 Паттерн стабилен: **read-only фан-аут → структурированный синтез → извлечение → чистый канон-документ →

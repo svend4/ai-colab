@@ -13,8 +13,8 @@
 - `docs/workflow-conveyor-policy.md`
 - `docs/workflow-orchestration-policy.md`
 - `streams/README.md`
-- `темы/parallel-forks-history-2026-06-22.md`
-- `темы/parallel-work-divergences-2026-06-22.md`
+- `topics/parallel-forks-history-2026-06-22.md`
+- `topics/parallel-work-divergences-2026-06-22.md`
 - `tools/worktree.py`
 - `tools/flow.py`
 - `tools/top.py`

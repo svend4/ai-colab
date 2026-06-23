@@ -14,8 +14,8 @@ Updated:
 
 - `T-136` -> done;
 - `T-137` -> done;
-- `темы/commit-policy-streams-2026-06-21.md` -> accepted closeout;
-- `темы/kotel-decision-material-2026-06-21.md` -> updated live-state note;
+- `topics/commit-policy-streams-2026-06-21.md` -> accepted closeout;
+- `topics/kotel-decision-material-2026-06-21.md` -> updated live-state note;
 - `D-020` -> postscript pointing to accepted `D-021`.
 
 Verified:

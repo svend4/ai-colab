@@ -42,7 +42,7 @@ import promote as pr                   # level_of / _list_field / уровни �
 configure_output()
 
 DOC_REF_RE = re.compile(
-    r"(?:tools|docs|decisions|questions|темы|core|portals|drivers|collab|sandbox|queues|streams)"
+    r"(?:tools|docs|decisions|questions|topics|core|portals|drivers|collab|sandbox|queues|streams)"
     r"/[\wа-яёА-ЯЁ./-]+?\.(?:md|py|json)")
 DREF_RE = re.compile(r"\bD-\d{3}\b")
 BOILERPLATE = {"agents.md", "protocol.md", "checks", "checks:"}

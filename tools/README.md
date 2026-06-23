@@ -62,7 +62,7 @@ git config core.hooksPath tools/githooks
 
 ## Генератор навигации (`generate.py`)
 
-Таблицы тем в `STATUS.md` («Активные темы») и `board.md` («Темы») больше не редактируются руками — они **генерируются** из front-matter каждого файла `темы/*.md`. Один источник на тему ⇒ две таблицы не могут разойтись (класс дрейфа устранён структурно).
+Таблицы тем в `STATUS.md` («Активные темы») и `board.md` («Темы») больше не редактируются руками — они **генерируются** из front-matter каждого файла `topics/*.md`. Один источник на тему ⇒ две таблицы не могут разойтись (класс дрейфа устранён структурно).
 
 Front-matter темы (вверху файла, парсер простой: `ключ: значение`):
 
@@ -95,7 +95,7 @@ python tools/generate.py --check  # ничего не писать; exit 1, ес
 
 `generate.py` также строит корневой `index.json`: детерминированный машинный снимок канона для агентов и скриптов. Он содержит массивы `topics`, `tasks`, `questions`, `decisions`, `drivers`, собранные из front-matter и сгенерированных источников.
 
-Зачем: агенту не нужно перечитывать все Markdown-файлы для первичной ориентации. Он может сначала прочитать `index.json`, выбрать релевантные сущности, а уже потом открыть конкретные темы/задачи/решения.
+Зачем: агенту не нужно перечитывать все Markdown-файлы для первичной ориентации. Он может сначала прочитать `index.json`, выбрать релевантные сущности, а уже потом открыть конкретные topics/задачи/решения.
 
 Проверка:
 
@@ -126,7 +126,7 @@ status: todo            # todo | doing | blocked | review | done
 owner: Claude           # кто отвечает
 priority: normal        # low | normal | high
 risk: low               # low | medium | high
-topic: темы/scaling-design.md
+topic: topics/scaling-design.md
 depends_on: [T-008]     # зависимости (для будущего DAG)
 next: следующий шаг
 ---
@@ -138,7 +138,7 @@ next: следующий шаг
 
 Зачем: агенты создают/правят **свои** файлы задач, а не общую таблицу — нет конфликтов записи на `TASKS.md`. Поля `priority`/`risk`/`depends_on` пока хранятся для будущего (DAG, риск-гейтинг), в индексной таблице не показываются.
 
-Цикл: создал/изменил `tasks/T-XXX.md` → `python tools/generate.py` → коммит (hook проверит `--check`). Поля `priority`/`risk`/`depends_on` — задел под Этапы D–E из `темы/scaling-design.md`.
+Цикл: создал/изменил `tasks/T-XXX.md` → `python tools/generate.py` → коммит (hook проверит `--check`). Поля `priority`/`risk`/`depends_on` — задел под Этапы D–E из `topics/scaling-design.md`.
 
 Так же шардированы **вопросы** (`questions/Q-XXX.md` → индекс `QUESTIONS.md`) и **решения** (`decisions/D-XXX.md` → индекс `DECISIONS.md`). Полный текст решения — в его файле; `DECISIONS.md` — навигационный индекс (`ID | Решение | Статус | Дата | Файл`). Валидатор читает индекс решений как таблицу, поэтому источник правды по решениям — `decisions/*.md`.
 
@@ -263,7 +263,7 @@ python tools/risk_gate.py T-016
 
 ```bash
 python tools/permissions.py mavis
-python tools/permissions.py mavis tasks/T-020.md темы/scaling-design.md
+python tools/permissions.py mavis tasks/T-020.md topics/scaling-design.md
 ```
 
 Worker-агентам разрешены сгенерированные индексы (`TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `board.md`, `index.json`) как выход `generate.py`; вручную править содержимое между `GEN`-маркерами не нужно.

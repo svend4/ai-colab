@@ -1,7 +1,7 @@
 # DOCX text extraction result — 2026-06-21
 
 Task: `T-142`
-Related: `T-137`, `D-020`, `темы/kotel-decision-material-2026-06-21.md`
+Related: `T-137`, `D-020`, `topics/kotel-decision-material-2026-06-21.md`
 
 ## What changed
 

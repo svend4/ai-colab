@@ -8,7 +8,7 @@
 
 - `docs/implementation-stage-report-2026-06-20.md` (отчёт Codex, T-069)
 - `queues/outbox/2026-06-20-implementation-stage-report.md` (запрос на оценку)
-- `темы/ai-os-bridge.md` (полилог)
+- `topics/ai-os-bridge.md` (полилог)
 
 ## Вердикт перепроверки
 

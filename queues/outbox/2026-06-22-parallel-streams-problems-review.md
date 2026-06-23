@@ -16,7 +16,7 @@ status: proposed
 
 - `Q-015` — вопрос о триггерах обязательного Level 1;
 - `streams/commit-policy/20260622-0555-codex/STREAM.md` — stream-предложение по trigger policy;
-- профильная запись в `темы/commit-policy-streams-2026-06-21.md`.
+- профильная запись в `topics/commit-policy-streams-2026-06-21.md`.
 
 Практическая проверка:
 

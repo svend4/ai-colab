@@ -3,7 +3,7 @@ id: gateway-status-result-2026-06-21
 title: Gateway status result — T-088
 status: done
 owner: Codex
-related: tasks/T-088.md, drivers/gateway.md, drivers/gateway/mcp_server.py, темы/repo-review-2026-06-21.md
+related: tasks/T-088.md, drivers/gateway.md, drivers/gateway/mcp_server.py, topics/repo-review-2026-06-21.md
 ---
 
 # Gateway status result — T-088

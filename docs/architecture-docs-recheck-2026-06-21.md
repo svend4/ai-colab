@@ -3,7 +3,7 @@ id: architecture-docs-recheck-2026-06-21
 title: Architecture docs recheck — ранняя концепция и текущая стадия
 status: done
 owner: Codex
-related: tasks/T-120.md, темы/ai-os-bridge.md, docs/ai_middle_layer_architecture_ru.md, docs/agent-layer-design.md, docs/mvp-roadmap.md, docs/layers-coverage.md, docs/bridge-usage.md
+related: tasks/T-120.md, topics/ai-os-bridge.md, docs/ai_middle_layer_architecture_ru.md, docs/agent-layer-design.md, docs/mvp-roadmap.md, docs/layers-coverage.md, docs/bridge-usage.md
 ---
 
 # Architecture docs recheck — ранняя концепция и текущая стадия
@@ -16,8 +16,8 @@ related: tasks/T-120.md, темы/ai-os-bridge.md, docs/ai_middle_layer_architec
 
 | Файл | Роль |
 |---|---|
-| `темы/ai-os-bridge.md` | Главная полилог-тема: проблема вершина/основание пирамиды, цель middleware, терминология Treiber/driver, выбор варианта B + MCP, первые задачи T-022..T-024. |
-| `темы/information-drivers.md` | Архивная ранняя ветка Mavis с вариантами A-E, аналогиями про тропы/дорожки и каталогом информационных драйверов. |
+| `topics/ai-os-bridge.md` | Главная полилог-тема: проблема вершина/основание пирамиды, цель middleware, терминология Treiber/driver, выбор варианта B + MCP, первые задачи T-022..T-024. |
+| `topics/information-drivers.md` | Архивная ранняя ветка Mavis с вариантами A-E, аналогиями про тропы/дорожки и каталогом информационных драйверов. |
 | `docs/ai_middle_layer_architecture_ru.md` | Самый большой импортированный архитектурный документ: Information Workbench Layer, уровни 0-8, конкретный план, варианты A-E, MVP, риски, svend4. |
 | `docs/agent-layer-design.md` | Технический разбор среднего слоя: MCP как драйверы/Treiber, lazy activation, каталог драйверов, варианты уровней, риски и фазы. |
 | `docs/middle-layer-guide.md` | Человеческий гайд по среднему слою: соответствие метафор реальным технологиям, практический план Windows + Codex + сервер. |

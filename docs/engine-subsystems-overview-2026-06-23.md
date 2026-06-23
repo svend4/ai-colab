@@ -22,7 +22,7 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 
 ## 1. Подсистема безопасной коллаборации / параллельной работы
 
-**Канон:** `темы/collab-safety-subsystem-2026-06-23.md`. **Governance:** `D-021` (Уровень-1 принят), `D-022` (триггеры), `D-023` (ownership за индексы); матрица «ситуация → механизм» — `docs/parallel-work-policy.md`. Три слоя, разделяющие одну идею: **лиза истекает по времени** (без liveness-пинга), реклеймится winner-take-all атомарным созданием, а **fencing-токен** не даёт зомби-холдеру закоммитить устаревший результат.
+**Канон:** `topics/collab-safety-subsystem-2026-06-23.md`. **Governance:** `D-021` (Уровень-1 принят), `D-022` (триггеры), `D-023` (ownership за индексы); матрица «ситуация → механизм» — `docs/parallel-work-policy.md`. Три слоя, разделяющие одну идею: **лиза истекает по времени** (без liveness-пинга), реклеймится winner-take-all атомарным созданием, а **fencing-токен** не даёт зомби-холдеру закоммитить устаревший результат.
 
 ### Слой 1 — атомарные примитивы конкурентности
 Координация целиком через атомарные операции ФС — БЕЗ потоков, замков ОС или БД: `os.open(O_CREAT|O_EXCL)` («выигрывает один создатель») + `os.replace` (атомарный своп) + дисциплина TTL-лиза + fencing-токен.
@@ -34,7 +34,7 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 ### Слой 2 — ownership-классификация и детекторы трения
 Общий классификатор `tools/ownership.py` (T-153) — единственный источник истины «моё vs чужое», импортируемый детектором `friction.py` и исполнителем `cohort.py guard`. `classify()` возвращает одну из **mine | generated | volatile | foreign | unknown** по приоритету (`ownership.py:62-89`); ключевое правило: **только `foreign`** обязывает эскалацию до L1 (`:17`); unknown намеренно не = foreign.
 - **`cohort.py guard`** (`:336-394`) — ownership-aware, 4 L1-триггера: foreign-source, hot-tool (`HOT_FILES`), stale-index (`generate.py --check`), gate-poison (`validate.py ERROR=N>0`). Путь **ship** — L0 safe-commit-цикл: `commit_lock acquire` → selective `git add` (никогда `-A`) → `generate.py` → commit → release (`cohort.py:246-281`).
-- **`friction.py`** — read-only F-001..F-020 ledger (advisory, не авто-чинит). **F-020 / gate-poison ПОДКЛЮЧЁН** (SHIPPED 2026-06-23, commit `67fa8b5`): REGISTRY-запись `friction.py:276` + детектор `check_gate_poison()` `:479`, прогоняется в `collect_status` `:634` и учитывается в `recommendation` `:650`. Прежнее замечание о дрейфе (F-020 только как cohort-триггер + предложение в `темы/friction-subsystems-synthesis-2026-06-22.md:94,101,105-111`) закрыто.
+- **`friction.py`** — read-only F-001..F-020 ledger (advisory, не авто-чинит). **F-020 / gate-poison ПОДКЛЮЧЁН** (SHIPPED 2026-06-23, commit `67fa8b5`): REGISTRY-запись `friction.py:276` + детектор `check_gate_poison()` `:479`, прогоняется в `collect_status` `:634` и учитывается в `recommendation` `:650`. Прежнее замечание о дрейфе (F-020 только как cohort-триггер + предложение в `topics/friction-subsystems-synthesis-2026-06-22.md:94,101,105-111`) закрыто.
 
 ### Слой 3 — изоляция + слияние (бинарная модель)
 - **L0** (общее дерево + `commit_lock` + selective-add) — дешёвый дефолт (`D-021:23-24`, `parallel-work-policy.md:30`); `stream.py` переиспользует ту же L0-сериализацию для fork-пакетов `streams/<topic>/<id>/STREAM.md` под тем же commit-lock (`stream.py:34,231-238`).
@@ -48,7 +48,7 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 
 ## 2. Подсистема Drivers / AI-OS Bridge
 
-**Канон:** `темы/drivers-subsystem-state-2026-06-23.md`. **Governance:** `D-010` (AI-OS Bridge strategy, staged B→E / L1→early L2) + `D-013` (driver schema v1, variant B, accepted). Safety-контракт — `docs/driver-safety-policy.md`. Bottom line: каталог в состоянии D-010 «early L2» — **9 драйверов зарегистрировано, 8 ready, 1 (`file-inventory`) draft**.
+**Канон:** `topics/drivers-subsystem-state-2026-06-23.md`. **Governance:** `D-010` (AI-OS Bridge strategy, staged B→E / L1→early L2) + `D-013` (driver schema v1, variant B, accepted). Safety-контракт — `docs/driver-safety-policy.md`. Bottom line: каталог в состоянии D-010 «early L2» — **9 драйверов зарегистрировано, 8 ready, 1 (`file-inventory`) draft**.
 
 ### Схема, валидация, свежесть
 - **Схема = проверяемый манифест, не проза** (`drivers/SCHEMA.md:10-14`). **19 обязательных полей** определены идентично в схеме и D-013 (`SCHEMA.md:18-38`, `D-013.md:24-44`); variant B = minimal + `source_last_verified` / `timeout_seconds` / `max_output_bytes` / `audit`, откладывает полную MCP-метадату. Схема-док всё ещё self-labeled **draft** (`SCHEMA.md:12`), хотя D-013 accepted — флаг дрейфа.
@@ -75,7 +75,7 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 
 ## 3. Подсистема Q-016 assurance — «построено vs осталось»
 
-**Канон:** `темы/q016-assurance-state-2026-06-23.md`. Канонический срез проверяемости инструкций Q-016, сверен по живому репо на 2026-06-23. Лестница ужесточения S0→S4 названа в `темы/assurance-hardening-plan-2026-06-23.md`. Все коммиты — Max, 2026-06-23.
+**Канон:** `topics/q016-assurance-state-2026-06-23.md`. Канонический срез проверяемости инструкций Q-016, сверен по живому репо на 2026-06-23. Лестница ужесточения S0→S4 названа в `topics/assurance-hardening-plan-2026-06-23.md`. Все коммиты — Max, 2026-06-23.
 
 ### Построено — 5 компонентов апекс-слоя (1 READ-ONLY дашборд + 4 точки интеграции)
 - **`tools/assurance.py`** — апекс-дашборд, 4 секции, переиспользует существующее, advisory по умолчанию (exit 0), `--strict`→exit 1; вердикт PASS / WARN / ATTENTION. Секции: **applied** (`:123`, % done-задач с реальным evidence, `CONVENTION_MIN=156`/T-156), **currency** (`:192`, свежесть D-*/политик, битые структурные ссылки = HIGH, дефолт `--max-age` 180 дн.), **coverage** (`:240`, orphan-L1 medium / ungrounded-L2 HIGH), **flow** (`:279`, реестр INSTRUCTIONS + висячие accepted-D-NNN). Коммит `9465956`; якорь `docs/instruction-assurance.md`.
@@ -87,13 +87,13 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 ### Осталось — 9 открытых пунктов (режимы inline / worktree / ratify; приземлённые S1/S2/S3 исключены)
 - **A. Hardening-лестница.** #1 **S0** — штамп `last_verified: 2026-06-23` на 20 accepted-решениях (D-001..D-013, D-015..D-018, D-021..D-023) + 4 политики, не back-date, не трогать proposed D-014/D-019/D-020, согласовать SLA 90d и убрать рассинхрон с `assurance.py:361 --max-age=180` (**ratify**, котёл D-018). #2 **S4** — blocking currency-gate в `merge_gate.gate_stages` (сейчас `merge_gate.py:56-57` только validate+generate --check); предусловие: закрыты last_verified-gap (#1) + прошёл 90d квартал (**worktree**, заблокирован).
 - **B. Build-specs.** #3 hardening `check-report` — новая `report_reference_findings(text, root)` в `instructions.py`, строго аддитивно (не трогать `check_report_text:369`, контракт пинят `test_instructions.py:71-77` + хард-колл `assurance.py:137,148`/`pipeline.py:343`), вывод блоком ADVISORY (**worktree**). #4 вплести 4 governance-решения (D-008/D-004/D-009/D-002) — 8 symbol-anchor insertion'ов в AGENTS.md/PROTOCOL.md/`docs/agent-onboarding.md`, только после ратификации D-006/D-018 (**ratify**).
-- **C. Заземление пирамиды** (один связный derive_reuse-ship #5+#6+#7). #5 `derive_reuse(root)` в `promote.py`, заменить самодекларированный `reused_in` в `_gate_L2_L1:139-143` на счёт ≥2 порталов + D-018 override; #6 `assurance.py section_coverage` — orphan-L1 по `files:` only, ungrounded-L2 (`260-269`) через l1_basis-резолв; #7 сузить `core/engine-manifest.md` (10 записей вкл. 2 теста → 8 files: + candidates), добавить структурный `l1_basis` в `portals/example/portal.md`, обновить `docs/promotion-rules.md:52` + `test_assurance.py`. Спека: `темы/pyramid-grounding-plan-2026-06-23.md`.
-- **D. Fleet-designs.** #8 ~~реализовать `reconcile_state.py fix`~~ **SHIPPED 2026-06-23, commit `94c3c35`**: `cmd_fix()` `reconcile_state.py:259` — dry-run по умолчанию + `--apply`, пишет только производные (`DERIVED_CODES` `:237`), PRIMARY-дрейф=отказ (`:284-288`), utf-8/`newline="\n"`; #9 наполнить L2 двумя реальными порталами (`bridge-knowledge`, `repo-inventory` из T-024), порталов 1→2-3, кормит #5 (**worktree**). Спека: `темы/fleet-designs-2026-06-23.md`.
+- **C. Заземление пирамиды** (один связный derive_reuse-ship #5+#6+#7). #5 `derive_reuse(root)` в `promote.py`, заменить самодекларированный `reused_in` в `_gate_L2_L1:139-143` на счёт ≥2 порталов + D-018 override; #6 `assurance.py section_coverage` — orphan-L1 по `files:` only, ungrounded-L2 (`260-269`) через l1_basis-резолв; #7 сузить `core/engine-manifest.md` (10 записей вкл. 2 теста → 8 files: + candidates), добавить структурный `l1_basis` в `portals/example/portal.md`, обновить `docs/promotion-rules.md:52` + `test_assurance.py`. Спека: `topics/pyramid-grounding-plan-2026-06-23.md`.
+- **D. Fleet-designs.** #8 ~~реализовать `reconcile_state.py fix`~~ **SHIPPED 2026-06-23, commit `94c3c35`**: `cmd_fix()` `reconcile_state.py:259` — dry-run по умолчанию + `--apply`, пишет только производные (`DERIVED_CODES` `:237`), PRIMARY-дрейф=отказ (`:284-288`), utf-8/`newline="\n"`; #9 наполнить L2 двумя реальными порталами (`bridge-knowledge`, `repo-inventory` из T-024), порталов 1→2-3, кормит #5 (**worktree**). Спека: `topics/fleet-designs-2026-06-23.md`.
 
 ### Зависимости / вердикт
 #5+#6+#7 — один ship; #9 даёт ему реальный второй портал (иначе gate `reuse_across_portals` непроходим, L1 остаётся proposed); #1(S0) разблокирует #2(S4); #1 и #4 — единственные ratify-пункты, остальные через worktree (symbol-anchored). Inline-only пунктов нет. Итог: апекс-слой построен и проведён через 5 точек (S1-S3); критический путь — derive_reuse-ship (#5-7+9) и две ратификации (#1,#4); S4-гейт (#2) заблокирован квартальным предусловием.
 
-**Ключевые файлы:** `tools/assurance.py`, `tools/pipeline.py`, `tools/validate.py`, `tools/drift_check.py`, `tools/top.py`, `tools/promote.py`, `tools/instructions.py`, `tools/merge_gate.py`, `tools/reconcile_state.py`, `docs/instruction-assurance.md`; спеки в `темы/{assurance-hardening-plan,build-specs,pyramid-grounding-plan,fleet-designs,governance-proposals}-2026-06-23.md`.
+**Ключевые файлы:** `tools/assurance.py`, `tools/pipeline.py`, `tools/validate.py`, `tools/drift_check.py`, `tools/top.py`, `tools/promote.py`, `tools/instructions.py`, `tools/merge_gate.py`, `tools/reconcile_state.py`, `docs/instruction-assurance.md`; спеки в `topics/{assurance-hardening-plan,build-specs,pyramid-grounding-plan,fleet-designs,governance-proposals}-2026-06-23.md`.
 
 ---
 
@@ -112,6 +112,6 @@ related: [collab-safety-subsystem-2026-06-23, drivers-subsystem-state-2026-06-23
 - **Единый инструментальный стек.** `tools/pipeline.py` (claim-fencing + done-gate), `tools/validate.py` (driver-схема + freshness), `tools/merge_gate.py` (L1-гейт + будущая currency-стадия), `tools/top.py` (апекс-проводка) фигурируют сразу в нескольких подсистемах — это общий хребет, а не три параллельных набора инструментов.
 
 **Источники-дети (каноны по подсистемам):**
-- `темы/collab-safety-subsystem-2026-06-23.md`
-- `темы/drivers-subsystem-state-2026-06-23.md`
-- `темы/q016-assurance-state-2026-06-23.md`
+- `topics/collab-safety-subsystem-2026-06-23.md`
+- `topics/drivers-subsystem-state-2026-06-23.md`
+- `topics/q016-assurance-state-2026-06-23.md`

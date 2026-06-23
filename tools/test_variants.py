@@ -34,9 +34,9 @@ def test_discover_finds_known_sources():
     assert {"claude", "codex"} <= pair_agents, \
         "пара должна различать claude/codex, agents=%r" % pair_agents
 
-    # хотя бы один форк из темы/
-    topic_notes = [f for f in files if f.startswith("темы/")]
-    assert topic_notes, "ожидался хотя бы один форк из темы/, нашли: %r" % files
+    # хотя бы один форк из topics/
+    topic_notes = [f for f in files if f.startswith("topics/")]
+    assert topic_notes, "ожидался хотя бы один форк из topics/, нашли: %r" % files
 
 
 def test_status_and_agent_inference():

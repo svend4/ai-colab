@@ -197,7 +197,7 @@
 1. Создать `drivers/` и шаблон `drivers/_template.md` (front-matter: `id`, `title`, `kind`, `where: local|server|remote`, `status`, `activation`, `inputs`, `outputs`, `risk`).
 2. Описать 5–8 драйверов из каталога раздела 3 как черновики (без кода).
 3. Сгенерировать `drivers/index.json` тем же `generate.py` (добавить сбор `drivers/`).
-4. Завести задачи в `tasks/` и тему `темы/drivers-layer.md` для обсуждения.
+4. Завести задачи в `tasks/` и тему `topics/drivers-layer.md` для обсуждения.
 
 **Фаза B — первый настоящий драйвер (Уровень 2):**
 5. Через skill `mcp-builder` обернуть «файлы» или «данные» в локальный MCP-сервер (самый безопасный старт).

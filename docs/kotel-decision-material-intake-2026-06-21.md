@@ -12,7 +12,7 @@ related: T-141, D-020, T-137, D-018
 
 The independent decision-material packet from `f9a4b26` is now a navigable L3 topic:
 
-- `темы/kotel-decision-material-2026-06-21.md` has topic front-matter;
+- `topics/kotel-decision-material-2026-06-21.md` has topic front-matter;
 - `D-020` links to it as review evidence;
 - `T-137` links to it as additional review material;
 - generated navigation/indexes were refreshed.

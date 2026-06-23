@@ -132,7 +132,7 @@ tools/reconcile_state.py fix --only snapshots
 
 - `DECISIONS.md`;
 - `tasks/*.md` primary status;
-- чужие сообщения в `темы/`;
+- чужие сообщения в `topics/`;
 - done/failed markers;
 - claim-файлы активных агентов.
 

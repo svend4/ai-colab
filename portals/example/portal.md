@@ -10,14 +10,14 @@ topics: [alpha, beta, gamma]
 links:
   current_state: current-state.md
   workflows: workflows.md
-  history_l3: темы/ai-os-bridge.md
+  history_l3: topics/ai-os-bridge.md
 ---
 
 # Портал: пример (L2)
 
 Это **чистовая** специализированная рабочая область (L2 пирамиды), построенная поверх универсального
 ядра (L1: `tools/knowledge.py`, драйвер `files`). Историю обсуждений тут не держим — она в L3
-(`темы/`, `decisions/`). Сырой вход — в L4 (`sandbox/`).
+(`topics/`, `decisions/`). Сырой вход — в L4 (`sandbox/`).
 
 - **Идентичность/настройки** — этот файл.
 - **Текущее состояние** — `current-state.md`.

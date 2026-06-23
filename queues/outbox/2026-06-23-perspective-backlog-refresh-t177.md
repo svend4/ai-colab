@@ -11,7 +11,7 @@ date: 2026-06-23
 
 ## What changed
 
-Обновлён `темы/perspective-backlog-2026-06-23.md`, потому `tools/conveyor.py next` после закрытия T-176 продолжал предлагать stale-кандидаты из старого снимка.
+Обновлён `topics/perspective-backlog-2026-06-23.md`, потому `tools/conveyor.py next` после закрытия T-176 продолжал предлагать stale-кандидаты из старого снимка.
 
 Сделано:
 
@@ -36,7 +36,7 @@ python tools\generate.py --check
 ## Applied instructions
 
 - `AGENTS.md` / `PROTOCOL.md`: задача оформлена через `tasks/T-177.md`, claim в pipeline, результат вынесен в `queues/outbox/`.
-- `темы/perspective-backlog-2026-06-23.md`: обновлён источник кандидатов для `conveyor.py next`.
+- `topics/perspective-backlog-2026-06-23.md`: обновлён источник кандидатов для `conveyor.py next`.
 - `tasks/T-177.md`: зафиксирован результат и критерий, что stale Q-017 больше не должен предлагаться.
 - `tasks/T-176.md`, `tasks/T-173.md`, `tasks/T-166.md`: использованы как evidence закрытых пунктов.
 - `tools/conveyor.py`: код не менялся; изменён входной backlog, который этот инструмент читает.

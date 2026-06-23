@@ -31,4 +31,4 @@
 3. **L5 — packaging later:** plugin/marketplace только если конкретный skill/driver нужно переносить как пакет.
 4. **L1 — WSL2+Docker** только когда дойдём до запуска непроверенного кода Sven4 или другого внешнего кода (песочница).
 
-Связано: `docs/middle-layer-guide.md`, `docs/agent-layer-design.md`, `docs/bridge-usage.md`, `docs/execute-sandbox-preflight.md`, `docs/skills-usage.md`, `темы/ai-os-bridge.md`, `decisions/D-010.md`.
+Связано: `docs/middle-layer-guide.md`, `docs/agent-layer-design.md`, `docs/bridge-usage.md`, `docs/execute-sandbox-preflight.md`, `docs/skills-usage.md`, `topics/ai-os-bridge.md`, `decisions/D-010.md`.

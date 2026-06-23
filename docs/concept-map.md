@@ -61,14 +61,14 @@ strict-по-триггеру** — дешёвый наблюдательный �
 | **БРИГАДА {N producer + 1 integrator}** | Атомарная ячейка параллелизма: produce+integrate в один готовый артефакт | `docs/orchestration-architecture-2026-06-23.md` §БРИГАДА | (Workflow, 1-уровень вложения) |
 | **Вложенность 3:1 (reduce-дерево)** | Продюсеры → бригады → дирижёры → оркестр; новый уровень при детях >3 | `docs/nested-orchestration-3to1.md` | `tools/conveyor.py plan N` |
 | **Полоса коммита (agent-capacity)** | Узкое место — не воркеры, а сколько успеваешь извлечь+закоммитить | `docs/agent-capacity-methodology.md` | — (binds, не agents) |
-| **adoption** | Применение, не накопление: dormant-инструменты, doc-only решения, orphan-доки | `темы/adoption-statistics-2026-06-23.md` | `tools/adoption.py` |
+| **adoption** | Применение, не накопление: dormant-инструменты, doc-only решения, orphan-доки | `topics/adoption-statistics-2026-06-23.md` | `tools/adoption.py` |
 | **Блок-слой (blocks)** | Сборка проверенных примитивов в кластерные блоки, запускаемые одной командой | `docs/blocks-layer.md` | `tools/blocks.py`, `tools/adoption.py` |
 | **friction** | Read-only ledger повторяющихся проблем (F-001..F-020), advisory-сигнал | `docs/friction-retrospective-2026-06-22.md`, `friction-ledger/playbook.md` | `tools/friction.py` |
 | **cohort / flow** | Ownership-aware отгрузка когортой (L0 ship / L1 worktree) + git-flow гейт | `docs/parallel-work-policy.md`, `docs/commit-stream-policy.md` | `tools/cohort.py`, `tools/flow.py`, `tools/ownership.py` |
 | **L0/L1 изоляция** | Бинарная модель: общее дерево + commit_lock (L0) ↔ per-agent worktree (L1) | `docs/parallel-work-policy.md`, `D-021..D-023` | `tools/commit_lock.py`, `tools/worktree.py`, `tools/merge_gate.py` |
 | **two-spine / instruction-trace** | Доказуемое применение инструкций: shared surfaces-ключ + read-only trace база→вершина | `docs/instruction-assurance.md` | `tools/instructions.py`, `tools/assurance.py` |
 | **Assurance (Q-016)** | Апекс-дашборд «инструкции применяются и свежи» + лестница S0→S4 | `docs/instruction-assurance.md`, `q016-assurance-state-2026-06-23` | `tools/assurance.py` |
-| **Drivers / AI-OS Bridge** | Проверяемый driver-манифест + read-only intake + L2-gateway | `docs/agent-layer-design.md`, `темы/drivers-subsystem-state-2026-06-23.md`, `D-010/D-013` | `drivers/*`, `tools/validate.py` |
+| **Drivers / AI-OS Bridge** | Проверяемый driver-манифест + read-only intake + L2-gateway | `docs/agent-layer-design.md`, `topics/drivers-subsystem-state-2026-06-23.md`, `D-010/D-013` | `drivers/*`, `tools/validate.py` |
 | **Порталы (knowledge engine)** | Драйверы → generic engine → тематические L2-порталы без правки core | `docs/middle-layer-guide.md`, `D-016` | `tools/knowledge.py`, `tools/portal.py` |
 | **Пирамида L1..L4** | core/ (ядро) · portals/ (чистовые домены) · collab/ (история) · sandbox/ (хаос-вход) | `docs/workspace-pyramid-levels.md`, `docs/promotion-rules.md` | `core/ portals/ collab/ sandbox/` |
 
@@ -93,7 +93,7 @@ strict-по-триггеру** — дешёвый наблюдательный �
 - **Drivers / Bridge → порталы.** Драйверы переиспользуются движком `knowledge.py`, порталы (`portal.py`,
   D-016) добавляют домен как данные поверх ядра.
 - **Всё → Пирамида.** Каждая подсистема приписана к уровню: code/tools — кандидаты L1 `core/`; порталы —
-  L2; темы/задачи/решения/streams — L3 `collab/`; внешний вход — L4 `sandbox/` (`workspace-pyramid-levels.md`).
+  L2; topics/задачи/решения/streams — L3 `collab/`; внешний вход — L4 `sandbox/` (`workspace-pyramid-levels.md`).
 
 ## 4. Лечение orphan-методичек
 
@@ -101,7 +101,7 @@ strict-по-триггеру** — дешёвый наблюдательный �
 inbound-ссылку и возвращает в навигируемый граф:
 
 - `docs/blocks-layer.md` — связан из §2 (блок-слой) и §3 (adoption→блоки).
-- `темы/adoption-statistics-2026-06-23.md` / `tools/adoption.py` — связаны как держащий док концепта adoption.
+- `topics/adoption-statistics-2026-06-23.md` / `tools/adoption.py` — связаны как держащий док концепта adoption.
 - `docs/finder-solver-pipeline-methodology.md` — корень оркестрационного контура §1.
 - `docs/workspace-pyramid-levels.md` — концепт пирамиды §2, ребро «всё → пирамида» §3.
 

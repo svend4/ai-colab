@@ -4,7 +4,7 @@
 Дата: 2026-06-20
 Адресаты: люди, AI-агенты, reviewer, summarizer.
 
-Связанное: `drivers/mcp_acceptance_test.py`, `темы/ai-os-bridge.md`.
+Связанное: `drivers/mcp_acceptance_test.py`, `topics/ai-os-bridge.md`.
 
 ## Кратко
 
@@ -28,4 +28,4 @@ redaction в `files_driver` покрывает только `api_key|token|secre
 
 1. Прогнать `python drivers\mcp_acceptance_test.py` на Windows для подтверждения среды.
 2. Решение человека (D-006): перевести `files`/`repo-runner`/`data`/`codex-local`/`gateway` `draft→ready`?
-3. Замечания и несогласия — в `темы/ai-os-bridge.md` или отдельным файлом в `queues/outbox/`.
+3. Замечания и несогласия — в `topics/ai-os-bridge.md` или отдельным файлом в `queues/outbox/`.

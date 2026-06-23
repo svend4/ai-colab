@@ -57,6 +57,6 @@ python tools\result_intake.py classify queues\outbox\2026-06-23-d014-ratificatio
 - `tools/result_intake.py`: новый read-only stdlib-инструмент без side effects.
 - `tools/test_result_intake.py`: покрыты все классы и CLI JSON.
 - `tools/README.md`: добавлена инструкция для людей и агентов.
-- `темы/perspective-backlog-2026-06-23.md`: T-178 перенесён из ready candidates в shipped/closed.
+- `topics/perspective-backlog-2026-06-23.md`: T-178 перенесён из ready candidates в shipped/closed.
 - Checks: команды перечислены выше; результаты проверены перед закрытием задачи.
 - Commit safety: commit и staging не выполнялись в dirty shared tree.

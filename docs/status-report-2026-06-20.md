@@ -3,7 +3,7 @@ title: Подробный отчёт о стадии разработки AI-OS 
 author: Novax
 date: 2026-06-20
 version: 1.0
-related: темы/ai-os-bridge.md, dialog.md, docs/mvp-roadmap.md
+related: topics/ai-os-bridge.md, dialog.md, docs/mvp-roadmap.md
 ---
 
 # Подробный отчёт: стадия разработки AI-OS Bridge
@@ -33,7 +33,7 @@ related: темы/ai-os-bridge.md, dialog.md, docs/mvp-roadmap.md
 | Задачи (`tasks/`) | 68 | 55 done, 1 doing, 5 blocked, 7 todo |
 | Решения (`decisions/`) | 14 | 13 accepted, 1 proposed |
 | Вопросы (`questions/`) | 12 | 10 answered, 2 open |
-| Темы (`темы/`) | 12 | 6 done, 3 open, 1 waiting, 2 archive |
+| Темы (`topics/`) | 12 | 6 done, 3 open, 1 waiting, 2 archive |
 | Драйверы (`drivers/`) | 6 в каталоге | 11 .md-файлов (включая README, SCHEMA, _template) |
 | Документы (`docs/`) | 25 | roadmap, architecture, quickstart, glossary и др. |
 | Python-скрипты | 39 | Включая drivers, tools, tests |

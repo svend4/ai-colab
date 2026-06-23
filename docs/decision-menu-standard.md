@@ -40,7 +40,7 @@ related: [recursive-self-improvement, concept-map, blocks-layer, finder-solver-p
 | `tags.risk` | техн. | low / med / high — масштаб риска |
 | `tags.effort` | техн. | S / M / L — усилие |
 | `tags.reversibility` | техн. | easy / hard / irreversible — откатываемость |
-| `tags.scope` | техн. | что затрагивает (файлы/подсистемы/governance) |
+| `tags.scope` | техн. | что затрагивает (файлы/подсисtopics/governance) |
 | **`means`** | **семант.** | **ЧТО ЭТО ЗНАЧИТ** — концептуально, для направления проекта |
 | **`leads_to`** | **семант.** | **К ЧЕМУ ВЕДЁТ** — последствия вниз по течению (и хорошие, и плохие) |
 | **`responsibility`** | **семант.** | **ОТВЕТСТВЕННОСТЬ** — на что подписываешься, что может пойти не так, кто отвечает |

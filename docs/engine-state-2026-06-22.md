@@ -70,12 +70,12 @@ related: docs/agent-onboarding.md, docs/parallel-work-policy.md, docs/workspace-
 
 ## Контур friction ↔ parallel-work (детектор ↔ исполнитель)
 
-Два независимо построенных подсистемы сведены в один контроль-контур (см. `темы/friction-subsystems-synthesis-2026-06-22.md`):
+Два независимо построенных подсистемы сведены в один контроль-контур (см. `topics/friction-subsystems-synthesis-2026-06-22.md`):
 
 - **Детектор (Codex-линия):** `tools/friction.py` — READ-ONLY реестр повторяющихся проблем (F-XXX): симптом → evidence → recipe. Ничего не фиксит автоматически. Учёт в `docs/friction-ledger.md`, рецепты в `docs/friction-playbook.md`. Порог автоматизации: 1 наблюдение → 2-3 playbook → 4+ инструмент → 6+ детектор → 8+ guard/gate.
 - **Исполнитель (Claude-линия):** `tools/cohort.py` (`guard` решает Level-0/1, `ship` атомарно коммитит) + `commit_lock` / `worktree` / `merge_gate`.
 - **Общий мост — `tools/ownership.py`:** единый классификатор dirty-файлов, которым пользуются и friction, и guard. Граница: **friction наблюдает, движок (cohort) исполняет, governance (Stefan) утверждает**.
-- **Эволюция механики:** `темы/parallel-forks-history-2026-06-22.md` (selective-add → commit_lock → worktree → streams → fork-and-synthesize). Инцидент-пример: `темы/gate-poison-situation-2026-06-22.md` (F-020 — недоделанная задача блокирует всех через `validate.py` ERROR).
+- **Эволюция механики:** `topics/parallel-forks-history-2026-06-22.md` (selective-add → commit_lock → worktree → streams → fork-and-synthesize). Инцидент-пример: `topics/gate-poison-situation-2026-06-22.md` (F-020 — недоделанная задача блокирует всех через `validate.py` ERROR).
 
 ---
 *Чистовик ведётся как живой: при изменении инструментов/политик обновлять таблицу групп и раздел governance. Связано: `core/engine-manifest.md`, `docs/top-agent-operating-manual.md`, `docs/agent-onboarding.md`.*

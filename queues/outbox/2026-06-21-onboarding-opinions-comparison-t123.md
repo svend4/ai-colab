@@ -15,7 +15,7 @@
 
 После первичного сравнения обнаружен параллельный синтез Claude:
 
-- `темы/opinion-synthesis-2026-06-21.md`;
+- `topics/opinion-synthesis-2026-06-21.md`;
 - `T-129` — capability manifest уже реализован;
 - `T-130` — drift detector;
 - `T-131` — onboard-команда;

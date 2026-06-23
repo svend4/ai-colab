@@ -17,7 +17,7 @@ related: [Q-016, Q-017, T-154, D-017, D-018, D-022, workflow-orchestration-polic
 
 - `questions/Q-016.md` — гарантия применения инструкций, актуальность и поток знания вверх L4->L1.
 - `questions/Q-017.md` — автоматизация слияния документации агентов: consensus + cross-reference + structured divergences.
-- `темы/assurance-and-doc-merge-2026-06-22.md` — большой разбор Q-016/Q-017 с вариантами, плюсами/минусами и дорожной картой.
+- `topics/assurance-and-doc-merge-2026-06-22.md` — большой разбор Q-016/Q-017 с вариантами, плюсами/минусами и дорожной картой.
 - `docs/workflow-orchestration-policy.md` — политика оркестрации воркфлоу: агент-оркестратор, кластеры под-агентов, map/synthesize, граница temp/canon.
 - `docs/engine-state-2026-06-22.md` — карта текущего состояния движка для человека и агента.
 - `docs/agent-onboarding.md` — обновлённый онбординг с разделом про параллельную работу.
@@ -68,7 +68,7 @@ preflight -> applied evidence -> stronger check-report -> pipeline/report gate -
 - один workflow = один кластер мелких под-агентов;
 - фазы: Map/Build/Analyze -> Synthesize;
 - под-агенты возвращают структурированные данные, не свободную прозу;
-- raw/temp живёт вне канона или в `tmp-work/`, финальный синтез попадает в `темы/`, `docs/`, `queues/outbox/`;
+- raw/temp живёт вне канона или в `tmp-work/`, финальный синтез попадает в `topics/`, `docs/`, `queues/outbox/`;
 - build-workflow должен идти через worktree или explicit scope, не через общий хаос.
 
 Практическое применение:

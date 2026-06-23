@@ -105,7 +105,7 @@ python tools\top.py work-mode codex T-144 --mode worktree
 python tools\cohort.py board
 python tools\cohort.py self --json
 python tools\variants.py list --topic commit-policy
-python tools\synthesis_helper.py report commit-policy --out темы\commit-policy-synthesis.md
+python tools\synthesis_helper.py report commit-policy --out topics\commit-policy-synthesis.md
 python tools\merge_gate.py check codex
 python tools\stream.py list commit-policy
 python tools\promote.py check --artifact sandbox\reports\demo-fixtures-inventory.md

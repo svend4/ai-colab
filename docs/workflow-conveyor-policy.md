@@ -226,7 +226,7 @@ t0+  сформулировать+запустить W2-conveyor-methodology-RO 
 t0+  сформулировать+запустить W3-docmerge-Q017-RO                      -> фон   (без ожидания)
      in-flight: {W1, W2, W3}   build-follow-up НЕ запускаем (барьер на W1)
 [fill] tmp-work/compose_assurance.py, compose_methodology.py, compose_docmerge.py;
-       предвыделить docs/instruction-assurance-2026-06-23.md и темы/q017-docmerge-2026-06-23.md;
+       предвыделить docs/instruction-assurance-2026-06-23.md и topics/q017-docmerge-2026-06-23.md;
        коммитить ТОЛЬКО premise-disjoint файлы (НЕ под tools/, которую картирует W1)
 
 >> W1.output приземляется ПЕРВЫМ (W2/W3 ещё формулируются/бегут) -> RETURN-TO-FIRST

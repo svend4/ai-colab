@@ -4,7 +4,7 @@ type: schema
 title: Driver manifest schema v1
 status: draft
 owner: Codex
-related: questions/Q-008.md, темы/ai-os-bridge.md, docs/mvp-roadmap.md
+related: questions/Q-008.md, topics/ai-os-bridge.md, docs/mvp-roadmap.md
 ---
 
 # Driver Manifest Schema v1
@@ -35,7 +35,7 @@ related: questions/Q-008.md, темы/ai-os-bridge.md, docs/mvp-roadmap.md
 | `timeout_seconds` | `30` | Лимит времени для будущего L2/L3 вызова. |
 | `max_output_bytes` | `1048576` | Лимит вывода для будущего L2/L3 вызова. |
 | `audit` | `true`, `false` | Нужно ли журналировать вызовы. |
-| `related` | `темы/ai-os-bridge.md` | Связанные темы, задачи, решения. |
+| `related` | `topics/ai-os-bridge.md` | Связанные темы, задачи, решения. |
 
 ## Опциональные поля
 

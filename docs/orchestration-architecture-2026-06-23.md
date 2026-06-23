@@ -76,7 +76,7 @@ producers (широкий фронт)  →  очередь landed (с output-ref
 
 Дефолты: `DEFAULT_TARGET = 2`, `DEFAULT_IDLE_MIN = 20` (`conveyor.py:39-40`); `--target`/`--idle` переопределяют. `healthy = not actions` (`conveyor.py:166`) → `render_status` печатает либо `OK: конвейер полон…`, либо список вердиктов с маркером `▸` (`conveyor.py:170-189`). `--json` отдаёт машинный срез с `landed_outputs` (output-refs для извлечения), `deficit`, `idle_age_min` (`conveyor.py:156-167`, `conveyor.py:251-252`).
 
-**`next` — кандидаты дозалива** из перспективного бэклога `темы/perspective-backlog-2026-06-23.md` (`conveyor.py:38`, `conveyor.py:192-207`, `conveyor.py:256-264`): парсит секцию «Готовы к запуску», отфильтровывает темы, уже заведённые в реестр (по подстроке label/id), и печатает незапущенные. Так REFILL получает конкретные брифы следующей волны.
+**`next` — кандидаты дозалива** из перспективного бэклога `topics/perspective-backlog-2026-06-23.md` (`conveyor.py:38`, `conveyor.py:192-207`, `conveyor.py:256-264`): парсит секцию «Готовы к запуску», отфильтровывает темы, уже заведённые в реестр (по подстроке label/id), и печатает незапущенные. Так REFILL получает конкретные брифы следующей волны.
 
 **Как держать оркестратора активным** (он событийный — `policy.md:95-104`):
 1. **Нотификации сами ре-инвокируют** оркестратора при завершении каждого воркфлоу — на каждой запускать `status` + дозаливать; пока ≥1 в полёте, петля само-поддерживается.
@@ -111,7 +111,7 @@ producers (широкий фронт)  →  очередь landed (с output-ref
 
   | Поле | Что |
   |---|---|
-  | `doc_path` | предвыделенный канон-путь (`темы/<topic>-<date>.md`, `docs/<name>.md`, `decisions/D-XXX.md`) |
+  | `doc_path` | предвыделенный канон-путь (`topics/<topic>-<date>.md`, `docs/<name>.md`, `decisions/D-XXX.md`) |
   | `doc_content` | готовый, перепроверенный, помеченный `proposed` Markdown — НЕ сырьё |
   | `commit_msg` | готовое сообщение коммита (с `Co-Authored-By`) |
 
@@ -141,10 +141,10 @@ producers (широкий фронт)  →  очередь landed (с output-ref
 
 ### Живая демонстрация (3 producers + integrator → 1 commit)
 
-Паттерн отработан на реальной сессии (коммит `d342366`, артефакт `темы/build-specs-2026-06-23.md`):
+Паттерн отработан на реальной сессии (коммит `d342366`, артефакт `topics/build-specs-2026-06-23.md`):
 
 - **3 producer-агента** параллельно скомпоновали три worktree-ready edit-спеки — `S1 top-wiring` (врезка `assurance.py` в `tools/top.py`), governance-weave (D-008/D-004/D-009/D-002 в `AGENTS.md`/`PROTOCOL.md`/`docs/agent-onboarding.md`), и hardening `instructions.py check-report` — каждый symbol-anchored, перепроверенный против живых файлов;
-- **1 integrator** свёл три раздела в один канон-документ `{doc_path: темы/build-specs-2026-06-23.md, doc_content: …, commit_msg: "docs: worktree-ready build specs … (собрано интегратором параллельно)"}`;
+- **1 integrator** свёл три раздела в один канон-документ `{doc_path: topics/build-specs-2026-06-23.md, doc_content: …, commit_msg: "docs: worktree-ready build specs … (собрано интегратором параллельно)"}`;
 - топ-оркестратор сделал **один commit** (`d342366`, +79 строк, 1 file changed). Дорогая мысль (3 produce + 1 integrate) шла параллельно; серийной осталась только запись+коммит.
 
 Сам принцип параллельного потребителя был зафиксирован коммитом ранее (`aadd998` → `docs/workflow-conveyor-policy.md` §3-quater).

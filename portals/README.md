@@ -15,7 +15,7 @@ portals/<portal-id>/
   reports/
 ```
 
-В портал не кладутся raw sandbox sources, длинные споры и вся история изменений. Для истории используются L3 folders: `темы/`, `tasks/`, `questions/`, `decisions/`, `streams/`.
+В портал не кладутся raw sandbox sources, длинные споры и вся история изменений. Для истории используются L3 folders: `topics/`, `tasks/`, `questions/`, `decisions/`, `streams/`.
 
 Документ модели: `docs/workspace-pyramid-levels.md`.
 

@@ -64,7 +64,7 @@ python tools\generate.py --check
 - [ ] изменить `decisions/D-013.md`: `status: accepted`;
 - [ ] обновить `QUESTIONS.md`/`questions/Q-008.md`: Q-008 → `answered`;
 - [ ] обновить generated индексы через `tools/generate.py`;
-- [ ] записать обоснование в `темы/ai-os-bridge.md`.
+- [ ] записать обоснование в `topics/ai-os-bridge.md`.
 
 Если не выполнено:
 

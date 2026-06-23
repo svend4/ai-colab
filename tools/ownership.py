@@ -26,7 +26,7 @@ GENERATED = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md"
 VOLATILE = {"LIVE.md", "PIPELINE.md", "logs/heartbeat.json", "logs/pipeline.json"}
 VOLATILE_PREFIXES = ("logs/",)
 VOLATILE_BASENAMES = {"heartbeat.json", "pipeline.json"}
-SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "темы/", "docs/", "streams/")
+SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "topics/", "docs/", "streams/")
 _ID_RE = re.compile(r"\b(T-\d+|Q-\d+|D-\d+)\b")
 _AGENT_RE = re.compile(r"\b(claude|codex|mavis|novax)\b")
 

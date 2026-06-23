@@ -247,7 +247,7 @@ def cmd_trace(args):
         return 0
     if not res["surfaced_by"]:
         print("%s: НЕ заземлено — ни одна инструкция не surface'ит это решение "
-              "(висячее; см. assurance.py flow / темы/governance-proposals-2026-06-23.md)" % res["decision"])
+              "(висячее; см. assurance.py flow / topics/governance-proposals-2026-06-23.md)" % res["decision"])
         return 1
     print("%s — путь база→вершина:" % res["decision"])
     for s in res["surfaced_by"]:

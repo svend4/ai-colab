@@ -49,7 +49,7 @@
       "does": "найти fork-варианты для синтеза"
     },
     {
-      "cmd": "python tools/synthesis_helper.py report <topic> --out темы/<topic>-synthesis.md",
+      "cmd": "python tools/synthesis_helper.py report <topic> --out topics/<topic>-synthesis.md",
       "does": "собрать scaffold синтеза из fork-вариантов"
     },
     {

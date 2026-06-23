@@ -46,7 +46,7 @@ python tools/pipeline.py heartbeat <Имя> <T-id> --progress 50 --note "..." --
 - **Агенты/скрипты:** `logs/pipeline.json` и `logs/heartbeat.json` — runtime-снимки, игнорируются Git после T-148.
 - Источник правды по статусу задачи — всегда `tasks/<T-id>.md`.
 
-Связано: `tools/README.md` (раздел «Конвейер»), `темы/agent-pipeline.md`, `decisions/D-011` (конвейер), `D-012` (heartbeat).
+Связано: `tools/README.md` (раздел «Конвейер»), `topics/agent-pipeline.md`, `decisions/D-011` (конвейер), `D-012` (heartbeat).
 
 См. также: `docs/commit-stream-policy.md`.
 

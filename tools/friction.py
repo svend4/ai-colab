@@ -282,7 +282,7 @@ REGISTRY = [
             "Если источник — ТВОЙ claim, почини так, чтобы validate вернул ERROR=0; если чужой/unknown — не жди: эскалируй в Уровень-1 worktree от ЧИСТОЙ базы (python tools/cohort.py guard для вердикта).",
             "Никогда не правь/не удаляй чужой gate-source, чтобы озеленить validate, — это прячет отраву, а не чистит её.",
         ],
-        "docs": ["темы/gate-poison-situation-2026-06-22.md", "docs/parallel-work-policy.md", "tools/cohort.py"],
+        "docs": ["topics/gate-poison-situation-2026-06-22.md", "docs/parallel-work-policy.md", "tools/cohort.py"],
         "aliases": ["gate-poison", "poison", "validate-error", "poisoned-gate"],
     },
 ]

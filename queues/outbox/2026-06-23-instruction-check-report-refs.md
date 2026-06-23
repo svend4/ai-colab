@@ -22,7 +22,7 @@
 
 - `AGENTS.md`: задача выполнена от имени `codex`, чужие сообщения и историю не переписывал.
 - `PROTOCOL.md`: для общей правки оставлен outbox-отчёт, изменения служебной документации объяснены.
-- `темы/build-specs-2026-06-23.md`: реализован именно advisory вариант из секции Hardening `check-report`.
+- `topics/build-specs-2026-06-23.md`: реализован именно advisory вариант из секции Hardening `check-report`.
 - Checks: python tools/test_instructions.py -> OK.
 - Checks: python tools/instructions.py check-report queues/outbox/2026-06-23-instruction-check-report-refs.md -> OK.
 - Checks: python tools/top.py health -> OK после generate.

@@ -2,7 +2,7 @@
 
 Дата: 2026-06-21.
 Агент: Codex.
-Связано: `T-133`, `D-016`, `tools/text_extract.py`, `tools/knowledge.py`, `темы/opinion-synthesis-2026-06-21.md`.
+Связано: `T-133`, `D-016`, `tools/text_extract.py`, `tools/knowledge.py`, `topics/opinion-synthesis-2026-06-21.md`.
 
 ## Что сделано
 

@@ -189,7 +189,7 @@ python tools\generate.py --check
 - `--semantic` указан явно.
 - `--semantic-budget` указан явно.
 - `DOC_CONSENSUS_AGENT` включён только на время команды и потом удалён.
-- Output path в `reports/` или `темы/`, не в `decisions/accepted`.
+- Output path в `reports/` или `topics/`, не в `decisions/accepted`.
 - Результат имеет `status: proposed`.
 - Никакой commit/stage/pipeline done не выполняется из agent command.
 - Синтез спорных пунктов идёт через D-017/D-018.

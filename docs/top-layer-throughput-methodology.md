@@ -111,7 +111,7 @@ python tools\merge_gate.py check codex
 
 ```powershell
 python tools\repo-search.py "<topic>" --limit 5
-python tools\synthesis_helper.py report <topic> --out темы\<topic>-synthesis.md
+python tools\synthesis_helper.py report <topic> --out topics\<topic>-synthesis.md
 ```
 
 Проверка должна отвечать не “мне нравится”, а:

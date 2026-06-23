@@ -21,7 +21,7 @@ L4 sandbox/  -> L3 collab   -> L2 portals/ -> L1 core/
 1. **Только вверх по одному уровню.** `--from`/`--to` должны быть соседними (L4->L3, L3->L2, L2->L1). Перескок уровней запрещён.
 2. **Атомарность.** Перемещение пишет новый путь и только потом удаляет старый (write-new-THEN-remove-old). Не должно оставаться half-move: либо старый путь есть и новый нет, либо новый путь есть и старый удалён.
 3. **Stamp метаданных.** При перемещении в front-matter добавляются: `promoted_from`, `promoted_to`, `promotion_date`, `gate_checks_passed`, `reviewed_by`, `decision_ref`.
-4. **collab/ остаётся ЛОГИЧЕСКИМ слоем.** L3 не переносится физически в `collab/`; mass-migration существующих `tasks/`, `decisions/`, `questions/`, `streams/`, `темы/` не делается. Они уже являются L3 по карте `collab/README.md`.
+4. **collab/ остаётся ЛОГИЧЕСКИМ слоем.** L3 не переносится физически в `collab/`; mass-migration существующих `tasks/`, `decisions/`, `questions/`, `streams/`, `topics/` не делается. Они уже являются L3 по карте `collab/README.md`.
 
 ## L4 sandbox/ -> L3 collab
 

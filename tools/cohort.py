@@ -42,7 +42,7 @@ sys.path.insert(0, TOOLS)
 import ownership as own  # общий классификатор владения dirty-файлами (T-153, синтез подсистем)
 
 # Триггеры Уровня-1 (D-022 / Q-015 B). Source-зоны: правка здесь связывает агентов через индекс/дерево.
-SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "темы/", "docs/")
+SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "topics/", "docs/")
 # Hot-files: генерируемые индексы и активно правимые соседом инструменты — править соло опасно.
 HOT_FILES = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json",
              "tools/top.py", "tools/portal.py", "tools/capabilities.py", "tools/generate.py"}

@@ -17,7 +17,7 @@ source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
-related: темы/ai-os-bridge.md, tasks/T-052.md, tasks/T-054.md
+related: topics/ai-os-bridge.md, tasks/T-052.md, tasks/T-054.md
 ---
 
 # Driver: workbench

@@ -1,7 +1,7 @@
 # Agent Roles Matrix
 
 Дата: 2026-06-20
-Связано: `AGENTS.md`, `tools/permissions.json`, `docs/mvp-roadmap.md`, `темы/agent-pipeline.md`, `tasks/T-035.md`
+Связано: `AGENTS.md`, `tools/permissions.json`, `docs/mvp-roadmap.md`, `topics/agent-pipeline.md`, `tasks/T-035.md`
 
 ## Назначение
 
@@ -23,12 +23,12 @@
 | Участник | Основная роль | Может писать | Не должен делать | Типовые задачи | Эскалация |
 |---|---|---|---|---|---|
 | Stefan / человек | владелец направления и финальных решений | любые проектные файлы | случайно смешивать черновик и accepted-решение без записи | утверждать решения, задавать приоритеты, давать доступы | когда нужно принять D-решение или разрешить риск |
-| Codex | инженерный агент: код, структура, проверки, документы | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/`, индексы | удалять чужие сообщения, утверждать accepted без человека, запускать рискованный код без решения | реализация инструментов, validator/generator, roadmap, отчёты | при секретах, execute, GitHub/server access, медицинских/юридических высокорисковых выводах |
-| Claude | инженерный/архитектурный агент и reviewer | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/` | перехватывать активный claim, менять чужое решение без новой записи | архитектура, pipeline, проверки, обзоры, закрытие pool-задач | при конфликте решений или runtime-сбоях |
-| Mavis | третий агент: проверка, чтение, регламент, tools | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/` | принимать `accepted` без человека, менять служебные файлы без D-003 обоснования | перепроверки, отчёты, предложения, несостыковки | при споре с каноном или необходимости решения |
-| Novax | четвёртый агент: анализ, repo/driver работа, проверка нестыковок | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `темы/`, `queues/` | запускать непроверенный код без sandbox, игнорировать claim | repo inventory, Sven4/local repos, driver specs | при доступе к внешним репозиториям и server-run |
-| summarizer | сборщик кратких итогов | `темы/<topic>/summary.md`, `queues/outbox/` | принимать решения, менять исходные сообщения | сводки больших тем, краткие итоги | если вывод требует решения |
-| reviewer | проверка рисков и противоречий | `queues/outbox/`, `темы/` | менять код без задачи | review, finding list, risk report | если найден high-risk дефект |
+| Codex | инженерный агент: код, структура, проверки, документы | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `topics/`, `queues/`, индексы | удалять чужие сообщения, утверждать accepted без человека, запускать рискованный код без решения | реализация инструментов, validator/generator, roadmap, отчёты | при секретах, execute, GitHub/server access, медицинских/юридических высокорисковых выводах |
+| Claude | инженерный/архитектурный агент и reviewer | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `topics/`, `queues/` | перехватывать активный claim, менять чужое решение без новой записи | архитектура, pipeline, проверки, обзоры, закрытие pool-задач | при конфликте решений или runtime-сбоях |
+| Mavis | третий агент: проверка, чтение, регламент, tools | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `topics/`, `queues/` | принимать `accepted` без человека, менять служебные файлы без D-003 обоснования | перепроверки, отчёты, предложения, несостыковки | при споре с каноном или необходимости решения |
+| Novax | четвёртый агент: анализ, repo/driver работа, проверка нестыковок | `docs/`, `drivers/`, `tools/`, `tasks/`, `questions/`, `decisions/`, `topics/`, `queues/` | запускать непроверенный код без sandbox, игнорировать claim | repo inventory, Sven4/local repos, driver specs | при доступе к внешним репозиториям и server-run |
+| summarizer | сборщик кратких итогов | `topics/<topic>/summary.md`, `queues/outbox/` | принимать решения, менять исходные сообщения | сводки больших тем, краткие итоги | если вывод требует решения |
+| reviewer | проверка рисков и противоречий | `queues/outbox/`, `topics/` | менять код без задачи | review, finding list, risk report | если найден high-risk дефект |
 | researcher | сбор фактов и материалов | `docs/`, `queues/outbox/` | выдавать непроверенные факты как канон | источники, справки, внешние материалы | если нужны внешние источники/цитаты |
 | automation/script | автоматические проверки и генераторы | только свои output-файлы и generated индексы | редактировать обсуждения и решения от себя | `generate`, `validate`, `snapshot`, индексы | если обнаружен ERROR или lock/runtime problem |
 
