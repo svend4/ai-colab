@@ -155,6 +155,13 @@
       "next": ""
     },
     {
+      "id": "finder-frontier-2026-06-23",
+      "title": "FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов)",
+      "file": "темы/finder-frontier-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "fleet-designs-2026-06-23",
       "title": "Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов",
       "file": "темы/fleet-designs-2026-06-23.md",
@@ -2373,6 +2380,83 @@
       "depends_on": "[]",
       "topic": "",
       "next": "зарезервировано через tools/next_id.py — заполните"
+    },
+    {
+      "id": "T-195",
+      "title": "Evidence addendum layer for assurance debts",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/instruction-assurance.md",
+      "next": "реализовать queues/evidence addendum и закрыть T-180/T-182 без переписывания done-маркеров"
+    },
+    {
+      "id": "T-196",
+      "title": "DOC_CONSENSUS_AGENT runtime recipe and safe examples",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-176]",
+      "topic": "",
+      "next": "описать безопасный runtime recipe и примеры DOC_CONSENSUS_AGENT"
+    },
+    {
+      "id": "T-197",
+      "title": "Workflow backlog rescan tool",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "спроектировать backlog_rescan.py и patch-режим обновления перспективного бэклога"
+    },
+    {
+      "id": "T-198",
+      "title": "Smoke-test новых инструментов Codex (adoption.py, blocks.py, friction.py, drift_check.py, top.py)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Запустить каждый инструмент, зафиксировать баги, обновить quickstart"
+    },
+    {
+      "id": "T-199",
+      "title": "Обновить README.md — добавить новые папки (skills, portals, reports, streams, sandbox, tmp-work, core, data)",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Добавить папки в таблицу структуры README.md, обновить описание"
+    },
+    {
+      "id": "T-200",
+      "title": "Коммит — selective-add 145 изменённых строк git status",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Выбрать файлы для коммита, запустить generate.py, git add selective, git commit"
+    },
+    {
+      "id": "T-201",
+      "title": "Обработать 4 failed-маркера (T-048, T-136, T-174, T-175) — close или block",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "темы/ai-os-bridge.md",
+      "next": "Анализ каждого failed, принятие решения, очистка queues/failed/"
     }
   ],
   "questions": [

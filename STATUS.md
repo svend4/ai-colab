@@ -87,6 +87,7 @@
 | Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1) | `темы/collab-safety-subsystem-2026-06-23.md` | proposed |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `темы/commit-policy-streams-2026-06-21.md` | accepted | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
 | D-014 execute OFF ratification packet | `темы/d014-execute-off-ratification-2026-06-23.md` | proposed |  |
+| FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов) | `темы/finder-frontier-2026-06-23.md` | proposed |  |
 | Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `темы/fleet-designs-2026-06-23.md` | proposed |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `темы/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `темы/gate-poison-situation-2026-06-22.md` | draft |  |

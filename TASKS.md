@@ -208,4 +208,11 @@
 | T-192 | Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма) | done | pool | — | Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen |
 | T-193 | Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output) | done | pool | — | Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно |
 | T-194 | (зарезервировано — заполните) | todo | unknown | — | зарезервировано через tools/next_id.py — заполните |
+| T-195 | Evidence addendum layer for assurance debts | done | codex | `docs/instruction-assurance.md` | реализовать queues/evidence addendum и закрыть T-180/T-182 без переписывания done-маркеров |
+| T-196 | DOC_CONSENSUS_AGENT runtime recipe and safe examples | done | pool | — | описать безопасный runtime recipe и примеры DOC_CONSENSUS_AGENT |
+| T-197 | Workflow backlog rescan tool | done | pool | — | спроектировать backlog_rescan.py и patch-режим обновления перспективного бэклога |
+| T-198 | Smoke-test новых инструментов Codex (adoption.py, blocks.py, friction.py, drift_check.py, top.py) | done | pool | `темы/ai-os-bridge.md` | Запустить каждый инструмент, зафиксировать баги, обновить quickstart |
+| T-199 | Обновить README.md — добавить новые папки (skills, portals, reports, streams, sandbox, tmp-work, core, data) | doing | pool | `темы/ai-os-bridge.md` | Добавить папки в таблицу структуры README.md, обновить описание |
+| T-200 | Коммит — selective-add 145 изменённых строк git status | doing | pool | `темы/ai-os-bridge.md` | Выбрать файлы для коммита, запустить generate.py, git add selective, git commit |
+| T-201 | Обработать 4 failed-маркера (T-048, T-136, T-174, T-175) — close или block | todo | pool | `темы/ai-os-bridge.md` | Анализ каждого failed, принятие решения, очистка queues/failed/ |
 <!-- GEN:tasks END -->
