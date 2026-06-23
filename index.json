@@ -2234,7 +2234,7 @@
     {
       "id": "T-182",
       "title": "Synthesis gate - validate consensus/disagreement report structure",
-      "status": "doing",
+      "status": "done",
       "owner": "antigravity",
       "priority": "",
       "risk": "",
