@@ -211,6 +211,13 @@
       "next": ""
     },
     {
+      "id": "kotel-system-critique-2026-06-24",
+      "title": "Котёл: Системная Критика, Технический Долг и Ответственность",
+      "file": "topics/kotel-system-critique-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "navigation-vs-sharding-2026-06-24",
       "title": "Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность)",
       "file": "topics/navigation-vs-sharding-2026-06-24.md",
