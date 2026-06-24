@@ -19,6 +19,7 @@
 | Первый реальный прогон системы (dogfood) | `topics/dogfood-run.md` | waiting | Stefan | Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки |
 | Динамический конвейер агентов — управляемая разработка | `topics/agent-pipeline.md` | open | все | D-011 принят, T-027 первая версия готова; обсудить heartbeat/live-room и правила использования pipeline.py |
 | AI-OS Bridge — прослойка между ОС и AI-агентами | `topics/ai-os-bridge.md` | open | все | D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024 |
+| ИНЦИДЕНТ — массовое урезание 147 outbox-отчётов (8643 строки), предъявление antigravity | `topics/incident-outbox-mass-strip-2026-06-24.md` | open | — |  |
 | Технический обзор инфраструктуры | `topics/infrastructure-review.md` | open | все | Обсудить предложения; выбрать следующий инженерный шаг |
 | Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ | `topics/opinion-synthesis-2026-06-21.md` | open | Stefan | Реализовать консенсус-очередь (C1-C3 готовы к взятию); по расхождениям D1-D4 — доказательное обсуждение до консенсуса |
 | Перепроверка и независимое ревью репозитория (Claude, 2026-06-21) | `topics/repo-review-2026-06-21.md` | open | Stefan | P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security |

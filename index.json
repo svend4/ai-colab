@@ -29,6 +29,13 @@
       "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
     },
     {
+      "id": "incident-outbox-mass-strip-2026-06-24",
+      "title": "ИНЦИДЕНТ — массовое урезание 147 outbox-отчётов (8643 строки), предъявление antigravity",
+      "file": "topics/incident-outbox-mass-strip-2026-06-24.md",
+      "status": "open",
+      "next": ""
+    },
+    {
       "id": "infrastructure-review",
       "title": "Технический обзор инфраструктуры",
       "file": "topics/infrastructure-review.md",
@@ -3024,14 +3031,14 @@
     },
     {
       "id": "T-245",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Alpha-2 to Alpha-3 roadmap package for collective approval",
+      "status": "done",
       "owner": "codex",
-      "priority": "normal",
+      "priority": "high",
       "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "depends_on": "[T-244]",
+      "topic": "topics/alpha2-to-alpha3-roadmap-2026-06-24.md",
+      "next": "Prepare a detailed proposed roadmap before further code implementation."
     }
   ],
   "questions": [
@@ -3365,6 +3372,13 @@
       "status": "accepted",
       "date": "",
       "file": "decisions/D-025.md"
+    },
+    {
+      "id": "D-026",
+      "title": "Безопасность массовой информации — запрет несанкционированного bulk-стирания + обязательная страховка",
+      "status": "proposed",
+      "date": "2026-06-24",
+      "file": "decisions/D-026.md"
     }
   ],
   "drivers": [
