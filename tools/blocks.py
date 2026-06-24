@@ -70,6 +70,7 @@ BLOCKS = {
             ("assurance.py", [], "advisory"),
             ("adoption.py", [], "advisory"),
             ("metrics.py", [], "advisory"),
+            ("bulk_guard.py", [], "advisory"),  # D-026: массовое стирание без страховки (WARN до ратификации)
         ],
     },
     "improve": {
