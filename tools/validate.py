@@ -23,6 +23,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import datetime
 
 # Драйверы: манифест старше этого числа дней — WARN (advisory), пере-сверить с источником.
@@ -534,6 +535,7 @@ def check_synthesis_reports():
         ok("synthesis: %d отчетов проверено на структуру консенсуса/разногласий" % checked)
 
 def main():
+    help_guard(__doc__)
     decisions = parse_decisions()
     parse_questions(decisions)
     parse_tasks()

@@ -36,6 +36,7 @@ CLI:
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import glob
 import shutil
 import datetime
@@ -342,6 +343,7 @@ def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

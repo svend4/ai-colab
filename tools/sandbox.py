@@ -24,6 +24,7 @@ import importlib.util
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DRIVERS = os.path.join(ROOT, 'drivers')
@@ -134,6 +135,7 @@ def list_sources():
 
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

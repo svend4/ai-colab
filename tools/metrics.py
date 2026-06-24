@@ -23,6 +23,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import glob
 
@@ -88,6 +89,7 @@ def build():
     }
 
 def main():
+    help_guard(__doc__)
     m = build()
     if "--json" in sys.argv[1:]:
         print(json.dumps(m, ensure_ascii=False, indent=2))

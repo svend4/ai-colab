@@ -28,6 +28,7 @@ Temp-папку можно задать через COLLAB_RACE_TMP (иначе C
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import shutil
 import tempfile
 import subprocess
@@ -70,6 +71,7 @@ def one_round(n):
         shutil.rmtree(root, ignore_errors=True)
 
 def main():
+    help_guard(__doc__)
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     n = int(args[0]) if len(args) > 0 else 8
     rounds = int(args[1]) if len(args) > 1 else 1

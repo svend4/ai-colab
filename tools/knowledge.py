@@ -32,6 +32,7 @@ CLI:
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import sqlite3
 import importlib.util
 from pathlib import Path
@@ -203,6 +204,7 @@ def report(corpus, db=DEFAULT_DB, query_text=None):
     return "\n".join(out)
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

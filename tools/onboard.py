@@ -21,6 +21,7 @@ Onboard (C3, консенсус Claude+Codex) — одна команда вхо
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import subprocess
 
@@ -87,6 +88,7 @@ def onboard(agent=None):
     return 0
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     agent = a[0] if a and not a[0].startswith("-") else None
     return onboard(agent)

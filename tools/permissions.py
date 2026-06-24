@@ -29,6 +29,7 @@
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import subprocess
 
@@ -71,6 +72,7 @@ def git_changes():
     return sorted(files)
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args:
         print("usage: permissions.py <agent> [files...]")

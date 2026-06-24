@@ -23,6 +23,7 @@ CLI:
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import re
 import json
 import zipfile
@@ -182,6 +183,7 @@ def _arg_value(args, name, default=None):
     return args[pos]
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if len(a) < 2:
         print(__doc__)

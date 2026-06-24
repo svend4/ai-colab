@@ -30,6 +30,7 @@ worktree (Уровень-1 политики коммитов, T-136 — прин
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,6 +70,7 @@ def run_or_print(cmds, do_run, cwd=ROOT):
     return 0
 
 def main():
+    help_guard(__doc__)
     args = [a for a in sys.argv[1:] if a != "--run"]
     do_run = "--run" in sys.argv
     if not args:

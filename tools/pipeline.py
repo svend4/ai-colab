@@ -36,6 +36,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import time
 import uuid
 import json
@@ -645,6 +646,7 @@ def cmd_heartbeat(agent, tid, progress, note, eta):
     return 0
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     flags = {}
     pos = []

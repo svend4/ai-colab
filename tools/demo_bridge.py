@@ -27,6 +27,7 @@
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import importlib.util
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,6 +42,7 @@ def _load(name, *parts):
     return mod
 
 def main():
+    help_guard(__doc__)
     target = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else os.path.join(ROOT, "data", "fixtures")
     if not os.path.isdir(target):
         print("нет папки: %s" % target)

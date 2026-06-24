@@ -32,6 +32,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import subprocess
 
@@ -407,6 +408,7 @@ def _arg(a, flag, default=None):
     return a[a.index(flag) + 1] if flag in a and a.index(flag) + 1 < len(a) else default
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a or a[0] != "report":
         print(__doc__)

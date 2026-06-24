@@ -21,6 +21,7 @@ import sys
 import subprocess
 import time
 from _ioutil import configure_output
+from _cli import help_guard
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -92,6 +93,7 @@ def run_sandbox(driver_id, image, command):
     return exit_code
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args or args[0] != "execute":
         print(__doc__)

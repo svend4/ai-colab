@@ -23,6 +23,7 @@ import sys
 import re
 from datetime import datetime
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -90,6 +91,7 @@ def check_approval(driver_id):
         return 1
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args:
         print(__doc__)

@@ -27,6 +27,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import sqlite3
 
@@ -90,6 +91,7 @@ def search(query, db=DEFAULT_DB, limit=10):
         conn.close()
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

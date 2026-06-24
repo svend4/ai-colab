@@ -30,6 +30,7 @@
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -55,6 +56,7 @@ def find_entity(eid):
     return None
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args:
         print("usage: risk_gate.py <id> | policy")

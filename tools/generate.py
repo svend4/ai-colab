@@ -35,6 +35,7 @@ Front-matter темы (наш простой парсер: key: value, value —
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import glob
 import json
 
@@ -284,6 +285,7 @@ def build_index():
 
 
 def main():
+    help_guard(__doc__)
     check = "--check" in sys.argv
     topics = collect_topics()
     targets = [

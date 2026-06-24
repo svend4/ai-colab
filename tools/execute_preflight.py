@@ -22,6 +22,7 @@ import os
 import sys
 import subprocess
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -83,6 +84,7 @@ def check_sandbox_limits(args):
     return True, "Resource limits checks passed"
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args:
         print(__doc__)

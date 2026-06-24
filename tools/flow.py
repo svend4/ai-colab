@@ -38,6 +38,7 @@ import json
 import subprocess
 
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -165,6 +166,7 @@ def launch_plan(agent, task, context, use_worktree=False, as_json=False):
     print("```")
     return 0
 def main():
+    help_guard(__doc__)
     flags = {"--run", "--worktree", "--json"}
     args = [a for a in sys.argv[1:] if a not in flags]
     do_run = "--run" in sys.argv

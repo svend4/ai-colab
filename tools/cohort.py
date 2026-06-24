@@ -44,6 +44,7 @@ import glob
 import subprocess
 
 from _ioutil import configure_output
+from _cli import help_guard
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
@@ -466,6 +467,7 @@ def guard(as_json=False, agent=None, strict=False):
 # ---------------------------------------------------------------- CLI
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

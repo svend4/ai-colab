@@ -35,6 +35,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -217,6 +218,7 @@ def render_table(index):
     return "\n".join(lines).rstrip()
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)

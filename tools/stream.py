@@ -35,6 +35,7 @@ CLI:
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import datetime
 
@@ -276,6 +277,7 @@ def _argval(argv, flag):
     return None
 
 def main():
+    help_guard(__doc__)
     argv = sys.argv[1:]
     if not argv:
         print(__doc__)

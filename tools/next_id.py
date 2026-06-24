@@ -35,6 +35,7 @@ import uuid
 
 from _canon import parse_front_matter
 from _ioutil import configure_output
+from _cli import help_guard
 
 
 configure_output()
@@ -250,6 +251,7 @@ def cmd_issue(kind, agent):
 
 
 def main():
+    help_guard(__doc__)
     pos = [a for a in sys.argv[1:] if not a.startswith("--")]
     if not pos:
         print("Использование: python tools/next_id.py question|task|decision [--agent NAME]")

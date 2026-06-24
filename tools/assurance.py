@@ -34,6 +34,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 import glob
 import datetime
@@ -403,6 +404,7 @@ def render(results):
     return "\n".join(L), hard
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     which = None
     for tok in a:

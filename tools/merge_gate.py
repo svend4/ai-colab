@@ -32,6 +32,7 @@ import glob
 import subprocess
 
 from _ioutil import configure_output
+from _cli import help_guard
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -107,6 +108,7 @@ def _print_report(results):
 
 
 def main():
+    help_guard(__doc__)
     args = [a for a in sys.argv[1:] if a != "--with-tests"]
     with_tests = "--with-tests" in sys.argv
     if not args or args[0] != "check":

@@ -22,6 +22,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import json
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -141,6 +142,7 @@ def check():
     return 0
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if a and a[0] == "snapshot":
         return snapshot()

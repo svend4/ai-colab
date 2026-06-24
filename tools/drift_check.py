@@ -21,6 +21,7 @@ validate) и добавляет текстовые проверки дрейфа
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import re
 import glob
 import json
@@ -136,6 +137,7 @@ def run():
 
 
 def main():
+    help_guard(__doc__)
     drift = run()
     if not drift:
         print("OK: дрейфа не обнаружено")

@@ -37,6 +37,7 @@ import sys
 import time
 
 from _ioutil import configure_output
+from _cli import help_guard
 
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCK = os.path.join(ROOT, "queues", "commit.lock")
@@ -125,6 +126,7 @@ def status():
 
 
 def main():
+    help_guard(__doc__)
     a = sys.argv[1:]
     if not a:
         print(__doc__)
