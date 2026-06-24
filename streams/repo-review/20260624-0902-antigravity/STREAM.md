@@ -3,7 +3,7 @@ id: 20260624-0902-antigravity
 topic: repo-review
 agent: antigravity
 status: proposed
-created_at: 2026-06-24T07:02:40+00:00
+created: 2026-06-24T07:02:40+00:00
 reason: "Очередность: Fencing или Фантомные Блокеры"
 adopted_commit: ""
 ---

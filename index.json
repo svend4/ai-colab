@@ -253,6 +253,20 @@
       "next": ""
     },
     {
+      "id": "razbor-consensus-2026-06-24",
+      "title": "Разбор полётов — КОНСЕНСУС (общие пункты C-01..C-18 из мульти-документного синтеза)",
+      "file": "topics/razbor-consensus-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "razbor-divergence-2026-06-24",
+      "title": "Разбор полётов — РАЗНОГЛАСИЯ (21 DIV: конфликты + standalone из мульти-документного синтеза)",
+      "file": "topics/razbor-divergence-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "razbor-divergence-status-2026-06-24",
       "title": "Lane B — статус 21 разногласия после churn-reconcile (что разрешено / открыто / в котёл)",
       "file": "topics/razbor-divergence-status-2026-06-24.md",

@@ -1,7 +1,9 @@
 ---
 id: razbor-consensus-2026-06-24
+type: topic
+title: Разбор полётов — КОНСЕНСУС (общие пункты C-01..C-18 из мульти-документного синтеза)
 status: proposed
-layer: L3
+level: L3
 owner: semantic-consensus-synthesizer
 last_verified: 2026-06-24
 source_docs:

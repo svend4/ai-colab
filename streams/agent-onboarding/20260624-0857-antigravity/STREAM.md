@@ -3,7 +3,7 @@ id: 20260624-0857-antigravity
 topic: agent-onboarding
 agent: antigravity
 status: proposed
-created_at: 2026-06-24T06:57:38+00:00
+created: 2026-06-24T06:57:38+00:00
 reason: "Эссе о природе Ядра ОС"
 adopted_commit: ""
 ---

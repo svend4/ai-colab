@@ -167,7 +167,9 @@ def check(root=None, max_age_days=14):
         if p["status"] in TERMINAL_STATUSES:
             continue
         try:
-            age = (today - datetime.date.fromisoformat(p["created"])).days
+            # терпим полный ISO datetime с tz (2026-06-24T06:57:38+00:00) — берём дату до 'T'/пробела
+            datepart = str(p["created"]).strip().replace(" ", "T").split("T", 1)[0]
+            age = (today - datetime.date.fromisoformat(datepart)).days
         except ValueError:
             broken.append({"id": p["id"], "path": _rel(p["path"]), "reason": "bad-date:%s" % p["created"]})
             continue

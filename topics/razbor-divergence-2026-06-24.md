@@ -1,7 +1,9 @@
 ---
 id: razbor-divergence-2026-06-24
+type: topic
+title: Разбор полётов — РАЗНОГЛАСИЯ (21 DIV: конфликты + standalone из мульти-документного синтеза)
 status: proposed
-layer: L3
+level: L3
 owner: semantic-consensus-synthesizer
 last_verified: 2026-06-24
 consensus_ref: topics/razbor-consensus-2026-06-24.md
