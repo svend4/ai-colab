@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 55 файлов, 4 подпапок
+# Индекс папки `topics/` — 57 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -18,6 +18,7 @@
 | [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
 | [agent-self-reflection-delegation.md](../topics/agent-self-reflection-delegation.md) | topic | active | Мы успешно внедрили и протестировали методику "Dogfooding / Self-Reflection" (использовани |
 | [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
+| [alpha2-to-alpha3-roadmap-2026-06-24.md](../topics/alpha2-to-alpha3-roadmap-2026-06-24.md) | topic | proposed | Этот документ выводит на коллективное согласование следующий этап развития проекта. Он осн |
 | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | topic | proposed | File-native движок координации агентов — единый канон организации знания и кода по двум ос |
 | [assurance-and-doc-merge-2026-06-22.md](../topics/assurance-and-doc-merge-2026-06-22.md) | topic | proposed | **Переформулировка:** Вопрос о трёх проблемах гарантирования инструкций: 1. ПРИМЕНЕНИЕ: ка |
 | [assurance-hardening-plan-2026-06-23.md](../topics/assurance-hardening-plan-2026-06-23.md) | topic | proposed | Карты согласованы и проверены по живому репозиторию: assurance.py — это законченный read-o |
@@ -37,6 +38,7 @@
 | [friction-subsystems-synthesis-2026-06-22.md](../topics/friction-subsystems-synthesis-2026-06-22.md) | topic | proposed | За одну сессию два агента независимо построили подсистемы для одной темы. Они **не дублика |
 | [gate-poison-situation-2026-06-22.md](../topics/gate-poison-situation-2026-06-22.md) | topic | resolved | Pre-commit hook (`tools/githooks/pre-commit`) прогоняет ДВА последовательных gate по |
 | [governance-proposals-2026-06-23.md](../topics/governance-proposals-2026-06-23.md) | topic | proposed | Два предложения для **котла (D-018, не solo)**, проверены против файлов. Источник: нода фл |
+| [incident-outbox-mass-strip-2026-06-24.md](../topics/incident-outbox-mass-strip-2026-06-24.md) | topic | open | Несанкционированный массовый авто-стрип 147 отчётов агентов в единый стаб status:historica |
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
 | [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |

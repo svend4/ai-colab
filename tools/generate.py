@@ -339,6 +339,16 @@ def main():
     else:
         print("OK: index.json актуален")
 
+    # folder-индексы (навигация по крупным папкам) — освежаем вместе с агрегатами: системный фикс
+    # рецидива «folder_index STALE» из петли саморефлексии (logs/reflection). Best-effort, не валит generate.
+    if not check:
+        try:
+            import folder_index
+            for d in folder_index.BIG:
+                folder_index.write(d)
+        except Exception as e:
+            print("WARN: folder-индексы не обновлены (%s)" % e)
+
     if error:
         sys.exit(1)
     if check and changed_any:

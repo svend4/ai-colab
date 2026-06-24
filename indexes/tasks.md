@@ -251,4 +251,4 @@
 | [T-242.md](../tasks/T-242.md) | task | done | 1. CLI tools with hostile `sys.argv` behavior where `--help` can fail or trigger normal si |
 | [T-243.md](../tasks/T-243.md) | task | done | The remaining gap is visibility. Agents should not manually guess which tools still need w |
 | [T-244.md](../tasks/T-244.md) | task | done | T-243 added `tools/cli_inventory.py` and showed 45 remaining CLI-risk entries. The next sa |
-| [T-245.md](../tasks/T-245.md) | task | todo | — |
+| [T-245.md](../tasks/T-245.md) | task | done | The user asked to stop before implementation and first produce a detailed plan for collect |
