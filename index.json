@@ -2888,13 +2888,24 @@
     {
       "id": "T-237",
       "title": "Проверка целостности ссылок Markdown в песочнице (sandbox link checker)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
       "next": ""
+    },
+    {
+      "id": "T-238",
+      "title": "Draft-code sandbox lane for agent-written experimental code",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Add a no-execute sandbox draft-code lane, manifest template, and policy report."
     }
   ],
   "questions": [

@@ -105,13 +105,15 @@ BLOCKS = {
         ],
     },
     "structure": {
-        "desc": "здоровье структуры (консенсус C-07/C-10/C-11/layered-pyramid): папки + визитки + слои L1-L4 + heading-дерево",
+        "desc": "здоровье структуры (консенсус C-07/C-10/C-11/layered-pyramid + граф-ось): папки + визитки + слои L1-L4 + heading-дерево + граф связей",
         "steps": [
             ("dir_health.py", [], "advisory"),
             ("header.py", ["board"], "advisory"),
             ("layer_check.py", [], "advisory"),
             ("heading_check.py", [], "advisory"),
             ("folder_index.py", ["check-all"], "advisory"),
+            # вторая ось (DIV-07/08): жёсткие дефекты графа (активные циклы / висячие атом→атом) валят блок
+            ("edges.py", ["check"], "gate"),
         ],
     },
 }

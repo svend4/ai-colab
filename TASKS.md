@@ -250,5 +250,6 @@
 | T-234 | Улучшение эвристик result_intake.py для классификации external-code | done | antigravity | — |  |
 | T-235 | Разработка семантического AST-анализатора (python_analyzer.py) | done | antigravity | — |  |
 | T-236 | Валидация JSON-схем в песочнице (sandbox schema validator) | done | pool | — |  |
-| T-237 | Проверка целостности ссылок Markdown в песочнице (sandbox link checker) | todo | pool | — |  |
+| T-237 | Проверка целостности ссылок Markdown в песочнице (sandbox link checker) | done | pool | — |  |
+| T-238 | Draft-code sandbox lane for agent-written experimental code | done | codex | — | Add a no-execute sandbox draft-code lane, manifest template, and policy report. |
 <!-- GEN:tasks END -->

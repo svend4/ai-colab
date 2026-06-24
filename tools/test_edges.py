@@ -36,6 +36,9 @@ def main():
         # T-4: тема без файла → topic_unresolved (НЕ жёсткое dangling); T-5: без поля type → missing_type
         _w(root, "tasks/T-4.md", "---\nid: T-4\ntype: task\nstatus: todo\ntopic: ghost-theme\n---\nт\n")
         _w(root, "tasks/T-5.md", "---\nid: T-5\nstatus: todo\nrelated: [T-1]\n---\nт\n")
+        # T-6↔T-7 оба done → ТЕРМИНАЛЬНЫЙ цикл (мягко, историч.) — НЕ в жёстких cycles
+        _w(root, "tasks/T-6.md", "---\nid: T-6\ntype: task\nstatus: done\ndepends_on: [T-7]\n---\nт\n")
+        _w(root, "tasks/T-7.md", "---\nid: T-7\ntype: task\nstatus: done\ndepends_on: [T-6]\n---\nт\n")
 
         nodes, by_id, by_slug = edges.load_nodes()
         e = edges.build_edges(nodes, by_id, by_slug)
@@ -50,9 +53,14 @@ def main():
             fails.append("folder T-1 != tasks (%s)" % nodes.get("T-1", {}).get("folder"))
 
         c = edges.check(nodes, e, by_id)
-        # цикл T-1↔T-2 найден
+        # активный цикл T-1↔T-2 (doing/todo) — в жёстких cycles
         if not any("T-1" in cyc and "T-2" in cyc for cyc in c["cycles"]):
-            fails.append("цикл T-1↔T-2 не пойман: %s" % c["cycles"])
+            fails.append("активный цикл T-1↔T-2 не пойман: %s" % c["cycles"])
+        # терминальный цикл T-6↔T-7 (done↔done) — в terminal_cycles, НЕ в жёстких
+        if not any("T-6" in cyc and "T-7" in cyc for cyc in c["terminal_cycles"]):
+            fails.append("терминальный цикл T-6↔T-7 не в terminal_cycles: %s" % c["terminal_cycles"])
+        if any("T-6" in cyc for cyc in c["cycles"]):
+            fails.append("терминальный цикл ложно в жёстких cycles")
         # висячее T-3→T-999
         if not any("T-999" in dg for dg in c["dangling"]):
             fails.append("висячее T-999 не пойман: %s" % c["dangling"])

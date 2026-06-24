@@ -171,9 +171,12 @@ def find_cycles(edges):
     return uniq
 
 
+TERMINAL_STATUS = ("done", "rejected", "answered", "accepted", "superseded")
+
+
 def check(nodes, edges, by_id):
-    out = {"dangling": [], "topic_unresolved": [], "cycles": [], "supersede": [],
-           "asym_related": [], "missing_type": [], "isolates": [], "active_isolates": []}
+    out = {"dangling": [], "topic_unresolved": [], "cycles": [], "terminal_cycles": [],
+           "supersede": [], "asym_related": [], "missing_type": [], "isolates": [], "active_isolates": []}
     # ЧЕСТНО: жёсткие висячие (depends/related/…) ОТДЕЛЬНО от тема-без-файла (in_topic) — не прячем
     for e in edges:
         if not e["dangling"]:
@@ -182,7 +185,14 @@ def check(nodes, edges, by_id):
             out["topic_unresolved"].append("%s →in_topic→ %s (нет файла-темы)" % (e["src"], e["raw"]))
         else:
             out["dangling"].append("%s →%s→ %s (нет такого атома)" % (e["src"], e["type"], e["raw"]))
-    out["cycles"] = [" → ".join(c) for c in find_cycles(edges)]
+    # циклы: РАЗДЕЛЯЕМ активные (жёсткое — блокирует порядок) от терминальных (все done/accepted —
+    # историч. артефакт, не runtime-проблема). Иначе гейт завалит коммиты на старом done↔done.
+    for c in find_cycles(edges):
+        label = " → ".join(c)
+        if all(nodes.get(k, {}).get("status", "") in TERMINAL_STATUS for k in c):
+            out["terminal_cycles"].append(label + " (все терминальные — историч. артефакт)")
+        else:
+            out["cycles"].append(label)
     # supersede-целостность: A superseded_by B → A должен быть в терминальном статусе
     for e in edges:
         if e["type"] == "superseded" and not e["dangling"]:
@@ -286,7 +296,8 @@ def main(argv):
     print("=== ПРОВЕРКА ГРАФА (DIV-07/08) ===")
     HARD = {"dangling", "cycles"}
     for kind, label in (("dangling", "Висячие рёбра атом→атом (жёсткое)"),
-                        ("cycles", "Циклы depends_on (жёсткое)"),
+                        ("cycles", "Активные циклы depends_on (жёсткое)"),
+                        ("terminal_cycles", "Терминальные циклы (done↔done — историч., мягкое)"),
                         ("topic_unresolved", "Темы без файла-атома (in_topic, мягкое)"),
                         ("asym_related", "Асимметричный related (инфо: взаимность не навязывается)"),
                         ("supersede", "Supersede-целостность"),
