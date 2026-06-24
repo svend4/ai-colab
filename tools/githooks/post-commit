@@ -1,0 +1,46 @@
+#!/bin/sh
+# post-commit hook: АВТО-САМОРЕФЛЕКСИЯ (каждый коммит = повод для само-анализа).
+# Запускает блок `reflect` (собственный код через анализаторы «как внешний» + граф + структура),
+# нормализует находки в logs/reflection/ledger.json (reflect_ingest). НИКОГДА не блокирует коммит
+# (post-commit advisory) и НЕ запускает workflow (детерминированно, переживает компактацию).
+#
+# Активация (как pre-commit): git config core.hooksPath tools/githooks
+# Свойства: детач-фон (коммит не ждёт), throttle (≤1 прогон/90с — не пилит FS при частых коммитах),
+# тихий отказ (нет Python → выход 0). Артефакты в logs/reflection/ (gitignored).
+
+# throttle: не чаще раза в 90с (несколько агентов коммитят часто)
+mkdir -p logs/reflection 2>/dev/null
+NOW=$(date +%s 2>/dev/null || echo 0)
+LAST=$(cat logs/reflection/.last 2>/dev/null || echo 0)
+if [ "$NOW" -gt 0 ] && [ "$LAST" -gt 0 ] && [ $((NOW - LAST)) -lt 90 ]; then
+  exit 0
+fi
+echo "$NOW" > logs/reflection/.last 2>/dev/null
+
+# найти рабочий Python 3 (как в pre-commit); тихий отказ если нет
+PY=""
+for cand in python python3 py; do
+  if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
+    PY="$cand"; break
+  fi
+done
+if [ -z "$PY" ]; then
+  for cand in \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python312/python.exe" \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python311/python.exe" \
+    "/c/Program Files/Python312/python.exe"; do
+    if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
+      PY="$cand"; break
+    fi
+  done
+fi
+[ -z "$PY" ] && exit 0
+
+SHA=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
+
+# детач-фон: коммит завершается сразу, рефлексия идёт отдельно и пишет только в logs/reflection/
+( "$PY" tools/blocks.py run reflect --json > "logs/reflection/$SHA.json" 2>/dev/null \
+    && "$PY" tools/reflect_ingest.py --in "logs/reflection/$SHA.json" --commit "$SHA" >/dev/null 2>&1 ) \
+  </dev/null >/dev/null 2>&1 &
+
+exit 0

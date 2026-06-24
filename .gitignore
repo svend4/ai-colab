@@ -6,6 +6,7 @@ tmp-work/
 # runtime-артефакты драйверов (не версионируем)
 logs/driver-audit.jsonl
 logs/friction.jsonl
+logs/reflection/
 logs/*.db
 data/portals/*/*.db
 queues/commit.lock

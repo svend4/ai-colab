@@ -2956,13 +2956,24 @@
     {
       "id": "T-240",
       "title": "Sandbox intake chain orchestrator (read-only)",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "",
       "next": "Implement read-only `tools/sandbox_intake_chain.py` with tests and normalized JSON output."
+    },
+    {
+      "id": "T-241",
+      "title": "Expose conveyor recover through top layer",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-239, T-240]",
+      "topic": "",
+      "next": "Add read-only `python tools/top.py conveyor-recover [--json] [--limit N]` wrapper and tests."
     }
   ],
   "questions": [

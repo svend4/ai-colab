@@ -1,0 +1,171 @@
+"""reflect_ingest.py — мозг авто-саморефлексии: находки blocks → severity + дедуп-ledger + рецидив.
+
+Принимает JSON-результат `blocks.py run <block> --json` (stdin или --in файл), извлекает находки
+(шаг rc!=0), присваивает severity (gate-fail=HIGH, advisory-flag=MEDIUM), дедупит против append-only
+logs/reflection/ledger.json по хэшу (tool+нормализованный симптом). Считает РЕЦИДИВ: находка
+вернулась через несколько коммитов = «полый цикл» (детектор сработал, но никто не починил).
+Детерминированно, идемпотентно, БЕЗ workflow (переживает компактацию).
+
+Философия: метрика — КАЧЕСТВО результата (рецидив↓, применяемость↑), НЕ число строк. Цель авто-петли —
+чтобы находки ДОХОДИЛИ до починки, а не копились.
+
+CLI:
+  python tools/blocks.py run improve --json | python tools/reflect_ingest.py --commit <sha>
+  python tools/reflect_ingest.py --in logs/reflection/<sha>.json --commit <sha>
+  python tools/reflect_ingest.py --summary           # сводка ledger (открытые/рецидивы по severity)
+  python tools/reflect_ingest.py --summary --json
+"""
+import os
+from _ioutil import configure_output
+import re
+import sys
+import json
+import time
+import hashlib
+
+configure_output()
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
+LEDGER = os.path.join(ROOT, "logs", "reflection", "ledger.json")
+RECUR_THRESHOLD = 3   # находка в ≥3 заходах подряд = полый цикл (детектор есть, починки нет)
+COMMITS_KEEP = 12
+
+
+def _symptom(tool, tail):
+    """Стабильный короткий симптом: первая значимая строка tail, без чисел/путей-вариативности."""
+    for line in (tail or "").splitlines():
+        s = line.strip().lstrip("-•*[ ").strip()
+        if not s or s.startswith("==="):
+            continue
+        s = re.sub(r"\d+", "#", s)            # числа → # (стабильность хэша)
+        s = re.sub(r"\s+", " ", s)[:80]
+        return s
+    return tool
+
+
+def _hash(tool, symptom):
+    return hashlib.sha1(("%s::%s" % (tool, symptom)).encode("utf-8")).hexdigest()[:12]
+
+
+def findings_from_blocks(data):
+    """blocks-JSON → список находок. rc!=0: gate=HIGH, advisory=MEDIUM."""
+    out = []
+    block = data.get("block", "?")
+    for st in data.get("steps", []):
+        if st.get("skipped") or st.get("rc", 0) == 0:
+            continue
+        kind = st.get("kind", "advisory")
+        sev = "high" if kind == "gate" else "medium"
+        tool = st.get("tool", "?")
+        sym = _symptom(tool, st.get("tail", ""))
+        out.append({"hash": _hash(tool, sym), "tool": tool, "block": block,
+                    "severity": sev, "symptom": sym, "detail": (st.get("tail") or "")[:300]})
+    return out
+
+
+def load_ledger():
+    try:
+        with open(LEDGER, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return {"findings": {}, "runs": []}
+
+
+def save_ledger(led):
+    os.makedirs(os.path.dirname(LEDGER), exist_ok=True)
+    with open(LEDGER, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(led, f, ensure_ascii=False, indent=2)
+
+
+def ingest(findings, commit, now=None):
+    now = int(now if now is not None else time.time())
+    led = load_ledger()
+    fdb = led["findings"]
+    cur_hashes = set()
+    for fnd in findings:
+        h = fnd["hash"]
+        cur_hashes.add(h)
+        e = fdb.get(h)
+        if e is None:
+            fdb[h] = {"tool": fnd["tool"], "block": fnd["block"], "severity": fnd["severity"],
+                      "symptom": fnd["symptom"], "first_seen": now, "first_commit": commit,
+                      "last_seen": now, "last_commit": commit, "count": 1, "status": "open",
+                      "commits": [commit] if commit else []}
+        else:
+            e["last_seen"] = now
+            e["last_commit"] = commit
+            e["count"] = e.get("count", 1) + 1
+            e["status"] = "open"
+            cm = e.get("commits", [])
+            if commit and commit not in cm:
+                cm.append(commit)
+            e["commits"] = cm[-COMMITS_KEEP:]
+    # находки этого блока, которых в текущем заходе НЕТ → помечаем resolved (по блоку, чтобы не путать)
+    blocks_seen = {f["block"] for f in findings}
+    for h, e in fdb.items():
+        if h not in cur_hashes and e.get("block") in blocks_seen and e.get("status") == "open":
+            e["status"] = "resolved"
+            e["resolved_seen"] = now
+    led["runs"].append({"commit": commit, "ts": now,
+                        "high": sum(1 for f in findings if f["severity"] == "high"),
+                        "medium": sum(1 for f in findings if f["severity"] == "medium")})
+    led["runs"] = led["runs"][-COMMITS_KEEP * 4:]
+    save_ledger(led)
+    return led
+
+
+def summarize(led):
+    open_f = [e for e in led["findings"].values() if e.get("status") == "open"]
+    recurring = [e for e in open_f if e.get("count", 1) >= RECUR_THRESHOLD]
+    return {
+        "open_total": len(open_f),
+        "open_high": sum(1 for e in open_f if e["severity"] == "high"),
+        "open_medium": sum(1 for e in open_f if e["severity"] == "medium"),
+        "recurring": sorted(recurring, key=lambda e: -e.get("count", 0)),
+        "resolved_total": sum(1 for e in led["findings"].values() if e.get("status") == "resolved"),
+    }
+
+
+def main(argv):
+    as_json = "--json" in argv
+    commit = None
+    if "--commit" in argv:
+        i = argv.index("--commit")
+        if i + 1 < len(argv):
+            commit = argv[i + 1]
+    if "--summary" in argv:
+        s = summarize(load_ledger())
+        if as_json:
+            print(json.dumps(s, ensure_ascii=False, indent=2)); return 0
+        print("=== САМОРЕФЛЕКСИЯ — ledger (logs/reflection/ledger.json) ===")
+        print("  открытых: %d  (high %d · medium %d) · resolved: %d" % (
+            s["open_total"], s["open_high"], s["open_medium"], s["resolved_total"]))
+        print("  ПОЛЫЕ ЦИКЛЫ (рецидив ≥%d заходов — детектор есть, починки нет): %d" % (
+            RECUR_THRESHOLD, len(s["recurring"])))
+        for e in s["recurring"][:15]:
+            print("    [%s ×%d] %s: %s" % (e["severity"], e["count"], e["tool"], e["symptom"]))
+        return 0
+    # ingest из stdin или --in
+    src = None
+    if "--in" in argv:
+        i = argv.index("--in")
+        if i + 1 < len(argv):
+            src = argv[i + 1]
+    try:
+        raw = open(src, encoding="utf-8").read() if src else sys.stdin.read()
+        data = json.loads(raw)
+    except (OSError, json.JSONDecodeError) as e:
+        print("reflect_ingest: не прочитать blocks-JSON (%s)" % e); return 2
+    findings = findings_from_blocks(data)
+    led = ingest(findings, commit)
+    s = summarize(led)
+    print("ingest: блок %s — находок %d (high %d/med %d); ledger открытых %d, полых циклов %d" % (
+        data.get("block", "?"), len(findings),
+        sum(1 for f in findings if f["severity"] == "high"),
+        sum(1 for f in findings if f["severity"] == "medium"),
+        s["open_total"], len(s["recurring"])))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

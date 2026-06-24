@@ -117,6 +117,16 @@ BLOCKS = {
             ("edges.py", ["check"], "gate"),
         ],
     },
+    "reflect": {
+        "desc": "саморефлексия (dogfood): собственный код tools/ через sandbox-анализаторы «как внешний» + граф + структура → находки для ledger (reflect_ingest)",
+        "steps": [
+            ("sandbox_intake_chain.py", ["tools", "--kind", "agent-draft", "--source-id", "self-tools", "--max-python-files", "12"], "advisory"),
+            ("edges.py", ["check"], "gate"),
+            ("heading_check.py", [], "advisory"),
+            ("dir_health.py", [], "advisory"),
+            ("folder_index.py", ["check-all"], "advisory"),
+        ],
+    },
 }
 
 # Реестр безопасных авто-исправлений (SAFE_AUTO), применяемых при --auto-safe

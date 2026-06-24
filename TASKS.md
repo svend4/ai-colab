@@ -252,4 +252,7 @@
 | T-236 | Валидация JSON-схем в песочнице (sandbox schema validator) | done | pool | — |  |
 | T-237 | Проверка целостности ссылок Markdown в песочнице (sandbox link checker) | done | pool | — |  |
 | T-238 | Draft-code sandbox lane for agent-written experimental code | done | codex | — | Add a no-execute sandbox draft-code lane, manifest template, and policy report. |
+| T-239 | Conveyor recover advisory for reset/hang/UI mismatch | done | codex | — | Implement read-only `tools/conveyor.py recover` diagnostics for reset/hang/UI indicator mismatch. |
+| T-240 | Sandbox intake chain orchestrator (read-only) | done | codex | — | Implement read-only `tools/sandbox_intake_chain.py` with tests and normalized JSON output. |
+| T-241 | Expose conveyor recover through top layer | doing | codex | — | Add read-only `python tools/top.py conveyor-recover [--json] [--limit N]` wrapper and tests. |
 <!-- GEN:tasks END -->
