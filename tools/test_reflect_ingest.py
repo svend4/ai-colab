@@ -83,6 +83,22 @@ def main():
         if not all(k in menu for k in ("title", "options", "recommendation", "how_to_choose")):
             fails.append("to_menu: нарушена схема decision_menu")
 
+        # accept: принять edges-находку (wontfix) → уходит из recurring + НЕ ре-открывается рецидивом
+        hit = ri.accept(led3, "edges.py", "легитимно — пример")
+        if not hit:
+            fails.append("accept не пометил edges-находку")
+        led_a = ri.load_ledger()
+        if any(e["tool"] == "edges.py" for e in ri.summarize(led_a)["recurring"]):
+            fails.append("accepted edges всё ещё в recurring (полых циклах)")
+        if ri.summarize(led_a)["accepted_total"] < 1:
+            fails.append("accepted_total не вырос")
+        # рецидив accepted → НЕ ре-открывает (остаётся accepted)
+        ri.ingest(ri.findings_from_blocks(BLOCK_R2), "sha4", now=4000)
+        led_b = ri.load_ledger()
+        edges_b = [e for e in led_b["findings"].values() if e["tool"] == "edges.py"]
+        if edges_b and edges_b[0]["status"] != "accepted":
+            fails.append("accepted edges ре-открылся при рецидиве (status=%s)" % edges_b[0]["status"])
+
     if fails:
         print("FAIL test_reflect_ingest:")
         for f in fails:

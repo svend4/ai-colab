@@ -14,6 +14,7 @@ CLI:
   python tools/reflect_ingest.py --in logs/reflection/<sha>.json --commit <sha>
   python tools/reflect_ingest.py --summary           # сводка ledger (открытые/рецидивы по severity)
   python tools/reflect_ingest.py --menu | python tools/decision_menu.py -   # находки→меню человеку (шаг 5)
+  python tools/reflect_ingest.py --accept <hash|tool> --reason "..."   # принять (wontfix) — не каждый рецидив дефект
 """
 import os
 from _ioutil import configure_output
@@ -96,7 +97,8 @@ def ingest(findings, commit, now=None):
             e["last_seen"] = now
             e["last_commit"] = commit
             e["count"] = e.get("count", 1) + 1
-            e["status"] = "open"
+            if e.get("status") != "accepted":  # принятое (wontfix) не ре-открываем при рецидиве
+                e["status"] = "open"
             cm = e.get("commits", [])
             if commit and commit not in cm:
                 cm.append(commit)
@@ -124,7 +126,27 @@ def summarize(led):
         "open_medium": sum(1 for e in open_f if e["severity"] == "medium"),
         "recurring": sorted(recurring, key=lambda e: -e.get("count", 0)),
         "resolved_total": sum(1 for e in led["findings"].values() if e.get("status") == "resolved"),
+        "accepted_total": sum(1 for e in led["findings"].values() if e.get("status") == "accepted"),
     }
+
+
+def accept(led, target, reason, now=None):
+    """Пометить открытую находку «accepted» (wontfix) с обоснованием — уходит из полых циклов/меню.
+    target = хэш ИЛИ имя tool (примет все открытые находки этого детектора). Не каждый рецидив = дефект:
+    легитимное принятое состояние (напр. большой review-док — качество, не размер) — accept, не fix."""
+    now = int(now if now is not None else time.time())
+    hit = []
+    for h, e in led["findings"].items():
+        if e.get("status") != "open":
+            continue
+        if h == target or e.get("tool") == target:
+            e["status"] = "accepted"
+            e["accepted_reason"] = reason
+            e["accepted_at"] = now
+            hit.append(h)
+    if hit:
+        save_ledger(led)
+    return hit
 
 
 def to_menu(led):
@@ -179,13 +201,26 @@ def main(argv):
         # JSON «меню решений» для человека (пайпить в decision_menu.py -)
         print(json.dumps(to_menu(load_ledger()), ensure_ascii=False, indent=2))
         return 0
+    if "--accept" in argv:
+        i = argv.index("--accept")
+        target = argv[i + 1] if i + 1 < len(argv) else None
+        reason = ""
+        if "--reason" in argv:
+            j = argv.index("--reason")
+            reason = argv[j + 1] if j + 1 < len(argv) else ""
+        if not target:
+            print("reflect_ingest --accept <hash|tool> --reason '<обоснование>'"); return 2
+        hit = accept(load_ledger(), target, reason or "(без обоснования)")
+        print("принято (wontfix): %d находок по '%s' — ушли из полых циклов (%s)" % (
+            len(hit), target, reason or "—"))
+        return 0
     if "--summary" in argv:
         s = summarize(load_ledger())
         if as_json:
             print(json.dumps(s, ensure_ascii=False, indent=2)); return 0
         print("=== САМОРЕФЛЕКСИЯ — ledger (logs/reflection/ledger.json) ===")
-        print("  открытых: %d  (high %d · medium %d) · resolved: %d" % (
-            s["open_total"], s["open_high"], s["open_medium"], s["resolved_total"]))
+        print("  открытых: %d  (high %d · medium %d) · resolved: %d · accepted: %d" % (
+            s["open_total"], s["open_high"], s["open_medium"], s["resolved_total"], s["accepted_total"]))
         print("  ПОЛЫЕ ЦИКЛЫ (рецидив ≥%d заходов — детектор есть, починки нет): %d" % (
             RECUR_THRESHOLD, len(s["recurring"])))
         for e in s["recurring"][:15]:
