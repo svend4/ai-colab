@@ -2541,13 +2541,13 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "done",
+      "status": "blocked",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "high",
       "depends_on": "[D-014, D-006, D-018, T-212, T-214, T-216, T-217]",
       "topic": "",
-      "next": "Выполнено: весь трек (8 этапов) реализован, ядро sandbox_runner.py готово."
+      "next": "Runner core exists, but umbrella track remains blocked until Docker/backend preflight, human first-run approval, and execute scenario ratification are completed."
     },
     {
       "id": "T-209",
@@ -2647,6 +2647,17 @@
       "depends_on": "[T-216]",
       "topic": "",
       "next": "Реализовать tools/sandbox_runner.py"
+    },
+    {
+      "id": "T-218",
+      "title": "Document synthesis v2 — source-line evidence, candidates, top.py wrapper",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/document-synthesis-mechanism-2026-06-24.md",
+      "next": "Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default."
     }
   ],
   "questions": [
