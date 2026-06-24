@@ -73,7 +73,26 @@ def run():
     rec = friction.recommendation([gen, by_id["F-006"]])
     assert "LEVEL 1" in rec or "SELECTIVE-ADD" in rec, rec
 
-    print("TESTS OK friction: registry/recipes + pure detectors + temp probe")
+    # note/log: event-лог + лестница автоматизации (F-017)
+    import tempfile
+    import types
+    log_dir = tempfile.mkdtemp(prefix="friction_log_")
+    old_log = friction.FRICTION_LOG
+    friction.FRICTION_LOG = os.path.join(log_dir, "friction.jsonl")
+    try:
+        ok = types.SimpleNamespace(fid="F-007", where="x", result="fixed", agent="t")
+        assert friction.cmd_note(ok) == 0
+        assert friction.cmd_note(ok) == 0
+        bad = types.SimpleNamespace(fid="F-999nope", where=None, result=None, agent=None)
+        assert friction.cmd_note(bad) == 1  # неизвестный fid → не пишем
+        events = friction._read_friction_log()
+        assert len(events) == 2 and all(e["fid"] == "F-007" for e in events), events
+        assert "рецепт" in friction._ladder(2) and "детектор" in friction._ladder(4), "ladder"
+    finally:
+        friction.FRICTION_LOG = old_log
+        shutil.rmtree(log_dir, ignore_errors=True)
+
+    print("TESTS OK friction: registry/recipes + pure detectors + temp probe + note/log-ladder")
     return 0
 
 

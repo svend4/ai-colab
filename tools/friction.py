@@ -723,6 +723,76 @@ def cmd_list(args):
         print("| %s | %s | %s |" % (item["id"], item["name"], item["symptom"]))
     return 0
 
+FRICTION_LOG = os.path.join(ROOT, "logs", "friction.jsonl")
+
+
+def _ladder(n):
+    """Лестница автоматизации по числу повторов (F-017: data-driven detector→guard)."""
+    if n >= 8:
+        return "8+ → авто-фикс (SAFE_AUTO)"
+    if n >= 6:
+        return "6+ → guard (гейт/хук)"
+    if n >= 4:
+        return "4+ → детектор (tool)"
+    if n >= 2:
+        return "2-3 → рецепт (recipe)"
+    return "1 → разовая заметка"
+
+
+def cmd_note(args):
+    """Записать friction-событие в logs/friction.jsonl (точный лог вместо ручной бухгалтерии)."""
+    fid = resolve_fid(args.fid)
+    if not fid:
+        print("Unknown friction id/alias: %s" % args.fid)
+        return 1
+    rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "fid": fid,
+           "agent": args.agent or "—", "where": args.where or "—", "result": args.result or "—"}
+    os.makedirs(os.path.dirname(FRICTION_LOG), exist_ok=True)
+    with open(FRICTION_LOG, "a", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    print("OK: friction-событие записано (%s @ %s) → logs/friction.jsonl" % (fid, rec["where"]))
+    return 0
+
+
+def _read_friction_log():
+    out = []
+    if not os.path.exists(FRICTION_LOG):
+        return out
+    with open(FRICTION_LOG, encoding="utf-8", errors="replace") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass
+    return out
+
+
+def cmd_log(args):
+    """Показать события + счётчики по F-id с подсказкой ступени автоматизации."""
+    import collections
+    events = _read_friction_log()
+    if args.fid:
+        fid = resolve_fid(args.fid) or args.fid
+        events = [e for e in events if e.get("fid") == fid]
+    if args.json:
+        print(json.dumps({"events": events}, ensure_ascii=False, indent=2))
+        return 0
+    counts = collections.Counter(e.get("fid") for e in events)
+    if not counts:
+        print("friction-лог пуст. Записывай: python tools/friction.py note <F-id> --where ... --result ...")
+        return 0
+    print("# Friction event log — счётчики по лестнице автоматизации (logs/friction.jsonl)")
+    print("")
+    print("| F-id | событий | следующая ступень |")
+    print("|---|---|---|")
+    for fid, n in counts.most_common():
+        print("| %s | %d | %s |" % (fid, n, _ladder(n)))
+    return 0
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Diagnose repeated repository friction and print recipes.")
     sub = parser.add_subparsers(dest="cmd")
@@ -744,6 +814,18 @@ def build_parser():
     p = sub.add_parser("list", help="list known friction archetypes")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_list)
+
+    p = sub.add_parser("note", help="записать friction-событие в logs/friction.jsonl")
+    p.add_argument("fid", help="F-id или алиас")
+    p.add_argument("--where", help="путь/контекст, где случилось")
+    p.add_argument("--result", help="исход (workaround/fixed/blocked/…)")
+    p.add_argument("--agent", help="кто записал")
+    p.set_defaults(func=cmd_note)
+
+    p = sub.add_parser("log", help="события + счётчики по F-id (лестница автоматизации)")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--fid", help="фильтр по F-id")
+    p.set_defaults(func=cmd_log)
 
     return parser
 
