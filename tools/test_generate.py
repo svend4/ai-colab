@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_generate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_generate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Hermetic-тесты генератора навигации (tools/generate.py).
 
 Покрывают два слоя:

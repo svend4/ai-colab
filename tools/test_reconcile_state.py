@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_reconcile_state
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_reconcile_state.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Hermetic-тест reconcile_state: check-категории (done-missing-marker/orphan/drift)
 детектятся на синтетическом дереве через COLLAB_ROOT.
 

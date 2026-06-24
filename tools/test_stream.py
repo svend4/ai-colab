@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_stream
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_stream.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест stream-пакетов (tools/stream.py) — create/list/adopt, герметично."""
 import os
 import sys

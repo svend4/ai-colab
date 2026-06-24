@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_onboard
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_onboard.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест onboard (tools/onboard.py) — агрегатор входа."""
 import os
 import sys

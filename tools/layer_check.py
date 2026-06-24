@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.layer_check
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт layer_check.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """layer_check.py — контракт пирамиды L1-L4 (lane A layered-pyramid) — folder/layer checks.
 
 Из cauldron lane A «layered-pyramid» (9/10 docs): после ратификации L1/L2/L3/L4-контракта — машинные

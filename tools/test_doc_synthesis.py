@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_doc_synthesis
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_doc_synthesis.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 import json
 import os
 import shutil

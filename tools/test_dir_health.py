@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_dir_health
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_dir_health.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест dir_health.py — health-gate каталога. Пороги понижены + ROOT на temp (hermetic)."""
 import os
 import sys

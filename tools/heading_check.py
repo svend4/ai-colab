@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.heading_check
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт heading_check.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация.
 
 Из architecture-fundamentals §4 + razbor-consensus C-11: длинный файл — это дерево (метаданные →

@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.instructions
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт instructions.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Instruction assurance preflight (T-154).
 
 Read-only helper that tells a human/agent which repo instructions apply to the

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_promote
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_promote.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест promotion gate пирамиды (tools/promote.py) — герметичный, temp-root, реальные артефакты не трогаются."""
 import os
 import sys

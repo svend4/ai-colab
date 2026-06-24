@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_card
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_card.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест card.py — фрактальная карточка-визитка. Типы, вложенность, семантика, from_proposals."""
 import os
 import sys

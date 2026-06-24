@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_synthesis_helper
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_synthesis_helper.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест synthesis_helper (tools/synthesis_helper.py) — скелет синтеза из форк-вариантов.
 
 Read-only против реального репо: тема agent-onboarding имеет 2 варианта (Claude doc + Codex doc),

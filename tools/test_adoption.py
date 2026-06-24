@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_adoption
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_adoption.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест adoption.py — статические метрики применения. Проверяет структуру, не точные числа."""
 import os
 import sys

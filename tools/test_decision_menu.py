@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_decision_menu
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_decision_menu.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест decision_menu.py — рендерер меню решений. Проверяет каталог + карточки + семантические поля."""
 import os
 import sys

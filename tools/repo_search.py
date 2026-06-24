@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.repo_search
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт repo_search.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 repo_search (продукт) — ранжированный полнотекстовый поиск по ДОКУМЕНТАЦИИ репозитория.
 
 Репо вырос (десятки docs/decisions/questions/topics/tasks). Этот инструмент индексирует их содержимое

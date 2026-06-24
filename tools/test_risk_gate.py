@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_risk_gate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_risk_gate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест risk_gate (tools/risk_gate.py) — тиринг low/medium/high + human-gate D-006 + контракт main()."""
 import os
 import sys

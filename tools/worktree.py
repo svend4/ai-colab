@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.worktree
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт worktree.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 worktree (Уровень-1 политики коммитов, T-136 — принят Stefan 2026-06-21) — git-worktree на агента.
 
 Завершает набор Уровня-1: `stream.py` (пакеты-форки) + `merge_gate.py` (гейт) + `worktree.py`

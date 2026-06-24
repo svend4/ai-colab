@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_instructions
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_instructions.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Tests for tools/instructions.py (T-154)."""
 import json
 import os

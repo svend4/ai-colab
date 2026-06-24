@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.promote
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт promote.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Promotion gate пирамиды рабочих областей (ответ на open-question 5
 `docs/workspace-pyramid-levels.md`: «нужен ли tools/promote.py?» — да, как gate).
 

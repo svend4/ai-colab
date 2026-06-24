@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_assurance
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_assurance.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест assurance (tools/assurance.py) — 4 секции на герметичной temp-пирамиде (--root)."""
 import os
 import sys

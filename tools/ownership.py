@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.ownership
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт ownership.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 ownership (T-153, синтез двух подсистем) — общий классификатор «чей dirty-файл».
 
 Единая функция `classify(path) -> mine|generated|volatile|foreign|unknown`, которую используют ОБЕ

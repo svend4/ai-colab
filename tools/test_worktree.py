@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_worktree
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_worktree.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест worktree.py (Уровень-1) — генерация команд + dry-by-default (без реальных git-worktree эффектов)."""
 import os
 import sys

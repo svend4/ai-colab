@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_report_diff
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_report_diff.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Tests for tools/report_diff.py (T-127)."""
 import os
 import sys

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_heading_check
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_heading_check.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест heading_check.py — heading-lint (пустые/пропуск уровней/крупный без нумерации)."""
 import os
 import sys

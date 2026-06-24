@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_text_extract
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_text_extract.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Tests for tools/text_extract.py (T-133)."""
 import os
 import sys

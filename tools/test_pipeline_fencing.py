@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_pipeline_fencing
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_pipeline_fencing.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Тесты конкурентных гарантий pipeline (T-082, ревью T-078 находки H/I):
 
   1. fencing в done: чужой/протухший claim_id отклоняется, верный — проходит,

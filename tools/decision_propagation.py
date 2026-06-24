@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.decision_propagation
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт decision_propagation.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """decision_propagation.py — детектор «решение принято, но не дошло до потребителей».
 
 Чинит корень провала svend4 (Stefan: решения существуют, но не доходят до верха/исполнения и не

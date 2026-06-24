@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.doc_synthesis
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт doc_synthesis.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Document synthesis intake (D-017/D-018 friendly).
 
 Reads a set of Markdown documents as variants, counts recurring architecture themes,

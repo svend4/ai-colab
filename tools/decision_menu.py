@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.decision_menu
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт decision_menu.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """decision_menu.py — рендерер «меню решений» (средний слой пирамиды подачи людям).
 
 Стандарт: docs/decision-menu-standard.md. Переводит структурный выход (proposals агентов /

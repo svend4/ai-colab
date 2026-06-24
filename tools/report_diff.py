@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.report_diff
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт report_diff.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Report diff (T-127) — compare two Markdown knowledge reports.
 
 This is intentionally small and stdlib-only. It extracts stable metrics from reports produced by

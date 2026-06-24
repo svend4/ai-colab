@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_command_index
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_command_index.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест command_index.py — индекс команд из docstring (извлечение, gist, поиск)."""
 import os
 import sys

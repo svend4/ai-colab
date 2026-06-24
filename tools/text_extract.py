@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.text_extract
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт text_extract.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Generic text extract (T-133) — read-only stdlib extraction for core/portals.
 
 Supported now: .md, .markdown, .txt, .text, .html, .htm, .docx (DOCX via stdlib zipfile — no dependency).

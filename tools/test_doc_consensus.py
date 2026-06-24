@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_doc_consensus
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_doc_consensus.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест doc_consensus (tools/doc_consensus.py) — консенсус (>=2 док.) + разногласия (1 док.)."""
 import os
 import sys

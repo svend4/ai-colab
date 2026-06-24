@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_drift_check
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_drift_check.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест drift detector (tools/drift_check.py) — текстовые сканеры дрейфа."""
 import os
 import sys

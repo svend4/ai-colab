@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.reconcile_state
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт reconcile_state.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 State reconciliation layer (T-066 → реализация).
 
 Сверяет primary state (tasks/*.md, queues/claimed, queues/done) с производными

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_two_track
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_two_track.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест two_track.py — двухтрековая классификация (консенсус ratify / разногласие detail)."""
 import os
 import sys

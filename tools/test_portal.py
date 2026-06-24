@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_portal
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_portal.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест механизма тематических порталов (tools/portal.py, D-016)."""
 import os
 import sys

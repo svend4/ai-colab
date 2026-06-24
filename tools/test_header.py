@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_header
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_header.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест header.py — визитка-шапка файла (извлечение md/py, lint, board, покрытие)."""
 import os
 import sys

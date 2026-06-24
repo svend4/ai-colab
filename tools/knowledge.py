@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.knowledge
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт knowledge.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Knowledge workflow (L6) — ingest → query → report на локальном корпусе.
 
 Практический сценарий «обрабатывать/отвечать по большому объёму информации» поверх

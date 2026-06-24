@@ -31,4 +31,5 @@
 | D-022 | Детальная политика параллельной работы — триггеры Level-1, STALE-индекс, волатильные файлы, same-file | accepted | 2026-06-22 | `decisions/D-022.md` |
 | D-023 | Ответственность за коммит генерируемых индексов — ownership-aware (commit-your-own / integrator-for-foreign) | accepted | 2026-06-23 | `decisions/D-023.md` |
 | D-024 | Формат синтеза с выносом разногласий (Structured Divergences) | proposed | 2026-06-23 | `decisions/D-024.md` |
+| D-025 | Стратегии обхода WinError 5 (Async MCP stdio) | accepted |  | `decisions/D-025.md` |
 <!-- GEN:decisions END -->

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_promote_reuse
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_promote_reuse.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест derive_reuse + _gate_L2_L1 (promote.py): scan-derived переиспользование L1→L2.
 
 Проверяет two-channel grounding (Q-016/pyramid): гейт L2→L1 теперь считает РАЗНЫЕ порталы,

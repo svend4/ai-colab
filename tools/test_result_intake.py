@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_result_intake
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_result_intake.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Tests for tools/result_intake.py."""
 import os
 import sys

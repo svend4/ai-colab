@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_metrics
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_metrics.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Hermetic-тесты для tools/metrics.py (сводные метрики канона).
 
 Изоляция через COLLAB_ROOT → временный канон с известными реестрами/очередью.

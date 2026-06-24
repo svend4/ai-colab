@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.drivers_catalog
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт drivers_catalog.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Генератор каталога драйверов (T-030).
 
 Собирает `drivers/index.json` (машинный срез) и `drivers/CATALOG.md` (человеческая

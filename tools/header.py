@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.header
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт header.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """header.py — визитка-шапка файла (C-07: консенсус 2+ агентов) — извлечь/линтить/покрытие.
 
 Архитектурный консенсус (topics/architecture-fundamentals §2 + razbor-consensus C-07): КАЖДЫЙ

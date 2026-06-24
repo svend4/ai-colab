@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.backlog_rescan
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт backlog_rescan.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Workflow backlog rescan tool.
 
 Читает `topics/perspective-backlog-*.md`, ищет задачи, которые упоминаются в таблице `Ранжированный бэклог`

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.dir_health
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт dir_health.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """dir_health.py — health-gate каталога (C-10 консенсус) — пороги структуры как код.
 
 Из architecture-fundamentals §3.2 + razbor-consensus C-10: организация каталога проверяется ЧИСЛАМИ,

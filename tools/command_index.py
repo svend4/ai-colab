@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.command_index
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт command_index.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """command_index.py — индекс команд всех инструментов (metadata-indexes lane A; нахождение команд).
 
 Из cauldron lane A «metadata-indexes» (9/10 docs) + запрос Stefan «быстрая навигация / нахождение

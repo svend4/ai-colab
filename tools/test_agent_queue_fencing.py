@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_agent_queue_fencing
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_agent_queue_fencing.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 import os
 import shutil
 import tempfile

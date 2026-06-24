@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_knowledge
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_knowledge.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест L6 knowledge workflow (tools/knowledge.py): ingest → query + redaction в summary."""
 import os
 import sys

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_folder_index
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_folder_index.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест folder_index.py — папка-индекс из визиток (build/write/check, навигация-не-шардинг)."""
 import os
 import sys

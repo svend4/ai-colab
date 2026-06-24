@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_cohort
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_cohort.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест cohort (tools/cohort.py) — вершинная панель параллельной работы + самохостинг.
 
 Read-only против реального репо; проверяет: board/self/plan дают валидный --json;

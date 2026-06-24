@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_decision_propagation
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_decision_propagation.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест decision_propagation.py — детектор «решение не дошло до потребителей»."""
 import os
 import sys

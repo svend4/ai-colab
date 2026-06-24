@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.flow
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт flow.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Git-flow для агентов (Этап F из scaling-design): ветка-на-агента + merge через гейт.
 
 Модель: каждый агент работает в своей ветке `agent/<agent>/<task>`, чтобы не

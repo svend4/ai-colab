@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.advice
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт advice.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Advice activator (TBD) - show existing repo advice that is applicable now.
 
 This is not a new policy engine. It connects current symptoms from existing

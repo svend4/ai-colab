@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_flow
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_flow.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест flow.py — обвязка Уровня-1 (--worktree) и сохранность ветко-режима (Уровень-0). Dry-by-default."""
 import os
 import sys

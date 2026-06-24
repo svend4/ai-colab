@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_dispatch
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_dispatch.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест dispatch (tools/dispatch.py) — DAG-диспетчер: ready/blocked по depends_on + приоритетный порядок + next."""
 import os
 import sys

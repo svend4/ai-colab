@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_capabilities
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_capabilities.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Hermetic-тесты для tools/capabilities.py (capability manifest — system-capabilities.json).
 
 capabilities.py вычисляет ROOT/DRIVERS/OUT на import-time из __file__ и НЕ читает

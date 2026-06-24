@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_volatile
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_volatile.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Regression for D-022/T-148 volatile runtime snapshots.
 
 Volatile files are useful live views, but they must not be tracked mainline files.

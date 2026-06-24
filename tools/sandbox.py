@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.sandbox
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт sandbox.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 External-source intake (форк-дополнение к `docs/external-code-sandbox.md` Codex).
 
 Автоматизирует стадии S1 (intake) + S3 (read-only inventory) + S7 (report) генерик-песочницы:

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_promote_export
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_promote_export.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест promote.py export — курируемая копия набора (core-export), герметично во временный каталог."""
 import os
 import sys

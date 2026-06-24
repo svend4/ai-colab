@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_drivers_catalog
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_drivers_catalog.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Hermetic-тесты для tools/drivers_catalog.py (каталог драйверов: манифесты vs реальность).
 
 Изоляция через COLLAB_ROOT → временный drivers/ с известными манифестами.

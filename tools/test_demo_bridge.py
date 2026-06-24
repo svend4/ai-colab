@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_demo_bridge
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_demo_bridge.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Hermetic-тест для tools/demo_bridge.py (демо AI-OS моста — 6 read-only способностей).
 
 demo_bridge.py — монолитный main(), который грузит 4 драйвера (files / repo-runner /

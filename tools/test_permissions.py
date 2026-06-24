@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_permissions
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_permissions.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест permissions (tools/permissions.py) — glob-правила доступа match() + контракт main() rc."""
 import os
 import sys

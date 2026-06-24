@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_validate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_validate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Hermetic-тесты валидатора канона (tools/validate.py).
 
 Покрывают два слоя:

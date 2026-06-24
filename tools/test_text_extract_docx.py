@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_text_extract_docx
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_text_extract_docx.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест DOCX-ветки text_extract (котёл-пункт 5): stdlib zipfile, без зависимости, с redaction+confinement."""
 import os
 import sys

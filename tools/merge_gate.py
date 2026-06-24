@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.merge_gate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт merge_gate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Merge-gate orchestrator — «безопасно ли вливать эту работу в mainline?» green(0)/red(1).
 
 Прогоняет существующие компоненты гейта (все ТОЛЬКО ЧИТАЮТ) и печатает отчёт по стадиям.

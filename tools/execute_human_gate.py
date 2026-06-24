@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.execute_human_gate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт execute_human_gate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Механизм человеко-подтверждения для execute-sandbox (Gate 10).
 Обеспечивает соблюдение D-006 (явное разрешение на запуск).
 

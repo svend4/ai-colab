@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_drift_currency
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_drift_currency.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест _assurance_currency_drift (tools/drift_check.py) — только HIGH currency-находки → дрейф."""
 import os
 import sys

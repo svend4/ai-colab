@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_validate_freshness
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_validate_freshness.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест driver_freshness_warning (tools/validate.py) — age-WARN драйверов, детерминированно (фикс today)."""
 import os
 import sys

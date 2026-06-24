@@ -1,5 +1,15 @@
 ﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_commit_lock
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_commit_lock.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест commit-lock (tools/commit_lock.py) — сериализация коммитов."""
 import os
 import sys

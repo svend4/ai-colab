@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.result_intake
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт result_intake.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 result_intake — read-only classifier for landed/outbox workflow outputs.
 
 Goal: before the top layer verifies or synthesizes a result, classify what kind of

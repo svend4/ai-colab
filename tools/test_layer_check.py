@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_layer_check
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_layer_check.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест layer_check.py — контракт пирамиды (portal/core/sandbox/level) на temp-пирамиде."""
 import os
 import sys

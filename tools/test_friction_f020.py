@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_friction_f020
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_friction_f020.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест F-020 gate-poison (tools/friction.py) — детектор + резолв сломанного cross-link + роутинг L1."""
 import os
 import sys

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_merge_gate
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_merge_gate.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест merge-gate (tools/merge_gate.py) — оркестратор гейта green/red.
 
 Гермётичен и НЕ зависит от реального состояния репо (его churn'ит Codex): stage-runner

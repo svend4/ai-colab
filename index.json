@@ -2181,13 +2181,13 @@
     {
       "id": "T-174",
       "title": "Track WinError-5 async-stdio MCP acceptance blocker (gateway/all servers)",
-      "status": "blocked",
-      "owner": "codex",
+      "status": "done",
+      "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[T-087, T-088]",
       "topic": "topics/ai-os-bridge.md",
-      "next": "Async stdio остаётся blocked-before-MCP в текущем Windows/Python runtime; sync gateway acceptance — рабочий regular gate; нужен runtime fix или отдельное wontfix-решение"
+      "next": "Закрыто решением D-025"
     },
     {
       "id": "T-175",
@@ -2489,7 +2489,7 @@
     {
       "id": "T-202",
       "title": "Коммит текущих изменений (selective-add)",
-      "status": "blocked",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
@@ -3130,6 +3130,13 @@
       "status": "proposed",
       "date": "2026-06-23",
       "file": "decisions/D-024.md"
+    },
+    {
+      "id": "D-025",
+      "title": "Стратегии обхода WinError 5 (Async MCP stdio)",
+      "status": "accepted",
+      "date": "",
+      "file": "decisions/D-025.md"
     }
   ],
   "drivers": [

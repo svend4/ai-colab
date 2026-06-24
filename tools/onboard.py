@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.onboard
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт onboard.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Onboard (C3, консенсус Claude+Codex) — одна команда входа вместо чтения 10 файлов.
 
 Агрегирует для подключающегося агента/человека: capability manifest (C1), состояние конвейера,

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_instruction_trace
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_instruction_trace.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест trace (tools/instructions.py) — base→apex по shared-ключу surfaces (two-spine, pieces 1+2)."""
 import os
 import sys

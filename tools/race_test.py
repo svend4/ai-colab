@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.race_test
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт race_test.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Тест атомарности claim под реальной гонкой (предложение Mavis из dogfood-прогона).
 
 Запускает N параллельных `agent_queue.py claim` на ОДНУ задачу во временной папке и

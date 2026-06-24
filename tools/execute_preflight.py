@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.execute_preflight
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт execute_preflight.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Preflight-чекер для execute-sandbox (Gates 4/5, 6, 9).
 Реализует проверки до реального запуска кода (T-212 / P3, P5, P9).
 

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_ownership
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_ownership.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест ownership (tools/ownership.py) — классификатор mine/generated/volatile/foreign/unknown."""
 import os
 import sys

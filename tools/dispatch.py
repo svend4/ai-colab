@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.dispatch
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт dispatch.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Диспетчер задач по DAG зависимостей (Этап D из scaling-design).
 
 Задача «готова», если её status=todo и все её depends_on имеют status=done.

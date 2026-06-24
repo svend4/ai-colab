@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_variants
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_variants.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тесты variants.py — READ-ONLY дискавери форк-вариантов по реальному репо.
 
 Все проверки read-only против известных файлов репо; временные каталоги не нужны

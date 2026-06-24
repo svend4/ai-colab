@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.commit_lock
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт commit_lock.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Commit-lock (Уровень 0 политики коммитов, topics/commit-policy-streams-2026-06-21.md).
 
 Атомарный короткоживущий advisory-лок, чтобы агенты НЕ дрались за git `index.lock`: перед

@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.execute_audit
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт execute_audit.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Audit & Rollback Logger для execute-sandbox (Gates 7/8).
 Обеспечивает изоляцию, логирование (audit) и откат (rollback) для будущего sandbox-runner.
 

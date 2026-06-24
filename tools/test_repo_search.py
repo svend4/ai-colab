@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_repo_search
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_repo_search.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест repo_search (tools/repo_search.py) — индекс + ранжированный поиск, герметично (temp-корпус)."""
 import os
 import sys

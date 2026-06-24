@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.sandbox_intake_demo
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт sandbox_intake_demo.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Sandbox intake DEMO — end-to-end S1->S3->S7 over `data/fixtures` (T-020 support).
 
 Доказывает, что полный **read-only** intake-конвейер песочницы работает БЕЗ svend4 и

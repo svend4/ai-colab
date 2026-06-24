@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_conveyor
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_conveyor.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест conveyor (tools/conveyor.py) — оценка состояния, output refs, реестр round-trip, кандидаты."""
 import os
 import sys

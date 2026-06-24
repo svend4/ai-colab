@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_reconcile_fix
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_reconcile_fix.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест reconcile_state fix — partition derived/primary + dry-run не пишет (smoke на реальном репо)."""
 import os
 import sys

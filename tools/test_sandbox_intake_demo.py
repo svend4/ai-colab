@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_sandbox_intake_demo
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_sandbox_intake_demo.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
+"""
 Hermetic tests for tools/sandbox_intake_demo.py.
 
 Run the demo into a TEMP --out dir and assert:

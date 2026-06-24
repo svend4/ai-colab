@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_sandbox
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_sandbox.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест external-source intake (tools/sandbox.py) — read-only, без запуска кода."""
 import os
 import sys
