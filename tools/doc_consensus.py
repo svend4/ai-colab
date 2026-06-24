@@ -13,6 +13,7 @@ doc_consensus (Q-017, слияние документации агентов) �
 
 CLI:
     python tools/doc_consensus.py report --files a.md b.md [c.md ...] [--out reports/x.md] [--thr 0.4]
+        [--divergence-out path]  # вынести разногласия в ОТДЕЛЬНЫЙ файл (D-017), оставив консенсус+ссылку
     python tools/doc_consensus.py report --topic <topic> [--out ...]   # доки темы через variants.py
     python tools/doc_consensus.py report --semantic --files a.md b.md [--semantic-budget N]
         # --semantic шелит в $DOC_CONSENSUS_AGENT (LLM); по умолчанию — no-cost лексический путь.
@@ -430,6 +431,22 @@ def main():
     else:
         res = analyze(abs_files, thr=thr)
     text = render(res)
+    # --divergence-out: вынести секцию разногласий в ОТДЕЛЬНЫЙ файл (D-017 — детализация в др. документе),
+    # оставив в основном отчёте только консенсус/середину + ссылку. Пост-split по заголовку, render не трогаем.
+    div_out = _arg(a, "--divergence-out")
+    if div_out:
+        marker = "## Разногласия"
+        idx = text.find(marker)
+        if idx != -1:
+            ddest = div_out if os.path.isabs(div_out) else os.path.join(ROOT, div_out)
+            os.makedirs(os.path.dirname(ddest) or ".", exist_ok=True)
+            with open(ddest, "w", encoding="utf-8", newline="\n") as f:
+                f.write("---\nstatus: proposed\nkind: divergence\n---\n\n"
+                        "# Разногласия (вынесено из consensus, D-017 — детализировать/обосновать)\n\n"
+                        + text[idx:] + "\n")
+            text = (text[:idx].rstrip() + "\n\n> Разногласия вынесены в отдельный документ для детализации: `%s` (D-017).\n"
+                    % os.path.relpath(ddest, ROOT))
+            print("Разногласия → %s" % os.path.relpath(ddest, ROOT))
     if out_path:
         dest = out_path if os.path.isabs(out_path) else os.path.join(ROOT, out_path)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
