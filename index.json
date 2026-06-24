@@ -3014,7 +3014,7 @@
     {
       "id": "T-244",
       "title": "CLI help_guard batch 1: manual-help and small report tools",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",

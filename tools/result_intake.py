@@ -25,6 +25,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 
 from _canon import parse_fm
 
@@ -240,6 +241,7 @@ def render(result):
 
 def main(argv=None):
     argv = list(sys.argv[1:] if argv is None else argv)
+    help_guard(__doc__, argv)
     if not argv or argv[0] != "classify" or len(argv) < 2:
         print(__doc__)
         return 2

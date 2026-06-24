@@ -29,6 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 from _canon import parse_front_matter
 
 configure_output()
@@ -103,6 +104,7 @@ def check():
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     f = check()
     fails = [x for x in f if x["level"] == "FAIL"]

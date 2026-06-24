@@ -32,6 +32,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 from _canon import parse_front_matter
 
 configure_output()
@@ -141,6 +142,7 @@ def cmd_card(path):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     a = list(argv)
     as_json = "--json" in a
     pos = [x for x in a if not x.startswith("--")]

@@ -38,6 +38,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -102,6 +103,7 @@ def render(data, only=None):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     a = list(argv)
     as_json = "--json" in a
     only = None

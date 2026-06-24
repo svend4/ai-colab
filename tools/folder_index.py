@@ -29,6 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 import header
 
 configure_output()
@@ -95,6 +96,7 @@ def check(name):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     a = list(argv)
     if not a:
         print(__doc__)

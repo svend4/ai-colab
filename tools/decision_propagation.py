@@ -34,6 +34,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _canon import parse_front_matter
+from _cli import help_guard
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -120,6 +121,7 @@ def analyze():
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     import json
     data = analyze()
     if "--json" in argv:
