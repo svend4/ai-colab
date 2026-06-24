@@ -113,6 +113,13 @@
       "next": "Тема слита с `topics/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план)."
     },
     {
+      "id": "T-FUND-001",
+      "title": "Архитектурные основы — канонический свод",
+      "file": "topics/architecture-fundamentals-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "assurance-and-doc-merge-2026-06-22",
       "title": "Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов",
       "file": "topics/assurance-and-doc-merge-2026-06-22.md",
@@ -2534,13 +2541,13 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "blocked",
-      "owner": "pool",
+      "status": "done",
+      "owner": "antigravity",
       "priority": "normal",
       "risk": "high",
-      "depends_on": "[D-014, D-006, D-018]",
+      "depends_on": "[D-014, D-006, D-018, T-212, T-214, T-216, T-217]",
       "topic": "",
-      "next": "Ждёт явного «go» Stefan на execute-направление. Первый дешёвый этап — P3 anti-fake-probe (Gate 9) inline; этапы 5/7/8 (human-gate/исполнитель/runner) — через котёл"
+      "next": "Выполнено: весь трек (8 этапов) реализован, ядро sandbox_runner.py готово."
     },
     {
       "id": "T-209",
@@ -2629,6 +2636,17 @@
       "depends_on": "[T-214]",
       "topic": "",
       "next": "Реализовать tools/execute_human_gate.py и check-all"
+    },
+    {
+      "id": "T-217",
+      "title": "Execute-Sandbox: Runner Core (P31)",
+      "status": "done",
+      "owner": "antigravity",
+      "priority": "high",
+      "risk": "high",
+      "depends_on": "[T-216]",
+      "topic": "",
+      "next": "Реализовать tools/sandbox_runner.py"
     }
   ],
   "questions": [
