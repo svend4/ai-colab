@@ -2826,6 +2826,39 @@
       "depends_on": "[T-231]",
       "topic": "architecture-core",
       "next": ""
+    },
+    {
+      "id": "T-233",
+      "title": "Рефакторинг read-only утилит (dir_health, sandbox_demo) для поддержки CLI-путей",
+      "status": "todo",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": ""
+    },
+    {
+      "id": "T-234",
+      "title": "Улучшение эвристик result_intake.py для классификации external-code",
+      "status": "todo",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": ""
+    },
+    {
+      "id": "T-235",
+      "title": "Разработка семантического AST-анализатора (python_analyzer.py)",
+      "status": "todo",
+      "owner": "antigravity",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": ""
     }
   ],
   "questions": [
