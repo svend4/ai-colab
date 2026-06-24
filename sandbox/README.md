@@ -15,12 +15,14 @@
 | `workspaces/` | disposable рабочие копии для анализа/экспериментов | нет |
 | `runs/` | raw runtime logs будущих запусков | нет |
 | `reports/` | очищенные sandbox summaries | только README; важные отчёты можно переносить в общий `reports/` |
+| `drafts/` | no-execute черновой код агентов для review/promotion | только README; raw drafts игнорируются |
 | `templates/` | шаблоны source manifest и run plan | да |
 
 ## Правило по умолчанию
 
 ```text
 external source -> manifest -> quarantine -> read-only inventory -> report -> decision
+agent draft code -> manifest -> static review -> outbox report -> promotion decision
 ```
 
 Не запускать install/test/build scripts из внешнего кода, пока не закрыт `docs/execute-sandbox-preflight.md`.
@@ -31,3 +33,4 @@ external source -> manifest -> quarantine -> read-only inventory -> report -> de
 - `docs/execute-sandbox-preflight.md` — gate перед любым execute.
 - `sandbox/templates/external-source-manifest.template.json` — как описать источник.
 - `sandbox/templates/sandbox-run-plan.template.json` — как описать будущий разрешённый запуск.
+- `sandbox/templates/draft-code-manifest.template.json` — как описать no-execute агентский draft-код.

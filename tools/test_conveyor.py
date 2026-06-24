@@ -135,6 +135,33 @@ def run():
         cands_norm = c.backlog_candidates({"workflows": [{"id": "codex-T-166", "label": "instruction-check-report-refs", "state": "shipped"}]}, bpath)
         assert len(cands_norm) == 1 and "Currency convention" in cands_norm[0], cands_norm
 
+
+        # --- recover: reset/hang/UI mismatch advisory, no mutation ---
+        rec_root = os.path.join(base, "recover_root")
+        outbox = os.path.join(rec_root, "queues", "outbox")
+        os.makedirs(outbox, exist_ok=True)
+        with open(os.path.join(outbox, "existing.md"), "w", encoding="utf-8", newline="\n") as f:
+            f.write("# existing\n")
+        with open(os.path.join(outbox, "orphan.md"), "w", encoding="utf-8", newline="\n") as f:
+            f.write("# orphan\n")
+        drec = _ledger([
+            _wf("inflight-a", "inflight"),
+            _wf("landed-no-output", "landed"),
+            _wf("landed-missing", "landed", "queues/outbox/missing.md"),
+            _wf("landed-existing", "landed", "queues/outbox/existing.md"),
+        ], hb=old, target=3)
+        rec = c.recover(drec, NOW, root=rec_root, output_limit=5)
+        kinds = {f["kind"] for f in rec["findings"]}
+        assert rec["schema"] == "conveyor_recover.v1" and rec["mutates"] is False, rec
+        assert "landed-without-output" in kinds, rec
+        assert "missing-output-path" in kinds, rec
+        assert "stale-heartbeat" in kinds, rec
+        assert "refill-deficit" in kinds, rec
+        assert "unreferenced-outbox-reports" in kinds, rec
+        assert "queues/outbox/existing.md" in rec["referenced_outputs"], rec
+        rendered_recover = c.render_recover(rec)
+        assert "CONVEYOR RECOVER" in rendered_recover, rendered_recover
+        assert "landed-no-output" in rendered_recover, rendered_recover
         # --- plan_hierarchy: reduce-дерево 3:1 (динамическое появление уровней) ---
         def top(n, span=3):
             return c.plan_hierarchy(n, span)[-1]

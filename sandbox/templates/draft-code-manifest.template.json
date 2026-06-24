@@ -1,0 +1,33 @@
+{
+  "schema": "draft-code-proposal.v1",
+  "id": "draft-YYYYMMDD-short-name",
+  "title": "Short draft title",
+  "status": "draft",
+  "owner_agent": "agent-id",
+  "created_at": "YYYY-MM-DD",
+  "purpose": "What this draft is trying to demonstrate",
+  "source_context": [
+    "related task, question, report, or document"
+  ],
+  "allowed_review": [
+    "read-only file review",
+    "static analysis",
+    "diff review"
+  ],
+  "execution": "forbidden-until-accepted-run-plan",
+  "contains_external_code": false,
+  "contains_secrets": false,
+  "target_promotion": {
+    "kind": "none|task|tool|driver|doc|test-fixture",
+    "candidate_paths": []
+  },
+  "forbidden": [
+    "automatic execution",
+    "dependency install",
+    "network access",
+    "secrets in repository",
+    "promotion without separate task"
+  ],
+  "suggested_static_checks": [],
+  "review_notes": ""
+}

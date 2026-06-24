@@ -3002,14 +3002,25 @@
     },
     {
       "id": "T-243",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
-      "owner": "unknown",
+      "title": "CLI inventory: machine-readable map of help/json risk",
+      "status": "done",
+      "owner": "codex",
       "priority": "normal",
       "risk": "low",
-      "depends_on": "[]",
+      "depends_on": "[T-242]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "Add a read-only inventory tool that classifies tools/*.py by argparse/help_guard/manual sys.argv risk."
+    },
+    {
+      "id": "T-244",
+      "title": "CLI help_guard batch 1: manual-help and small report tools",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-243]",
+      "topic": "",
+      "next": "Apply `_cli.help_guard` with explicit HELP text to a small non-hot batch from cli_inventory."
     }
   ],
   "questions": [

@@ -256,5 +256,6 @@
 | T-240 | Sandbox intake chain orchestrator (read-only) | done | codex | — | Implement read-only `tools/sandbox_intake_chain.py` with tests and normalized JSON output. |
 | T-241 | Expose conveyor recover through top layer | done | codex | — | Add read-only `python tools/top.py conveyor-recover [--json] [--limit N]` wrapper and tests. |
 | T-242 | Kotel critique stage 1: CLI help guard and deterministic action plan | done | codex | — | Apply `_cli.help_guard` to the first criticized sys.argv tools and write a staged action plan for the kotel critique. |
-| T-243 | (зарезервировано — заполните) | todo | unknown | — | зарезервировано через tools/next_id.py — заполните |
+| T-243 | CLI inventory: machine-readable map of help/json risk | done | codex | — | Add a read-only inventory tool that classifies tools/*.py by argparse/help_guard/manual sys.argv risk. |
+| T-244 | CLI help_guard batch 1: manual-help and small report tools | doing | codex | — | Apply `_cli.help_guard` with explicit HELP text to a small non-hot batch from cli_inventory. |
 <!-- GEN:tasks END -->

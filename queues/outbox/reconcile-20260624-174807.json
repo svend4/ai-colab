@@ -1,0 +1,516 @@
+{
+  "epoch": 1782316087,
+  "status": "warning",
+  "counts": {
+    "error": 0,
+    "warning": 50,
+    "info": 1
+  },
+  "items": [
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-001",
+      "message": "Задача done, но нет queues/done/T-001.done.md",
+      "sources": [
+        "tasks/T-001.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-002",
+      "message": "Задача done, но нет queues/done/T-002.done.md",
+      "sources": [
+        "tasks/T-002.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-003",
+      "message": "Задача done, но нет queues/done/T-003.done.md",
+      "sources": [
+        "tasks/T-003.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-004",
+      "message": "Задача done, но нет queues/done/T-004.done.md",
+      "sources": [
+        "tasks/T-004.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-005",
+      "message": "Задача done, но нет queues/done/T-005.done.md",
+      "sources": [
+        "tasks/T-005.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-006",
+      "message": "Задача done, но нет queues/done/T-006.done.md",
+      "sources": [
+        "tasks/T-006.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-007",
+      "message": "Задача done, но нет queues/done/T-007.done.md",
+      "sources": [
+        "tasks/T-007.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-008",
+      "message": "Задача done, но нет queues/done/T-008.done.md",
+      "sources": [
+        "tasks/T-008.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-009",
+      "message": "Задача done, но нет queues/done/T-009.done.md",
+      "sources": [
+        "tasks/T-009.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-010",
+      "message": "Задача done, но нет queues/done/T-010.done.md",
+      "sources": [
+        "tasks/T-010.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-011",
+      "message": "Задача done, но нет queues/done/T-011.done.md",
+      "sources": [
+        "tasks/T-011.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-012",
+      "message": "Задача done, но нет queues/done/T-012.done.md",
+      "sources": [
+        "tasks/T-012.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-013",
+      "message": "Задача done, но нет queues/done/T-013.done.md",
+      "sources": [
+        "tasks/T-013.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-014",
+      "message": "Задача done, но нет queues/done/T-014.done.md",
+      "sources": [
+        "tasks/T-014.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-015",
+      "message": "Задача done, но нет queues/done/T-015.done.md",
+      "sources": [
+        "tasks/T-015.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-016",
+      "message": "Задача done, но нет queues/done/T-016.done.md",
+      "sources": [
+        "tasks/T-016.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-017",
+      "message": "Задача done, но нет queues/done/T-017.done.md",
+      "sources": [
+        "tasks/T-017.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-018",
+      "message": "Задача done, но нет queues/done/T-018.done.md",
+      "sources": [
+        "tasks/T-018.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-019",
+      "message": "Задача done, но нет queues/done/T-019.done.md",
+      "sources": [
+        "tasks/T-019.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-020",
+      "message": "Задача done, но нет queues/done/T-020.done.md",
+      "sources": [
+        "tasks/T-020.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-021",
+      "message": "Задача done, но нет queues/done/T-021.done.md",
+      "sources": [
+        "tasks/T-021.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-022",
+      "message": "Задача done, но нет queues/done/T-022.done.md",
+      "sources": [
+        "tasks/T-022.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-023",
+      "message": "Задача done, но нет queues/done/T-023.done.md",
+      "sources": [
+        "tasks/T-023.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-026",
+      "message": "Задача done, но нет queues/done/T-026.done.md",
+      "sources": [
+        "tasks/T-026.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-027",
+      "message": "Задача done, но нет queues/done/T-027.done.md",
+      "sources": [
+        "tasks/T-027.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-028",
+      "message": "Задача done, но нет queues/done/T-028.done.md",
+      "sources": [
+        "tasks/T-028.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-062",
+      "message": "Задача done, но нет queues/done/T-062.done.md",
+      "sources": [
+        "tasks/T-062.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-063",
+      "message": "Задача done, но нет queues/done/T-063.done.md",
+      "sources": [
+        "tasks/T-063.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-064",
+      "message": "Задача done, но нет queues/done/T-064.done.md",
+      "sources": [
+        "tasks/T-064.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-125",
+      "message": "Задача done, но нет queues/done/T-125.done.md",
+      "sources": [
+        "tasks/T-125.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-126",
+      "message": "Задача done, но нет queues/done/T-126.done.md",
+      "sources": [
+        "tasks/T-126.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-128",
+      "message": "Задача done, но нет queues/done/T-128.done.md",
+      "sources": [
+        "tasks/T-128.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-136",
+      "message": "Задача done, но нет queues/done/T-136.done.md",
+      "sources": [
+        "tasks/T-136.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-137",
+      "message": "Задача done, но нет queues/done/T-137.done.md",
+      "sources": [
+        "tasks/T-137.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-168",
+      "message": "Задача done, но нет queues/done/T-168.done.md",
+      "sources": [
+        "tasks/T-168.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-169",
+      "message": "Задача done, но нет queues/done/T-169.done.md",
+      "sources": [
+        "tasks/T-169.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-170",
+      "message": "Задача done, но нет queues/done/T-170.done.md",
+      "sources": [
+        "tasks/T-170.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-171",
+      "message": "Задача done, но нет queues/done/T-171.done.md",
+      "sources": [
+        "tasks/T-171.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-172",
+      "message": "Задача done, но нет queues/done/T-172.done.md",
+      "sources": [
+        "tasks/T-172.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-173",
+      "message": "Задача done, но нет queues/done/T-173.done.md",
+      "sources": [
+        "tasks/T-173.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-174",
+      "message": "Задача done, но нет queues/done/T-174.done.md",
+      "sources": [
+        "tasks/T-174.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-175",
+      "message": "Задача done, но нет queues/done/T-175.done.md",
+      "sources": [
+        "tasks/T-175.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-202",
+      "message": "Задача done, но нет queues/done/T-202.done.md",
+      "sources": [
+        "tasks/T-202.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-213",
+      "message": "Задача done, но нет queues/done/T-213.done.md",
+      "sources": [
+        "tasks/T-213.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "done-missing-marker",
+      "task": "T-215",
+      "message": "Задача done, но нет queues/done/T-215.done.md",
+      "sources": [
+        "tasks/T-215.md",
+        "queues/done/"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "orphan-done-marker",
+      "task": "2026-06-19-2044-smoke-test",
+      "message": "Есть done-marker, но нет tasks/2026-06-19-2044-smoke-test.md",
+      "sources": [
+        "queues/done/2026-06-19-2044-smoke-test.done.md"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "orphan-done-marker",
+      "task": "2026-06-19-2300-glossary",
+      "message": "Есть done-marker, но нет tasks/2026-06-19-2300-glossary.md",
+      "sources": [
+        "queues/done/2026-06-19-2300-glossary.done.md"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "orphan-done-marker",
+      "task": "2026-06-19-2300-quickstart",
+      "message": "Есть done-marker, но нет tasks/2026-06-19-2300-quickstart.md",
+      "sources": [
+        "queues/done/2026-06-19-2300-quickstart.done.md"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "orphan-done-marker",
+      "task": "2026-06-19-2345-glossary",
+      "message": "Есть done-marker, но нет tasks/2026-06-19-2345-glossary.md",
+      "sources": [
+        "queues/done/2026-06-19-2345-glossary.done.md"
+      ]
+    },
+    {
+      "severity": "warning",
+      "code": "orphan-done-marker",
+      "task": "2026-06-19-2345-quickstart",
+      "message": "Есть done-marker, но нет tasks/2026-06-19-2345-quickstart.md",
+      "sources": [
+        "queues/done/2026-06-19-2345-quickstart.done.md"
+      ]
+    },
+    {
+      "severity": "info",
+      "code": "claim-without-doing",
+      "task": "T-202",
+      "message": "Есть claim, но задача в статусе 'done', не doing",
+      "sources": [
+        "tasks/T-202.md",
+        "queues/claimed/T-202.claim.md"
+      ]
+    }
+  ]
+}

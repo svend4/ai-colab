@@ -153,6 +153,13 @@ _BUTTONS = [
         "effect": "read-only",
     },
     {
+        "id": "conveyor-recover",
+        "audience": "both",
+        "command": "python tools/top.py conveyor-recover [--json] [--limit N]",
+        "does": "Показать read-only recover-диагностику workflow-конвейера: stale, missing-output, refill deficit и unreferenced reports.",
+        "effect": "read-only",
+    },
+    {
         "id": "process-landed",
         "audience": "both",
         "command": "python tools/top.py process-landed [--json] [--all] [--topic <topic>]",
@@ -437,6 +444,45 @@ def cmd_conveyor(args):
             print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
             return 124
     return _run("conveyor status", cmd, timeout=45, fail_ok=True)
+
+
+def _conveyor_recover_cmd(limit=None, json_output=False):
+    cmd = _tool("conveyor.py", "recover")
+    if json_output:
+        cmd.append("--json")
+    if limit is not None:
+        cmd += ["--limit", str(limit)]
+    return cmd
+
+
+def cmd_conveyor_recover(args):
+    cmd = _conveyor_recover_cmd(limit=args.limit, json_output=args.json)
+    try:
+        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=45)
+    except subprocess.TimeoutExpired:
+        payload = {"error": "timeout", "command": " ".join(cmd), "mutates": False}
+        if args.json:
+            print(json.dumps(payload, ensure_ascii=False))
+        else:
+            print("CONVEYOR RECOVER - error")
+            print("read-only: no conveyor ledger changes and no Git changes were made")
+            print("error: timeout")
+        return 124
+    if args.json:
+        if p.stdout:
+            print(p.stdout.strip())
+        if p.stderr:
+            print(p.stderr.strip(), file=sys.stderr)
+        return p.returncode
+    print("CONVEYOR RECOVER - top-layer advisory")
+    print("read-only: no automatic land/ship/dismiss/launch/tick and no Git changes")
+    print("")
+    if p.stdout:
+        print(p.stdout.strip())
+    if p.stderr:
+        print(p.stderr.strip(), file=sys.stderr)
+    return 0 if p.returncode == 0 else p.returncode
 
 def _conveyor_status_payload(target=None, idle=None):
     cmd = _tool("conveyor.py", "status", "--json")
@@ -805,6 +851,11 @@ def build_parser():
     p.add_argument("--idle", type=int)
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_conveyor)
+
+    p = sub.add_parser("conveyor-recover", help="show read-only workflow conveyor recovery diagnostics")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--limit", type=int)
+    p.set_defaults(func=cmd_conveyor_recover)
 
     p = sub.add_parser("process-landed", help="plan intake/verify/synthesis for landed workflow outputs")
     p.add_argument("--target", type=int)

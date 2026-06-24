@@ -21,3 +21,6 @@ reports/*
 *.tar.gz
 *.7z
 *.rar
+
+drafts/*
+!drafts/README.md

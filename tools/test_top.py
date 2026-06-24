@@ -36,6 +36,7 @@ def run():
     assert "report-diff" in ids, ids
     assert "cohort-board" in ids, ids
     assert "conveyor-status" in ids, ids
+    assert "conveyor-recover" in ids, ids
     assert "variants" in ids, ids
     assert "merge-gate" in ids, ids
     assert "work-mode" in ids, ids
@@ -56,6 +57,7 @@ def run():
     assert "python tools/top.py repo-search" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
     assert "python tools/top.py conveyor" in rendered, rendered
+    assert "python tools/top.py conveyor-recover" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     assert "python tools/top.py subagent-handoff" in rendered, rendered
     assert "python tools/top.py cauldron-lanes" in rendered, rendered
@@ -83,6 +85,11 @@ def run():
     assert rsargs.cmd == "repo-search" and rsargs.query == ["parallel", "policy"] and rsargs.limit == 3 and rsargs.json, rsargs
     cvargs = parser.parse_args(["conveyor", "--target", "2", "--idle", "10", "--json"])
     assert cvargs.cmd == "conveyor" and cvargs.target == 2 and cvargs.idle == 10 and cvargs.json, cvargs
+    crargs = parser.parse_args(["conveyor-recover", "--limit", "3", "--json"])
+    assert crargs.cmd == "conveyor-recover" and crargs.limit == 3 and crargs.json, crargs
+    crcmd = top._conveyor_recover_cmd(limit=3, json_output=True)
+    assert crcmd[-5:] == [os.path.join(ROOT, "tools", "conveyor.py"), "recover", "--json", "--limit", "3"] or ("recover" in crcmd and "--json" in crcmd and "--limit" in crcmd), crcmd
+    assert not any(part in crcmd for part in ["land", "ship", "dismiss", "launch", "tick"]), crcmd
     clargs = parser.parse_args(["cauldron-lanes", "architecture-core", "--json"])
     assert clargs.cmd == "cauldron-lanes" and clargs.topic == "architecture-core" and clargs.json, clargs
     sdargs = parser.parse_args(["synthesize-docs", "architecture-core", "--with-streams", "--out", "docs/x.md"])
@@ -100,7 +107,7 @@ def run():
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/process-landed/assurance parser+json")
+    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/conveyor-recover/process-landed/assurance parser+json")
     return 0
 
 
