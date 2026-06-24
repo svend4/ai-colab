@@ -105,6 +105,7 @@
 | Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal) | `topics/safe-auto-apply-design-2026-06-23.md` | proposed |  |
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `topics/session-state-2026-06-23.md` | proposed |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed |  |
+| Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08 | `topics/typed-link-graph-2026-06-24.md` | proposed |  |
 <!-- GEN:topics-status END -->
 
 ## Как просить ИИ отреагировать

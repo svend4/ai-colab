@@ -246,7 +246,7 @@
 | T-230 | D-Card batch 2 — core top-layer tools | done | pool | `architecture-core` |  |
 | T-231 | Assurance currency repair — D-025 last_verified | done | pool | `ai-os-bridge` |  |
 | T-232 | D-Card repair — portability_check.py | done | pool | `architecture-core` |  |
-| T-233 | Рефакторинг read-only утилит (dir_health, sandbox_demo) для поддержки CLI-путей | todo | antigravity | — |  |
-| T-234 | Улучшение эвристик result_intake.py для классификации external-code | todo | antigravity | — |  |
+| T-233 | Рефакторинг read-only утилит (dir_health, sandbox_demo) для поддержки CLI-путей | done | antigravity | — |  |
+| T-234 | Улучшение эвристик result_intake.py для классификации external-code | doing | antigravity | — |  |
 | T-235 | Разработка семантического AST-анализатора (python_analyzer.py) | todo | antigravity | — |  |
 <!-- GEN:tasks END -->

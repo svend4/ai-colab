@@ -272,6 +272,13 @@
       "file": "topics/finder-doc-vs-reality-2026-06-23.md",
       "status": "proposed",
       "next": ""
+    },
+    {
+      "id": "typed-link-graph-2026-06-24",
+      "title": "Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08",
+      "file": "topics/typed-link-graph-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
     }
   ],
   "tasks": [
@@ -2830,7 +2837,7 @@
     {
       "id": "T-233",
       "title": "Рефакторинг read-only утилит (dir_health, sandbox_demo) для поддержки CLI-путей",
-      "status": "todo",
+      "status": "done",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
@@ -2841,7 +2848,7 @@
     {
       "id": "T-234",
       "title": "Улучшение эвристик result_intake.py для классификации external-code",
-      "status": "todo",
+      "status": "doing",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
