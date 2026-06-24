@@ -231,7 +231,7 @@
 | T-215 | Fix back-ref gap T-020 — добавить D-014 и D-021 в контекст задачи | done | Novax | — | Выполнено: D-014 и D-021 добавлены в T-020. T-020 больше не stale-blocker. validate.py без ERROR. |
 | T-216 | Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11) | done | antigravity | — | Реализовать tools/execute_human_gate.py и check-all |
 | T-217 | Execute-Sandbox: Runner Core (P31) | done | antigravity | — | Реализовать tools/sandbox_runner.py |
-| T-218 | Document synthesis v2 — source-line evidence, candidates, top.py wrapper | todo | pool | `docs/document-synthesis-mechanism-2026-06-24.md` | Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default. |
+| T-218 | Document synthesis v2 — source-line evidence, candidates, top.py wrapper | doing | pool | `docs/document-synthesis-mechanism-2026-06-24.md` | Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default. |
 | T-219 | Усиление Redaction и маскировки паролей в драйверах | todo | — | `driver-acceptance-batch` |  |
 | T-220 | Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна | todo | — | `repo-review` |  |
 | T-221 | Cauldron lane A — ratify-build consensus-ready architecture items | done | pool | `docs/cauldron-two-lane-board-2026-06-24.md` | Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision. |

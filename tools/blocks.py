@@ -94,6 +94,13 @@ BLOCKS = {
             ("execute_preflight.py", ["check-probe"], "gate"),
         ],
     },
+    "structure": {
+        "desc": "здоровье каталога+визиток (консенсус C-10+C-07): пороги files/folder + покрытие визитками файлов",
+        "steps": [
+            ("dir_health.py", [], "advisory"),
+            ("header.py", ["board"], "advisory"),
+        ],
+    },
 }
 
 # Реестр безопасных авто-исправлений (SAFE_AUTO), применяемых при --auto-safe

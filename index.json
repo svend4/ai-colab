@@ -2651,7 +2651,7 @@
     {
       "id": "T-218",
       "title": "Document synthesis v2 — source-line evidence, candidates, top.py wrapper",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
