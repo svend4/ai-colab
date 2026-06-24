@@ -5,7 +5,7 @@
 
   1. fencing в done: чужой/протухший claim_id отклоняется, верный — проходит,
      optional applied evidence пишется в done-маркер,
-     без claim_id — backward-compatible (как раньше);
+     без claim_id — отклоняется как нарушение fencing;
   2. done чужим агентом отклоняется (старое поведение сохранено);
   3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель;
   4. applied-warning: служебная задача без --applied получает WARN, обычная нет;
@@ -70,15 +70,17 @@ def run():
         assert "applied: AGENTS.md, PROTOCOL.md" in done_text, done_text
         assert "Applied instructions: AGENTS.md, PROTOCOL.md" in done_text, done_text
 
-        # --- 2. backward-compatible: done без claim_id ---
+        # --- 2. strict fencing: done без claim_id отклоняется ---
         p902 = _make_task("T-902")
         cid2 = P.try_claim("T-902", "claude")
+        assert cid2, "missing-claim setup claim не выдан"
         P.set_status(p902, "doing")
-        ordinary_done = io.StringIO()
-        with contextlib.redirect_stdout(ordinary_done):
-            assert P.cmd_done("claude", "T-902", "r") == 0, \
-                "done без claim_id должен работать (backward compat)"
-        assert "WARN:" not in ordinary_done.getvalue(), ordinary_done.getvalue()
+        missing_claim_done = io.StringIO()
+        with contextlib.redirect_stdout(missing_claim_done):
+            assert P.cmd_done("claude", "T-902", "r") == 1, \
+                "done без claim_id должен отклоняться"
+        assert "требуется указать --claim ID" in missing_claim_done.getvalue(), missing_claim_done.getvalue()
+        assert P.collect_tasks()["T-902"]["status"] == "doing", "missing claim не должен ставить done"
 
         # --- 3. applied-warning для служебных задач ---
         p908 = _make_task("T-908", topic="docs/instruction-assurance.md")
@@ -202,7 +204,7 @@ def run():
 
         assert P.cmd_claim("codex", "T-999") == 1, "missing task должен отклоняться"
 
-        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; applied-warning ok; claim success/busy/not-ready/placeholder ok"
+        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; missing-claim rejection ok; applied-warning ok; claim success/busy/not-ready/placeholder ok"
               % rounds)
     except AssertionError as e:
         ok = False

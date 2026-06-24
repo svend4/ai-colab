@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Hermetic-тест next_id: монотонная выдача id + атомарное создание валидного стаба.
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_next_id
+# TYPE: test
+# DOMAIN: core.coordination
+# DEPTH_LEVEL: 2
+# SUMMARY: Проверяет next_id: монотонность, reservation_token, check/fill fencing.
+# ==========================================
+"""Hermetic-тест next_id: монотонная выдача id + reservation fencing.
 
 Работает на временном дереве через COLLAB_ROOT (реальный канон tasks/decisions/
 questions НЕ трогается). COLLAB_ROOT выставляется ДО import next_id, поэтому
@@ -43,6 +51,11 @@ def _issue(ni, kind):
     return new[0], os.path.join(dirpath, new[0])
 
 
+def _fm(path):
+    with open(path, encoding="utf-8") as f:
+        return parse_front_matter(f.read())
+
+
 def run():
     ok = True
     tmp = test_tmp.make_temp_dir("next-id-")
@@ -67,30 +80,57 @@ def run():
         fn2, path2 = _issue(ni, "task")
         assert fn2 == "T-009.md", "ожидался монотонный T-009, получено %s" % fn2
 
-        # 3) стаб валиден для validate.py: парсится front-matter с id/title/status
-        with open(path1, encoding="utf-8") as f:
-            fm = parse_front_matter(f.read())
-        assert fm.get("id") == "T-008", fm
-        assert fm.get("status") == "todo", fm
-        assert fm.get("title"), "у стаба должен быть title (зарезервировано): %s" % fm
-        assert fm.get("owner") == "tester", fm  # --agent проброшен в стаб
+        # 3) стаб валиден для validate.py: парсится front-matter с id/title/status + reservation
+        fm1 = _fm(path1)
+        assert fm1.get("id") == "T-008", fm1
+        assert fm1.get("status") == "todo", fm1
+        assert fm1.get("title"), "у стаба должен быть title (зарезервировано): %s" % fm1
+        assert fm1.get("owner") == "tester", fm1  # --agent проброшен в стаб
+        token1 = fm1.get("reservation_token")
+        assert fm1.get("reserved_by") == "tester", fm1
+        assert token1 and len(token1) == 12, fm1
 
-        # 4) другой тип (decision) тоже выдаётся и не конфликтует с пустого каталога -> D-001
+        # 4) reservation check: верный агент+токен проходит, чужие данные отклоняются
+        sys.argv = ["next_id.py", "check", "T-008", "--agent", "tester", "--token", token1]
+        assert ni.main() == 0, "check с верным reservation_token должен проходить"
+        sys.argv = ["next_id.py", "check", "T-008", "--agent", "other", "--token", token1]
+        assert ni.main() == 1, "check с чужим agent должен отклоняться"
+        sys.argv = ["next_id.py", "check", "T-008", "--agent", "tester", "--token", "badbadbad000"]
+        assert ni.main() == 1, "check с чужим token должен отклоняться"
+
+        # 5) fill: корректный token атомарно заменяет placeholder, id в source обязан совпадать
+        fill_path = os.path.join(tmp, "fill-task.md")
+        with open(fill_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write("---\nid: T-008\ntype: task\ntitle: Filled task\nstatus: todo\nowner: tester\n"
+                    "priority: normal\nrisk: low\ndepends_on: []\nnext: filled via next_id.py fill\n---\n\n# T-008\n")
+        sys.argv = ["next_id.py", "fill", "T-008", "--agent", "tester", "--token", token1, "--from", "fill-task.md"]
+        assert ni.main() == 0, "fill с верным token должен проходить"
+        assert _fm(path1).get("title") == "Filled task", _fm(path1)
+
+        bad_fill_path = os.path.join(tmp, "bad-fill.md")
+        token2 = _fm(path2).get("reservation_token")
+        with open(bad_fill_path, "w", encoding="utf-8", newline="\n") as f:
+            f.write("---\nid: T-999\ntype: task\ntitle: Wrong id\nstatus: todo\n---\n\n# wrong\n")
+        sys.argv = ["next_id.py", "fill", "T-009", "--agent", "tester", "--token", token2, "--from", "bad-fill.md"]
+        assert ni.main() == 1, "fill с несовпадающим id должен отклоняться"
+        assert _fm(path2).get("title") == "(зарезервировано — заполните)", _fm(path2)
+
+        # 6) другой тип (decision) тоже выдаётся и не конфликтует с пустого каталога -> D-001
         fnd, pathd = _issue(ni, "decision")
         assert fnd == "D-001.md", "decision с нуля должен быть D-001, получено %s" % fnd
-        with open(pathd, encoding="utf-8") as f:
-            fmd = parse_front_matter(f.read())
+        fmd = _fm(pathd)
         assert fmd.get("id") == "D-001" and fmd.get("type") == "decision", fmd
+        assert fmd.get("reserved_by") == "tester" and fmd.get("reservation_token"), fmd
 
-        # 5) псевдоним 't' эквивалентен 'task' и продолжает монотонную последовательность
+        # 7) псевдоним 't' эквивалентен 'task' и продолжает монотонную последовательность
         sys.argv = ["next_id.py", "t", "--agent", "tester"]
         before = set(os.listdir(tasks_dir))
         assert ni.main() == 0
         new = sorted(set(os.listdir(tasks_dir)) - before)
         assert new == ["T-010.md"], "псевдоним t должен дать T-010, получено %s" % new
 
-        print("TESTS OK next_id: max+1 (T-008) -> монотонно (T-009/T-010), стаб валиден "
-              "(id/status/title/owner), decision с нуля -> D-001, псевдоним t == task")
+        print("TESTS OK next_id: max+1/monotonic, reservation_token check/fill fencing, "
+              "decision с нуля -> D-001, псевдоним t == task")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

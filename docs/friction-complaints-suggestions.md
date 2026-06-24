@@ -98,3 +98,13 @@
 - Реализация: `python tools\pipeline.py claim <agent> <T-id>` и `python tools\top.py take <agent> <T-id>` используют те же ready/placeholder/claim checks, что `next`, но не берут другую задачу при ошибке.
 - Потеря времени/риск: снижен риск случайно занять чужой или нежелательный work item.
 - Статус: done
+### 2026-06-24 — Collision после `next_id.py`: id выдан, но placeholder позже занят другим потоком
+
+- F-ID: F-021
+- Кто заметил: Codex во время pipeline reconciliation cleanup.
+- Где/команда: `tools/next_id.py task` выдал `T-223`, затем другой поток materialized `tasks/T-223.md`; после переноса повторилось с `T-226`.
+- Повторяемость: 2 явных collision за одну сессию.
+- Ручное решение: не переписывать чужой task, убрать misleading report/done-marker, оставить `queues/outbox/*id-collision.md`, продолжить task-neutral report.
+- Потеря времени/риск: можно перезаписать чужую задачу, создать ложный done-marker и смешать две линии работы под одним id.
+- Предложение: `next_id.py` должен выдавать `reservation_token`; перед заполнением агент должен делать `check` или использовать `fill`.
+- Статус: done in T-228

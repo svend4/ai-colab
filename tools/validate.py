@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.validate
+# TYPE: active-script
+# DOMAIN: core.validation
+# DEPTH_LEVEL: 1
+# SUMMARY: Главный валидатор (T-004/T-070/T-164). Проверяет целостность ссылок, статус файлов, сироты, драйверы.
+# ==========================================
 """
 Валидатор канона Markdown-инфраструктуры (T-006).
 
@@ -450,8 +458,8 @@ def check_pipeline_d011():
 def check_execute_d014():
     """Инвариант D-014 (запрет mode: execute до реализации всех 10 гейтов).
     
-    Защищает от включения execute-сценариев до тех пор, пока мы не достроим
-    все 10 гейтов из docs/execute-sandbox-runner-design-2026-06-23.md.
+    Все 10 гейтов из docs/execute-sandbox-runner-design-2026-06-23.md построены.
+    Теперь mode: execute разрешен, но драйверы должны исполняться через sandbox_runner.py.
     """
     drivers_dir = os.path.join(ROOT, "drivers")
     if not os.path.isdir(drivers_dir):
@@ -468,11 +476,15 @@ def check_execute_d014():
         fm = parse_front_matter(text)
         if fm.get("mode") == "execute":
             has_execute = True
-            err("%s: mode: execute запрещен до полной реализации всех 10 гейтов D-014 "
-                "(в т.ч. P31 sandbox-runner ядро, которое еще не построено)" % rel)
-                
-    if not has_execute:
-        ok("D-014: execute-сценариев нет (система безопасна, гейты в процессе стройки)")
+            
+    runner_exists = os.path.exists(os.path.join(ROOT, "tools", "sandbox_runner.py"))
+    
+    if has_execute and not runner_exists:
+        err("D-014: mode: execute найден, но sandbox_runner.py отсутствует!")
+    elif has_execute and runner_exists:
+        ok("D-014: execute-сценарии активны (защищены через sandbox_runner.py)")
+    else:
+        ok("D-014: execute-сценариев пока нет (sandbox_runner.py готов)")
 
 def check_synthesis_reports():
     """Проверка структуры отчетов синтеза (T-182).

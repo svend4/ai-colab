@@ -24,6 +24,8 @@ python tools\top.py snapshot
 python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports\bridge.md
 python tools\top.py repo-search "parallel work policy" --limit 5
 python tools\top.py conveyor --json
+python tools\top.py cauldron-lanes architecture-core
+python tools\top.py synthesize-docs architecture-core --with-streams
 ```
 
 ## Принцип
@@ -47,6 +49,8 @@ python tools\top.py conveyor --json
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 | Надзор конвейера | увидеть, нужен ли дозалив/обработка | не держать workflow в голове | `conveyor` вызывает `conveyor.py status` и показывает REFILL/PROCESS/IDLE |
+| Две полосы котла | увидеть готовое к строительству и спорное | выбрать ratio 50/50, 70/30 или 30/70 | `cauldron-lanes` вызывает `doc_synthesis.py` и показывает `ratify-build`/`divergence-detail` |
+| Синтез документов v2 | собрать candidates, refs и stream scaffold | не потерять evidence и divergence | `synthesize-docs` вызывает `doc_synthesis.py scan` с `--with-streams` по явному флагу |
 | Обработка landed | увидеть следующий intake/verify/synthesis шаг | обработать output без потери контекста | `process-landed` строит read-only план по `landed` outputs |
 | Assurance apex | увидеть applied/currency/coverage/flow | начать работу с проверяемого состояния инструкций | `assurance` вызывает `assurance.py`; `health` показывает его как warning-layer |
 
@@ -199,3 +203,45 @@ python tools\flow.py launch-plan mavis T-161 agent launch workflow --worktree
 Команда не запускает агента сама. Она печатает воспроизводимый launch-пакет: repo lane, start-команду, prompt для worker-agent и finish-команду. Реальный запуск делает внешний Codex/platform launcher, человек или будущий сервер-оркестратор.
 
 Моё мнение: это правильная середина между ручной перепиской и тяжёлой серверной платформой. Репозиторий уже знает правила, задачи, worktree и проверки; внешний launcher знает, как создать AI-worker. Handoff связывает эти два мира без жёсткой зависимости.
+
+## Расширение T-221: cauldron-lanes
+
+После T-221 верхний слой умеет показывать две рабочие полосы котла одной командой:
+
+```powershell
+python tools\top.py cauldron-lanes architecture-core
+python tools\top.py synthesize-docs architecture-core --with-streams
+python tools\top.py cauldron-lanes architecture-core --json
+python tools\top.py cauldron-lanes architecture-core --out docs\architecture-core-documents-synthesis-2026-06-24.md
+```
+
+Смысл:
+
+| Полоса | Что означает | Дальнейшая работа |
+|---|---|---|
+| `ratify-build` | тема уже часто совпадает в документах/мнениях | ратификация, код, тест, wrapper, проверка |
+| `divergence-detail` | тема ещё спорная или недоразвёрнутая | варианты, evidence, risks, критерий перехода |
+
+Моё мнение: это превращает котёл из просто списка обсуждений в рабочий диспетчер зрелости. Агент может выбрать режим 50/50, 70/30 или 30/70 без ручного чтения всего synthesis-документа.
+
+## Расширение T-218: synthesize-docs
+
+После T-218 верхний слой умеет запускать document synthesis v2:
+
+```powershell
+python tools\doc_synthesis.py candidates architecture-core
+python tools\top.py synthesize-docs architecture-core --json
+python tools\top.py synthesize-docs architecture-core --out docs\architecture-core-documents-synthesis-2026-06-24.md
+python tools\top.py synthesize-docs architecture-core --with-streams
+```
+
+Что добавлено:
+
+| Возможность | Зачем |
+|---|---|
+| `candidates` | найти документы, которые похожи на тему синтеза |
+| source-line refs | показать evidence как `file:line`, чтобы спор можно было проверить |
+| `--with-streams` | создать/обновить stream scaffold без принятия accepted-решения |
+| `top.py synthesize-docs` | сделать synthesis доступным как верхнюю команду |
+
+Safety-правило: `--with-streams` не перезаписывает существующий ручной `streams/<topic>/divergence.md`; если файл уже есть, создаётся `streams/<topic>/divergence.generated.md` для ручного сравнения.

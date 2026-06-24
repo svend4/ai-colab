@@ -201,3 +201,11 @@ python tools\friction.py recipe <F-id>
 ```
 
 Если detector показывает dirty/stale/stream warnings, это не обязательно блокер работы. Это сигнал: не использовать `git add -A`, не смешивать чужие изменения и перед commit делать selective-add.
+
+## Новая находка 2026-06-24 — F-021 next_id reservation collision
+
+| ID | Симптом | Где встречалось | Оценка повторов | Ручное решение сейчас | Риск | Что автоматизировать |
+|---|---|---|---:|---|---|---|
+| F-021 | `next_id.py` атомарно создаёт placeholder, но последующее заполнение id может столкнуться с другим параллельным потоком | `queues/outbox/2026-06-24-t223-id-collision.md`, `queues/outbox/2026-06-24-t226-id-collision.md`, T-228 dogfood | 2 явных collision за одну сессию | не переписывать чужой task; оставлять collision outbox; использовать `reservation_token`, `next_id.py check`, `next_id.py fill` | потеря/перезапись чужой задачи, ложный done-marker, смешанная история | реализовано в T-228: reservation metadata + check/fill + тест `tools/test_next_id.py` |
+
+Вывод: прежняя гарантия `O_CREAT|O_EXCL` защищала только момент создания файла, но не защищала фазу “получил id → долго думал → заполнил”. Для большой компании людей и агентов нужен второй fencing-шаг: `reserved_by` + `reservation_token` + атомарный `fill`.

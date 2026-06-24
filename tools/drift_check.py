@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.drift_check
+# TYPE: active-script
+# DOMAIN: core.drift
+# DEPTH_LEVEL: 1
+# SUMMARY: Проверяет дрейф между документацией, generated-файлами, capabilities, drivers и validate.
+# ==========================================
 """
 Drift detector (C2, консенсус Claude+Codex) — один инструмент «не разошлось ли docs↔факт».
 

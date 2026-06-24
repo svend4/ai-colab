@@ -31,6 +31,8 @@ def run():
     assert "work-mode" in ids, ids
     assert "subagent-handoff" in ids, ids
     assert "synthesis-helper" in ids, ids
+    assert "cauldron-lanes" in ids, ids
+    assert "synthesize-docs" in ids, ids
     assert any(r["audience"] == "human" for r in rows), rows
     assert any(r["audience"] == "agent" for r in rows), rows
     rendered = top.format_buttons(rows)
@@ -46,6 +48,8 @@ def run():
     assert "python tools/top.py conveyor" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     assert "python tools/top.py subagent-handoff" in rendered, rendered
+    assert "python tools/top.py cauldron-lanes" in rendered, rendered
+    assert "python tools/top.py synthesize-docs" in rendered, rendered
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
@@ -69,6 +73,10 @@ def run():
     assert rsargs.cmd == "repo-search" and rsargs.query == ["parallel", "policy"] and rsargs.limit == 3 and rsargs.json, rsargs
     cvargs = parser.parse_args(["conveyor", "--target", "2", "--idle", "10", "--json"])
     assert cvargs.cmd == "conveyor" and cvargs.target == 2 and cvargs.idle == 10 and cvargs.json, cvargs
+    clargs = parser.parse_args(["cauldron-lanes", "architecture-core", "--json"])
+    assert clargs.cmd == "cauldron-lanes" and clargs.topic == "architecture-core" and clargs.json, clargs
+    sdargs = parser.parse_args(["synthesize-docs", "architecture-core", "--with-streams", "--out", "docs/x.md"])
+    assert sdargs.cmd == "synthesize-docs" and sdargs.with_streams and sdargs.out == "docs/x.md", sdargs
     hargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree"])
     assert hargs.cmd == "subagent-handoff" and hargs.agent == "mavis" and hargs.task == "T-200" and hargs.context == ["parallel", "policy"] and hargs.worktree and not hargs.json, hargs
     hjargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree", "--json"])

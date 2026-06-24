@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.top
+# TYPE: active-script
+# DOMAIN: core.apex
+# DEPTH_LEVEL: 1
+# SUMMARY: Верхняя командная панель для людей и агентов: health, status, cycle, advice, conveyor.
+# ==========================================
 """
 Top command panel (T-138) — one entrypoint for humans and agents at the pyramid top.
 
@@ -22,6 +30,8 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
     python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree] [--json]
     python tools/top.py conveyor [--target N] [--idle M] [--json]
+    python tools/top.py cauldron-lanes [topic] [--json] [--out PATH]  # synthesis lanes: ratify-build/divergence-detail
+    python tools/top.py synthesize-docs [topic] [--json] [--out PATH] [--with-streams]  # doc synthesis v2
 """
 import argparse
 import json
@@ -171,6 +181,19 @@ _BUTTONS = [
         "effect": "writes report if --out",
     },
     {
+        "id": "synthesize-docs",
+        "audience": "both",
+        "command": "python tools/top.py synthesize-docs [topic] [--json] [--out docs/<name>.md] [--with-streams]",
+        "does": "Запустить doc_synthesis v2: candidates/source-line evidence/streams scaffold через верхнюю панель.",
+        "effect": "read-only; writes report/streams only with explicit flags",
+    },    {
+        "id": "cauldron-lanes",
+        "audience": "both",
+        "command": "python tools/top.py cauldron-lanes [topic] [--json] [--out docs/<name>.md]",
+        "does": "Показать две полосы котла: ratify-build для ратификации/строительства и divergence-detail для детализации споров.",
+        "effect": "read-only; writes report if --out",
+    },
+    {
         "id": "merge-gate",
         "audience": "agent",
         "command": "python tools/merge_gate.py check <agent>",
@@ -318,6 +341,7 @@ def cmd_advice(args):
 def cmd_health(_args):
     rc = 0
     for label, cmd in [
+        ("metadata soft-check", _tool("enforce_metadata.py", "--warn-only")),
         ("validate", _tool("validate.py")),
         ("generate --check", _tool("generate.py", "--check")),
         ("capabilities --check", _tool("capabilities.py", "--check")),
@@ -572,6 +596,43 @@ def cmd_process_landed(args):
         print("```")
     return 0
 
+def cmd_stream_proxy(args):
+    """Proxy commands to tools/stream.py."""
+    cmd = _tool("stream.py") + args.args
+    p = subprocess.run(cmd, cwd=ROOT)
+    return p.returncode
+
+def _run_doc_synthesis(label, args):
+    cmd = _tool("doc_synthesis.py", "scan", args.topic, *args.files)
+    if getattr(args, "out", None):
+        cmd += ["--out", args.out]
+    if getattr(args, "with_streams", False):
+        cmd.append("--with-streams")
+    if getattr(args, "json", False):
+        cmd.append("--json")
+    if getattr(args, "json", False) and not getattr(args, "out", None) and not getattr(args, "with_streams", False):
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=90)
+            if p.stdout:
+                print(p.stdout.strip())
+            if p.stderr:
+                print(p.stderr.strip(), file=sys.stderr)
+            return p.returncode
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+    return _run(label, cmd, timeout=90)
+
+
+def cmd_cauldron_lanes(args):
+    return _run_doc_synthesis("cauldron lanes", args)
+
+
+def cmd_synthesize_docs(args):
+    return _run_doc_synthesis("synthesize docs", args)
+
+
 def cmd_cycle(args):
     agent = args.agent
     print("# Safe agent work cycle for %s" % agent)
@@ -753,6 +814,22 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_process_landed)
 
+    p = sub.add_parser("cauldron-lanes", help="show synthesis lanes: ratify-build and divergence-detail")
+    p.add_argument("topic", nargs="?", default="architecture-core")
+    p.add_argument("files", nargs="*")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--out")
+    p.add_argument("--with-streams", action="store_true")
+    p.set_defaults(func=cmd_cauldron_lanes)
+
+    p = sub.add_parser("synthesize-docs", help="run doc_synthesis v2 through the top layer")
+    p.add_argument("topic", nargs="?", default="architecture-core")
+    p.add_argument("files", nargs="*")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--out")
+    p.add_argument("--with-streams", action="store_true")
+    p.set_defaults(func=cmd_synthesize_docs)
+
     p = sub.add_parser("cycle", help="print safe agent work cycle")
     p.add_argument("agent")
     p.set_defaults(func=cmd_cycle)
@@ -773,6 +850,10 @@ def build_parser():
     p.add_argument("--dirty-mainline", action="store_true")
     p.add_argument("--hot-files", action="store_true")
     p.set_defaults(func=cmd_work_mode)
+
+    p = sub.add_parser("stream", help="proxy to stream.py for stream-packet lifecycle")
+    p.add_argument("args", nargs="*", help="stream.py arguments")
+    p.set_defaults(func=cmd_stream_proxy)
 
     return parser
 

@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.generate
+# TYPE: active-script
+# DOMAIN: core.generation
+# DEPTH_LEVEL: 1
+# SUMMARY: Генерирует STATUS.md, board.md, TASKS.md, QUESTIONS.md, DECISIONS.md и index.json из источников.
+# ==========================================
 """
 Генератор навигации (T-007).
 

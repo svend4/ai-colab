@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.capabilities
+# TYPE: active-script
+# DOMAIN: core.capabilities
+# DEPTH_LEVEL: 1
+# SUMMARY: Генерирует system-capabilities.json — машинный манифест возможностей верхнего слоя.
+# ==========================================
 """
 Capability manifest (C1, консенсус Claude+Codex) — один машиночитаемый файл «что умеет слой».
 
@@ -37,6 +45,8 @@ COMMANDS = [
     {"cmd": "python tools/top.py agent-start <agent> [--task T-id] --context <query>", "does": "старт агента + статус + assurance/advice + быстрый поиск релевантного канона"},
     {"cmd": "python tools/top.py subagent-handoff <agent> <T-id> [context] --worktree [--json]", "does": "готовый repo lane + prompt/JSON для внешнего запуска sub-agent"},
     {"cmd": "python tools/top.py conveyor [--target N] [--json]", "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"},
+    {"cmd": "python tools/top.py cauldron-lanes [topic] [--json] [--out docs/<name>.md]", "does": "две полосы котла: ratify-build и divergence-detail из doc_synthesis"},
+    {"cmd": "python tools/top.py synthesize-docs [topic] [--json] [--out docs/<name>.md] [--with-streams]", "does": "doc_synthesis v2 через верхний слой: source-line refs, candidates и streams scaffold"},
     {"cmd": "python tools/top.py assurance [section] [--json] [--strict]", "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
     {"cmd": "python tools/top.py instruction-preflight <agent> [T-id]", "does": "показать применимые инструкции и evidence-шаблон"},

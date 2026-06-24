@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_friction
+# TYPE: test
+# DOMAIN: core.diagnostics
+# DEPTH_LEVEL: 2
+# SUMMARY: Проверяет friction registry, рецепты и read-mostly диагностику повторяющихся проблем.
+# ==========================================
 """Hermetic tests for tools/friction.py (T-150)."""
 import os
 import sys
@@ -14,6 +22,8 @@ def run():
     assert friction.resolve_fid("F-007") == "F-007"
     assert friction.resolve_fid("stale-index") == "F-007"
     assert "generate.py" in friction.recipe_text("F-007")
+    assert friction.resolve_fid("id-collision") == "F-021"
+    assert "reservation_token" in friction.recipe_text("F-021")
 
     clean = friction.check_volatile_tracking("", "LIVE.md\nPIPELINE.md\nlogs/heartbeat.json\nlogs/pipeline.json\n")
     assert clean["status"] == "ok", clean

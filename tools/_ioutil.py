@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools._ioutil
+# TYPE: helper-module
+# DOMAIN: core.io
+# DEPTH_LEVEL: 1
+# SUMMARY: Единый helper UTF-8 вывода для CLI-инструментов репозитория.
+# ==========================================
 """
 Канонический helper UTF-8 вывода для инструментов канона (DEDUP, ревью находка).
 

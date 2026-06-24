@@ -45,5 +45,22 @@ class TestExecutePreflight(unittest.TestCase):
         self.assertIn("--cpus", msg)
         self.assertIn("--pids-limit", msg)
 
+    def test_check_all_no_human(self):
+        # Even if docker and limits are fine, human approval is missing
+        import subprocess
+        import os
+        here = os.path.dirname(os.path.abspath(__file__))
+        preflight_script = os.path.join(here, "execute_preflight.py")
+        
+        cmd = [
+            "python", preflight_script, "check-all", "dummy-driver", "docker",
+            "docker", "run", "--rm", "--network", "none", "--memory", "1g", "--cpus", "1", "--pids-limit", "100", "alpine"
+        ]
+        
+        p = subprocess.run(cmd, capture_output=True, text=True)
+        # Should fail due to either docker probe timeout or human approval missing
+        self.assertNotEqual(p.returncode, 0)
+        self.assertTrue("ERROR" in p.stdout or "ERROR" in p.stderr)
+
 if __name__ == "__main__":
     unittest.main()

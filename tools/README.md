@@ -191,9 +191,19 @@ python tools/next_id.py task     --agent Codex     # → T-0NN
 python tools/next_id.py decision --agent Mavis      # → D-0NN
 ```
 
-Инструмент сканирует каталог, берёт `max+1` и создаёт `questions|tasks|decisions/<id>.md` через `O_CREAT|O_EXCL`. Если номер перехватил другой агент — берёт следующий свободный. Заглушка валидна для `validate.py` и помечена «(зарезервировано)» — **сразу заполните её** и закоммитьте.
+Инструмент сканирует каталог, берёт `max+1` и создаёт `questions|tasks|decisions/<id>.md` через `O_CREAT|O_EXCL`. Если номер перехватил другой агент — берёт следующий свободный. Заглушка валидна для `validate.py`, помечена «(зарезервировано)» и содержит `reserved_by`, `reserved_epoch`, `reservation_token`.
 
-Договорённость: перед созданием нового `Q`/`T`/`D` — сначала `next_id.py`, не выбирать номер вручную. Проверено: 8 параллельных вызовов → 8 разных id, ноль дублей.
+Параллельный безопасный путь после T-223/T-226 collision:
+
+```bash
+python tools/next_id.py task --agent Codex
+python tools/next_id.py check T-228 --agent Codex --token <reservation_token>
+python tools/next_id.py fill T-228 --agent Codex --token <reservation_token> --from tmp-work/T-228.fill.md
+```
+
+`fill` проверяет, что reservation принадлежит этому агенту, что токен совпадает, и что `id` в подготовленном файле совпадает с резервом. Потом файл заменяется атомарно. Если обнаружена collision-ситуация, не переписывайте чужой файл: оставьте outbox-отчёт и берите свежий id.
+
+Договорённость: перед созданием нового `Q`/`T`/`D` — сначала `next_id.py`, не выбирать номер вручную. Перед заполнением в параллельном режиме — `check` или `fill`, а не голая ручная перезапись placeholder.
 
 ## Валидатор v2 — проверка источников (T-010)
 

@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.pipeline
+# TYPE: active-script
+# DOMAIN: core.orchestration
+# DEPTH_LEVEL: 1
+# SUMMARY: Конвейер задач: атомарный claim, done/fail, heartbeat, snapshot и общий котёл агентов.
+# ==========================================
 """
 Конвейер задач (pipeline.py, T-027) — «общий котёл».
 
@@ -73,6 +81,7 @@ def collect_tasks():
             "owner": fm.get("owner", "—"),
             "topic": fm.get("topic", ""),
             "risk": fm.get("risk", ""),
+            "kind": fm.get("kind", "code"),
             "deps": re.findall(r"T-\d+", fm.get("depends_on", "")),
             "path": path,
         }
@@ -218,9 +227,38 @@ def _claim_success(agent, task, cid):
     print("Сделай задачу, затем: python tools/pipeline.py done %s %s --claim %s --report \"...\" --applied \"AGENTS.md, PROTOCOL.md, Checks\""
           % (agent, task["id"], cid))
 
-def cmd_next(agent):
+import random
+
+def cmd_next(agent, kind=None, ratio=None):
     tasks = collect_tasks()
-    for t in ready_sorted(tasks):
+    ready = ready_sorted(tasks)
+    
+    if ratio:
+        try:
+            parts = ratio.split(",")
+            weights = {}
+            for p in parts:
+                k, v = p.split(":")
+                weights[k.strip()] = int(v.strip())
+            total = sum(weights.values())
+            r = random.randint(1, total)
+            cumulative = 0
+            for k, v in weights.items():
+                cumulative += v
+                if r <= cumulative:
+                    kind = k
+                    break
+        except Exception:
+            pass # fallback if parsing fails
+
+    if kind:
+        preferred = [t for t in ready if t.get("kind") == kind]
+        others = [t for t in ready if t.get("kind") != kind]
+        ordered_ready = preferred + others
+    else:
+        ordered_ready = ready
+
+    for t in ordered_ready:
         cid = try_claim(t["id"], agent)
         if cid:
             _claim_success(agent, t, cid)
@@ -328,6 +366,9 @@ def _evidence_gaps(applied, marker_text):
     return []
 
 def cmd_done(agent, tid, report, claim_id=None, applied=None, strict=False):
+    if not claim_id:
+        print("ОШИБКА: для завершения задачи (done) требуется указать --claim ID")
+        return 1
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
@@ -355,6 +396,9 @@ def cmd_done(agent, tid, report, claim_id=None, applied=None, strict=False):
     return 0
 
 def cmd_fail(agent, tid, reason, claim_id=None):
+    if not claim_id:
+        print("ОШИБКА: для отмены задачи (fail) требуется указать --claim ID")
+        return 1
     tasks = collect_tasks()
     if tid not in tasks:
         print("ОШИБКА: задачи %s нет" % tid)
@@ -620,6 +664,10 @@ def main():
             flags["claim"] = a[i + 1]; i += 2
         elif a[i] == "--applied" and i + 1 < len(a):
             flags["applied"] = a[i + 1]; i += 2
+        elif a[i] == "--kind" and i + 1 < len(a):
+            flags["kind"] = a[i + 1]; i += 2
+        elif a[i] == "--ratio" and i + 1 < len(a):
+            flags["ratio"] = a[i + 1]; i += 2
         elif a[i] == "--strict":
             flags["strict"] = True; i += 1
         else:
@@ -629,7 +677,7 @@ def main():
         return 2
     cmd = pos[0]
     if cmd == "next" and len(pos) >= 2:
-        return cmd_next(pos[1])
+        return cmd_next(pos[1], kind=flags.get("kind"), ratio=flags.get("ratio"))
     if cmd == "claim" and len(pos) >= 3:
         return cmd_claim(pos[1], pos[2])
     if cmd == "done" and len(pos) >= 3:

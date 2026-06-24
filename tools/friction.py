@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.friction
+# TYPE: active-script
+# DOMAIN: core.diagnostics
+# DEPTH_LEVEL: 1
+# SUMMARY: Диагностирует повторяющиеся проблемы репозитория и печатает рецепты F-XXX.
+# ==========================================
 """
 Friction diagnostics (T-150) — read-mostly detector for repeated repo problems.
 
@@ -284,6 +292,19 @@ REGISTRY = [
         ],
         "docs": ["topics/gate-poison-situation-2026-06-22.md", "docs/parallel-work-policy.md", "tools/cohort.py"],
         "aliases": ["gate-poison", "poison", "validate-error", "poisoned-gate"],
+    },
+    {
+        "id": "F-021",
+        "name": "next_id reservation collision",
+        "symptom": "next_id.py creates a placeholder atomically, but a later parallel stream can still fill or overwrite the numeric id as its own work item.",
+        "recipe": [
+            "Create new Q/T/D ids with python tools/next_id.py <kind> --agent <agent> and save the printed reservation_token.",
+            "Before filling, run python tools/next_id.py check <ID> --agent <agent> --token <token>.",
+            "Prefer python tools/next_id.py fill <ID> --agent <agent> --token <token> --from <prepared.md> so id and reservation are checked before atomic replacement.",
+            "If a collision is detected, do not rewrite the other task; leave an outbox collision report and continue under a fresh reservation.",
+        ],
+        "docs": ["queues/outbox/2026-06-24-t223-id-collision.md", "queues/outbox/2026-06-24-t226-id-collision.md", "tools/next_id.py"],
+        "aliases": ["id-collision", "next-id", "reservation-token", "task-id-race"],
     },
 ]
 

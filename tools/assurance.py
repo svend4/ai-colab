@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.assurance
+# TYPE: active-script
+# DOMAIN: core.assurance
+# DEPTH_LEVEL: 1
+# SUMMARY: Read-only апекс-дашборд: evidence, актуальность, coverage и поток инструкций к вершине.
+# ==========================================
 """
 assurance (Q-016) — единый READ-ONLY апекс-дашборд проверяемости инструкций.
 

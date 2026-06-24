@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools._canon
+# TYPE: helper-module
+# DOMAIN: core.parsing
+# DEPTH_LEVEL: 1
+# SUMMARY: Канонический parser front-matter для задач, решений, вопросов и служебных инструментов.
+# ==========================================
 """
 Канонический парсер front-matter для инструментов канона (T-085, ревью T-078 находка L).
 
