@@ -2555,7 +2555,7 @@
     {
       "id": "T-208",
       "title": "B (execute-sandbox runner) — поэтапный design-трек, 8 этапов через котёл",
-      "status": "blocked",
+      "status": "done",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "high",
@@ -2807,14 +2807,25 @@
     },
     {
       "id": "T-231",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
-      "owner": "codex",
+      "title": "Assurance currency repair — D-025 last_verified",
+      "status": "done",
+      "owner": "pool",
       "priority": "normal",
       "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "depends_on": "[T-230]",
+      "topic": "ai-os-bridge",
+      "next": ""
+    },
+    {
+      "id": "T-232",
+      "title": "D-Card repair — portability_check.py",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-231]",
+      "topic": "architecture-core",
+      "next": ""
     }
   ],
   "questions": [
@@ -2968,9 +2979,9 @@
     {
       "id": "Q-022",
       "title": "ФУНД-E — Портабельность: переносима ли рабочая папка/ядро целиком?",
-      "status": "open",
+      "status": "answered",
       "where": "topics/architecture-fundamentals-2026-06-24.md",
-      "outcome": "Частично (~45%). core-export (promote.py export --manifest) материализует переносимое ядро (8 tools); полная портабельность рабочей папки (relative-пути, без хоста) — не доказана end-to-end."
+      "outcome": "ДА, портабельна — доказано acceptance-тестом tools/portability_check.py (git-archive HEAD → чистый temp → validate/generate). Свежий clone требует РОВНО 1 документированный bootstrap `python tools/pipeline.py snapshot` (воссоздаёт 2 генерируемых снимка PIPELINE.md + logs/pipeline.json, gitignored/untracked по дизайну D-011). После bootstrap: validate rc=0, generate rc=0, ноль хардкода хост-путей."
     }
   ],
   "decisions": [

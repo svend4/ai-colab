@@ -8,6 +8,126 @@
 |---|---|---|---|---|
 | `tools.synthesis_helper` | active-script | 2 | [synthesis_helper.py](../tools/synthesis_helper.py) | Инструмент "Котел". Обобщает форк-варианты документов в единый скелет с выделением консенсуса и стримов. |
 
+## Domain: core
+
+| ID | Type | Depth | File | Summary |
+|---|---|---|---|---|
+| `tools.adoption` | active-script | 1 | [adoption.py](../tools/adoption.py) | Скрипт adoption.py. Описание сгенерировано автоматически. |
+| `tools.advice` | active-script | 1 | [advice.py](../tools/advice.py) | Скрипт advice.py. Описание сгенерировано автоматически. |
+| `tools.agent_queue` | active-script | 1 | [agent_queue.py](../tools/agent_queue.py) | Скрипт agent_queue.py. Описание сгенерировано автоматически. |
+| `tools.backlog_rescan` | active-script | 1 | [backlog_rescan.py](../tools/backlog_rescan.py) | Скрипт backlog_rescan.py. Описание сгенерировано автоматически. |
+| `tools.blocks` | active-script | 1 | [blocks.py](../tools/blocks.py) | Скрипт blocks.py. Описание сгенерировано автоматически. |
+| `tools.card` | active-script | 1 | [card.py](../tools/card.py) | Скрипт card.py. Описание сгенерировано автоматически. |
+| `tools.cohort` | active-script | 1 | [cohort.py](../tools/cohort.py) | Скрипт cohort.py. Описание сгенерировано автоматически. |
+| `tools.command_index` | active-script | 1 | [command_index.py](../tools/command_index.py) | Скрипт command_index.py. Описание сгенерировано автоматически. |
+| `tools.commit_lock` | active-script | 1 | [commit_lock.py](../tools/commit_lock.py) | Скрипт commit_lock.py. Описание сгенерировано автоматически. |
+| `tools.conveyor` | active-script | 1 | [conveyor.py](../tools/conveyor.py) | Скрипт conveyor.py. Описание сгенерировано автоматически. |
+| `tools.decision_menu` | active-script | 1 | [decision_menu.py](../tools/decision_menu.py) | Скрипт decision_menu.py. Описание сгенерировано автоматически. |
+| `tools.decision_propagation` | active-script | 1 | [decision_propagation.py](../tools/decision_propagation.py) | Скрипт decision_propagation.py. Описание сгенерировано автоматически. |
+| `tools.demo_bridge` | active-script | 1 | [demo_bridge.py](../tools/demo_bridge.py) | Скрипт demo_bridge.py. Описание сгенерировано автоматически. |
+| `tools.dir_health` | active-script | 1 | [dir_health.py](../tools/dir_health.py) | Скрипт dir_health.py. Описание сгенерировано автоматически. |
+| `tools.dispatch` | active-script | 1 | [dispatch.py](../tools/dispatch.py) | Скрипт dispatch.py. Описание сгенерировано автоматически. |
+| `tools.doc_consensus` | active-script | 1 | [doc_consensus.py](../tools/doc_consensus.py) | Скрипт doc_consensus.py. Описание сгенерировано автоматически. |
+| `tools.doc_synthesis` | active-script | 1 | [doc_synthesis.py](../tools/doc_synthesis.py) | Скрипт doc_synthesis.py. Описание сгенерировано автоматически. |
+| `tools.drivers_catalog` | active-script | 1 | [drivers_catalog.py](../tools/drivers_catalog.py) | Скрипт drivers_catalog.py. Описание сгенерировано автоматически. |
+| `tools.execute_audit` | active-script | 1 | [execute_audit.py](../tools/execute_audit.py) | Скрипт execute_audit.py. Описание сгенерировано автоматически. |
+| `tools.execute_human_gate` | active-script | 1 | [execute_human_gate.py](../tools/execute_human_gate.py) | Скрипт execute_human_gate.py. Описание сгенерировано автоматически. |
+| `tools.execute_preflight` | active-script | 1 | [execute_preflight.py](../tools/execute_preflight.py) | Скрипт execute_preflight.py. Описание сгенерировано автоматически. |
+| `tools.flow` | active-script | 1 | [flow.py](../tools/flow.py) | Скрипт flow.py. Описание сгенерировано автоматически. |
+| `tools.folder_index` | active-script | 1 | [folder_index.py](../tools/folder_index.py) | Скрипт folder_index.py. Описание сгенерировано автоматически. |
+| `tools.header` | active-script | 1 | [header.py](../tools/header.py) | Скрипт header.py. Описание сгенерировано автоматически. |
+| `tools.heading_check` | active-script | 1 | [heading_check.py](../tools/heading_check.py) | Скрипт heading_check.py. Описание сгенерировано автоматически. |
+| `tools.instructions` | active-script | 1 | [instructions.py](../tools/instructions.py) | Скрипт instructions.py. Описание сгенерировано автоматически. |
+| `tools.knowledge` | active-script | 1 | [knowledge.py](../tools/knowledge.py) | Скрипт knowledge.py. Описание сгенерировано автоматически. |
+| `tools.layer_check` | active-script | 1 | [layer_check.py](../tools/layer_check.py) | Скрипт layer_check.py. Описание сгенерировано автоматически. |
+| `tools.merge_gate` | active-script | 1 | [merge_gate.py](../tools/merge_gate.py) | Скрипт merge_gate.py. Описание сгенерировано автоматически. |
+| `tools.metrics` | active-script | 1 | [metrics.py](../tools/metrics.py) | Скрипт metrics.py. Описание сгенерировано автоматически. |
+| `tools.onboard` | active-script | 1 | [onboard.py](../tools/onboard.py) | Скрипт onboard.py. Описание сгенерировано автоматически. |
+| `tools.ownership` | active-script | 1 | [ownership.py](../tools/ownership.py) | Скрипт ownership.py. Описание сгенерировано автоматически. |
+| `tools.permissions` | active-script | 1 | [permissions.py](../tools/permissions.py) | Скрипт permissions.py. Описание сгенерировано автоматически. |
+| `tools.portal` | active-script | 1 | [portal.py](../tools/portal.py) | Скрипт portal.py. Описание сгенерировано автоматически. |
+| `tools.promote` | active-script | 1 | [promote.py](../tools/promote.py) | Скрипт promote.py. Описание сгенерировано автоматически. |
+| `tools.race_test` | active-script | 1 | [race_test.py](../tools/race_test.py) | Скрипт race_test.py. Описание сгенерировано автоматически. |
+| `tools.reconcile_state` | active-script | 1 | [reconcile_state.py](../tools/reconcile_state.py) | Скрипт reconcile_state.py. Описание сгенерировано автоматически. |
+| `tools.repo_search` | active-script | 1 | [repo_search.py](../tools/repo_search.py) | Скрипт repo_search.py. Описание сгенерировано автоматически. |
+| `tools.report_diff` | active-script | 1 | [report_diff.py](../tools/report_diff.py) | Скрипт report_diff.py. Описание сгенерировано автоматически. |
+| `tools.result_intake` | active-script | 1 | [result_intake.py](../tools/result_intake.py) | Скрипт result_intake.py. Описание сгенерировано автоматически. |
+| `tools.risk_gate` | active-script | 1 | [risk_gate.py](../tools/risk_gate.py) | Скрипт risk_gate.py. Описание сгенерировано автоматически. |
+| `tools.sandbox` | active-script | 1 | [sandbox.py](../tools/sandbox.py) | Скрипт sandbox.py. Описание сгенерировано автоматически. |
+| `tools.sandbox_intake_demo` | active-script | 1 | [sandbox_intake_demo.py](../tools/sandbox_intake_demo.py) | Скрипт sandbox_intake_demo.py. Описание сгенерировано автоматически. |
+| `tools.stream` | active-script | 1 | [stream.py](../tools/stream.py) | Скрипт stream.py. Описание сгенерировано автоматически. |
+| `tools.test_adoption` | active-script | 1 | [test_adoption.py](../tools/test_adoption.py) | Скрипт test_adoption.py. Описание сгенерировано автоматически. |
+| `tools.test_advice` | active-script | 1 | [test_advice.py](../tools/test_advice.py) | Скрипт test_advice.py. Описание сгенерировано автоматически. |
+| `tools.test_agent_queue_fencing` | active-script | 1 | [test_agent_queue_fencing.py](../tools/test_agent_queue_fencing.py) | Скрипт test_agent_queue_fencing.py. Описание сгенерировано автоматически. |
+| `tools.test_assurance` | active-script | 1 | [test_assurance.py](../tools/test_assurance.py) | Скрипт test_assurance.py. Описание сгенерировано автоматически. |
+| `tools.test_blocks` | active-script | 1 | [test_blocks.py](../tools/test_blocks.py) | Скрипт test_blocks.py. Описание сгенерировано автоматически. |
+| `tools.test_capabilities` | active-script | 1 | [test_capabilities.py](../tools/test_capabilities.py) | Скрипт test_capabilities.py. Описание сгенерировано автоматически. |
+| `tools.test_card` | active-script | 1 | [test_card.py](../tools/test_card.py) | Скрипт test_card.py. Описание сгенерировано автоматически. |
+| `tools.test_cohort` | active-script | 1 | [test_cohort.py](../tools/test_cohort.py) | Скрипт test_cohort.py. Описание сгенерировано автоматически. |
+| `tools.test_command_index` | active-script | 1 | [test_command_index.py](../tools/test_command_index.py) | Скрипт test_command_index.py. Описание сгенерировано автоматически. |
+| `tools.test_commit_lock` | active-script | 1 | [test_commit_lock.py](../tools/test_commit_lock.py) | Скрипт test_commit_lock.py. Описание сгенерировано автоматически. |
+| `tools.test_conveyor` | active-script | 1 | [test_conveyor.py](../tools/test_conveyor.py) | Скрипт test_conveyor.py. Описание сгенерировано автоматически. |
+| `tools.test_core_export` | active-script | 1 | [test_core_export.py](../tools/test_core_export.py) | Скрипт test_core_export.py. Описание сгенерировано автоматически. |
+| `tools.test_decision_menu` | active-script | 1 | [test_decision_menu.py](../tools/test_decision_menu.py) | Скрипт test_decision_menu.py. Описание сгенерировано автоматически. |
+| `tools.test_decision_propagation` | active-script | 1 | [test_decision_propagation.py](../tools/test_decision_propagation.py) | Скрипт test_decision_propagation.py. Описание сгенерировано автоматически. |
+| `tools.test_demo_bridge` | active-script | 1 | [test_demo_bridge.py](../tools/test_demo_bridge.py) | Скрипт test_demo_bridge.py. Описание сгенерировано автоматически. |
+| `tools.test_dir_health` | active-script | 1 | [test_dir_health.py](../tools/test_dir_health.py) | Скрипт test_dir_health.py. Описание сгенерировано автоматически. |
+| `tools.test_dispatch` | active-script | 1 | [test_dispatch.py](../tools/test_dispatch.py) | Скрипт test_dispatch.py. Описание сгенерировано автоматически. |
+| `tools.test_doc_consensus` | active-script | 1 | [test_doc_consensus.py](../tools/test_doc_consensus.py) | Скрипт test_doc_consensus.py. Описание сгенерировано автоматически. |
+| `tools.test_doc_synthesis` | active-script | 1 | [test_doc_synthesis.py](../tools/test_doc_synthesis.py) | Скрипт test_doc_synthesis.py. Описание сгенерировано автоматически. |
+| `tools.test_drift_check` | active-script | 1 | [test_drift_check.py](../tools/test_drift_check.py) | Скрипт test_drift_check.py. Описание сгенерировано автоматически. |
+| `tools.test_drift_currency` | active-script | 1 | [test_drift_currency.py](../tools/test_drift_currency.py) | Скрипт test_drift_currency.py. Описание сгенерировано автоматически. |
+| `tools.test_drivers_catalog` | active-script | 1 | [test_drivers_catalog.py](../tools/test_drivers_catalog.py) | Скрипт test_drivers_catalog.py. Описание сгенерировано автоматически. |
+| `tools.test_execute_audit` | active-script | 1 | [test_execute_audit.py](../tools/test_execute_audit.py) | Скрипт test_execute_audit.py. Описание сгенерировано автоматически. |
+| `tools.test_execute_human_gate` | active-script | 1 | [test_execute_human_gate.py](../tools/test_execute_human_gate.py) | Скрипт test_execute_human_gate.py. Описание сгенерировано автоматически. |
+| `tools.test_execute_preflight` | active-script | 1 | [test_execute_preflight.py](../tools/test_execute_preflight.py) | Скрипт test_execute_preflight.py. Описание сгенерировано автоматически. |
+| `tools.test_flow` | active-script | 1 | [test_flow.py](../tools/test_flow.py) | Скрипт test_flow.py. Описание сгенерировано автоматически. |
+| `tools.test_folder_index` | active-script | 1 | [test_folder_index.py](../tools/test_folder_index.py) | Скрипт test_folder_index.py. Описание сгенерировано автоматически. |
+| `tools.test_friction_f020` | active-script | 1 | [test_friction_f020.py](../tools/test_friction_f020.py) | Скрипт test_friction_f020.py. Описание сгенерировано автоматически. |
+| `tools.test_generate` | active-script | 1 | [test_generate.py](../tools/test_generate.py) | Скрипт test_generate.py. Описание сгенерировано автоматически. |
+| `tools.test_header` | active-script | 1 | [test_header.py](../tools/test_header.py) | Скрипт test_header.py. Описание сгенерировано автоматически. |
+| `tools.test_heading_check` | active-script | 1 | [test_heading_check.py](../tools/test_heading_check.py) | Скрипт test_heading_check.py. Описание сгенерировано автоматически. |
+| `tools.test_instruction_trace` | active-script | 1 | [test_instruction_trace.py](../tools/test_instruction_trace.py) | Скрипт test_instruction_trace.py. Описание сгенерировано автоматически. |
+| `tools.test_instructions` | active-script | 1 | [test_instructions.py](../tools/test_instructions.py) | Скрипт test_instructions.py. Описание сгенерировано автоматически. |
+| `tools.test_knowledge` | active-script | 1 | [test_knowledge.py](../tools/test_knowledge.py) | Скрипт test_knowledge.py. Описание сгенерировано автоматически. |
+| `tools.test_layer_check` | active-script | 1 | [test_layer_check.py](../tools/test_layer_check.py) | Скрипт test_layer_check.py. Описание сгенерировано автоматически. |
+| `tools.test_merge_gate` | active-script | 1 | [test_merge_gate.py](../tools/test_merge_gate.py) | Скрипт test_merge_gate.py. Описание сгенерировано автоматически. |
+| `tools.test_metrics` | active-script | 1 | [test_metrics.py](../tools/test_metrics.py) | Скрипт test_metrics.py. Описание сгенерировано автоматически. |
+| `tools.test_onboard` | active-script | 1 | [test_onboard.py](../tools/test_onboard.py) | Скрипт test_onboard.py. Описание сгенерировано автоматически. |
+| `tools.test_ownership` | active-script | 1 | [test_ownership.py](../tools/test_ownership.py) | Скрипт test_ownership.py. Описание сгенерировано автоматически. |
+| `tools.test_permissions` | active-script | 1 | [test_permissions.py](../tools/test_permissions.py) | Скрипт test_permissions.py. Описание сгенерировано автоматически. |
+| `tools.test_permissions_match` | active-script | 1 | [test_permissions_match.py](../tools/test_permissions_match.py) | Скрипт test_permissions_match.py. Описание сгенерировано автоматически. |
+| `tools.test_pipeline_fencing` | active-script | 1 | [test_pipeline_fencing.py](../tools/test_pipeline_fencing.py) | Скрипт test_pipeline_fencing.py. Описание сгенерировано автоматически. |
+| `tools.test_portal` | active-script | 1 | [test_portal.py](../tools/test_portal.py) | Скрипт test_portal.py. Описание сгенерировано автоматически. |
+| `tools.test_promote` | active-script | 1 | [test_promote.py](../tools/test_promote.py) | Скрипт test_promote.py. Описание сгенерировано автоматически. |
+| `tools.test_promote_export` | active-script | 1 | [test_promote_export.py](../tools/test_promote_export.py) | Скрипт test_promote_export.py. Описание сгенерировано автоматически. |
+| `tools.test_promote_reuse` | active-script | 1 | [test_promote_reuse.py](../tools/test_promote_reuse.py) | Скрипт test_promote_reuse.py. Описание сгенерировано автоматически. |
+| `tools.test_reconcile_fix` | active-script | 1 | [test_reconcile_fix.py](../tools/test_reconcile_fix.py) | Скрипт test_reconcile_fix.py. Описание сгенерировано автоматически. |
+| `tools.test_reconcile_state` | active-script | 1 | [test_reconcile_state.py](../tools/test_reconcile_state.py) | Скрипт test_reconcile_state.py. Описание сгенерировано автоматически. |
+| `tools.test_repo_search` | active-script | 1 | [test_repo_search.py](../tools/test_repo_search.py) | Скрипт test_repo_search.py. Описание сгенерировано автоматически. |
+| `tools.test_report_diff` | active-script | 1 | [test_report_diff.py](../tools/test_report_diff.py) | Скрипт test_report_diff.py. Описание сгенерировано автоматически. |
+| `tools.test_result_intake` | active-script | 1 | [test_result_intake.py](../tools/test_result_intake.py) | Скрипт test_result_intake.py. Описание сгенерировано автоматически. |
+| `tools.test_risk_gate` | active-script | 1 | [test_risk_gate.py](../tools/test_risk_gate.py) | Скрипт test_risk_gate.py. Описание сгенерировано автоматически. |
+| `tools.test_risk_gate_tiering` | active-script | 1 | [test_risk_gate_tiering.py](../tools/test_risk_gate_tiering.py) | Скрипт test_risk_gate_tiering.py. Описание сгенерировано автоматически. |
+| `tools.test_sandbox` | active-script | 1 | [test_sandbox.py](../tools/test_sandbox.py) | Скрипт test_sandbox.py. Описание сгенерировано автоматически. |
+| `tools.test_sandbox_intake_demo` | active-script | 1 | [test_sandbox_intake_demo.py](../tools/test_sandbox_intake_demo.py) | Скрипт test_sandbox_intake_demo.py. Описание сгенерировано автоматически. |
+| `tools.test_sandbox_runner` | active-script | 1 | [test_sandbox_runner.py](../tools/test_sandbox_runner.py) | Скрипт test_sandbox_runner.py. Описание сгенерировано автоматически. |
+| `tools.test_stream` | active-script | 1 | [test_stream.py](../tools/test_stream.py) | Скрипт test_stream.py. Описание сгенерировано автоматически. |
+| `tools.test_synthesis_helper` | active-script | 1 | [test_synthesis_helper.py](../tools/test_synthesis_helper.py) | Скрипт test_synthesis_helper.py. Описание сгенерировано автоматически. |
+| `tools.test_text_extract` | active-script | 1 | [test_text_extract.py](../tools/test_text_extract.py) | Скрипт test_text_extract.py. Описание сгенерировано автоматически. |
+| `tools.test_text_extract_docx` | active-script | 1 | [test_text_extract_docx.py](../tools/test_text_extract_docx.py) | Скрипт test_text_extract_docx.py. Описание сгенерировано автоматически. |
+| `tools.test_top` | active-script | 1 | [test_top.py](../tools/test_top.py) | Скрипт test_top.py. Описание сгенерировано автоматически. |
+| `tools.test_two_track` | active-script | 1 | [test_two_track.py](../tools/test_two_track.py) | Скрипт test_two_track.py. Описание сгенерировано автоматически. |
+| `tools.test_validate` | active-script | 1 | [test_validate.py](../tools/test_validate.py) | Скрипт test_validate.py. Описание сгенерировано автоматически. |
+| `tools.test_validate_freshness` | active-script | 1 | [test_validate_freshness.py](../tools/test_validate_freshness.py) | Скрипт test_validate_freshness.py. Описание сгенерировано автоматически. |
+| `tools.test_variants` | active-script | 1 | [test_variants.py](../tools/test_variants.py) | Скрипт test_variants.py. Описание сгенерировано автоматически. |
+| `tools.test_volatile` | active-script | 1 | [test_volatile.py](../tools/test_volatile.py) | Скрипт test_volatile.py. Описание сгенерировано автоматически. |
+| `tools.test_worktree` | active-script | 1 | [test_worktree.py](../tools/test_worktree.py) | Скрипт test_worktree.py. Описание сгенерировано автоматически. |
+| `tools.text_extract` | active-script | 1 | [text_extract.py](../tools/text_extract.py) | Скрипт text_extract.py. Описание сгенерировано автоматически. |
+| `tools.two_track` | active-script | 1 | [two_track.py](../tools/two_track.py) | Скрипт two_track.py. Описание сгенерировано автоматически. |
+| `tools.variants` | active-script | 1 | [variants.py](../tools/variants.py) | Скрипт variants.py. Описание сгенерировано автоматически. |
+| `tools.worktree` | active-script | 1 | [worktree.py](../tools/worktree.py) | Скрипт worktree.py. Описание сгенерировано автоматически. |
+
 ## Domain: core.apex
 
 | ID | Type | Depth | File | Summary |
@@ -56,6 +176,8 @@
 
 | ID | Type | Depth | File | Summary |
 |---|---|---|---|---|
+| `tools.bulk_dcard_generator` | active-script | 1 | [bulk_dcard_generator.py](../tools/bulk_dcard_generator.py) | Автоматически добавляет D-Cards во все python-скрипты в tools/, у которых их нет. |
+| `tools.dcard_indexer` | active-script | 1 | [dcard_indexer.py](../sandbox/inbox/test_repo/tools/dcard_indexer.py) | Генератор индексов D-Card. Сканирует файлы проекта, извлекает визитки (D-Cards) и строит карту. |
 | `tools.dcard_indexer` | active-script | 1 | [dcard_indexer.py](../tools/dcard_indexer.py) | Генератор индексов D-Card. Сканирует файлы проекта, извлекает визитки (D-Cards) и строит карту. |
 | `tools.enforce_metadata` | active-script | 1 | [enforce_metadata.py](../tools/enforce_metadata.py) | Проверяет наличие и валидность D-Cards во всех файлах tools/. |
 
@@ -76,6 +198,13 @@
 | ID | Type | Depth | File | Summary |
 |---|---|---|---|---|
 | `tools._canon` | helper-module | 1 | [_canon.py](../tools/_canon.py) | Канонический parser front-matter для задач, решений, вопросов и служебных инструментов. |
+
+## Domain: core.portability
+
+| ID | Type | Depth | File | Summary |
+|---|---|---|---|---|
+| `tools.portability_check` | active-script | 1 | [portability_check.py](../tools/portability_check.py) | Acceptance-тест переносимости: materialize git-tracked HEAD и проверить validate/generate без host paths. |
+| `tools.test_portability_check` | test | 2 | [test_portability_check.py](../tools/test_portability_check.py) | Проверяет helper-функции portability_check без тяжёлого git-archive acceptance-прогона. |
 
 ## Domain: core.validation
 
@@ -147,6 +276,7 @@
 | `D-022` | decision | - | [D-022.md](../decisions/D-022.md) | Детальная политика параллельной работы — триггеры Level-1, STALE-индекс, волатильные файлы, same-file |
 | `D-023` | decision | - | [D-023.md](../decisions/D-023.md) | Ответственность за коммит генерируемых индексов — ownership-aware (commit-your-own / integrator-for-foreign) |
 | `D-024` | decision | - | [D-024.md](../decisions/D-024.md) | Формат синтеза с выносом разногласий (Structured Divergences) |
+| `D-025` | - | - | [D-025.md](../decisions/D-025.md) | Стратегии обхода WinError 5 (Async MCP stdio) |
 | `DVG-006-scale-vs-upper-layer-2026-06-24` | divergence-detail | - | [DVG-006-scale-vs-upper-layer.md](../streams/architecture-core/DVG-006-scale-vs-upper-layer.md) |  |
 | `OIA-2026-06-24` | architecture-synthesis | - | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) |  |
 | `Q-002` | question | - | [Q-002.md](../questions/Q-002.md) | Нужен ли отдельный файл для каждого участника в participants/? |
@@ -315,6 +445,10 @@
 | `T-229` | task | - | [T-229.fill.md](../tmp-work/T-229.fill.md) | D-Card batch 1 — coordination and friction tools |
 | `T-230` | - | - | [T-230.md](../tasks/T-230.md) | D-Card batch 2 — core top-layer tools |
 | `T-230` | - | - | [T-230.fill.md](../tmp-work/T-230.fill.md) | D-Card batch 2 — core top-layer tools |
+| `T-231` | - | - | [T-231.md](../tasks/T-231.md) | Assurance currency repair — D-025 last_verified |
+| `T-231` | - | - | [T-231.fill.md](../tmp-work/T-231.fill.md) | Assurance currency repair — D-025 last_verified |
+| `T-232` | - | - | [T-232.md](../tasks/T-232.md) | D-Card repair — portability_check.py |
+| `T-232` | - | - | [T-232.fill.md](../tmp-work/T-232.fill.md) | D-Card repair — portability_check.py |
 | `T-FUND-001` | topic | - | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | Архитектурные основы — канонический свод |
 | `agent-capacity-methodology` | doc | - | [agent-capacity-methodology.md](../docs/agent-capacity-methodology.md) | Методология максимальной динамической ёмкости агентов — сколько, под какие задачи, как на уровне конвейера |
 | `agent-launch-workflow` | - | - | [agent-launch-workflow.md](../docs/agent-launch-workflow.md) | Agent launch workflow — handoff между repo-flow и внешним sub-agent launcher |
@@ -401,6 +535,7 @@
 | `q017-semantic-consolidated-2026-06-23` | topic | - | [q017-semantic-consolidated-2026-06-23.md](../topics/q017-semantic-consolidated-2026-06-23.md) | Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready) |
 | `razbor-consensus-2026-06-24` | - | - | [razbor-consensus-2026-06-24.md](../topics/razbor-consensus-2026-06-24.md) |  |
 | `razbor-divergence-2026-06-24` | - | - | [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) |  |
+| `razbor-divergence-status-2026-06-24` | topic | - | [razbor-divergence-status-2026-06-24.md](../topics/razbor-divergence-status-2026-06-24.md) | Lane B — статус 21 разногласия после churn-reconcile (что разрешено / открыто / в котёл) |
 | `recursive-self-improvement` | doc | - | [recursive-self-improvement.md](../docs/recursive-self-improvement.md) | Рекурсивное само-улучшение — как накопленные части собираются в ОДНУ петлю |
 | `repo-runner` | driver | - | [repo-runner.md](../drivers/repo-runner.md) | Repo runner — inventory репозиториев и будущий запуск в песочнице |
 | `roadmap-reconciliation-result-2026-06-21` | - | - | [roadmap-reconciliation-result-2026-06-21.md](../docs/roadmap-reconciliation-result-2026-06-21.md) | Roadmap reconciliation result — T-110 |
