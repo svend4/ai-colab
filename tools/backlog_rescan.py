@@ -24,6 +24,7 @@ import re
 import sys
 import glob
 from _ioutil import configure_output
+from _cli import help_guard
 
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
@@ -99,4 +100,5 @@ def rescan():
             print()
 
 if __name__ == "__main__":
+    help_guard(__doc__)
     rescan()

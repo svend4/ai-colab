@@ -23,6 +23,7 @@ import time
 import json
 import shutil
 import subprocess
+from _cli import help_guard
 from datetime import datetime
 
 class AuditLogger:
@@ -130,6 +131,7 @@ def wrap_and_execute(base_dir, command):
     return logger.audit_data
 
 def main():
+    help_guard(__doc__)
     args = sys.argv[1:]
     if not args or args[0] != "wrap":
         print(__doc__)

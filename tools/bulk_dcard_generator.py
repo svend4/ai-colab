@@ -13,6 +13,7 @@
 
 import os
 import re
+from _cli import help_guard
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -59,6 +60,7 @@ def process_file(filepath, basename):
     return True
 
 def main():
+    help_guard(__doc__)
     added = 0
     for root, dirs, files in os.walk(TOOLS_DIR):
         if "__pycache__" in dirs:

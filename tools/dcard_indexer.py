@@ -17,6 +17,7 @@ import sys
 import json
 import re
 import yaml
+from _cli import help_guard
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -125,5 +126,6 @@ def write_markdown_index(cards):
     print(f"Index created at {out_path} with {len(cards)} D-Cards.")
 
 if __name__ == '__main__':
+    help_guard(__doc__)
     cards = build_index()
     write_markdown_index(cards)
