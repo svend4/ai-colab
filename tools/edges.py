@@ -34,6 +34,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _canon import parse_fm
+from _cli import help_guard
 
 DIRS = ["tasks", "decisions", "questions", "topics", "docs", "portals", "core", "streams", "drivers", "collab"]
 ID_RE = re.compile(r'\b([TDQ]-\d+|[A-Z]-\d{3})\b')
@@ -308,6 +309,7 @@ def path(a, b, nodes, edges, by_id):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     args = [a for a in argv if not a.startswith("--")]
     sub = args[0] if args else "check"

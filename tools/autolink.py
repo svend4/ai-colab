@@ -20,6 +20,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import edges
+from _cli import help_guard
 
 TYPE_BY_PREFIX = {"T-": "task", "D-": "decision", "Q-": "question"}
 TYPE_BY_FOLDER = {"topics": "topic", "docs": "doc", "streams": "stream", "drivers": "driver",
@@ -106,6 +107,7 @@ def collect():
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     kind = None
     if "--kind" in argv:

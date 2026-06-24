@@ -22,6 +22,7 @@ import sys
 import json
 import time
 import hashlib
+from _cli import help_guard
 
 configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -167,6 +168,7 @@ def to_menu(led):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     commit = None
     if "--commit" in argv:

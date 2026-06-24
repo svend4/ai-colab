@@ -29,6 +29,7 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import edges
 import decay
+from _cli import help_guard
 
 AXES = ("identity", "card", "connected", "fresh", "resolved")
 PER_AXIS = 200
@@ -85,6 +86,7 @@ def _bucket(score):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     args = [a for a in argv if not a.startswith("--")]
     threshold = DEFAULT_THRESHOLD

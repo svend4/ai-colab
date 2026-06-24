@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _canon import parse_fm
+from _cli import help_guard
 
 DIRS = ["tasks", "decisions", "questions", "topics", "docs", "streams"]
 HOT_DAYS = 3       # < 3 дней — горячий (активно трогается)
@@ -107,6 +108,7 @@ def collect(now=None):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     as_json = "--json" in argv
     now = None
     if "--now" in argv:

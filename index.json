@@ -2981,6 +2981,17 @@
       "depends_on": "[T-239, T-240]",
       "topic": "",
       "next": "Add read-only `python tools/top.py conveyor-recover [--json] [--limit N]` wrapper and tests."
+    },
+    {
+      "id": "T-242",
+      "title": "Kotel critique stage 1: CLI help guard and deterministic action plan",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-241]",
+      "topic": "",
+      "next": "Apply `_cli.help_guard` to the first criticized sys.argv tools and write a staged action plan for the kotel critique."
     }
   ],
   "questions": [
