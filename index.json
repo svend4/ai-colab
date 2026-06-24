@@ -295,6 +295,13 @@
       "next": ""
     },
     {
+      "id": "session-status-2026-06-24",
+      "title": "Промежуточный статус-доклад проекта (фундамент для дальнейшего развития, не финал)",
+      "file": "topics/session-status-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "time-axis-decay-2026-06-24",
       "title": "Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06",
       "file": "topics/time-axis-decay-2026-06-24.md",
@@ -2934,6 +2941,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Add a no-execute sandbox draft-code lane, manifest template, and policy report."
+    },
+    {
+      "id": "T-239",
+      "title": "Conveyor recover advisory for reset/hang/UI mismatch",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Implement read-only `tools/conveyor.py recover` diagnostics for reset/hang/UI indicator mismatch."
     }
   ],
   "questions": [
