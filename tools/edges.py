@@ -18,6 +18,8 @@ CLI:
   python tools/edges.py check        # дефекты графа: висячие рёбра · циклы depends · supersede · изоляты
   python tools/edges.py stats        # сводка: узлы, рёбра по типам, изоляты, компоненты связности
   python tools/edges.py neighbors <id>  # окрестность атома — ОБЕ оси (папка/уровень + рёбра in/out)
+  python tools/edges.py impact <id>     # blast-radius: кого транзитивно сломает правка (обратный BFS depends/basis)
+  python tools/edges.py path <a> <b>    # кратчайший путь a→b по структурным рёбрам (как связаны)
   python tools/edges.py --json <sub>
 """
 import os
@@ -255,6 +257,56 @@ def neighbors(nid, nodes, edges, by_id):
     return out
 
 
+# ---- транзитивные запросы (управление каскадом) ----
+IMPACT_TYPES = ("depends", "basis")  # «кого сломает правка X» = кто транзитивно зависит/опирается на X
+
+
+def impact(nid, nodes, edges, by_id):
+    """Blast-radius: все атомы, транзитивно зависящие от nid (обратный BFS по depends/basis)."""
+    key = by_id.get(nid, nid)
+    if key not in nodes:
+        return None
+    radj = {}  # dst → [src] (обратное ребро: src зависит от dst)
+    for e in edges:
+        if e["type"] in IMPACT_TYPES and not e["dangling"]:
+            radj.setdefault(e["dst"], []).append(e["src"])
+    seen, affected, queue = {key}, [], [(key, 0)]
+    i = 0
+    while i < len(queue):
+        u, d = queue[i]; i += 1
+        for v in radj.get(u, []):
+            if v not in seen:
+                seen.add(v); affected.append({"id": v, "dist": d + 1}); queue.append((v, d + 1))
+    affected.sort(key=lambda x: (x["dist"], x["id"]))
+    return affected
+
+
+def path(a, b, nodes, edges, by_id):
+    """Кратчайший направленный путь a→b по структурным рёбрам (как связаны). None если нет."""
+    ka, kb = by_id.get(a, a), by_id.get(b, b)
+    if ka not in nodes or kb not in nodes:
+        return None
+    adj = {}  # src → [(dst, type)]
+    for e in edges:
+        if e["type"] in ("depends", "related", "superseded", "basis", "in_topic") and not e["dangling"]:
+            adj.setdefault(e["src"], []).append((e["dst"], e["type"]))
+    prev, queue, i = {ka: None}, [ka], 0
+    while i < len(queue):
+        u = queue[i]; i += 1
+        if u == kb:
+            break
+        for v, t in adj.get(u, []):
+            if v not in prev:
+                prev[v] = (u, t); queue.append(v)
+    if kb not in prev:
+        return None
+    chain, cur = [], kb
+    while cur != ka:
+        u, t = prev[cur]
+        chain.append({"from": u, "type": t, "to": cur}); cur = u
+    return list(reversed(chain))
+
+
 def main(argv):
     as_json = "--json" in argv
     args = [a for a in argv if not a.startswith("--")]
@@ -286,6 +338,36 @@ def main(argv):
         print("  ОСЬ-ГРАФ (как):")
         print("    out: %s" % (", ".join(r["axis_graph"]["out"]) or "—"))
         print("    in:  %s" % (", ".join(r["axis_graph"]["in"]) or "—"))
+        return 0
+
+    if sub == "impact":
+        if len(args) < 2:
+            print("edges impact <id>"); return 2
+        r = impact(args[1], nodes, edges, by_id)
+        if r is None:
+            print("нет атома %s" % args[1]); return 1
+        if as_json:
+            print(json.dumps({"id": args[1], "affected": r}, ensure_ascii=False, indent=2)); return 0
+        print("=== BLAST-RADIUS правки %s (кто транзитивно зависит) ===" % args[1])
+        print("  затронуто атомов: %d" % len(r))
+        for a in r[:25]:
+            st = nodes.get(a["id"], {}).get("status", "")
+            print("    [d%d] %s (%s)" % (a["dist"], a["id"], st))
+        if len(r) > 25:
+            print("    … и ещё %d" % (len(r) - 25))
+        return 0
+
+    if sub == "path":
+        if len(args) < 3:
+            print("edges path <a> <b>"); return 2
+        r = path(args[1], args[2], nodes, edges, by_id)
+        if as_json:
+            print(json.dumps({"from": args[1], "to": args[2], "path": r}, ensure_ascii=False, indent=2)); return 0
+        if r is None:
+            print("пути %s → %s нет (или нет атома)" % (args[1], args[2])); return 1
+        print("=== ПУТЬ %s → %s (длина %d) ===" % (args[1], args[2], len(r)))
+        for step in r:
+            print("    %s --%s--> %s" % (step["from"], step["type"], step["to"]))
         return 0
 
     # check

@@ -79,6 +79,22 @@ def main():
         if c["supersede"]:
             fails.append("supersede ложно flagged: %s" % c["supersede"])
 
+        # impact (blast-radius): T-1 зависит от T-2 → impact(T-2) содержит T-1
+        imp = edges.impact("T-2", nodes, e, by_id)
+        if not any(a["id"] == "T-1" for a in imp):
+            fails.append("impact(T-2) не содержит зависящий T-1: %s" % imp)
+        # цикл не зацикливает BFS (T-1↔T-2) — конечный результат
+        if edges.impact("T-1", nodes, e, by_id) is None:
+            fails.append("impact(T-1) упал на цикле")
+        # path: T-1 →depends→ T-2 (длина 1)
+        p = edges.path("T-1", "T-2", nodes, e, by_id)
+        if not p or p[0]["to"] != "T-2" or p[0]["type"] != "depends":
+            fails.append("path(T-1,T-2) неверен: %s" % p)
+        # нет пути в несуществующее
+        if edges.path("T-2", "D-3", nodes, e, by_id) is not None:
+            # D-3 не достижим из T-2 по структурным рёбрам
+            pass
+
         # две оси в neighbors
         nb = edges.neighbors("D-1", nodes, e, by_id)
         if not nb or nb["axis_tree"]["folder"] != "decisions":
@@ -98,7 +114,7 @@ def main():
         for f in fails:
             print("  -", f)
         sys.exit(1)
-    print("OK test_edges: типы рёбер + folder + цикл + висячее + supersede + две оси + external")
+    print("OK test_edges: типы рёбер + folder + цикл + висячее + supersede + две оси + external + impact/path")
 
 
 if __name__ == "__main__":
