@@ -6,7 +6,7 @@ gist: File-native движок координации агентов — еди�
 status: proposed
 owner: stefan
 date: 2026-06-24
-level: L2
+level: L3
 risk: low
 related: [D-002, D-014, D-016, D-018, D-021, D-022, Q-014, Q-016, Q-017, T-085, T-145, T-191, T-213, F-020]
 detail_ref: [core/engine-manifest.md, portals/README.md, docs/workspace-pyramid-levels.md, PROTOCOL.md]

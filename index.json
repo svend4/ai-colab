@@ -2386,14 +2386,14 @@
     },
     {
       "id": "T-194",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
       "owner": "unknown",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "закрыто как retired placeholder по docs/stale-work-cleanup-policy-2026-06-21; для новой работы используйте новый task id"
     },
     {
       "id": "T-195",
@@ -2475,13 +2475,13 @@
     {
       "id": "T-202",
       "title": "Коммит текущих изменений (selective-add)",
-      "status": "doing",
+      "status": "blocked",
       "owner": "pool",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "topics/ai-os-bridge.md",
-      "next": "Сделать selective-add коммит через commit_lock.py, validate.py, generate.py"
+      "next": "Старый selective-add scope устарел; нужен свежий human/integrator scope перед любым commit, потому рабочее дерево содержит изменения нескольких участников"
     },
     {
       "id": "T-203",
@@ -2662,7 +2662,7 @@
     {
       "id": "T-219",
       "title": "Усиление Redaction и маскировки паролей в драйверах",
-      "status": "doing",
+      "status": "done",
       "owner": "—",
       "priority": "normal",
       "risk": "low",
@@ -2673,7 +2673,7 @@
     {
       "id": "T-220",
       "title": "Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна",
-      "status": "todo",
+      "status": "done",
       "owner": "—",
       "priority": "normal",
       "risk": "low",
@@ -2702,6 +2702,39 @@
       "depends_on": "[]",
       "topic": "streams/architecture-core/divergence.md",
       "next": "Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build."
+    },
+    {
+      "id": "T-223",
+      "title": "Внедрение слоистой архитектуры и метаданных (Layered-architecture & Metadata-indexes)",
+      "status": "done",
+      "owner": "—",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "",
+      "topic": "architecture-core",
+      "next": ""
+    },
+    {
+      "id": "T-224",
+      "title": "Внедрение Pipeline Fencing (Pipeline Guards)",
+      "status": "doing",
+      "owner": "—",
+      "priority": "high",
+      "risk": "high",
+      "depends_on": "",
+      "topic": "pipeline-fencing",
+      "next": ""
+    },
+    {
+      "id": "T-225",
+      "title": "Разрешение архитектурных разногласий DVG-001 и DVG-004",
+      "status": "todo",
+      "owner": "—",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "",
+      "topic": "architecture-core",
+      "next": ""
     }
   ],
   "questions": [

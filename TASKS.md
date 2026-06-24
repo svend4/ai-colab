@@ -207,7 +207,7 @@
 | T-191 | Реализация семантического гибрида для doc_consensus.py | done | codex | — | Написать и интегрировать логику --semantic (см. topics/q017-docmerge-semantic-2026-06-23.md) |
 | T-192 | Doc-cleanup queue.py → agent_queue.py (~7 битых ссылок после ретро-рейнейма) | done | pool | — | Обновить tools/queue.py → tools/agent_queue.py в каноничных/исторических доках (drift_check scan_legacy_queue их флагует); volatile (STATUS/TASKS/dialog) самочинятся на regen |
 | T-193 | Dedup-волна _ioutil — остаток (~28 тулов с локальным def configure_output) | done | pool | — | Адаптировать оставшиеся тулы к `from _ioutil import configure_output` батчами (только свободные от Codex + покрытые тестом или со smoke-проверкой); Codex-hot — в своё окно |
-| T-194 | (зарезервировано — заполните) | todo | unknown | — | зарезервировано через tools/next_id.py — заполните |
+| T-194 | Retired placeholder — no task assigned | done | unknown | — | закрыто как retired placeholder по docs/stale-work-cleanup-policy-2026-06-21; для новой работы используйте новый task id |
 | T-195 | Evidence addendum layer for assurance debts | done | codex | `docs/instruction-assurance.md` | реализовать queues/evidence addendum и закрыть T-180/T-182 без переписывания done-маркеров |
 | T-196 | DOC_CONSENSUS_AGENT runtime recipe and safe examples | done | pool | — | описать безопасный runtime recipe и примеры DOC_CONSENSUS_AGENT |
 | T-197 | Workflow backlog rescan tool | done | pool | — | спроектировать backlog_rescan.py и patch-режим обновления перспективного бэклога |
@@ -215,7 +215,7 @@
 | T-199 | Обновить README.md — добавить новые папки (skills, portals, reports, streams, sandbox, tmp-work, core, data) | done | pool | `topics/ai-os-bridge.md` | Добавить папки в таблицу структуры README.md, обновить описание |
 | T-200 | Коммит — selective-add 145 изменённых строк git status | done | pool | `topics/ai-os-bridge.md` | Выбрать файлы для коммита, запустить generate.py, git add selective, git commit |
 | T-201 | Обработать 4 failed-маркера (T-048, T-136, T-174, T-175) — close или block | done | pool | `topics/ai-os-bridge.md` | Анализ каждого failed, принятие решения, очистка queues/failed/ |
-| T-202 | Коммит текущих изменений (selective-add) | doing | pool | `topics/ai-os-bridge.md` | Сделать selective-add коммит через commit_lock.py, validate.py, generate.py |
+| T-202 | Коммит текущих изменений (selective-add) | blocked | pool | `topics/ai-os-bridge.md` | Старый selective-add scope устарел; нужен свежий human/integrator scope перед любым commit, потому рабочее дерево содержит изменения нескольких участников |
 | T-203 | Обновить статус-отчёт (docs/status-report-2026-06-23.md) | done | pool | `topics/ai-os-bridge.md` | Обновить или создать новый статус-отчёт с актуальными данными |
 | T-204 | Обновить quickstart-гайды (docs/quickstart.md и docs/agent-quickstart.md) | done | pool | `topics/ai-os-bridge.md` | Добавить новые инструменты, pipeline.py, adoption.py, blocks.py, friction.py, top.py |
 | T-205 | Проверить и обновить STATUS.md (текущий фокус) | done | pool | `topics/ai-os-bridge.md` | Обновить текущий фокус, активные темы, журнал изменений |
@@ -232,8 +232,11 @@
 | T-216 | Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11) | done | antigravity | — | Реализовать tools/execute_human_gate.py и check-all |
 | T-217 | Execute-Sandbox: Runner Core (P31) | done | antigravity | — | Реализовать tools/sandbox_runner.py |
 | T-218 | Document synthesis v2 — source-line evidence, candidates, top.py wrapper | done | pool | `docs/document-synthesis-mechanism-2026-06-24.md` | Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default. |
-| T-219 | Усиление Redaction и маскировки паролей в драйверах | doing | — | `driver-acceptance-batch` |  |
-| T-220 | Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна | todo | — | `repo-review` |  |
+| T-219 | Усиление Redaction и маскировки паролей в драйверах | done | — | `driver-acceptance-batch` |  |
+| T-220 | Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна | done | — | `repo-review` |  |
 | T-221 | Cauldron lane A — ratify-build consensus-ready architecture items | done | pool | `docs/cauldron-two-lane-board-2026-06-24.md` | Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision. |
 | T-222 | Cauldron lane B — divergence-detail architecture issues | done | pool | `streams/architecture-core/divergence.md` | Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build. |
+| T-223 | Внедрение слоистой архитектуры и метаданных (Layered-architecture & Metadata-indexes) | done | — | `architecture-core` |  |
+| T-224 | Внедрение Pipeline Fencing (Pipeline Guards) | doing | — | `pipeline-fencing` |  |
+| T-225 | Разрешение архитектурных разногласий DVG-001 и DVG-004 | todo | — | `architecture-core` |  |
 <!-- GEN:tasks END -->
