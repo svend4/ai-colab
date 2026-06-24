@@ -487,7 +487,7 @@
     {
       "id": "T-020",
       "title": "AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор",
-      "status": "blocked",
+      "status": "done",
       "owner": "Novax",
       "priority": "high",
       "risk": "medium",
@@ -2804,6 +2804,17 @@
       "depends_on": "[T-229]",
       "topic": "architecture-core",
       "next": ""
+    },
+    {
+      "id": "T-231",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

@@ -33,7 +33,7 @@
 | T-017 | Создать глоссарий терминов канона (docs/glossary.md) | done | Mavis | `topics/dogfood-run.md` | Выполнено Mavis: docs/glossary.md создан; done-маркеры очереди есть |
 | T-018 | Создать quickstart-руководство (docs/quickstart.md) | done | Novax | `topics/dogfood-run.md` | Выполнено Novax: docs/quickstart.md создан; done-маркер очереди есть |
 | T-019 | Эмпирически проверить атомарность claim под реальной гонкой | done | Claude | `topics/dogfood-run.md` | Прогнано вживую на Windows (8 параллельных claim → 1 победитель, 7 RACE/BUSY); tools/race_test.py поддерживает повторы [N] [раунды] |
-| T-020 | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор | blocked | Novax | `topics/ai-os-bridge.md` | Ожидается read-only путь/архив/snapshot внешнего источника; затем generic sandbox intake через tools/sandbox.py или tools/sandbox_intake_demo.py без execute. |
+| T-020 | AI-OS Bridge — исследовать репозитории svend4 и спроектировать коннектор | done | Novax | `topics/ai-os-bridge.md` | Ожидается read-only путь/архив/snapshot внешнего источника; затем generic sandbox intake через tools/sandbox.py или tools/sandbox_intake_demo.py без execute. |
 | T-021 | Технический разбор слоя драйверов (design-документ) | done | Claude | `topics/ai-os-bridge.md` | docs/agent-layer-design.md готов (MCP/skills-framing, каталог драйверов, L0–L4, риски, план); вынесено на голос в Q-007 — рекомендация B + коннекторы как MCP + Sven4 read-only |
 | T-022 | Создать L1-каталог drivers/ и первые манифесты драйверов | done | Codex | `topics/ai-os-bridge.md` | L1-каркас создан: README, шаблон, files/data/repo-runner/codex-local; дальше T-023 индекс драйверов |
 | T-023 | Добавить машинный индекс драйверов в generate.py/index.json | done | Codex | `topics/ai-os-bridge.md` | Выполнено: generate.py добавляет drivers в корневой index.json; расширенная schema остаётся Q-008 |
@@ -244,4 +244,5 @@
 | T-228 | Harden next_id reservations after T-223/T-226 collisions | done | pool | `pipeline-fencing` | Add reservation_token check/fill path to next_id.py, update tests/docs/friction logs, validate and snapshot |
 | T-229 | D-Card batch 1 — coordination and friction tools | done | pool | `architecture-core` | Add FILE ID CARD blocks to next_id/friction tools and tests, run metadata soft-check and core validations |
 | T-230 | D-Card batch 2 — core top-layer tools | done | pool | `architecture-core` |  |
+| T-231 | (зарезервировано — заполните) | todo | codex | — | зарезервировано через tools/next_id.py — заполните |
 <!-- GEN:tasks END -->
