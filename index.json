@@ -2276,25 +2276,25 @@
     },
     {
       "id": "T-184",
-      "title": "(зарезервировано — заполните)",
+      "title": "Внедрение Markdown Streams для решения конфликтов параллельной работы",
       "status": "todo",
-      "owner": "Novax",
+      "owner": "—",
       "priority": "normal",
       "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "depends_on": "",
+      "topic": "commit-policy",
+      "next": ""
     },
     {
       "id": "T-185",
-      "title": "(зарезервировано — заполните)",
+      "title": "Детализация архитектурного спора о Ядре (agent-onboarding)",
       "status": "todo",
-      "owner": "Novax",
+      "owner": "—",
       "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "risk": "medium",
+      "depends_on": "",
+      "topic": "agent-onboarding",
+      "next": ""
     },
     {
       "id": "T-186",
@@ -2658,6 +2658,50 @@
       "depends_on": "[]",
       "topic": "docs/document-synthesis-mechanism-2026-06-24.md",
       "next": "Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default."
+    },
+    {
+      "id": "T-219",
+      "title": "Усиление Redaction и маскировки паролей в драйверах",
+      "status": "todo",
+      "owner": "—",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "",
+      "topic": "driver-acceptance-batch",
+      "next": ""
+    },
+    {
+      "id": "T-220",
+      "title": "Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна",
+      "status": "todo",
+      "owner": "—",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "",
+      "topic": "repo-review",
+      "next": ""
+    },
+    {
+      "id": "T-221",
+      "title": "Cauldron lane A — ratify-build consensus-ready architecture items",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "docs/cauldron-two-lane-board-2026-06-24.md",
+      "next": "Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision."
+    },
+    {
+      "id": "T-222",
+      "title": "Cauldron lane B — divergence-detail architecture issues",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "streams/architecture-core/divergence.md",
+      "next": "Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build."
     }
   ],
   "questions": [

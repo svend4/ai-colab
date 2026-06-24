@@ -197,8 +197,8 @@
 | T-181 | reconcile_state backlog — 38 done-missing-marker + 5 orphan-done-marker (конвенция queues/done) | done | pool | — | Решить конвенцию done-marker (бэкфилл queues/done/T-NNN.done.md для 38 done-задач ИЛИ сделать marker опциональным в reconcile_state); подчистить 5 orphan-маркеров от переименованных timestamp-задач |
 | T-182 | Synthesis gate - validate consensus/disagreement report structure | done | antigravity | — |  |
 | T-183 | Process-landed classification hardening | done | antigravity | — |  |
-| T-184 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
-| T-185 | (зарезервировано — заполните) | todo | Novax | — | зарезервировано через tools/next_id.py — заполните |
+| T-184 | Внедрение Markdown Streams для решения конфликтов параллельной работы | todo | — | `commit-policy` |  |
+| T-185 | Детализация архитектурного спора о Ядре (agent-onboarding) | todo | — | `agent-onboarding` |  |
 | T-186 | Анализ 3 failed-задач в очереди — retry или close | done | pool | `topics/ai-os-bridge.md` | Прочитать queues/failed/*.md, определить причины, предложить retry/close/workaround для каждой |
 | T-187 | Smoke-test новых инструментов (friction, drift_check, onboard, commit_lock, top) | done | codex | `topics/ai-os-bridge.md` | Закрыто 2026-06-23 — smoke-test friction/drift_check/onboard/commit_lock/top выполнен; quickstart обновлён; текущий drift после generate = 0. |
 | T-188 | Аудит мёртвого груза — неиспользуемая информация и устаревшие ссылки | done | pool | `topics/ai-os-bridge.md` | Проверить STATUS.md, README.md, quickstart, agent-quickstart на актуальность; найти orphan-ссылки |
@@ -232,4 +232,8 @@
 | T-216 | Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11) | done | antigravity | — | Реализовать tools/execute_human_gate.py и check-all |
 | T-217 | Execute-Sandbox: Runner Core (P31) | done | antigravity | — | Реализовать tools/sandbox_runner.py |
 | T-218 | Document synthesis v2 — source-line evidence, candidates, top.py wrapper | todo | pool | `docs/document-synthesis-mechanism-2026-06-24.md` | Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default. |
+| T-219 | Усиление Redaction и маскировки паролей в драйверах | todo | — | `driver-acceptance-batch` |  |
+| T-220 | Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна | todo | — | `repo-review` |  |
+| T-221 | Cauldron lane A — ratify-build consensus-ready architecture items | doing | pool | `docs/cauldron-two-lane-board-2026-06-24.md` | Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision. |
+| T-222 | Cauldron lane B — divergence-detail architecture issues | doing | pool | `streams/architecture-core/divergence.md` | Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build. |
 <!-- GEN:tasks END -->
