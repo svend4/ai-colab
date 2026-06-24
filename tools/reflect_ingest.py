@@ -13,7 +13,7 @@ CLI:
   python tools/blocks.py run improve --json | python tools/reflect_ingest.py --commit <sha>
   python tools/reflect_ingest.py --in logs/reflection/<sha>.json --commit <sha>
   python tools/reflect_ingest.py --summary           # сводка ledger (открытые/рецидивы по severity)
-  python tools/reflect_ingest.py --summary --json
+  python tools/reflect_ingest.py --menu | python tools/decision_menu.py -   # находки→меню человеку (шаг 5)
 """
 import os
 from _ioutil import configure_output
@@ -126,6 +126,46 @@ def summarize(led):
     }
 
 
+def to_menu(led):
+    """Находки → JSON «меню решений» (decision_menu.py) для ЧЕЛОВЕКА. Приоритет: рецидивы, затем high.
+    Авто только подача; ПРИНЯТИЕ (задача/правка) — ручное (D-006/D-018). Спека шаг 5."""
+    s = summarize(led)
+    high_open = [e for e in led["findings"].values()
+                 if e.get("status") == "open" and e["severity"] == "high"]
+    seen = set()
+    candidates = []
+    for e in s["recurring"] + high_open:  # рецидивы первыми, затем high
+        k = (e["tool"], e["symptom"])
+        if k not in seen:
+            seen.add(k); candidates.append(e)
+    options = []
+    for i, e in enumerate(candidates[:8]):
+        recur = e.get("count", 1) >= RECUR_THRESHOLD
+        options.append({
+            "key": chr(65 + i),
+            "title": "%s — %s" % (e["tool"], e["symptom"][:55]),
+            "gist": ("полый цикл ×%d" % e["count"]) if recur else ("%s, ×%d" % (e["severity"], e.get("count", 1))),
+            "tags": {"risk": e["severity"], "effort": "?", "reversibility": "easy",
+                     "scope": e.get("block", "")},
+            "what": "Находка детектора %s (блок %s), повтор в %d заходах." % (e["tool"], e.get("block", "?"), e.get("count", 1)),
+            "pros": ["починка убирает рецидив из ledger", "поднимает качество результата (не строки)"],
+            "cons": (["рецидив: детектор видит раз за разом, никто не чинит → шум растёт"] if recur
+                     else ["разовая находка — возможно, ещё разрешится сама"]),
+            "means": "Детектор находит, но находка не доходит до починки — разрыв петли применяемости.",
+            "leads_to": "Если не починить: ledger-шум↑, качество не движется; если починить: рецидив→resolved.",
+            "responsibility": "Маршрут по обратимости/владению: своё→fix+тест; чужое→владельцу; governance→котёл.",
+            "recommended": recur,
+        })
+    return {
+        "title": "Саморефлексия — находки для ROUTE (рецидивы + high)",
+        "context": "Авто-петля (post-commit→reflect→ingest) накопила находки. Полые циклы = детектор есть, "
+                   "починки нет. Это подача человеку; авто-принятия нет (D-006).",
+        "options": options,
+        "recommendation": "Начни с рецидивов (×≥%d) — доказанно не чинятся сами. LOC не метрика; цель — рецидив↓." % RECUR_THRESHOLD,
+        "how_to_choose": "Назови ключ — оформлю маршрут (fix/владельцу/котёл). «Другое» — свой вариант.",
+    }
+
+
 def main(argv):
     as_json = "--json" in argv
     commit = None
@@ -133,6 +173,10 @@ def main(argv):
         i = argv.index("--commit")
         if i + 1 < len(argv):
             commit = argv[i + 1]
+    if "--menu" in argv:
+        # JSON «меню решений» для человека (пайпить в decision_menu.py -)
+        print(json.dumps(to_menu(load_ledger()), ensure_ascii=False, indent=2))
+        return 0
     if "--summary" in argv:
         s = summarize(load_ledger())
         if as_json:

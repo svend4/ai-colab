@@ -68,9 +68,20 @@ def main():
 
         # третий заход с тем же edges-циклом → count=3 → полый цикл
         ri.ingest(ri.findings_from_blocks(BLOCK_R2), "sha3", now=3000)
-        s3 = ri.summarize(ri.load_ledger())
+        led3 = ri.load_ledger()
+        s3 = ri.summarize(led3)
         if not any(e["tool"] == "edges.py" for e in s3["recurring"]):
             fails.append("edges count=3 не попал в recurring (полый цикл)")
+
+        # to_menu: рецидив edges → опция меню, recommended=True, схема decision_menu
+        menu = ri.to_menu(led3)
+        if "options" not in menu or not menu["options"]:
+            fails.append("to_menu пустое меню при рецидиве")
+        edges_opt = next((o for o in menu["options"] if "edges.py" in o["title"]), None)
+        if not edges_opt or not edges_opt.get("recommended"):
+            fails.append("to_menu: рецидив edges не recommended/отсутствует")
+        if not all(k in menu for k in ("title", "options", "recommendation", "how_to_choose")):
+            fails.append("to_menu: нарушена схема decision_menu")
 
     if fails:
         print("FAIL test_reflect_ingest:")

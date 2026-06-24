@@ -2974,7 +2974,7 @@
     {
       "id": "T-241",
       "title": "Expose conveyor recover through top layer",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
