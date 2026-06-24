@@ -33,6 +33,9 @@ def main():
         _w(root, "decisions/D-1.md", "---\nid: D-1\ntype: decision\nstatus: accepted\nrelated: [T-1]\n---\nтело\n")
         _w(root, "decisions/D-2.md", "---\nid: D-2\ntype: decision\nstatus: superseded\nsuperseded_by: [D-3]\n---\nт\n")
         _w(root, "decisions/D-3.md", "---\nid: D-3\ntype: decision\nstatus: accepted\n---\nт\n")
+        # T-4: тема без файла → topic_unresolved (НЕ жёсткое dangling); T-5: без поля type → missing_type
+        _w(root, "tasks/T-4.md", "---\nid: T-4\ntype: task\nstatus: todo\ntopic: ghost-theme\n---\nт\n")
+        _w(root, "tasks/T-5.md", "---\nid: T-5\nstatus: todo\nrelated: [T-1]\n---\nт\n")
 
         nodes, by_id, by_slug = edges.load_nodes()
         e = edges.build_edges(nodes, by_id, by_slug)
@@ -56,6 +59,14 @@ def main():
         # related НЕ висячее (T-1 существует)
         if any("T-1" in dg for dg in c["dangling"]):
             fails.append("related→T-1 ложно висячее")
+        # ЧЕСТНОСТЬ: тема без файла → topic_unresolved (мягкое), НЕ в жёстком dangling
+        if not any("ghost-theme" in t for t in c["topic_unresolved"]):
+            fails.append("тема-без-файла ghost-theme не в topic_unresolved")
+        if any("ghost-theme" in dg for dg in c["dangling"]):
+            fails.append("in_topic ложно попал в жёсткое dangling (должен быть soft)")
+        # атом без type → missing_type
+        if "T-5" not in c["missing_type"]:
+            fails.append("T-5 без type не пойман в missing_type")
         # supersede целостность: D-2 статус superseded → НЕ нарушение
         if c["supersede"]:
             fails.append("supersede ложно flagged: %s" % c["supersede"])

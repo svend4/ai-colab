@@ -9,7 +9,7 @@
 Типы рёбер (поле → тип · направление · семантика):
   depends_on     A →depends→ B      A нуждается в B          направленное; цикл = дефект
   superseded_by  A →superseded→ B   B заменяет A             направленное; цепочки
-  related        A —related— B      взаимная связь           ненаправленное
+  related        A →related→ B      связь как написана       взаимность НЕ навязывается (инфо)
   l1_basis       portal →basis→ X   портал опирается на tool направленное
   topic          atom →in_topic→ T  тематическая группировка ось-тема (⟂ папка)
   (тело)         A ·cites· B        id упомянут в тексте     слабое
@@ -41,9 +41,9 @@ EXTERNAL_RE = re.compile(r'^(F|C|DIV)-\d+$')
 # структурные рёбра: поле front-matter → тип ребра.
 # LIST = значение может быть списком ([a, b] или a, b); SCALAR = одиночный токен.
 LIST_FIELDS = {"depends_on": "depends", "related": "related", "l1_basis": "basis",
-               "superseded_by": "superseded"}
+               "superseded_by": "superseded", "detail_ref": "detail", "sources": "source"}
 SCALAR_FIELDS = {"topic": "in_topic"}
-DIRECTED = {"depends", "superseded", "basis", "in_topic", "cites"}
+DIRECTED = {"depends", "superseded", "basis", "in_topic", "cites", "detail", "source"}
 
 
 def _slug(path):
@@ -123,8 +123,10 @@ def build_edges(nodes, by_id, by_slug):
             raw = (fm.get(field) or "").strip()
             if raw:
                 dst = _resolve(raw, by_id, by_slug)
+                # in_topic больше НЕ исключаем молча — неразрешённая тема честно = dangling
+                # (разделим в check на жёсткое vs тема-без-файла, но не прячем)
                 edges.append({"src": key, "dst": dst or raw, "type": etype,
-                              "raw": raw, "dangling": dst is None and etype != "in_topic"})
+                              "raw": raw, "dangling": dst is None})
                 if dst:
                     seen_targets.add(dst)
         # слабые cites: id в теле, не учтённые структурно и не self
@@ -170,9 +172,15 @@ def find_cycles(edges):
 
 
 def check(nodes, edges, by_id):
-    out = {"dangling": [], "cycles": [], "supersede": [], "isolates": []}
+    out = {"dangling": [], "topic_unresolved": [], "cycles": [], "supersede": [],
+           "asym_related": [], "missing_type": [], "isolates": [], "active_isolates": []}
+    # ЧЕСТНО: жёсткие висячие (depends/related/…) ОТДЕЛЬНО от тема-без-файла (in_topic) — не прячем
     for e in edges:
-        if e["dangling"]:
+        if not e["dangling"]:
+            continue
+        if e["type"] == "in_topic":
+            out["topic_unresolved"].append("%s →in_topic→ %s (нет файла-темы)" % (e["src"], e["raw"]))
+        else:
             out["dangling"].append("%s →%s→ %s (нет такого атома)" % (e["src"], e["type"], e["raw"]))
     out["cycles"] = [" → ".join(c) for c in find_cycles(edges)]
     # supersede-целостность: A superseded_by B → A должен быть в терминальном статусе
@@ -182,7 +190,19 @@ def check(nodes, edges, by_id):
             if a.get("status") not in ("superseded", "done", "rejected", "answered", "accepted"):
                 out["supersede"].append("%s superseded_by %s, но статус '%s' (не терминальный)"
                                         % (e["src"], e["raw"], a.get("status")))
-    # изоляты: id-атомы (T/D/Q) без единого структурного ребра (in/out, кроме in_topic/cites)
+    # асимметричный related: A—related—B, но не B—related—A (документирован как взаимный)
+    rel = set()
+    for e in edges:
+        if e["type"] == "related" and not e["dangling"]:
+            rel.add((e["src"], e["dst"]))
+    for a, b in sorted(rel):
+        if (b, a) not in rel and nodes.get(b, {}).get("id"):  # только атом↔атом (не пути-файлы)
+            out["asym_related"].append("%s →related→ %s (нет обратного %s→%s)" % (a, b, b, a))
+    # атомы без поля type (гигиена; ломает отображение)
+    for key, n in nodes.items():
+        if n["id"] and not n["type"]:
+            out["missing_type"].append(key)
+    # изоляты: id-атомы (T/D/Q) без структурного ребра; РАЗДЕЛЯЕМ фундамент vs активные
     deg = {}
     for e in edges:
         if e["type"] in ("depends", "related", "superseded", "basis"):
@@ -191,8 +211,12 @@ def check(nodes, edges, by_id):
                 deg[e["dst"]] = deg.get(e["dst"], 0) + 1
     for key, n in nodes.items():
         if n["id"] and n["id"][:2] in ("T-", "D-", "Q-") and deg.get(key, 0) == 0:
-            if n["status"] not in ("done", "rejected", "superseded", "answered"):
-                out["isolates"].append("%s (%s, %s) — 0 структурных рёбер" % (key, n["type"], n["status"]))
+            row = "%s (%s, %s)" % (key, n["type"] or "?", n["status"])
+            # активная задача-изолят = кандидат на линковку; accepted/done решение-фундамент = норма
+            if n["id"].startswith("T-") and n["status"] in ("todo", "doing", "blocked"):
+                out["active_isolates"].append(row + " — активная задача без рёбер (кандидат на линковку)")
+            elif n["status"] not in ("done", "rejected", "superseded", "answered"):
+                out["isolates"].append(row + " — фундамент без рёбер (норма)")
     return out
 
 
@@ -248,7 +272,7 @@ def main(argv):
             print(json.dumps(r, ensure_ascii=False, indent=2)); return 0
         t = r["axis_tree"]
         print("=== %s — две оси ===" % r["id"])
-        print("  ОСЬ-ДЕРЕВО (где): %s/ · уровень %s · %s · %s" % (t["folder"], t["level"] or "—", t["type"], t["status"]))
+        print("  ОСЬ-ДЕРЕВО (где): %s/ · уровень %s · %s · %s" % (t["folder"], t["level"] or "—", t["type"] or "?", t["status"]))
         print("  ОСЬ-ГРАФ (как):")
         print("    out: %s" % (", ".join(r["axis_graph"]["out"]) or "—"))
         print("    in:  %s" % (", ".join(r["axis_graph"]["in"]) or "—"))
@@ -260,18 +284,25 @@ def main(argv):
         print(json.dumps(c, ensure_ascii=False, indent=2))
         return 0 if not (c["dangling"] or c["cycles"]) else 1
     print("=== ПРОВЕРКА ГРАФА (DIV-07/08) ===")
-    for kind, label in (("dangling", "Висячие рёбра (→ несуществующий атом)"),
-                        ("cycles", "Циклы depends_on (дефект зависимостей)"),
+    HARD = {"dangling", "cycles"}
+    for kind, label in (("dangling", "Висячие рёбра атом→атом (жёсткое)"),
+                        ("cycles", "Циклы depends_on (жёсткое)"),
+                        ("topic_unresolved", "Темы без файла-атома (in_topic, мягкое)"),
+                        ("asym_related", "Асимметричный related (инфо: взаимность не навязывается)"),
                         ("supersede", "Supersede-целостность"),
-                        ("isolates", "Изоляты (0 структурных рёбер, активные)")):
+                        ("missing_type", "Атомы без поля type (гигиена)"),
+                        ("active_isolates", "Активные задачи-изоляты (кандидаты на линковку)"),
+                        ("isolates", "Изоляты-фундамент (норма)")):
         items = c[kind]
-        mark = "✗" if (kind in ("dangling", "cycles") and items) else ("•" if items else "✓")
+        mark = "✗" if (kind in HARD and items) else ("•" if items else "✓")
         print("  %s %s: %d" % (mark, label, len(items)))
         for it in items[:12]:
             print("      - %s" % it)
+        if len(items) > 12:
+            print("      … и ещё %d" % (len(items) - 12))
     hard = bool(c["dangling"] or c["cycles"])
-    print("\n  %s" % ("✗ есть жёсткие дефекты графа (висячие/циклы)" if hard
-                      else "✓ граф целостен (висячих рёбер и циклов нет)"))
+    print("\n  %s" % ("✗ есть жёсткие дефекты графа (висячие атом→атом / циклы)" if hard
+                      else "✓ жёстких дефектов нет (висячих атом→атом и циклов); мягкие — см. выше"))
     return 1 if hard else 0
 
 
