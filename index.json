@@ -246,6 +246,13 @@
       "next": ""
     },
     {
+      "id": "razbor-divergence-status-2026-06-24",
+      "title": "Lane B — статус 21 разногласия после churn-reconcile (что разрешено / открыто / в котёл)",
+      "file": "topics/razbor-divergence-status-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "safe-auto-apply-design-2026-06-23",
       "title": "Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal)",
       "file": "topics/safe-auto-apply-design-2026-06-23.md",
@@ -2764,6 +2771,39 @@
       "depends_on": "[]",
       "topic": "pipeline-fencing",
       "next": "Add post-hoc evidence addenda for T-223/T-224 and update stale pipeline fencing test expectations for required --claim"
+    },
+    {
+      "id": "T-228",
+      "title": "Harden next_id reservations after T-223/T-226 collisions",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "pipeline-fencing",
+      "next": "Add reservation_token check/fill path to next_id.py, update tests/docs/friction logs, validate and snapshot"
+    },
+    {
+      "id": "T-229",
+      "title": "D-Card batch 1 — coordination and friction tools",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-223, T-226, T-228]",
+      "topic": "architecture-core",
+      "next": "Add FILE ID CARD blocks to next_id/friction tools and tests, run metadata soft-check and core validations"
+    },
+    {
+      "id": "T-230",
+      "title": "D-Card batch 2 — core top-layer tools",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[T-229]",
+      "topic": "architecture-core",
+      "next": ""
     }
   ],
   "questions": [

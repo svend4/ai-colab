@@ -50,6 +50,7 @@
 | Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance) | `topics/pyramid-grounding-plan-2026-06-23.md` | proposed | — |  |
 | Q-017 — семантический гибрид слияния документации (механический pre-cluster + agent-pass) | `topics/q017-docmerge-semantic-2026-06-23.md` | proposed | — |  |
 | Q-017 — семантический гибрид слияния документации (consolidated, implementation-ready) | `topics/q017-semantic-consolidated-2026-06-23.md` | proposed | — |  |
+| Lane B — статус 21 разногласия после churn-reconcile (что разрешено / открыто / в котёл) | `topics/razbor-divergence-status-2026-06-24.md` | proposed | — |  |
 | Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal) | `topics/safe-auto-apply-design-2026-06-23.md` | proposed | — |  |
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `topics/session-state-2026-06-23.md` | proposed | — |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed | — |  |

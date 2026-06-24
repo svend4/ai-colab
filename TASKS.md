@@ -241,4 +241,7 @@
 | T-225 | Разрешение архитектурных разногласий DVG-001 и DVG-004 | done | — | `architecture-core` |  |
 | T-226 | Внедрение мягкой проверки метаданных (Metadata Soft-Check) | done | — | `architecture-core` |  |
 | T-227 | Evidence addenda for T-223/T-224 and pipeline fencing test alignment | done | pool | `pipeline-fencing` | Add post-hoc evidence addenda for T-223/T-224 and update stale pipeline fencing test expectations for required --claim |
+| T-228 | Harden next_id reservations after T-223/T-226 collisions | done | pool | `pipeline-fencing` | Add reservation_token check/fill path to next_id.py, update tests/docs/friction logs, validate and snapshot |
+| T-229 | D-Card batch 1 — coordination and friction tools | done | pool | `architecture-core` | Add FILE ID CARD blocks to next_id/friction tools and tests, run metadata soft-check and core validations |
+| T-230 | D-Card batch 2 — core top-layer tools | done | pool | `architecture-core` |  |
 <!-- GEN:tasks END -->
