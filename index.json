@@ -197,6 +197,13 @@
       "next": ""
     },
     {
+      "id": "navigation-vs-sharding-2026-06-24",
+      "title": "Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность)",
+      "file": "topics/navigation-vs-sharding-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "parallel-work-divergences-2026-06-22",
       "title": "Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017)",
       "file": "topics/parallel-work-divergences-2026-06-22.md",

@@ -1,0 +1,63 @@
+<!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
+# Индекс папки `topics/` — 47 файлов, 4 подпапок
+
+> Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
+
+## Подпапки
+
+- `topics/agent-onboarding/`
+- `topics/commit-policy/`
+- `topics/driver-acceptance-batch/`
+- `topics/repo-review/`
+
+## Файлы (визитки)
+
+| файл | type | status | суть |
+|---|---|---|---|
+| [adoption-statistics-2026-06-23.md](../topics/adoption-statistics-2026-06-23.md) | — | — | status: proposed |
+| [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
+| [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
+| [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | topic | proposed | File-native движок координации агентов — единый канон организации знания и кода по двум ос |
+| [assurance-and-doc-merge-2026-06-22.md](../topics/assurance-and-doc-merge-2026-06-22.md) | topic | proposed | **Переформулировка:** Вопрос о трёх проблемах гарантирования инструкций: 1. ПРИМЕНЕНИЕ: ка |
+| [assurance-hardening-plan-2026-06-23.md](../topics/assurance-hardening-plan-2026-06-23.md) | topic | proposed | Карты согласованы и проверены по живому репозиторию: assurance.py — это законченный read-o |
+| [build-specs-2026-06-23.md](../topics/build-specs-2026-06-23.md) | topic | proposed | Готовые edit-спеки для Codex-hot / post-ratification сборок: каждая секция ниже — это адди |
+| [collab-safety-subsystem-2026-06-23.md](../topics/collab-safety-subsystem-2026-06-23.md) | topic | proposed | Конкурентные агенты в этом репозитории **никогда** не используют потоки-замки ОС или базу  |
+| [commit-policy-streams-2026-06-21.md](../topics/commit-policy-streams-2026-06-21.md) | — | accepted | Форк-вариант Claude (по D-017) на вопрос Stefan: как агентам коммитить, **не блокируя друг |
+| [d003-scope.md](../topics/d003-scope.md) | — | done | D-003 требует короткое обоснование при изменении служебных/общих файлов. Открытый под-вопр |
+| [d014-execute-off-ratification-2026-06-23.md](../topics/d014-execute-off-ratification-2026-06-23.md) | cauldron-packet | proposed | Дата: 2026-06-23. |
+| [dogfood-run.md](../topics/dogfood-run.md) | — | waiting | Система построена (T-001..T-016, T-005 ongoing), но всё — meta-работа. Stefan запустил пер |
+| [drivers-layer.md](../topics/drivers-layer.md) | — | archive | Эта тема возникла параллельно с `topics/ai-os-bridge.md` (Novax) по одному и тому же вопро |
+| [drivers-subsystem-state-2026-06-23.md](../topics/drivers-subsystem-state-2026-06-23.md) | topic | proposed | A driver is an L1 Markdown file in `drivers/` whose front-matter is a checkable capability |
+| [example.md](../topics/example.md) | — | done | Это тестовая тема, по которой можно проверить формат полилога. Каждый участник может добав |
+| [finder-doc-vs-reality-2026-06-23.md](../topics/finder-doc-vs-reality-2026-06-23.md) | — | proposed | Самый массовый кластер: документы под-/пере-заявляют статус относительно кода. Нужно отмет |
+| [finder-frontier-2026-06-23.md](../topics/finder-frontier-2026-06-23.md) | theme | proposed | FINDER-фронтир: 37 подтверждённых непостроенных пунктов, ранжированных как forward-backlog |
+| [fleet-designs-2026-06-23.md](../topics/fleet-designs-2026-06-23.md) | topic | proposed | Результаты двух нод параллельного флота воркфлоу (по перспективному бэклогу). Оба — **гото |
+| [friction-subsystems-synthesis-2026-06-22.md](../topics/friction-subsystems-synthesis-2026-06-22.md) | topic | proposed | За одну сессию два агента независимо построили подсистемы для одной темы. Они **не дублика |
+| [gate-poison-situation-2026-06-22.md](../topics/gate-poison-situation-2026-06-22.md) | topic | resolved | Pre-commit hook (`tools/githooks/pre-commit`) прогоняет ДВА последовательных gate по |
+| [governance-proposals-2026-06-23.md](../topics/governance-proposals-2026-06-23.md) | topic | proposed | Два предложения для **котла (D-018, не solo)**, проверены против файлов. Источник: нода фл |
+| [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
+| [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
+| [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
+| [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
+| [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
+| [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
+| [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | open | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
+| [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
+| [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | — | — | Дата сборки: 2026-06-22. Историк/синтезатор. Документ прослеживает идею «уже не текст, но  |
+| [parallel-work-divergences-2026-06-22.md](../topics/parallel-work-divergences-2026-06-22.md) | topic | proposed | — |
+| [perspective-backlog-2026-06-23.md](../topics/perspective-backlog-2026-06-23.md) | topic | proposed | Этот файл — стоячий источник будущих заданий для `tools/conveyor.py next`. Он должен отраж |
+| [pyramid-grounding-consolidated-2026-06-23.md](../topics/pyramid-grounding-consolidated-2026-06-23.md) | topic | proposed | Это сводный канон-документ двух согласованных дизайнов (оба `proposed`): механики **`deriv |
+| [pyramid-grounding-plan-2026-06-23.md](../topics/pyramid-grounding-plan-2026-06-23.md) | topic | proposed | Обе карты сходятся: сегодня «grounding» проходит по двум слабым каналам — over-broad маниф |
+| [q006-agent-onboarding.md](../topics/q006-agent-onboarding.md) | — | done | Claude: C (или B). A удобен, но обходит роли. |
+| [q016-assurance-state-2026-06-23.md](../topics/q016-assurance-state-2026-06-23.md) | topic | proposed | **Файлы (абсолютные пути):** |
+| [q017-docmerge-semantic-2026-06-23.md](../topics/q017-docmerge-semantic-2026-06-23.md) | topic | proposed | **Концептуальный разрыв.** `tools/doc_consensus.py` сравнивает пункты только по пересечени |
+| [q017-semantic-consolidated-2026-06-23.md](../topics/q017-semantic-consolidated-2026-06-23.md) | topic | proposed | Это сводный, готовый-к-реализации канон-документ по Q-017: он объединяет три producer-разб |
+| [razbor-consensus-2026-06-24.md](../topics/razbor-consensus-2026-06-24.md) | — | proposed | Каждый пункт — ОДИН смысл, собранный из нескольких доков. В скобках — кто подтвердил. |
+| [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | — | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
+| [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
+| [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
+| [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | open | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
+| [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
+| [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
+| [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
+| [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |

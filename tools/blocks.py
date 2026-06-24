@@ -101,6 +101,7 @@ BLOCKS = {
             ("header.py", ["board"], "advisory"),
             ("layer_check.py", [], "advisory"),
             ("heading_check.py", [], "advisory"),
+            ("folder_index.py", ["check-all"], "advisory"),
         ],
     },
 }

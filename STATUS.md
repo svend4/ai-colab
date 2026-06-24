@@ -94,6 +94,7 @@
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `topics/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `topics/gate-poison-situation-2026-06-22.md` | resolved |  |
 | Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified | `topics/governance-proposals-2026-06-23.md` | proposed |  |
+| Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность) | `topics/navigation-vs-sharding-2026-06-24.md` | proposed |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `topics/parallel-work-divergences-2026-06-22.md` | proposed |  |
 | Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `topics/perspective-backlog-2026-06-23.md` | proposed |  |
 | Заземление пирамиды (L2→L1) — consolidated plan (derive_reuse + наполнение порталов) | `topics/pyramid-grounding-consolidated-2026-06-23.md` | proposed |  |
