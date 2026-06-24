@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 228 файлов
+# Индекс папки `tasks/` — 245 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -26,7 +26,7 @@
 | [T-017.md](../tasks/T-017.md) | task | done | Создать файл `docs/glossary.md` с расшифровкой всех терминов, используемых в репозитории:  |
 | [T-018.md](../tasks/T-018.md) | task | done | Создать файл `docs/quickstart.md` — пошаговое руководство для человека или агента, который |
 | [T-019.md](../tasks/T-019.md) | task | done | Единственное свойство очереди, которое dogfood-прогон проверил только по коду, а не |
-| [T-020.md](../tasks/T-020.md) | task | blocked | Создать подробный план прослойки AI-OS Bridge. |
+| [T-020.md](../tasks/T-020.md) | task | done | Создать подробный план прослойки AI-OS Bridge. |
 | [T-021.md](../tasks/T-021.md) | task | done | Параллельно с T-020 (Novax: исследование svend4 + варианты A/B/C) подготовлен глубокий тех |
 | [T-022.md](../tasks/T-022.md) | task | done | Создать первый практический слой AI-OS Bridge: папку `drivers/`, где каждая способность оп |
 | [T-023.md](../tasks/T-023.md) | task | done | Сейчас `drivers/` читается человеком и агентом как markdown-каталог. Следующий шаг — сдела |
@@ -180,7 +180,7 @@
 | [T-171.md](../tasks/T-171.md) | task | done | Проведён полный технический и концептуальный аудит текущего состояния проекта. |
 | [T-172.md](../tasks/T-172.md) | task | done | Аудит T-171 показал: прямой PowerShell write в `tmp-work` работает, но Python `tempfile.mk |
 | [T-173.md](../tasks/T-173.md) | task | done | Аудит T-171 подтвердил две medium-находки `top.py assurance all`: |
-| [T-174.md](../tasks/T-174.md) | task | blocked | Назначение трекинга: `call_tool` MCP acceptance уже закрыта переносимым |
+| [T-174.md](../tasks/T-174.md) | task | done | Задача переведена в `done` на основании D-025. Стратегия по умолчанию для Windows-машин: * |
 | [T-175.md](../tasks/T-175.md) | task | done | P3 из FINDER→роутер→SOLVER: `decisions/D-014.md` был пустым плейсхолдером, хотя |
 | [T-176.md](../tasks/T-176.md) | task | done | Q-017 (открыт Stefan) — автоматизация слияния документации агентов: находить общие пункты  |
 | [T-177.md](../tasks/T-177.md) | task | done | После закрытия T-176 `python tools\conveyor.py next` всё ещё предлагает Q-017 semantic doc |
@@ -208,13 +208,13 @@
 | [T-199.md](../tasks/T-199.md) | task | done | **Цель:** README.md не содержит новые папки, созданные при масштабировании. |
 | [T-200.md](../tasks/T-200.md) | task | done | **Цель:** зафиксировать изменения, не создавая хаоса в git. |
 | [T-201.md](../tasks/T-201.md) | task | done | **Цель:** не оставлять failed-задачи гнить в очереди. |
-| [T-202.md](../tasks/T-202.md) | task | blocked | **Цель:** зафиксировать всё выполненное за сессию. |
+| [T-202.md](../tasks/T-202.md) | task | done | **Цель:** зафиксировать всё выполненное за сессию. |
 | [T-203.md](../tasks/T-203.md) | task | done | **Цель:** актуальный статус-отчёт для людей и агентов. |
 | [T-204.md](../tasks/T-204.md) | task | done | **Цель:** quickstart-гайды содержат актуальную информацию. |
 | [T-205.md](../tasks/T-205.md) | task | done | **Цель:** STATUS.md отражает текущее состояние. |
 | [T-206.md](../tasks/T-206.md) | task | done | Из C (RSI-автоматизация). P15 (re-measure дельта) и P16 (auto-archive stale streams) **сде |
 | [T-207.md](../tasks/T-207.md) | task | done | Из FINDER-фронтира P12/P13. **Дизайн доказан вживую** (гейт прогнан READY), но `promote.py |
-| [T-208.md](../tasks/T-208.md) | task | blocked | Из FINDER-фронтира: крупнейший непостроенный слой (execute-sandbox, 10 пунктов). Дизайн — |
+| [T-208.md](../tasks/T-208.md) | task | done | Из FINDER-фронтира: крупнейший непостроенный слой (execute-sandbox, 10 пунктов). Дизайн — |
 | [T-209.md](../tasks/T-209.md) | task | done | **Цель:** Единственная защита от затирания чужого done/failed (`require_holder/claim_id-fe |
 | [T-210.md](../tasks/T-210.md) | task | done | **Цель:** Статус задачи T-174 (WinError-5 async-stdio MCP) лжёт на 4 поверхностях (frontma |
 | [T-211.md](../tasks/T-211.md) | task | done | **Цель:** Закрыть gap'ы из finder-frontier (P7: `permissions.match()` glob без теста, P8:  |
@@ -235,3 +235,20 @@
 | [T-226.md](../tasks/T-226.md) | — | done | Нужно встроить проверку D-Cards в ядро проекта, но не ломать CI. |
 | [T-227.md](../tasks/T-227.md) | task | done | Закрыть свежий assurance debt после параллельных задач `T-223` и `T-224`, не переписывая ч |
 | [T-228.md](../tasks/T-228.md) | task | done | Устранить свежую жалобу из `queues/outbox/2026-06-24-t223-id-collision.md` и `queues/outbo |
+| [T-229.md](../tasks/T-229.md) | task | done | Начать поэтапное закрытие metadata soft-check долга: добавить D-Card визитки в малый набор |
+| [T-230.md](../tasks/T-230.md) | — | done | Продолжить уменьшение D-Card metadata debt после T-229 малым проверяемым пакетом для верхн |
+| [T-231.md](../tasks/T-231.md) | — | done | Убрать актуальный warning `assurance currency`: принятое решение `decisions/D-025.md` имее |
+| [T-232.md](../tasks/T-232.md) | — | done | Закрыть текущий metadata soft-check: `tools/portability_check.py` не имеет машинно читаемо |
+| [T-233.md](../tasks/T-233.md) | task | done | Эксперимент Self-Reflection показал, что многие скрипты `tools/*.py` жестко привязаны к `R |
+| [T-234.md](../tasks/T-234.md) | task | done | Во время dogfooding-эксперимента `result_intake.py` классифицировал скрипт `pipeline.py` к |
+| [T-235.md](../tasks/T-235.md) | task | done | Наш текущий инструментарий (уровень C) видит код просто как текстовые файлы. Чтобы полноце |
+| [T-236.md](../tasks/T-236.md) | task | done | В ходе глобального эксперимента Dogfooding мы попытались проанализировать директорию `driv |
+| [T-237.md](../tasks/T-237.md) | task | done | При глобальном Dogfooding-эксперименте мы загрузили `indexes/` в песочницу. Оказалось, что |
+| [T-238.md](../tasks/T-238.md) | task | done | The user asked whether agents may write experimental program code into a sandbox subfolder |
+| [T-239.md](../tasks/T-239.md) | task | done | The multi-agent conveyor hit repeated reset and UI-indicator mismatch cases: agents disapp |
+| [T-240.md](../tasks/T-240.md) | task | done | The completed agent-cell synthesis recommended `conveyor recover` first. T-239 is now done |
+| [T-241.md](../tasks/T-241.md) | task | done | T-239 added `tools/conveyor.py recover` as a read-only advisory diagnostic. Chandrasekhar' |
+| [T-242.md](../tasks/T-242.md) | task | done | 1. CLI tools with hostile `sys.argv` behavior where `--help` can fail or trigger normal si |
+| [T-243.md](../tasks/T-243.md) | task | done | The remaining gap is visibility. Agents should not manually guess which tools still need w |
+| [T-244.md](../tasks/T-244.md) | task | done | T-243 added `tools/cli_inventory.py` and showed 45 remaining CLI-risk entries. The next sa |
+| [T-245.md](../tasks/T-245.md) | task | todo | — |

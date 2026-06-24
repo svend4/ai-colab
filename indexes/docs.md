@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 115 файлов
+# Индекс папки `docs/` — 119 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -22,6 +22,7 @@
 | [build-plans-overview-2026-06-23.md](../docs/build-plans-overview-2026-06-23.md) | doc | proposed | **Что строим.** Opt-in стадию `--semantic`, наслоённую на `tools/doc_consensus.py`. Чистый |
 | [card-standard.md](../docs/card-standard.md) | doc | proposed | Одна форма на всех уровнях (фрактал): |
 | [cauldron-two-lane-board-2026-06-24.md](../docs/cauldron-two-lane-board-2026-06-24.md) | cauldron-board | proposed | **Purpose.** Сделать видимыми две большие категории информации, которые попадают в котёл:  |
+| [cli-help-guard-convention-2026-06-24.md](../docs/cli-help-guard-convention-2026-06-24.md) | doc | proposed | Пропорциональный ответ на котёл-критику «hostile sys.argv»: общий _cli.help_guard(__doc__) |
 | [commit-stream-policy.md](../docs/commit-stream-policy.md) | — | — | Дата: 2026-06-21 |
 | [concept-map.md](../docs/concept-map.md) | doc | proposed | Карта read-only и описательная: она **не** дублирует содержание доков, а связывает их. Кан |
 | [core-export-acceptance-result-2026-06-21.md](../docs/core-export-acceptance-result-2026-06-21.md) | report | done | Stage 4 core-export mechanism was checked as a proposed, non-final L1 export path: |
@@ -40,7 +41,7 @@
 | [engine-state-2026-06-22.md](../docs/engine-state-2026-06-22.md) | — | — | *Чистовик ведётся как живой: при изменении инструментов/политик обновлять таблицу групп и  |
 | [engine-subsystems-overview-2026-06-23.md](../docs/engine-subsystems-overview-2026-06-23.md) | doc | proposed | **Канон:** `topics/collab-safety-subsystem-2026-06-23.md`. **Governance:** `D-021` (Уровен |
 | [execute-sandbox-preflight.md](../docs/execute-sandbox-preflight.md) | — | accepted | Дата: 2026-06-21. |
-| [execute-sandbox-runner-design-2026-06-23.md](../docs/execute-sandbox-runner-design-2026-06-23.md) | doc | proposed | Порядок снизу-вверх (preflight-проверки до runner'а; runner — только когда все гейты закры |
+| [execute-sandbox-runner-design-2026-06-23.md](../docs/execute-sandbox-runner-design-2026-06-23.md) | doc | proposed | Согласно решению пользователя от 2026-06-24, мы принимаем гибридный путь развития Execute- |
 | [external-code-sandbox.md](../docs/external-code-sandbox.md) | — | — | Дата: 2026-06-21 |
 | [file-inventory-acceptance-result-2026-06-21.md](../docs/file-inventory-acceptance-result-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [files-driver-cleanup-result-2026-06-21.md](../docs/files-driver-cleanup-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
@@ -92,6 +93,7 @@
 | [powershell-utf8-output.md](../docs/powershell-utf8-output.md) | — | — | Дата: 2026-06-20 |
 | [project-audit-2026-06-23.md](../docs/project-audit-2026-06-23.md) | audit | proposed | Дата аудита: 2026-06-23. Аудит сделан по текущей рабочей папке, включая незакоммиченные из |
 | [promotion-rules.md](../docs/promotion-rules.md) | — | — | Дата: 2026-06-21 |
+| [protocol-machine-layer.md](../docs/protocol-machine-layer.md) | doc | accepted | Документ описывает **детерминированные правила**, обязательные для исполнения всеми AI-аге |
 | [pyramid-candidate-map.md](../docs/pyramid-candidate-map.md) | — | — | Дата: 2026-06-21 · Статус: **proposed** (материал для котла, Q2/Q3 решает коллектив, D-018 |
 | [quickstart.md](../docs/quickstart.md) | — | — | Если вы открыли эту папку впервые — прочтите этот файл за 5 минут и начните работу. |
 | [recursive-self-improvement.md](../docs/recursive-self-improvement.md) | doc | proposed | Adoption-аудит (`topics/adoption-statistics-2026-06-23.md`) дал диагноз, который и есть от |
@@ -103,6 +105,7 @@
 | [runtime-recovery-playbook.md](../docs/runtime-recovery-playbook.md) | — | — | Дата: 2026-06-20 |
 | [runtime-unblock-result-2026-06-21.md](../docs/runtime-unblock-result-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [runtime-validation-batch-2026-06-20.md](../docs/runtime-validation-batch-2026-06-20.md) | — | — | Дата: 2026-06-20 |
+| [sandbox-self-reflection-methodology.md](../docs/sandbox-self-reflection-methodology.md) | doc | accepted | Реальный прогон этой методички, демонстрирующий, зачем нужен Уровень 2: |
 | [session-master-2026-06-23.md](../docs/session-master-2026-06-23.md) | doc | proposed | **Общий хребет:** `tools/pipeline.py`, `tools/validate.py`, `tools/merge_gate.py`, `tools/ |
 | [skills-usage.md](../docs/skills-usage.md) | — | accepted | Дата: 2026-06-21. |
 | [sqlite-driver-acceptance-result-2026-06-21.md](../docs/sqlite-driver-acceptance-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
@@ -110,6 +113,7 @@
 | [state-reconciliation-layer.md](../docs/state-reconciliation-layer.md) | — | — | Дата: 2026-06-20 |
 | [status-report-2026-06-20.md](../docs/status-report-2026-06-20.md) | — | — | **Что есть:** |
 | [status-report-2026-06-23.md](../docs/status-report-2026-06-23.md) | doc | draft | Дата проверки: 2026-06-23. |
+| [subagent-3to1-sandbox-policy.md](../docs/subagent-3to1-sandbox-policy.md) | doc | accepted | Данный документ описывает фундаментальную политику управления системными субагентами (LLM  |
 | [t137-consensus-result-2026-06-21.md](../docs/t137-consensus-result-2026-06-21.md) | report | review | T-137 доведён до стадии `review`, не `done`: технический пакет проверен, но D-018 требует  |
 | [t148-volatile-runtime-result-2026-06-22.md](../docs/t148-volatile-runtime-result-2026-06-22.md) | — | — | Task: `T-148` |
 | [test-corpus-plan.md](../docs/test-corpus-plan.md) | — | — | Маленький, безопасный, детерминированный набор fixture-файлов для проверки драйверов (`fil |

@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 47 файлов, 4 подпапок
+# Индекс папки `topics/` — 55 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -16,6 +16,7 @@
 |---|---|---|---|
 | [adoption-statistics-2026-06-23.md](../topics/adoption-statistics-2026-06-23.md) | — | — | status: proposed |
 | [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
+| [agent-self-reflection-delegation.md](../topics/agent-self-reflection-delegation.md) | topic | active | Мы успешно внедрили и протестировали методику "Dogfooding / Self-Reflection" (использовани |
 | [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
 | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | topic | proposed | File-native движок координации агентов — единый канон организации знания и кода по двум ос |
 | [assurance-and-doc-merge-2026-06-22.md](../topics/assurance-and-doc-merge-2026-06-22.md) | topic | proposed | **Переформулировка:** Вопрос о трёх проблемах гарантирования инструкций: 1. ПРИМЕНЕНИЕ: ка |
@@ -25,6 +26,7 @@
 | [commit-policy-streams-2026-06-21.md](../topics/commit-policy-streams-2026-06-21.md) | — | accepted | Форк-вариант Claude (по D-017) на вопрос Stefan: как агентам коммитить, **не блокируя друг |
 | [d003-scope.md](../topics/d003-scope.md) | — | done | D-003 требует короткое обоснование при изменении служебных/общих файлов. Открытый под-вопр |
 | [d014-execute-off-ratification-2026-06-23.md](../topics/d014-execute-off-ratification-2026-06-23.md) | cauldron-packet | proposed | Дата: 2026-06-23. |
+| [debt-cleanup-recycling-proposal-2026-06-24.md](../topics/debt-cleanup-recycling-proposal-2026-06-24.md) | doc | proposed | **Инициатор:** Субагентский Рой 3:1 (Куратор) + Antigravity + Человек |
 | [dogfood-run.md](../topics/dogfood-run.md) | — | waiting | Система построена (T-001..T-016, T-005 ongoing), но всё — meta-работа. Stefan запустил пер |
 | [drivers-layer.md](../topics/drivers-layer.md) | — | archive | Эта тема возникла параллельно с `topics/ai-os-bridge.md` (Novax) по одному и тому же вопро |
 | [drivers-subsystem-state-2026-06-23.md](../topics/drivers-subsystem-state-2026-06-23.md) | topic | proposed | A driver is an L1 Markdown file in `drivers/` whose front-matter is a checkable capability |
@@ -38,6 +40,8 @@
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
 | [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
+| [kotel-system-critique-2026-06-24-action-plan.md](../topics/kotel-system-critique-2026-06-24-action-plan.md) | topic-plan | proposed | Критика в `topics/kotel-system-critique-2026-06-24.md` верная по направлению: система уже  |
+| [kotel-system-critique-2026-06-24.md](../topics/kotel-system-critique-2026-06-24.md) | doc | proposed | *Статус: Консенсус достигнут. Ожидается подтверждение Человека на перевод в `accepted`.* |
 | [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
@@ -52,12 +56,16 @@
 | [q016-assurance-state-2026-06-23.md](../topics/q016-assurance-state-2026-06-23.md) | topic | proposed | **Файлы (абсолютные пути):** |
 | [q017-docmerge-semantic-2026-06-23.md](../topics/q017-docmerge-semantic-2026-06-23.md) | topic | proposed | **Концептуальный разрыв.** `tools/doc_consensus.py` сравнивает пункты только по пересечени |
 | [q017-semantic-consolidated-2026-06-23.md](../topics/q017-semantic-consolidated-2026-06-23.md) | topic | proposed | Это сводный, готовый-к-реализации канон-документ по Q-017: он объединяет три producer-разб |
-| [razbor-consensus-2026-06-24.md](../topics/razbor-consensus-2026-06-24.md) | — | proposed | Каждый пункт — ОДИН смысл, собранный из нескольких доков. В скобках — кто подтвердил. |
-| [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | — | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
+| [razbor-consensus-2026-06-24.md](../topics/razbor-consensus-2026-06-24.md) | topic | proposed | Каждый пункт — ОДИН смысл, собранный из нескольких доков. В скобках — кто подтвердил. |
+| [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | topic | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
+| [razbor-divergence-status-2026-06-24.md](../topics/razbor-divergence-status-2026-06-24.md) | topic | proposed | Из 21 разногласия ~9 разрешены этой сессией (мигрируют в консенсус), ~4 tracked/partial, ~ |
 | [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
 | [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | open | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
 | [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
+| [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
+| [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
+| [typed-link-graph-2026-06-24.md](../topics/typed-link-graph-2026-06-24.md) | topic | proposed | Рёбра уже неявно лежат во front-matter (depends_on/related/superseded_by/topic/l1_basis);  |
