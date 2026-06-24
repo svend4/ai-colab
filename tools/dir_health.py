@@ -51,7 +51,12 @@ def scan():
         n = len(real)
         relshow = "." if rel == "." else rel.replace("\\", "/")
         if n > FILES_FAIL:
-            findings.append({"kind": "files-per-dir", "level": "FAIL", "where": relshow,
+            # navigation-vs-sharding: при наличии папка-индекса (indexes/<name>.md) это не FAIL —
+            # навигация решена метаданными, шардинг не требуется (решение 2026-06-24).
+            has_index = "/" not in relshow and os.path.isfile(
+                os.path.join(ROOT, "indexes", relshow + ".md"))
+            findings.append({"kind": "files-per-dir", "level": "WARN" if has_index else "FAIL",
+                             "where": relshow + (" (есть папка-индекс)" if has_index else ""),
                              "value": n, "limit": FILES_FAIL})
         elif n > FILES_WARN:
             findings.append({"kind": "files-per-dir", "level": "WARN", "where": relshow,
