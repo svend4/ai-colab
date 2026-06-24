@@ -80,7 +80,7 @@ def load_nodes():
             key = nid or slug
             rel = os.path.relpath(p, ROOT).replace("\\", "/")
             folder = rel.split("/")[0] if "/" in rel else "(root)"
-            node = {"key": key, "id": nid, "slug": slug, "folder": folder,
+            node = {"key": key, "id": nid, "slug": slug, "folder": folder, "path": rel,
                     "type": fm.get("type", ""), "status": fm.get("status", ""),
                     "level": fm.get("level", ""), "title": fm.get("title", slug),
                     "fm": fm, "body": txt}

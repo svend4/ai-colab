@@ -57,7 +57,7 @@ related: [razbor-divergence-2026-06-24, cauldron-two-lane-board-2026-06-24, navi
 | **DIV-05** | identity/auth/enforced-права + prompt-injection | Security-design. Codex **T-219 «Redaction»** уже касается. Координировать. |
 | **DIV-17** | многоуровневая автономия + риск-рубрикатор (серьёзность×вероятность) | `risk_gate.py` тиринг — частично. Расширить рубрикатор. Med. |
 | **DIV-20** | наивный front-matter парсер (_canon split(':',1), не YAML) | **Реальный код-долг**: ломается на сложном YAML. Fix `_canon` (core, осторожно) или принять ограничение. |
-| **DIV-21** | зрелость TRL по осям / промилле | Идея Stefan (% выполнения). Build: maturity-скоринг (как §6 реестра вопросов). Med. |
+| ~~DIV-21~~ | зрелость TRL по осям / промилле | ✅ **ПОСТРОЕНО** `tools/maturity.py` — 0-1000‰ по 5 осям (identity/card/connected/fresh/resolved), СИНТЕЗ edges+decay. Средняя канона 737‰. |
 
 # 4. Не-конфликт
 - **DIV-16** Codex 8-слойная платформа / этапы A-F / queue→agent_queue — позиционирование Codex, не противоречие. Информационно.
