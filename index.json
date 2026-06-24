@@ -2866,7 +2866,7 @@
     {
       "id": "T-235",
       "title": "Разработка семантического AST-анализатора (python_analyzer.py)",
-      "status": "doing",
+      "status": "done",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
