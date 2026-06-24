@@ -288,6 +288,13 @@
       "next": ""
     },
     {
+      "id": "time-axis-decay-2026-06-24",
+      "title": "Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06",
+      "file": "topics/time-axis-decay-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "topics/finder-doc-vs-reality-2026-06-23.md",
       "title": "\"FINDER — doc-vs-reality синтез (26 подтверждённых находок)\"",
       "file": "topics/finder-doc-vs-reality-2026-06-23.md",

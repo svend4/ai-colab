@@ -72,13 +72,14 @@ BLOCKS = {
         ],
     },
     "improve": {
-        "desc": "петля само-улучшения: adoption(применение)+audit(дефекты)+propagation(решения→исполнение) → вход роутеру",
+        "desc": "петля само-улучшения: adoption(применение)+audit(дефекты)+propagation(решения→исполнение)+decay(остывание) → вход роутеру",
         "steps": [
             ("adoption.py", ["--json"], "advisory"),
             ("friction.py", ["status"], "advisory"),
             ("assurance.py", [], "advisory"),
             ("drift_check.py", [], "advisory"),
             ("decision_propagation.py", [], "advisory"),
+            ("decay.py", ["--json"], "advisory"),  # ось времени: stale-активные кандидаты (DIV-06)
             ("validate.py", [], "gate"),
             ("generate.py", ["--check"], "gate"),
         ],

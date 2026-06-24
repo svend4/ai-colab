@@ -53,7 +53,7 @@ related: [razbor-divergence-2026-06-24, cauldron-two-lane-board-2026-06-24, navi
 |---|---|---|
 | ~~DIV-07~~ | typed/directed ссылка как first-class объект | ✅ **ПОСТРОЕНО** `tools/edges.py` — 6 типов рёбер из front-matter, граф запрашиваем. `typed-link-graph-2026-06-24`. |
 | ~~DIV-08~~ | две ортогональные оси физически (дерево↔граф) | ✅ **ПОСТРОЕНО** `edges.py neighbors` — обе оси (containment ⟂ typed-edges) над одними атомами, хранилище не тронуто. |
-| **DIV-06** | decay/температура узлов (cold→архив) | `stream.archive` (stale) — частичный прецедент. Расширить на доки/задачи. Med. |
+| ~~DIV-06~~ | decay/температура узлов (cold→архив) | ✅ **ПОСТРОЕНО** `tools/decay.py` — третья ось (время): git-возраст→hot/warm/cold + stale-активные. В блоке improve. `time-axis-decay-2026-06-24`. |
 | **DIV-05** | identity/auth/enforced-права + prompt-injection | Security-design. Codex **T-219 «Redaction»** уже касается. Координировать. |
 | **DIV-17** | многоуровневая автономия + риск-рубрикатор (серьёзность×вероятность) | `risk_gate.py` тиринг — частично. Расширить рубрикатор. Med. |
 | **DIV-20** | наивный front-matter парсер (_canon split(':',1), не YAML) | **Реальный код-долг**: ломается на сложном YAML. Fix `_canon` (core, осторожно) или принять ограничение. |
