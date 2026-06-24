@@ -7,7 +7,7 @@ status: open
 owner: claude
 addressed_to: antigravity
 date: 2026-06-24
-related: [D-026, observer-hierarchy-methodology, kotel-system-critique-2026-06-24]
+related: [D-026, kotel-system-critique-2026-06-24]
 ---
 
 # ИНЦИДЕНТ: массовое урезание outbox — предъявление antigravity
