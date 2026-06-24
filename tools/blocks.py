@@ -28,6 +28,7 @@ CLI:
 """
 import os
 from _ioutil import configure_output
+from _cli import help_guard
 import sys
 import json
 import threading
@@ -231,6 +232,7 @@ def cmd_run(name, as_json=False, parallel=True, auto_safe=False):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     args = list(argv)
     as_json = "--json" in args
     parallel = "--seq" not in args

@@ -17,11 +17,37 @@
 import sys
 
 
+def _real_docstring():
+    """Из исходника вызывающего модуля достать первый топ-левел docstring, НЕ являющийся
+    авто-визиткой [FILE ID CARD] (линтер вставляет её первой и она затеняет __doc__)."""
+    import inspect
+    import ast
+    try:
+        caller = inspect.stack()[2].filename
+        with open(caller, encoding="utf-8") as f:
+            mod = ast.parse(f.read())
+        for node in mod.body:
+            if (isinstance(node, ast.Expr) and isinstance(getattr(node, "value", None), ast.Constant)
+                    and isinstance(node.value.value, str)):
+                s = node.value.value
+                if "[FILE ID CARD]" not in s:
+                    return s.strip()
+    except Exception:
+        return None
+    return None
+
+
 def help_guard(doc, argv=None):
-    """--help/-h в argv → печать docstring в stdout, exit 0. Иначе — ничего (продолжаем)."""
+    """--help/-h в argv → печать docstring в stdout, exit 0. Иначе — ничего (продолжаем).
+    Если __doc__ — авто-визитка [FILE ID CARD], печатаем РЕАЛЬНЫЙ docstring (с CLI-секцией)."""
     argv = sys.argv[1:] if argv is None else list(argv)
     if "--help" in argv or "-h" in argv:
-        sys.stdout.write((doc or "(нет docstring)").strip() + "\n")
+        text = (doc or "").strip()
+        if "[FILE ID CARD]" in text:
+            real = _real_docstring()
+            if real:
+                text = real
+        sys.stdout.write((text or "(нет docstring)").strip() + "\n")
         raise SystemExit(0)
 
 

@@ -24,6 +24,7 @@ CLI:
 """
 import os
 from _ioutil import configure_output
+from _cli import help_guard
 import sys
 import json
 
@@ -130,6 +131,7 @@ def from_proposals(data):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     args = list(argv)
     toc = "--toc" in args
     from_prop = "--from-proposals" in args

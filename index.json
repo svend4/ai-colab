@@ -218,6 +218,13 @@
       "next": ""
     },
     {
+      "id": "kotel-system-critique-action-plan-2026-06-24",
+      "title": "Котёл: пошаговый план после системной критики",
+      "file": "topics/kotel-system-critique-2026-06-24-action-plan.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "navigation-vs-sharding-2026-06-24",
       "title": "Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность)",
       "file": "topics/navigation-vs-sharding-2026-06-24.md",
@@ -2985,13 +2992,24 @@
     {
       "id": "T-242",
       "title": "Kotel critique stage 1: CLI help guard and deterministic action plan",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "low",
       "depends_on": "[T-241]",
       "topic": "",
       "next": "Apply `_cli.help_guard` to the first criticized sys.argv tools and write a staged action plan for the kotel critique."
+    },
+    {
+      "id": "T-243",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "unknown",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

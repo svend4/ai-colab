@@ -25,6 +25,7 @@ CLI:
 """
 import os
 from _ioutil import configure_output
+from _cli import help_guard
 import re
 import sys
 import json
@@ -266,6 +267,7 @@ def cmd_report(as_json=False, list_kind=None):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     args = list(argv)
     as_json = "--json" in args
     if "--save-baseline" in args:

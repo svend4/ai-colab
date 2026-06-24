@@ -22,6 +22,7 @@ CLI:
 """
 import os
 from _ioutil import configure_output
+from _cli import help_guard
 import sys
 import json
 
@@ -99,6 +100,7 @@ def _load(arg):
 
 
 def main(argv):
+    help_guard(__doc__, argv)
     args = list(argv)
     toc_only = "--toc" in args
     args = [a for a in args if not a.startswith("--")]
