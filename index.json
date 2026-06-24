@@ -2728,7 +2728,7 @@
     {
       "id": "T-225",
       "title": "Разрешение архитектурных разногласий DVG-001 и DVG-004",
-      "status": "todo",
+      "status": "done",
       "owner": "—",
       "priority": "normal",
       "risk": "medium",
@@ -2738,14 +2738,25 @@
     },
     {
       "id": "T-226",
-      "title": "Pipeline reconciliation cleanup — placeholder, stale commit blocker, id-collision note",
+      "title": "Внедрение мягкой проверки метаданных (Metadata Soft-Check)",
+      "status": "done",
+      "owner": "—",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "T-223",
+      "topic": "architecture-core",
+      "next": ""
+    },
+    {
+      "id": "T-227",
+      "title": "Evidence addenda for T-223/T-224 and pipeline fencing test alignment",
       "status": "done",
       "owner": "pool",
       "priority": "high",
-      "risk": "low",
+      "risk": "medium",
       "depends_on": "[]",
-      "topic": "topics/ai-os-bridge.md",
-      "next": "Complete reconciliation cleanup after T-223 id collision; retire T-194, gate T-202, regenerate snapshots, validate"
+      "topic": "pipeline-fencing",
+      "next": "Add post-hoc evidence addenda for T-223/T-224 and update stale pipeline fencing test expectations for required --claim"
     }
   ],
   "questions": [

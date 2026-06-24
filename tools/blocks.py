@@ -95,11 +95,12 @@ BLOCKS = {
         ],
     },
     "structure": {
-        "desc": "здоровье структуры (консенсус C-10+C-07+layered-pyramid): пороги папок + визитки файлов + контракт слоёв L1-L4",
+        "desc": "здоровье структуры (консенсус C-07/C-10/C-11/layered-pyramid): папки + визитки + слои L1-L4 + heading-дерево",
         "steps": [
             ("dir_health.py", [], "advisory"),
             ("header.py", ["board"], "advisory"),
             ("layer_check.py", [], "advisory"),
+            ("heading_check.py", [], "advisory"),
         ],
     },
 }

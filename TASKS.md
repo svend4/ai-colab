@@ -238,6 +238,7 @@
 | T-222 | Cauldron lane B — divergence-detail architecture issues | done | pool | `streams/architecture-core/divergence.md` | Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build. |
 | T-223 | Внедрение слоистой архитектуры и метаданных (Layered-architecture & Metadata-indexes) | done | — | `architecture-core` |  |
 | T-224 | Внедрение Pipeline Fencing (Pipeline Guards) | done | — | `pipeline-fencing` |  |
-| T-225 | Разрешение архитектурных разногласий DVG-001 и DVG-004 | todo | — | `architecture-core` |  |
-| T-226 | Pipeline reconciliation cleanup — placeholder, stale commit blocker, id-collision note | done | pool | `topics/ai-os-bridge.md` | Complete reconciliation cleanup after T-223 id collision; retire T-194, gate T-202, regenerate snapshots, validate |
+| T-225 | Разрешение архитектурных разногласий DVG-001 и DVG-004 | done | — | `architecture-core` |  |
+| T-226 | Внедрение мягкой проверки метаданных (Metadata Soft-Check) | done | — | `architecture-core` |  |
+| T-227 | Evidence addenda for T-223/T-224 and pipeline fencing test alignment | done | pool | `pipeline-fencing` | Add post-hoc evidence addenda for T-223/T-224 and update stale pipeline fencing test expectations for required --claim |
 <!-- GEN:tasks END -->
