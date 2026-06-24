@@ -2945,13 +2945,24 @@
     {
       "id": "T-239",
       "title": "Conveyor recover advisory for reset/hang/UI mismatch",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
       "next": "Implement read-only `tools/conveyor.py recover` diagnostics for reset/hang/UI indicator mismatch."
+    },
+    {
+      "id": "T-240",
+      "title": "Sandbox intake chain orchestrator (read-only)",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Implement read-only `tools/sandbox_intake_chain.py` with tests and normalized JSON output."
     }
   ],
   "questions": [
