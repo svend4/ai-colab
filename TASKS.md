@@ -234,6 +234,6 @@
 | T-218 | Document synthesis v2 — source-line evidence, candidates, top.py wrapper | todo | pool | `docs/document-synthesis-mechanism-2026-06-24.md` | Добавить candidates/source-line evidence и обёртку top.py synthesize-docs; сохранить read-only default. |
 | T-219 | Усиление Redaction и маскировки паролей в драйверах | todo | — | `driver-acceptance-batch` |  |
 | T-220 | Решение конфликта приоритизации: Фантомные блокеры vs Fencing пайплайна | todo | — | `repo-review` |  |
-| T-221 | Cauldron lane A — ratify-build consensus-ready architecture items | doing | pool | `docs/cauldron-two-lane-board-2026-06-24.md` | Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision. |
-| T-222 | Cauldron lane B — divergence-detail architecture issues | doing | pool | `streams/architecture-core/divergence.md` | Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build. |
+| T-221 | Cauldron lane A — ratify-build consensus-ready architecture items | done | pool | `docs/cauldron-two-lane-board-2026-06-24.md` | Сформировать ratification/build packet по одному пункту lane A и связать его с кодом, тестом или accepted/proposed decision. |
+| T-222 | Cauldron lane B — divergence-detail architecture issues | done | pool | `streams/architecture-core/divergence.md` | Выбрать один спорный пункт lane B, собрать варианты, evidence, risks и предложить критерий перевода в ratify-build. |
 <!-- GEN:tasks END -->

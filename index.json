@@ -2684,7 +2684,7 @@
     {
       "id": "T-221",
       "title": "Cauldron lane A — ratify-build consensus-ready architecture items",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -2695,7 +2695,7 @@
     {
       "id": "T-222",
       "title": "Cauldron lane B — divergence-detail architecture issues",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
