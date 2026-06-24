@@ -28,7 +28,7 @@ Sandbox intake DEMO — end-to-end S1->S3->S7 over `data/fixtures` (T-020 suppor
 никакого вызова run/execute (gate — `docs/execute-sandbox-preflight.md`).
 
 CLI:
-    python tools/sandbox_intake_demo.py [--out <dir>]
+    python tools/sandbox_intake_demo.py [source-dir] [--out <dir>]
 """
 import os
 import sys
@@ -38,6 +38,7 @@ import importlib.util
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.join(ROOT, "tools")
 FIXTURES = os.path.join(ROOT, "data", "fixtures")
+SANDBOX_DEMO_FIXTURES = os.path.join(ROOT, "sandbox", "inbox", "demo-fixtures")
 DEMO_ID = "demo-fixtures"
 
 configure_output()
@@ -50,7 +51,12 @@ def _load_sandbox():
     spec.loader.exec_module(mod)
     return mod
 
-def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
+def default_source():
+    """Default source: sandbox fixture dir when present, otherwise legacy data/fixtures."""
+    return SANDBOX_DEMO_FIXTURES if os.path.isdir(SANDBOX_DEMO_FIXTURES) else FIXTURES
+
+
+def run_demo(out_dir=None, source=None, _sandbox=None):
     """
     Drive sandbox.intake over the fixtures as an external source, writing the
     deterministic `demo-fixtures` manifest + inventory report into `out_dir`
@@ -63,6 +69,7 @@ def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
     test can observe the exact driver instance the demo drives); defaults to a
     fresh load of tools/sandbox.py.
     """
+    source = default_source() if source is None else source
     src = os.path.abspath(os.path.expanduser(source))
     if not os.path.isdir(src):
         raise NotADirectoryError("фикстуры не найдены: %s" % src)
@@ -80,7 +87,7 @@ def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
         sb.INBOX = inbox
         sb.REPORTS = reports
 
-    note = "demo intake over data/fixtures (read-only, без svend4, без execute) — T-020"
+    note = "demo intake over %s (read-only, без svend4, без execute) — T-020" % os.path.relpath(src, ROOT).replace("\\", "/")
     result = sb.intake(DEMO_ID, src, note=note)
 
     # Surface which sink was used so callers/tests can locate outputs.
@@ -98,25 +105,39 @@ def run_demo(out_dir=None, source=FIXTURES, _sandbox=None):
     result["structure"] = scan.get("structure", []) if isinstance(scan, dict) else []
     return result
 
-def main():
-    a = sys.argv[1:]
+def main(argv=None):
+    a = list(sys.argv[1:] if argv is None else argv)
     if "--help" in a or "-h" in a:
         print(__doc__)
         return 0
     out_dir = None
-    if "--out" in a:
-        i = a.index("--out")
-        if i + 1 >= len(a):
-            print("ОШИБКА: --out требует путь")
+    source = None
+    i = 0
+    while i < len(a):
+        arg = a[i]
+        if arg == "--out":
+            if i + 1 >= len(a):
+                print("ОШИБКА: --out требует путь")
+                return 2
+            out_dir = a[i + 1]
+            i += 2
+        elif arg.startswith("-"):
+            print("ОШИБКА: неизвестный аргумент: %s" % arg)
             return 2
-        out_dir = a[i + 1]
+        elif source is None:
+            source = arg
+            i += 1
+        else:
+            print("ОШИБКА: ожидался один source-dir, получено лишнее: %s" % arg)
+            return 2
     try:
-        r = run_demo(out_dir=out_dir)
+        r = run_demo(out_dir=out_dir, source=source)
     except Exception as exc:  # noqa: BLE001 - CLI boundary
         print("ОШИБКА: %s: %s" % (type(exc).__name__, exc))
         return 1
     print("demo-intake %s: файлов=%s рисков=%s (read-only, execute НЕ вызван)"
           % (DEMO_ID, r.get("inventoried_files"), r.get("risks")))
+    print("  источник:  %s" % r["source"])
     print("  манифест: %s" % r["manifest"])
     print("  отчёт:    %s" % r["report"])
     return 0

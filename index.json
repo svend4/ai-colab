@@ -120,6 +120,13 @@
       "next": ""
     },
     {
+      "id": "agent-self-reflection-delegation",
+      "title": "Оповещение: Практика Dogfooding и параллельные задачи",
+      "file": "topics/agent-self-reflection-delegation.md",
+      "status": "active",
+      "next": ""
+    },
+    {
       "id": "assurance-and-doc-merge-2026-06-22",
       "title": "Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов",
       "file": "topics/assurance-and-doc-merge-2026-06-22.md",
@@ -2848,7 +2855,7 @@
     {
       "id": "T-234",
       "title": "Улучшение эвристик result_intake.py для классификации external-code",
-      "status": "doing",
+      "status": "done",
       "owner": "antigravity",
       "priority": "normal",
       "risk": "low",
@@ -2859,8 +2866,30 @@
     {
       "id": "T-235",
       "title": "Разработка семантического AST-анализатора (python_analyzer.py)",
-      "status": "todo",
+      "status": "doing",
       "owner": "antigravity",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": ""
+    },
+    {
+      "id": "T-236",
+      "title": "Валидация JSON-схем в песочнице (sandbox schema validator)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": ""
+    },
+    {
+      "id": "T-237",
+      "title": "Проверка целостности ссылок Markdown в песочнице (sandbox link checker)",
+      "status": "todo",
+      "owner": "pool",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",

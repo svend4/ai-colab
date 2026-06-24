@@ -151,7 +151,14 @@ def classify_path(path, root=ROOT):
         _bump(scores, signals, "governance", 5, "governance/human-approval vocabulary")
 
     external_terms = ["external code", "svend4", "source intake", "quarantine", "внешн", "песочниц"]
-    if rel_low.startswith("sandbox/") or any(term in low for term in external_terms):
+    path_ext = os.path.splitext(rel_low)[1]
+    if path_ext == ".py":
+        _bump(scores, signals, "external-code", 8, "python source file path")
+    if rel_low.startswith("sandbox/") or "/sandbox/" in rel_low:
+        _bump(scores, signals, "external-code", 7, "sandbox path")
+    if fm_type == "external-source":
+        _bump(scores, signals, "external-code", 6, "external-source front-matter")
+    if any(term in low for term in external_terms):
         _bump(scores, signals, "external-code", 5, "external code / sandbox vocabulary")
     elif "execute" in low and "sandbox" in low:
         _bump(scores, signals, "external-code", 3, "execute+sandbox requires external-code handling")

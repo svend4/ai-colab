@@ -136,6 +136,26 @@ Read-only summary of current status with no file edits.
         r = ri.classify_path(report, root=base)
         assert r["class"] == "read-only-report", r
 
+        pipeline_py = _write(base, "queues/outbox/pipeline.py", """# pipeline.py
+# Updated tools/pipeline.py and implemented a new task runner.
+print('hello')
+""")
+        r = ri.classify_path(pipeline_py, root=base)
+        assert r["class"] == "external-code", r
+        assert any(s["reason"] == "python source file path" for s in r["signals"]), r
+
+        sandbox_md = _write(base, "sandbox/inbox/source.md", """---
+type: report
+---
+
+# Intake note
+
+Documentation-like source note from quarantine.
+""")
+        r = ri.classify_path(sandbox_md, root=base)
+        assert r["class"] == "external-code", r
+        assert any(s["reason"] == "sandbox path" for s in r["signals"]), r
+
         p = subprocess.run([
             sys.executable, os.path.join(HERE, "result_intake.py"), "classify", build, "--json",
         ], cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)

@@ -17,8 +17,8 @@
 прямой повод для C-04 шардинга по диапазонам ID).
 
 CLI:
-    python tools/dir_health.py            # отчёт + пороги (exit 1 если есть FAIL)
-    python tools/dir_health.py --json
+    python tools/dir_health.py [root]       # отчёт + пороги (exit 1 если есть FAIL)
+    python tools/dir_health.py [root] --json
 """
 import os
 import sys
@@ -48,11 +48,16 @@ def _skip(rel):
     return any(p in SKIP or p.startswith(".") for p in parts)
 
 
-def scan():
+def _resolve_root(root=None):
+    return os.path.abspath(os.path.expanduser(root or ROOT))
+
+
+def scan(root=None):
+    base = _resolve_root(root)
     findings = []
     # 1) файлов в каждой папке
-    for dirpath, dirs, files in os.walk(ROOT):
-        rel = os.path.relpath(dirpath, ROOT)
+    for dirpath, dirs, files in os.walk(base):
+        rel = os.path.relpath(dirpath, base)
         if rel != "." and _skip(rel):
             dirs[:] = []
             continue
@@ -64,7 +69,7 @@ def scan():
             # navigation-vs-sharding: при наличии папка-индекса (indexes/<name>.md) это не FAIL —
             # навигация решена метаданными, шардинг не требуется (решение 2026-06-24).
             has_index = "/" not in relshow and os.path.isfile(
-                os.path.join(ROOT, "indexes", relshow + ".md"))
+                os.path.join(base, "indexes", relshow + ".md"))
             findings.append({"kind": "files-per-dir", "level": "WARN" if has_index else "FAIL",
                              "where": relshow + (" (есть папка-индекс)" if has_index else ""),
                              "value": n, "limit": FILES_FAIL})
@@ -80,15 +85,15 @@ def scan():
                 findings.append({"kind": "file-size", "level": lvl,
                                  "where": ("%s/%s" % (relshow, f)).lstrip("./"), "value": kb, "limit": lim})
     # 3) корневых папок
-    root_dirs = [d for d in os.listdir(ROOT)
-                 if os.path.isdir(os.path.join(ROOT, d)) and not _skip(d)]
+    root_dirs = [d for d in os.listdir(base)
+                 if os.path.isdir(os.path.join(base, d)) and not _skip(d)]
     if len(root_dirs) > ROOT_DIRS_WARN:
         findings.append({"kind": "root-dirs", "level": "WARN", "where": ".",
                          "value": len(root_dirs), "limit": ROOT_DIRS_WARN})
     # 4) глубина
     maxdepth = 0
-    for dirpath, dirs, _files in os.walk(ROOT):
-        rel = os.path.relpath(dirpath, ROOT)
+    for dirpath, dirs, _files in os.walk(base):
+        rel = os.path.relpath(dirpath, base)
         if rel != "." and _skip(rel):
             dirs[:] = []
             continue
@@ -100,9 +105,32 @@ def scan():
     return findings
 
 
+def _parse_args(argv):
+    as_json = False
+    root = None
+    for arg in argv:
+        if arg == "--json":
+            as_json = True
+        elif arg in ("--help", "-h"):
+            return as_json, root, True, None
+        elif arg.startswith("-"):
+            return as_json, root, False, "неизвестный аргумент: %s" % arg
+        elif root is None:
+            root = arg
+        else:
+            return as_json, root, False, "ожидался один root-путь, получено лишнее: %s" % arg
+    return as_json, root, False, None
+
+
 def main(argv):
-    as_json = "--json" in argv
-    f = scan()
+    as_json, root, help_requested, error = _parse_args(argv)
+    if help_requested:
+        print(__doc__)
+        return 0
+    if error:
+        print("ОШИБКА: %s" % error)
+        return 2
+    f = scan(root)
     fails = [x for x in f if x["level"] == "FAIL"]
     warns = [x for x in f if x["level"] == "WARN"]
     if as_json:

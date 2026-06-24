@@ -32,6 +32,7 @@
 | Слой драйверов (Treiber) — СЛИТО в ai-os-bridge | `topics/drivers-layer.md` | archive | — | Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md |
 | Информационные драйверы (трайберы) — СЛИТО в ai-os-bridge | `topics/information-drivers.md` | archive | — | Тема слита с `topics/ai-os-bridge.md` по D-010; канонический каталог — `drivers/`. Содержание сохранено ниже как историческая запись (варианты C/D/E, аналогии, сводная таблица, пошаговый план). |
 | Архитектурные основы — канонический свод | `topics/architecture-fundamentals-2026-06-24.md` | proposed | — |  |
+| Оповещение: Практика Dogfooding и параллельные задачи | `topics/agent-self-reflection-delegation.md` | active | — |  |
 | Гарантии инструкций (применение/актуальность/поток вверх) и слияние документации агентов | `topics/assurance-and-doc-merge-2026-06-22.md` | proposed | — |  |
 | Hardening assurance — лестница warn→block (S0..S4) + apex-подключение | `topics/assurance-hardening-plan-2026-06-23.md` | proposed | — |  |
 | Worktree-ready build specs (2026-06-23) | `topics/build-specs-2026-06-23.md` | proposed | — |  |

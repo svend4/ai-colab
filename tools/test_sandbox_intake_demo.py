@@ -120,6 +120,28 @@ class SandboxIntakeDemoTest(unittest.TestCase):
         self.assertGreater(called["scan"], 0,
                            "demo did not perform the read-only scan_repo path")
 
+    def test_run_demo_accepts_custom_source_path(self):
+        source = os.path.join(self.out, "custom-source")
+        os.makedirs(source, exist_ok=True)
+        with open(os.path.join(source, "alpha.txt"), "w", encoding="utf-8") as fh:
+            fh.write("alpha")
+
+        result = self.demo.run_demo(out_dir=os.path.join(self.out, "api-out"), source=source)
+        self.assertEqual(os.path.abspath(source), result["source"])
+        self.assertIn("alpha.txt", result.get("structure") or [])
+
+    def test_cli_accepts_positional_source_path(self):
+        source = os.path.join(self.out, "cli-source")
+        os.makedirs(source, exist_ok=True)
+        with open(os.path.join(source, "beta.txt"), "w", encoding="utf-8") as fh:
+            fh.write("beta")
+        out = os.path.join(self.out, "cli-out")
+
+        rc = self.demo.main([source, "--out", out])
+        self.assertEqual(rc, 0)
+        self.assertTrue(os.path.isfile(os.path.join(out, "inbox", "demo-fixtures.md")))
+        self.assertTrue(os.path.isfile(os.path.join(out, "reports", "demo-fixtures-inventory.md")))
+
     def test_out_dir_isolation_does_not_touch_real_sandbox(self):
         real_reports = os.path.join(ROOT, "sandbox", "reports", "%s-inventory.md" % self.demo.DEMO_ID)
         existed_before = os.path.exists(real_reports)
