@@ -7,6 +7,7 @@ Does NOT execute code. Only inspects, maps, and reports.
 import json
 import os
 import sys
+import importlib.util
 from pathlib import Path
 
 DEFAULT_MAX_FILES = 1000
@@ -102,6 +103,22 @@ class PathAccessError(ValueError):
     pass
 
 
+# Load only the repo-local analyzer module; scanned target code is never imported.
+def _load_python_analyzer():
+    analyzer_path = Path(__file__).resolve().parents[2] / 'tools' / 'python_analyzer.py'
+    if not analyzer_path.is_file():
+        return None
+    try:
+        spec = importlib.util.spec_from_file_location('repo_runner_python_analyzer', str(analyzer_path))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    except Exception:
+        return None
+
+
+PYTHON_ANALYZER = _load_python_analyzer()
+
 def _is_relative_to(path: Path, base: Path) -> bool:
     try:
         path.relative_to(base)
@@ -136,6 +153,7 @@ def scan_repo(repo_path: str, max_files: int = DEFAULT_MAX_FILES, base_dir: str 
         "package_files": [],
         "tests": [],
         "risks": [],
+        "python_analysis": [],
         "summary": {},
         "max_files": max_files,
         "truncated": False,
@@ -186,6 +204,29 @@ def scan_repo(repo_path: str, max_files: int = DEFAULT_MAX_FILES, base_dir: str 
 
             # risk check for network calls in Python
             if ext == '.py' and size < RISK_READ_MAX_BYTES:
+                if PYTHON_ANALYZER is not None:
+                    try:
+                        analysis = PYTHON_ANALYZER.analyze_file(str(p), base_dir=str(repo), max_bytes=RISK_READ_MAX_BYTES)
+                        report['python_analysis'].append(analysis)
+                        for risk in analysis.get('risks', []):
+                            report['risks'].append({
+                                'file': str(rel),
+                                'risk': 'AST: %s (%s)' % (risk.get('name'), risk.get('reason')),
+                                'severity': risk.get('severity', 'medium'),
+                                'source': 'python_analyzer',
+                                'line': risk.get('line'),
+                            })
+                    except Exception as exc:
+                        report['python_analysis'].append({
+                            'path': str(rel),
+                            'syntax_ok': None,
+                            'error': {'type': type(exc).__name__, 'message': str(exc)},
+                            'imports': [],
+                            'classes': [],
+                            'functions': [],
+                            'risks': [],
+                            'summary': {'imports': 0, 'classes': 0, 'functions': 0, 'risks': 0},
+                        })
                 try:
                     content = p.read_text(encoding='utf-8', errors='replace')
                     for pattern, desc in RISK_PATTERNS.items():
@@ -205,6 +246,7 @@ def scan_repo(repo_path: str, max_files: int = DEFAULT_MAX_FILES, base_dir: str 
         "has_tests": len(report["tests"]) > 0,
         "has_package_files": len(report["package_files"]) > 0,
         "risk_count": len(report["risks"]),
+        "python_files_analyzed": len(report["python_analysis"]),
         "truncated": report["truncated"],
         "max_files": max_files,
     }

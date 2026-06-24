@@ -248,7 +248,7 @@
 | T-232 | D-Card repair — portability_check.py | done | pool | `architecture-core` |  |
 | T-233 | Рефакторинг read-only утилит (dir_health, sandbox_demo) для поддержки CLI-путей | done | antigravity | — |  |
 | T-234 | Улучшение эвристик result_intake.py для классификации external-code | done | antigravity | — |  |
-| T-235 | Разработка семантического AST-анализатора (python_analyzer.py) | doing | antigravity | — |  |
-| T-236 | Валидация JSON-схем в песочнице (sandbox schema validator) | todo | pool | — |  |
+| T-235 | Разработка семантического AST-анализатора (python_analyzer.py) | done | antigravity | — |  |
+| T-236 | Валидация JSON-схем в песочнице (sandbox schema validator) | done | pool | — |  |
 | T-237 | Проверка целостности ссылок Markdown в песочнице (sandbox link checker) | todo | pool | — |  |
 <!-- GEN:tasks END -->

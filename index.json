@@ -2877,7 +2877,7 @@
     {
       "id": "T-236",
       "title": "Валидация JSON-схем в песочнице (sandbox schema validator)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
