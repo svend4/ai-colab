@@ -95,10 +95,11 @@ BLOCKS = {
         ],
     },
     "structure": {
-        "desc": "здоровье каталога+визиток (консенсус C-10+C-07): пороги files/folder + покрытие визитками файлов",
+        "desc": "здоровье структуры (консенсус C-10+C-07+layered-pyramid): пороги папок + визитки файлов + контракт слоёв L1-L4",
         "steps": [
             ("dir_health.py", [], "advisory"),
             ("header.py", ["board"], "advisory"),
+            ("layer_check.py", [], "advisory"),
         ],
     },
 }

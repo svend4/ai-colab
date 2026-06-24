@@ -2717,7 +2717,7 @@
     {
       "id": "T-224",
       "title": "Внедрение Pipeline Fencing (Pipeline Guards)",
-      "status": "doing",
+      "status": "done",
       "owner": "—",
       "priority": "high",
       "risk": "high",
@@ -2735,6 +2735,17 @@
       "depends_on": "",
       "topic": "architecture-core",
       "next": ""
+    },
+    {
+      "id": "T-226",
+      "title": "Pipeline reconciliation cleanup — placeholder, stale commit blocker, id-collision note",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "topics/ai-os-bridge.md",
+      "next": "Complete reconciliation cleanup after T-223 id collision; retire T-194, gate T-202, regenerate snapshots, validate"
     }
   ],
   "questions": [
