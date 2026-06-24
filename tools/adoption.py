@@ -29,6 +29,7 @@ import re
 import sys
 import json
 import glob
+import collections
 
 configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -58,30 +59,49 @@ def _concat(paths):
     return "\n".join(_read(p) for p in paths)
 
 
+_SKIP_DIRS = {".git", "data", "tmp-work", "external", "node_modules",
+              "logs", "__pycache__", ".idea", ".pytest_cache"}
+
+
 def _all_md():
     md = []
-    for dirpath, _dirs, files in os.walk(ROOT):
-        if any(seg in dirpath for seg in (os.sep + ".git", os.sep + "data", "tmp-work")):
-            continue
+    for dirpath, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in _SKIP_DIRS]  # prune walk (компонент пути, не подстрока)
         for f in files:
             if f.endswith(".md"):
                 md.append(os.path.join(dirpath, f))
     return md
 
 
-def classify_tools():
+def _corpus():
+    """Прочитать весь корпус ОДИН раз (944 md + tools) — общий для всех classify_* (I/O ×1, не ×3)."""
     stems = _tool_stems()
-    code_paths = [p for _s, p in stems]
-    code_text = _concat(code_paths)
-    md_text = _concat(_all_md())
+    code_text = _concat([p for _s, p in stems])
+    md_paths = _all_md()
+    md_text = _concat(md_paths)
+    return {"stems": stems, "code_text": code_text, "md_paths": md_paths, "md_text": md_text}
+
+
+def classify_tools(C=None):
+    C = C or _corpus()
+    stems, code_text, md_text = C["stems"], C["code_text"], C["md_text"]
+    # ОДИН проход по корпусу: счётчики всех ссылок по stem (вместо N×полный-корпус regex)
+    code_py = collections.Counter(re.findall(r"(\w+)\.py\b", code_text))
+    doc_py = collections.Counter(re.findall(r"(\w+)\.py\b", md_text))
+    code_imp = collections.Counter()
+    for m in re.finditer(r"(?:^|\n)\s*(?:from\s+(\w+)\s+import|import\s+(\w+))\b", code_text):
+        code_imp[m.group(1) or m.group(2)] += 1
     rows = []
     for stem, path in stems:
         src = _read(path)
-        others = code_text.replace(src, "", 1)  # исключить self из code-грепа
-        importers = len(re.findall(r"(?:^|\n)\s*(?:from\s+%s\s+import|import\s+%s)\b" % (re.escape(stem), re.escape(stem)), others))
-        callers = len(re.findall(r"%s\.py\b" % re.escape(stem), others))
+        # self-вычитание считаем только по self (мал) — корпусные счётчики уже готовы
+        esc = re.escape(stem)
+        self_imp = len(re.findall(r"(?:^|\n)\s*(?:from\s+%s\s+import|import\s+%s)\b" % (esc, esc), src))
+        self_py = len(re.findall(r"%s\.py\b" % esc, src))
+        importers = code_imp.get(stem, 0) - self_imp
+        callers = code_py.get(stem, 0) - self_py
         # doc_refs: ТОЛЬКО «stem.py» (не голое слово stem — иначе «metrics» в прозе = ложный refs)
-        doc_refs = len(re.findall(r"%s\.py\b" % re.escape(stem), md_text))
+        doc_refs = doc_py.get(stem, 0)
         has_main = ("__main__" in src) or ("def main(" in src)
         if importers + callers > 0:
             status = "active"
@@ -96,8 +116,9 @@ def classify_tools():
     return rows
 
 
-def classify_decisions():
-    code_text = _concat([p for _s, p in _tool_stems()])
+def classify_decisions(C=None):
+    C = C or _corpus()
+    code_text = C["code_text"]
     rows = []
     for path in sorted(glob.glob(os.path.join(ROOT, "decisions", "D-*.md"))):
         did = os.path.basename(path)[:-3]
@@ -110,29 +131,30 @@ def classify_decisions():
     return rows
 
 
-def classify_docs():
-    md_paths = _all_md()
-    big_text = _concat(md_paths) + _concat([p for _s, p in _tool_stems()])
+def classify_docs(C=None):
+    C = C or _corpus()
+    md_paths = C["md_paths"]
+    big_text = C["md_text"] + C["code_text"]  # переиспользуем уже прочитанное (не читаем заново)
+    # ОДИН проход: счётчик всех упоминаний *.md по basename (вместо N×полный-корпус regex)
+    md_refs = collections.Counter(re.findall(r"([\w.-]+\.md)\b", big_text))
     rows = []
     for path in md_paths:
         rel = os.path.relpath(path, ROOT).replace("\\", "/")
         if not (rel.startswith("docs/") or rel.startswith("topics/")):
             continue
         fname = os.path.basename(path)
-        slug = fname[:-3]
         self_src = _read(path)
-        hay = big_text.replace(self_src, "", 1)
-        # inbound: ТОЛЬКО полное имя файла (с .md) — slug-как-слово давал ложные cited
-        inbound = len(re.findall(re.escape(fname), hay))
-        _ = slug
+        # inbound: упоминания имени файла в корпусе МИНУС в self (self-проход мал)
+        inbound = md_refs.get(fname, 0) - len(re.findall(re.escape(fname), self_src))
         rows.append({"name": rel, "status": "cited" if inbound > 0 else "orphan", "inbound": inbound})
     return rows
 
 
 def collect():
-    tools = classify_tools()
-    decisions = classify_decisions()
-    docs = classify_docs()
+    C = _corpus()  # читаем корпус ОДИН раз, делим между всеми classify_*
+    tools = classify_tools(C)
+    decisions = classify_decisions(C)
+    docs = classify_docs(C)
 
     def pct(rows, good):
         n = len(rows)
