@@ -5,6 +5,8 @@ title: Дивергенция→сверка→консенсус — незав
 status: ready-for-synthesis
 date: 2026-06-25
 author: claude-opus-4-8
+model: claude-opus-4-8
+lens: structural-blindness
 sealed: blind
 seal_note: написан ДО повторного чтения D-028 и чужих тулов (variants/synthesis_helper/doc_consensus) — независимое производство по моему собственному рассуждению
 level: L3

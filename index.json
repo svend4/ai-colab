@@ -3145,7 +3145,7 @@
     {
       "id": "T-254",
       "title": "Top variant-start: одна команда для independent-first варианта",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",

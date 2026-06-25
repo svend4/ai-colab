@@ -5,6 +5,8 @@ title: Дерево вопросов (пункты/подпункты) + нов�
 status: ready-for-synthesis
 date: 2026-06-25
 author: claude-opus-4-8
+model: claude-opus-4-8
+lens: question-tree-proposals
 sealed: blind
 seal_note: round-2 — написан ДО чтения 5 слепых линз-вариантов из воркфлоу (чистый тест И-4)
 related: [independent-first-reconcile-claude-2026-06-25, D-026, triadic-golden-mean-questionnaire-2026-06-25]
