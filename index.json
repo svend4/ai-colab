@@ -3152,6 +3152,17 @@
       "depends_on": "[T-252, T-253, D-028]",
       "topic": "",
       "next": "Добавить top.py variant-start wrapper, тесты, документацию и outbox."
+    },
+    {
+      "id": "T-255",
+      "title": "Doc synthesis: читать stream-варианты как corpus",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-252, T-253, T-254, D-028]",
+      "topic": "",
+      "next": "Реализовать автоматический corpus из streams/<topic>/*/STREAM.md для doc_synthesis/top.py."
     }
   ],
   "questions": [
