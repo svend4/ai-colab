@@ -43,6 +43,13 @@
       "next": "Обсудить предложения; выбрать следующий инженерный шаг"
     },
     {
+      "id": "meta-sanation-questions-2026-06-24",
+      "title": "Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету",
+      "file": "topics/meta-sanation-questions-2026-06-24.md",
+      "status": "open",
+      "next": ""
+    },
+    {
       "id": "opinion-synthesis-2026-06-21",
       "title": "Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ",
       "file": "topics/opinion-synthesis-2026-06-21.md",

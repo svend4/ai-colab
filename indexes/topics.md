@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 57 файлов, 4 подпапок
+# Индекс папки `topics/` — 58 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -44,6 +44,7 @@
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
 | [kotel-system-critique-2026-06-24-action-plan.md](../topics/kotel-system-critique-2026-06-24-action-plan.md) | topic-plan | proposed | Критика в `topics/kotel-system-critique-2026-06-24.md` верная по направлению: система уже  |
 | [kotel-system-critique-2026-06-24.md](../topics/kotel-system-critique-2026-06-24.md) | doc | proposed | *Статус: Консенсус достигнут. Ожидается подтверждение Человека на перевод в `accepted`.* |
+| [meta-sanation-questions-2026-06-24.md](../topics/meta-sanation-questions-2026-06-24.md) | topic | open | Пронумерованный реестр концептуальных вопросов (6 разделов, подвопросы разной глубины) о т |
 | [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
