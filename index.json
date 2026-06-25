@@ -3072,13 +3072,24 @@
     {
       "id": "T-248",
       "title": "Верхний слой: вывести question-tree в top.py и продолжить цикл методологических ответов",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-247]",
       "topic": "",
       "next": "Добавить top.py question-tree, зафиксировать цикл 2 ответов/вопросов, прогнать тесты и закрыть отчетом."
+    },
+    {
+      "id": "T-249",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [
