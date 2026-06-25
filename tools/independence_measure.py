@@ -106,10 +106,14 @@ def _pair_sim(a, b):
     ma, la = a["geno"]; mb, lb = b["geno"]
     same_geno = (ma != "?" and ma == mb) and (la != "?" and la == lb)
     surf_overlap = 1.0 - surface_div(a["tokens"], b["tokens"])
+    # Две ОРТОГОНАЛЬНЫЕ оси (урок атаки blindness, kotel §10): генотип-декорреляция И seal-провенанс.
     if same_geno:
-        return 1.0                      # тот же генотип = клоны независимо от текста
+        return 1.0                      # тот же генотип = клоны (эхо весов), seal НЕ спасает
+    # разный генотип: seal-провенанс перебивает поверхность (фикс терсной-истины, остаток independence-weight)
+    if a.get("sealed") and b.get("sealed"):
+        return 0.0                      # оба писали ВСЛЕПУЮ → не копия даже при surf=1.0 (провенанс, не суждение)
     if surf_overlap >= COPY_THR:
-        return 1.0                      # near-verbatim при разном генотипе = копирование
+        return 1.0                      # near-verbatim БЕЗ blind-провенанса = вероятно копия
     return surf_overlap * 0.5           # разный генотип, не копия → convergence, не дотягивает до слияния
 
 

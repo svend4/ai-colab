@@ -272,5 +272,5 @@
 | T-256 | Ready-only stream corpus for doc synthesis | done | codex | — | Добавить --ready-only для doc_synthesis/top.py, чтобы synthesis читал только готовые stream-варианты. |
 | T-257 | Independent-first policy for preliminary code variants | done | codex | — | Сначала раскрыть независимый вариант Codex по работе с предварительным кодом, затем сверить с sandbox/drafts и старыми механизмами. |
 | T-258 | Independent-first guard for variant-start ordering | done | codex | — | Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard. |
-| T-259 | Variant batch barrier for independent-first sub-agents | doing | codex | — | Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper. |
+| T-259 | Variant batch barrier for independent-first sub-agents | done | codex | — | Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper. |
 <!-- GEN:tasks END -->

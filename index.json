@@ -3200,7 +3200,7 @@
     {
       "id": "T-259",
       "title": "Variant batch barrier for independent-first sub-agents",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
