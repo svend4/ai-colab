@@ -35,4 +35,5 @@
 | D-026 | Безопасность массовой информации — запрет несанкционированного bulk-стирания + обязательная страховка | proposed | 2026-06-24 | `decisions/D-026.md` |
 | D-027 | Матрица полномочий для людей, AI-агентов, observer/integrator ролей и скриптов | proposed | 2026-06-25 | `decisions/D-027.md` |
 | D-028 | Independent-first variants — содержательные дубли раскрываются до синтеза | proposed | 2026-06-25 | `decisions/D-028.md` |
+| D-030 | Independent-consensus — валидированное ядро после полного адверсариального прогона | proposed | 2026-06-25 | `decisions/D-030.md` |
 <!-- GEN:decisions END -->

@@ -3579,6 +3579,13 @@
       "status": "proposed",
       "date": "2026-06-25",
       "file": "decisions/D-028.md"
+    },
+    {
+      "id": "D-030",
+      "title": "Independent-consensus — валидированное ядро после полного адверсариального прогона",
+      "status": "proposed",
+      "date": "2026-06-25",
+      "file": "decisions/D-030.md"
     }
   ],
   "drivers": [
