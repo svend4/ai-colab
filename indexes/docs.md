@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 121 файлов
+# Индекс папки `docs/` — 122 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -123,6 +123,7 @@
 | [top-layer-command-groups.md](../docs/top-layer-command-groups.md) | — | — | Дата: 2026-06-21. |
 | [top-layer-throughput-methodology.md](../docs/top-layer-throughput-methodology.md) | doc | proposed | Главный ограничитель системы с множеством агентов — не запуск новых исполнителей, а способ |
 | [top-work-mode-result-2026-06-22.md](../docs/top-work-mode-result-2026-06-22.md) | — | — | Task: `T-144` |
+| [triadic-fractal-methodology.md](../docs/triadic-fractal-methodology.md) | doc | proposed | Первичная идея проекта: нужна золотая середина между верхушкой, где работает человек или A |
 | [workbench-acceptance-result-2026-06-21.md](../docs/workbench-acceptance-result-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [workbench-hardening.md](../docs/workbench-hardening.md) | — | — | Дата: 2026-06-20 |
 | [workflow-conveyor-policy.md](../docs/workflow-conveyor-policy.md) | doc | proposed | Один контекст-оркестратор = один последовательный планировщик с N фоновыми воркерами. Узко |

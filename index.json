@@ -71,6 +71,13 @@
       "next": "D-017 (fork-and-synthesize) принят; sandbox-контур = контракт Codex + intake-автоматизация Claude (синтез); T-020 переформулирован как первый external-source"
     },
     {
+      "id": "triadic-golden-mean-questionnaire-2026-06-25",
+      "title": "Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации",
+      "file": "topics/triadic-golden-mean-questionnaire-2026-06-25.md",
+      "status": "open",
+      "next": ""
+    },
+    {
       "id": "d003-scope",
       "title": "Границы D-003 (Q-005)",
       "file": "topics/d003-scope.md",
@@ -3094,13 +3101,24 @@
     {
       "id": "T-250",
       "title": "Agent approval matrix и workflow субагентов для Q-023",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-249, Q-023]",
       "topic": "",
       "next": "Создать docs/agent-approval-matrix.md, proposed decision, outbox-отчет и интегрировать отчеты scout-субагентов."
+    },
+    {
+      "id": "T-251",
+      "title": "Триадный фрактал золотой середины: машинный вопросник и методология формулирования проблем",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-249, T-250, Q-021]",
+      "topic": "",
+      "next": "Нормализовать triadic questionnaire, создать методологию triad/fractal/immune-memory, outbox и проверки."
     }
   ],
   "questions": [
@@ -3263,7 +3281,7 @@
       "title": "Какая матрица полномочий нужна для людей и AI-агентов?",
       "status": "open",
       "where": "topics/information-refactoring-cycle-3-2026-06-25.md",
-      "outcome": "pending"
+      "outcome": "proposed answer in D-027 and docs/agent-approval-matrix.md; awaiting human/appointed integrator acceptance"
     }
   ],
   "decisions": [

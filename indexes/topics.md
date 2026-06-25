@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 63 файлов, 4 подпапок
+# Индекс папки `topics/` — 64 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -76,4 +76,5 @@
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
+| [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
 | [typed-link-graph-2026-06-24.md](../topics/typed-link-graph-2026-06-24.md) | topic | proposed | Рёбра уже неявно лежат во front-matter (depends_on/related/superseded_by/topic/l1_basis);  |
