@@ -3218,6 +3218,17 @@
       "depends_on": "[T-257, T-259]",
       "topic": "",
       "next": "Проверить `tools/draft_code.py`, top proxy, docs/capabilities; закрыть через pipeline с outbox-отчётом."
+    },
+    {
+      "id": "T-261",
+      "title": "Info/document no-execute draft packet manager",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-260]",
+      "topic": "",
+      "next": "Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков."
     }
   ],
   "questions": [
