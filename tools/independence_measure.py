@@ -92,14 +92,25 @@ def _tokens(body):
     return out
 
 
+COPY_THR = 0.85  # near-identical поверхность = копирование (не convergence-on-truth)
+
+
 def _pair_sim(a, b):
-    """Похожесть (1 = клоны): половина генотип (model/lens совпали), половина поверхностный overlap."""
+    """Клон-похожесть (1 = клоны). Клон = ТОТ ЖЕ генотип (model AND lens) ИЛИ near-copy поверхности.
+
+    Red-team-находка (independence-weight): разный генотип + умеренно-высокий overlap — это вероятно
+    convergence-on-TRUTH (два верных лаконичных ответа пишутся похоже), а НЕ клоны. Старая формула
+    0.5*геноип+0.5*surf схлопывала таких в 1 свидетеля. Теперь поверхность сливает, только если
+    near-verbatim (>=COPY_THR = копирование); иначе при разном генотипе — НЕ клон.
+    """
     ma, la = a["geno"]; mb, lb = b["geno"]
-    model_same = 1.0 if ma != "?" and ma == mb else 0.0
-    lens_same = 1.0 if la != "?" and la == lb else 0.0
-    geno = 0.5 * model_same + 0.5 * lens_same
+    same_geno = (ma != "?" and ma == mb) and (la != "?" and la == lb)
     surf_overlap = 1.0 - surface_div(a["tokens"], b["tokens"])
-    return 0.5 * geno + 0.5 * surf_overlap
+    if same_geno:
+        return 1.0                      # тот же генотип = клоны независимо от текста
+    if surf_overlap >= COPY_THR:
+        return 1.0                      # near-verbatim при разном генотипе = копирование
+    return surf_overlap * 0.5           # разный генотип, не копия → convergence, не дотягивает до слияния
 
 
 def _cluster(vs, thr):

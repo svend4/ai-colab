@@ -65,6 +65,17 @@ def main():
             if not any("одной модели" in f for f in r2["flags"]):
                 fails.append("флаг генотип-гомогенности (одна модель) обязателен: %s" % r2["flags"])
 
+        # RED-TEAM ФИКС (convergence-on-truth): РАЗНЫЙ генотип + высокий (но не verbatim) overlap →
+        # НЕ клоны (два верных лаконичных ответа пишутся похоже) → 2 свидетеля, не 1
+        D = _w(d, "d.md", _v("m2", "L2", "срок составляет тридцать календарных дней ответ"))
+        E = _w(d, "e.md", _v("m3", "L3", "срок составляет тридцать календарных дней итог"))
+        if im.effective_witnesses([im._load(D), im._load(E)]) != 2:
+            fails.append("convergence-on-truth: разный генотип + высокий overlap → 2 свидетеля (red-team фикс)")
+        # но near-verbatim копия при разном генотипе → 1 свидетель (это уже копирование, не convergence)
+        Dc = _w(d, "dc.md", _v("m9", "L9", "срок составляет тридцать календарных дней ответ"))
+        if im.effective_witnesses([im._load(D), im._load(Dc)]) != 1:
+            fails.append("near-verbatim копия (>=COPY_THR) при разном генотипе должна дать 1 свидетеля")
+
     if fails:
         print("FAIL test_independence_measure:")
         for f in fails:
