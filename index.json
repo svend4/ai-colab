@@ -3185,6 +3185,17 @@
       "depends_on": "[T-252, T-253, T-254, T-255, T-256]",
       "topic": "",
       "next": "Сначала раскрыть независимый вариант Codex по работе с предварительным кодом, затем сверить с sandbox/drafts и старыми механизмами."
+    },
+    {
+      "id": "T-258",
+      "title": "Independent-first guard for variant-start ordering",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-254, T-257]",
+      "topic": "",
+      "next": "Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard."
     }
   ],
   "questions": [

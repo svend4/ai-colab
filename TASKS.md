@@ -271,4 +271,5 @@
 | T-255 | Doc synthesis: читать stream-варианты как corpus | done | codex | — | Реализовать автоматический corpus из streams/<topic>/*/STREAM.md для doc_synthesis/top.py. |
 | T-256 | Ready-only stream corpus for doc synthesis | done | codex | — | Добавить --ready-only для doc_synthesis/top.py, чтобы synthesis читал только готовые stream-варианты. |
 | T-257 | Independent-first policy for preliminary code variants | done | codex | — | Сначала раскрыть независимый вариант Codex по работе с предварительным кодом, затем сверить с sandbox/drafts и старыми механизмами. |
+| T-258 | Independent-first guard for variant-start ordering | doing | codex | — | Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard. |
 <!-- GEN:tasks END -->
