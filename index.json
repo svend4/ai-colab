@@ -3112,13 +3112,24 @@
     {
       "id": "T-251",
       "title": "Триадный фрактал золотой середины: машинный вопросник и методология формулирования проблем",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-249, T-250, Q-021]",
       "topic": "",
       "next": "Нормализовать triadic questionnaire, создать методологию triad/fractal/immune-memory, outbox и проверки."
+    },
+    {
+      "id": "T-252",
+      "title": "Independent-first variant streams: политика содержательных дублей и раскрытия вариантов",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[D-017, D-024, T-251]",
+      "topic": "",
+      "next": "Оформить proposed policy, усилить stream.py lifecycle, создать outbox и проверки."
     }
   ],
   "questions": [
@@ -3473,6 +3484,13 @@
       "status": "proposed",
       "date": "2026-06-25",
       "file": "decisions/D-027.md"
+    },
+    {
+      "id": "D-028",
+      "title": "Independent-first variants — содержательные дубли раскрываются до синтеза",
+      "status": "proposed",
+      "date": "2026-06-25",
+      "file": "decisions/D-028.md"
     }
   ],
   "drivers": [
