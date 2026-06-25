@@ -3082,14 +3082,14 @@
     },
     {
       "id": "T-249",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Question-tree action-plan и status-backfill старых методологических вопросов",
+      "status": "doing",
       "owner": "codex",
       "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
+      "risk": "medium",
+      "depends_on": "[T-248]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "Добавить режим action-plan, убрать unknown из старого question-tree структурными статусами, создать цикл 3 и отчет."
     }
   ],
   "questions": [

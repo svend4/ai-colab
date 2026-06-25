@@ -261,5 +261,6 @@
 | T-245 | Alpha-2 to Alpha-3 roadmap package for collective approval | done | codex | `topics/alpha2-to-alpha3-roadmap-2026-06-24.md` | Prepare a detailed proposed roadmap before further code implementation. |
 | T-246 | Information refactoring question tree for repository rejuvenation | done | codex | `topics/information-refactoring-question-tree-2026-06-25.md` | Convert the user's meta-question into a numbered question tree with status markers and proposed next actions. |
 | T-247 | Question tree cycle: extract, answer, extend, and sandbox radical ideas | done | codex | `topics/information-refactoring-cycle-1-2026-06-25.md` | Add a read-only question_tree tool, first answer cycle, and sandbox idea lab for radical experiments. |
-| T-248 | (зарезервировано — заполните) | todo | codex | — | зарезервировано через tools/next_id.py — заполните |
+| T-248 | Верхний слой: вывести question-tree в top.py и продолжить цикл методологических ответов | done | codex | — | Добавить top.py question-tree, зафиксировать цикл 2 ответов/вопросов, прогнать тесты и закрыть отчетом. |
+| T-249 | Question-tree action-plan и status-backfill старых методологических вопросов | doing | codex | — | Добавить режим action-plan, убрать unknown из старого question-tree структурными статусами, создать цикл 3 и отчет. |
 <!-- GEN:tasks END -->
