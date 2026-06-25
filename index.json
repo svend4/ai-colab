@@ -3178,7 +3178,7 @@
     {
       "id": "T-257",
       "title": "Independent-first policy for preliminary code variants",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",

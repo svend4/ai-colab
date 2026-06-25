@@ -263,4 +263,4 @@
 | [T-254.md](../tasks/T-254.md) | task | done | Сделать применение политики `independent-first variants` удобным для людей и агентов: одна |
 | [T-255.md](../tasks/T-255.md) | task | done | Закрыть следующий недоделанный пункт политики independent-first variants: после `top.py va |
 | [T-256.md](../tasks/T-256.md) | task | done | После T-255 `doc_synthesis.py` умеет читать `streams/<topic>/*/STREAM.md` как corpus. След |
-| [T-257.md](../tasks/T-257.md) | task | doing | Исправить методологический сбой: для вопроса о предварительной работе с кодом не начинать  |
+| [T-257.md](../tasks/T-257.md) | task | done | Исправить методологический сбой: для вопроса о предварительной работе с кодом не начинать  |
