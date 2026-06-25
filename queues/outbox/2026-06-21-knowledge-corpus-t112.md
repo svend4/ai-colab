@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: knowledge-corpus-t112
 related: tasks/T-112.md, docs/knowledge-corpus-result-2026-06-21.md, data/knowledge-corpus/README.md, reports/knowledge-corpus-report.md
+status: historical
 ---
 
 # Safe knowledge corpus — T-112

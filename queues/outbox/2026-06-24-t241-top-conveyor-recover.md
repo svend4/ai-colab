@@ -1,7 +1,7 @@
 ---
 id: 2026-06-24-t241-top-conveyor-recover
 type: implementation-report
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 related: T-241, T-239, queues/outbox/2026-06-24-conveyor-recover-adoption-review.md, queues/outbox/2026-06-24-top-conveyor-recover-integration-review.md, queues/outbox/2026-06-24-top-conveyor-recover-ux-review.md

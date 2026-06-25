@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Результат: smoke-test очереди (T-003/T-004)
 
 - Кто выполнил: Claude

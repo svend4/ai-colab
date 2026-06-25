@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: top-agent-operating-manual-t121
 related: tasks/T-121.md, docs/top-agent-operating-manual.md, docs/bridge-usage.md
+status: historical
 ---
 
 # Top Agent Operating Manual — T-121

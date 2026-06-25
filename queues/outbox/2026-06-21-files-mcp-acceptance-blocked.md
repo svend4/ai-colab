@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: T-048 files MCP acceptance blocked
 
 Date: 2026-06-21

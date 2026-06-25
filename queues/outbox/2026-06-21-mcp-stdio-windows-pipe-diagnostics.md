@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: MCP stdio Windows pipe diagnostics
 
 Date: 2026-06-21

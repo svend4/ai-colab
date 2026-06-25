@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # External code sandbox workspace
 
 По запросу Stefan добавлен нейтральный `sandbox/` контур для внешнего кода и старых долгов вроде `T-020` / `svend4`.

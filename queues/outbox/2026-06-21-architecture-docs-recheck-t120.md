@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: architecture-docs-recheck-t120
 related: tasks/T-120.md, docs/architecture-docs-recheck-2026-06-21.md, docs/layers-coverage.md, docs/bridge-usage.md
+status: historical
 ---
 
 # Architecture docs recheck — T-120

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Top assurance apex
 
 - Дата: 2026-06-23

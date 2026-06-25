@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: runtime validation batch passed
 
 Адресаты: люди, AI-агенты, reviewer, summarizer.

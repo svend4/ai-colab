@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Pipeline reconciliation cleanup — task-neutral report
 
 Codex performed a small pipeline reconciliation cleanup after checking the ready/not-ready state. This report is intentionally task-neutral because two numeric ids (`T-223`, then `T-226`) were concurrently materialized by other streams while the cleanup was in progress.

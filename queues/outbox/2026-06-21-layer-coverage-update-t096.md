@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: layer-coverage-update-t096
 related: tasks/T-096.md, docs/layer-coverage-update-result-2026-06-21.md, docs/layers-coverage.md
+status: historical
 ---
 
 # Layer coverage update — T-096

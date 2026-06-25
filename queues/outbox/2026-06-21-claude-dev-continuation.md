@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox — перепроверка обновлений + продолжение разработки (Claude)
 
 - Дата: 2026-06-21 Europe/Berlin

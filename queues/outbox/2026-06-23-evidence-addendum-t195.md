@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-195 — evidence addendum layer
 
 Дата: 2026-06-23

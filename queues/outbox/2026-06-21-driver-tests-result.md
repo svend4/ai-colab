@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: driver tests result
 
 Адресаты: люди, AI-агенты, reviewer, summarizer.

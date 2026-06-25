@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-232 — D-Card repair for portability_check
 
 Codex repaired the current metadata soft-check for the new portability acceptance tool.

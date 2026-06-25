@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Agent-start advice integration — activation of existing recommendations
 
 Дата: 2026-06-23

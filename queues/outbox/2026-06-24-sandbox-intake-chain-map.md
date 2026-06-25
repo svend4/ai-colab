@@ -1,24 +1,11 @@
 ---
 id: 2026-06-24-sandbox-intake-chain-map
 type: analysis-report
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 mode: read-only-analysis
-related:
-  - queues/outbox/2026-06-24-t235-python-analyzer.md
-  - queues/outbox/2026-06-24-t236-sandbox-schema-validator.md
-  - queues/outbox/2026-06-24-t237-sandbox-link-checker.md
-  - queues/outbox/2026-06-24-t238-draft-code-sandbox.md
-  - tools/python_analyzer.py
-  - tools/sandbox_schema_validator.py
-  - tools/sandbox_link_checker.py
-  - tools/sandbox.py
-  - sandbox/drafts/README.md
-  - docs/external-code-sandbox.md
-  - docs/execute-sandbox-preflight.md
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Sandbox intake chain map

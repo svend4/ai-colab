@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-138 — top command panel
 
 Дата: 2026-06-21.

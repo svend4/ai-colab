@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: sqlite-driver-acceptance-t117
 related: tasks/T-117.md, docs/sqlite-driver-acceptance-result-2026-06-21.md, drivers/sqlite.md
+status: historical
 ---
 
 # SQLite driver acceptance — T-117

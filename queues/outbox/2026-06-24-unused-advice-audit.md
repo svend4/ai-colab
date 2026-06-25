@@ -1,22 +1,10 @@
 ---
 id: 2026-06-24-unused-advice-audit
 type: workflow-review
-status: proposed
+status: historical
 agent: codex
 created: 2026-06-24
-related:
-  - docs/friction-ledger.md
-  - docs/friction-playbook.md
-  - docs/top-layer-command-groups.md
-  - docs/instruction-assurance.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
-  - queues/outbox/2026-06-24-lagrange-agent-conveyor-activation-checklist.md
-  - queues/outbox/2026-06-24-halley-next-agent-work-queue.md
-  - queues/outbox/2026-06-24-codex-agent-hierarchy-operating-model.md
-  - queues/outbox/2026-06-24-t238-draft-code-sandbox.md
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Unused advice audit

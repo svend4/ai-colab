@@ -1,6 +1,6 @@
 ---
 id: outbox-2026-06-23-subagent-handoff-json
-status: proposed
+status: historical
 agent: codex
 related: T-162, T-161, docs/agent-launch-workflow.md, tools/flow.py, tools/top.py
 ---

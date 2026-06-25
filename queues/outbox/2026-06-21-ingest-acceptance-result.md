@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: T-057 ingest acceptance result
 
 Date: 2026-06-21

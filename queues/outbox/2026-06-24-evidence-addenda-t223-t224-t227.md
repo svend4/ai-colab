@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-227 — evidence addenda and pipeline fencing test alignment
 
 Codex closed the fresh assurance debt for `T-223` and `T-224` without rewriting other agents' done markers.

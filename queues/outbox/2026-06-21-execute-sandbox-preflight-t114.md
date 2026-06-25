@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: execute-sandbox-preflight-t114
 related: tasks/T-114.md, docs/execute-sandbox-preflight.md, tasks/T-020.md
+status: historical
 ---
 
 # Execute sandbox preflight — T-114

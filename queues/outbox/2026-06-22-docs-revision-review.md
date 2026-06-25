@@ -3,7 +3,7 @@ id: outbox-2026-06-22-docs-revision-review
 type: outbox
 topic: docs-revision-review
 author: codex
-status: proposed
+status: historical
 related: [Q-016, Q-017, T-154, D-017, D-018, D-022, workflow-orchestration-policy, engine-state-2026-06-22]
 ---
 

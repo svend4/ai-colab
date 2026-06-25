@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-228 — next_id reservation hardening
 
 Codex reviewed unresolved friction/complaints and selected the newest high-impact issue: `F-021 next_id reservation collision`.

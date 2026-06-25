@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox — перепроверка и независимое ревью репозитория (Claude)
 
 - Дата: 2026-06-21 Europe/Berlin

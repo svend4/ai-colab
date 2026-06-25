@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: mcp-sync-acceptance-t100
 related: tasks/T-100.md, docs/mcp-sync-acceptance-result-2026-06-21.md, drivers/mcp_sync_acceptance.py
+status: historical
 ---
 
 # MCP sync tools/call acceptance — T-100

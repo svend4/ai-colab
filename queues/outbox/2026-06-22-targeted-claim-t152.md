@@ -4,6 +4,7 @@ type: outbox
 topic: pipeline-targeted-claim
 author: codex
 related: [T-152, F-016, T-150]
+status: historical
 ---
 
 # T-152 — pipeline targeted claim

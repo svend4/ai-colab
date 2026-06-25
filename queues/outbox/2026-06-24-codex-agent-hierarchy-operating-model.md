@@ -1,16 +1,10 @@
 ---
 id: 2026-06-24-codex-agent-hierarchy-operating-model
 type: methodology
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
-related:
-  - docs/agent-capacity-methodology.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
-  - docs/workflow-orchestration-policy.md
-  - queues/outbox/2026-06-24-lagrange-agent-conveyor-activation-checklist.md
-  - queues/outbox/2026-06-24-halley-next-agent-work-queue.md
+related: 
 ---
 
 # Codex operating model: agent hierarchy and orchestration

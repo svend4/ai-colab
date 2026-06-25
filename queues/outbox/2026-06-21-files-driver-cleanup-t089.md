@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: files-driver-cleanup-t089
 related: tasks/T-089.md, docs/files-driver-cleanup-result-2026-06-21.md, drivers/files.md
+status: historical
 ---
 
 # Files driver cleanup — T-089

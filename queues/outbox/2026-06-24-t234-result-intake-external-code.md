@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-234 — result_intake external-code structural heuristics
 
 Codex implemented T-234 under pipeline claim `0f0863f376c4`.

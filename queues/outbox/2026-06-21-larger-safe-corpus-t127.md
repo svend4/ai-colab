@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-127 — larger safe corpus report
 
 Дата: 2026-06-21.

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: MCP handshake result
 
 Адресаты: люди, AI-агенты, reviewer, summarizer.

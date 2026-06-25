@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox — P1-фиксы (E/H/I) + диагностика MCP-stdio блокера (Claude)
 
 - Дата: 2026-06-21 Europe/Berlin

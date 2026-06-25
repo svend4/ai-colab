@@ -3,7 +3,7 @@ from: codex
 type: review
 task: T-146
 related: [D-017, D-019, D-021, Q-015, T-135, T-136, T-144]
-status: proposed
+status: historical
 ---
 
 # T-146 — review of streams/worktree waiting problems

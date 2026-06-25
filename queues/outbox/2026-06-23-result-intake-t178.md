@@ -3,7 +3,7 @@ type: report
 agent: codex
 task: T-178
 title: result intake classifier
-status: proposed
+status: historical
 date: 2026-06-23
 ---
 

@@ -1,7 +1,7 @@
 ---
 type: report
 id: 2026-06-24-t243-cli-inventory
-status: done
+status: historical
 agent: codex
 task: T-243
 related: [cli-help-guard-convention-2026-06-24, kotel-system-critique-2026-06-24]

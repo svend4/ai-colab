@@ -3,12 +3,9 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: execute-sandbox-safety
-status: safety-recheck
+status: historical
 applied: AGENTS.md, PROTOCOL.md, docs/execute-sandbox-preflight.md, docs/execute-sandbox-runner-design-2026-06-23.md, tasks/T-208.md, tasks/T-217.md, queues/evidence/T-217.evidence.md
-related:
-  - tasks/T-208.md
-  - tasks/T-217.md
-  - queues/evidence/T-217.evidence.md
+related: 
 ---
 
 # Execute-track safety recheck

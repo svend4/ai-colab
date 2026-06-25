@@ -1,24 +1,11 @@
 ---
 id: 2026-06-24-sandbox-intake-orchestrator-review
 type: implementation-risk-review
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 mode: read-only-outbox-only
-related:
-  - queues/outbox/2026-06-24-sandbox-intake-chain-map.md
-  - queues/outbox/2026-06-24-agent-cell-synthesis.md
-  - tools/sandbox.py
-  - tools/python_analyzer.py
-  - tools/sandbox_schema_validator.py
-  - tools/sandbox_link_checker.py
-  - tools/test_sandbox.py
-  - tools/test_python_analyzer.py
-  - tools/test_sandbox_schema_validator.py
-  - tools/test_sandbox_link_checker.py
-  - sandbox/drafts/README.md
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Sandbox intake orchestrator review

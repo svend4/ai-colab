@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-199 evidence addendum — assurance debt cleanup
 
 Дата: 2026-06-23

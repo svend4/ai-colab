@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-144
 related: [D-021, T-136, T-143]
-status: done
+status: historical
 ---
 
 # T-144 result — top.py work-mode

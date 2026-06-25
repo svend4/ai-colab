@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: bridge-usage-review-t099
 related: tasks/T-099.md, docs/bridge-usage.md, docs/bridge-usage-review-result-2026-06-21.md
+status: historical
 ---
 
 # Bridge usage review — T-099

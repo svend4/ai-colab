@@ -3,15 +3,9 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: architecture-core-document-synthesis
-status: proposed
+status: historical
 applied: AGENTS.md, PROTOCOL.md, decisions/D-017.md, decisions/D-018.md, tools/doc_synthesis.py, docs/document-synthesis-mechanism-2026-06-24.md, docs/architecture-core-documents-synthesis-2026-06-24.md, streams/architecture-core/divergence.md, tasks/T-218.md
-related:
-  - docs/document-synthesis-mechanism-2026-06-24.md
-  - docs/architecture-core-documents-synthesis-2026-06-24.md
-  - streams/architecture-core/README.md
-  - streams/architecture-core/divergence.md
-  - tools/doc_synthesis.py
-  - tasks/T-218.md
+related: 
 ---
 
 # Отчёт: сверка архитектурных документов

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: T-055 workbench acceptance result
 
 Date: 2026-06-21

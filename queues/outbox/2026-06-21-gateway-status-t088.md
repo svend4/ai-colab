@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: gateway-status-t088
 related: tasks/T-088.md, docs/gateway-status-result-2026-06-21.md, drivers/gateway.md
+status: historical
 ---
 
 # Gateway status — T-088

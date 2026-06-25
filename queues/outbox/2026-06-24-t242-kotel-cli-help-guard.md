@@ -1,7 +1,7 @@
 ---
 id: 2026-06-24-t242-kotel-cli-help-guard
 type: implementation-report
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 related: T-242, topics/kotel-system-critique-2026-06-24.md, topics/kotel-system-critique-2026-06-24-action-plan.md

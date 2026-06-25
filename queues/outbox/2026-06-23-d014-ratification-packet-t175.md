@@ -4,6 +4,7 @@ agent: codex
 task: T-175
 title: D-014 execute OFF ratification packet
 date: 2026-06-23
+status: historical
 ---
 
 # D-014 ratification packet — T-175

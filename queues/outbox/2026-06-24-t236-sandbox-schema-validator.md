@@ -4,7 +4,7 @@ type: report
 task: T-236
 agent: codex
 claim_id: 00c4204ef9b5
-status: done-proposed
+status: historical
 ---
 # T-236 — sandbox schema validator
 

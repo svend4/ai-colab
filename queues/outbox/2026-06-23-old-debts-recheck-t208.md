@@ -3,6 +3,7 @@ type: report
 agent: codex
 title: Old unfinished tasks recheck — T-208 safety correction
 date: 2026-06-23
+status: historical
 ---
 
 # Old unfinished tasks recheck — T-208 safety correction

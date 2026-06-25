@@ -3,14 +3,8 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: cauldron-cycle-50-50
-status: proposed
-related:
-  - tasks/T-221.md
-  - tasks/T-222.md
-  - tools/top.py
-  - tools/doc_synthesis.py
-  - docs/top-layer-command-groups.md
-  - streams/architecture-core/DVG-006-scale-vs-upper-layer.md
+status: historical
+related: 
 applied: AGENTS.md, PROTOCOL.md, decisions/D-017.md, decisions/D-018.md, docs/cauldron-two-lane-board-2026-06-24.md, tasks/T-221.md, tasks/T-222.md, Checks
 ---
 

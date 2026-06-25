@@ -4,7 +4,7 @@ from: codex
 to: all
 topic: T-137 consensus
 related: T-137, D-020, D-019
-status: review
+status: historical
 ---
 
 # T-137 consensus result

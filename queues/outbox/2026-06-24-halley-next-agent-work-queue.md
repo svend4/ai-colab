@@ -1,25 +1,11 @@
 ---
 id: 2026-06-24-halley-next-agent-work-queue
 type: workflow-review
-status: proposed
+status: historical
 owner: halley
 date: 2026-06-24
 mode: read-only/outbox-only
-related:
-  - TASKS.md
-  - tasks/T-237.md
-  - PIPELINE.md
-  - queues/outbox/2026-06-24-halley-t237-link-checker-review.md
-  - queues/outbox/2026-06-24-t236-sandbox-schema-validator.md
-  - queues/outbox/2026-06-24-t235-python-analyzer.md
-  - queues/outbox/2026-06-24-t234-result-intake-external-code.md
-  - queues/outbox/2026-06-24-t233-cli-paths-readonly-utils.md
-  - queues/outbox/2026-06-24-pipeline-reconciliation-cleanup-report.md
-  - queues/outbox/2026-06-24-lagrange-centralization-information-plan.md
-  - docs/friction-ledger.md
-  - docs/top-layer-command-groups.md
-  - docs/workflow-conveyor-policy.md
-  - docs/workflow-orchestration-policy.md
+related: 
 ---
 
 # Halley next agent work queue after T-237

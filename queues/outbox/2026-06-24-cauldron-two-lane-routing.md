@@ -3,14 +3,9 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: cauldron-two-lane-routing
-status: proposed
+status: historical
 applied: AGENTS.md, PROTOCOL.md, decisions/D-017.md, decisions/D-018.md, tools/doc_synthesis.py, docs/cauldron-two-lane-board-2026-06-24.md, docs/architecture-core-documents-synthesis-2026-06-24.md, tasks/T-221.md, tasks/T-222.md
-related:
-  - docs/cauldron-two-lane-board-2026-06-24.md
-  - docs/architecture-core-documents-synthesis-2026-06-24.md
-  - tools/doc_synthesis.py
-  - tasks/T-221.md
-  - tasks/T-222.md
+related: 
 ---
 
 # Отчёт: две рабочие полосы котла

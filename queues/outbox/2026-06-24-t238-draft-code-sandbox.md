@@ -1,17 +1,10 @@
 ---
 id: 2026-06-24-t238-draft-code-sandbox
 type: implementation-report
-status: done
+status: historical
 owner: codex
 date: 2026-06-24
-related:
-  - tasks/T-238.md
-  - sandbox/README.md
-  - sandbox/.gitignore
-  - sandbox/drafts/README.md
-  - sandbox/templates/draft-code-manifest.template.json
-  - docs/external-code-sandbox.md
-  - docs/execute-sandbox-preflight.md
+related: 
 ---
 
 # T-238 draft-code sandbox lane

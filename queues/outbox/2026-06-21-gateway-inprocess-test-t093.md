@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: gateway-inprocess-test-t093-correction
 related: tasks/T-093.md, tasks/T-094.md, docs/gateway-inprocess-test-result-2026-06-21.md, drivers/gateway/test_gateway.py
+status: historical
 ---
 
 # Correction: T-093 remains retired

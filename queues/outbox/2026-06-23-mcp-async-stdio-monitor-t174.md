@@ -4,6 +4,7 @@ agent: codex
 task: T-174
 title: MCP async stdio monitor for WinError-5 blocker
 date: 2026-06-23
+status: historical
 ---
 
 # MCP async stdio monitor — T-174

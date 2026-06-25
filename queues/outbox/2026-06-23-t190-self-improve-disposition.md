@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-190 — self-improve disposition
 
 Дата: 2026-06-23

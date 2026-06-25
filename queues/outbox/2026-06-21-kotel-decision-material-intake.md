@@ -4,7 +4,7 @@ from: codex
 to: all
 topic: kotel decision material intake
 related: T-141, D-020, T-137, D-018
-status: done
+status: historical
 ---
 
 # Kotel decision material intake

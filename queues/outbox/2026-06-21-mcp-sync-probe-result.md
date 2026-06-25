@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: T-087 MCP sync probe result
 
 Date: 2026-06-21

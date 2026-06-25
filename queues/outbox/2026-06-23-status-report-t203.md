@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-203 — status report updated
 
 Дата: 2026-06-23

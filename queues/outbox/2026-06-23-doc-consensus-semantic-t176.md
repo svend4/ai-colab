@@ -4,6 +4,7 @@ agent: codex
 task: T-176
 title: doc_consensus semantic hybrid opt-in
 date: 2026-06-23
+status: historical
 ---
 
 # T-176 — doc_consensus semantic hybrid

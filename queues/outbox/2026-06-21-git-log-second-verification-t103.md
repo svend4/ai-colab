@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: git-log-second-verification-t103
 related: tasks/T-103.md, docs/git-log-second-verification-result-2026-06-21.md, drivers/git-log.md
+status: historical
 ---
 
 # Git-log second verification — T-103

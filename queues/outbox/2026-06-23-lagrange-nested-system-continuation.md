@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Lagrange: practical nested agent architecture
 
 - Дата: 2026-06-23

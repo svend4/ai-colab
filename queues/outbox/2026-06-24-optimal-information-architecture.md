@@ -3,11 +3,9 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: optimal-information-architecture
-status: proposed
+status: historical
 applied: AGENTS.md, PROTOCOL.md, docs/workspace-pyramid-levels.md, docs/engine-state-2026-06-22.md, decisions/D-016.md, tools/synthesis_helper.py
-related:
-  - docs/optimal-information-architecture-2026-06-24.md
-  - queues/evidence/T-216.evidence.md
+related: 
 ---
 
 # Отчёт: оптимальная информационная архитектура

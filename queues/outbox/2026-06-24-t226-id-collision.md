@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-226 id collision during pipeline reconciliation
 
 Codex detected a second id collision while reconciling the pipeline state.

@@ -1,7 +1,7 @@
 ---
 id: outbox-2026-06-23-agent-capacity-methodology
 type: report
-status: done
+status: historical
 agent: codex
 related: T-168, docs/agent-capacity-methodology.md, docs/nested-orchestration-3to1.md, docs/workflow-conveyor-policy.md
 ---

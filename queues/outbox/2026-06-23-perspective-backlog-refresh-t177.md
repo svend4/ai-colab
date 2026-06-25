@@ -3,7 +3,7 @@ type: report
 agent: codex
 task: T-177
 title: perspective backlog refresh after T-176
-status: proposed
+status: historical
 date: 2026-06-23
 ---
 

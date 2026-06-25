@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-123 — comparison of onboarding/manual opinions
 
 Сравнил свежие варианты обзора системы:

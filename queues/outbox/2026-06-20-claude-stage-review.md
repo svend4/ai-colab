@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: ревью стадии (перепроверка T-069)
 
 Автор: Claude

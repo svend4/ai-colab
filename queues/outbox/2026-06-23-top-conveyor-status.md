@@ -1,6 +1,6 @@
 ---
 id: outbox-2026-06-23-top-conveyor-status
-status: proposed
+status: historical
 agent: codex
 related: T-163, tools/conveyor.py, tools/top.py, docs/workflow-conveyor-policy.md
 ---

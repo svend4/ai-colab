@@ -1,7 +1,7 @@
 ---
 id: outbox-2026-06-23-top-layer-throughput-methodology
 type: report
-status: done
+status: historical
 agent: codex
 related: T-169, docs/top-layer-throughput-methodology.md, skills/top-layer-orchestrator/SKILL.md, docs/agent-capacity-methodology.md
 ---

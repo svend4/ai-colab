@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-136 Codex synthesis — commit streams / worktrees
 
 Дата: 2026-06-21.

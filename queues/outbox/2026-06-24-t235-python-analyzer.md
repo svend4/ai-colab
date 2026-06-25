@@ -4,7 +4,7 @@ type: report
 task: T-235
 agent: codex
 claim_id: 121ff30a174f
-status: done-proposed
+status: historical
 ---
 # T-235 — Python AST analyzer and sandbox intake integration
 

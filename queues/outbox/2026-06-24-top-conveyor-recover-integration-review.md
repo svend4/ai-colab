@@ -1,15 +1,10 @@
 ---
 id: 2026-06-24-top-conveyor-recover-integration-review
 type: integration-review
-status: proposed
+status: historical
 agent: codex
 created: 2026-06-24
-related:
-  - tools/top.py
-  - tools/conveyor.py
-  - queues/outbox/2026-06-24-conveyor-recover-adoption-review.md
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Top conveyor-recover integration review

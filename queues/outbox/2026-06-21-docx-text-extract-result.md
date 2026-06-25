@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-142
 related: [T-137, D-020]
-status: done
+status: historical
 ---
 
 # T-142 result — DOCX text_extract

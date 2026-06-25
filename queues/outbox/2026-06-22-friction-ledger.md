@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-147
 related: [docs/friction-ledger.md, docs/friction-playbook.md, Q-015, D-022]
-status: done
+status: historical
 ---
 
 # T-147 result — friction ledger/playbook

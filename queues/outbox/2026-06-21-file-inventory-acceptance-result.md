@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: T-059 file inventory acceptance result
 
 Date: 2026-06-21

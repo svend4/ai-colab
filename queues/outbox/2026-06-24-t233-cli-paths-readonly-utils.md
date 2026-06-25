@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-233 — CLI paths for read-only utilities
 
 Codex implemented T-233 under pipeline claim `f6c147b7f62a`.

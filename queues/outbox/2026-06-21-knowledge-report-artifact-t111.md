@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: knowledge-report-artifact-t111
 related: tasks/T-111.md, docs/knowledge-report-artifact-result-2026-06-21.md, reports/knowledge-fixtures-report.md, tools/knowledge.py
+status: historical
 ---
 
 # Knowledge report artifact — T-111

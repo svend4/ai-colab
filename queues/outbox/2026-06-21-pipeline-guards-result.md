@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: pipeline guards result
 
 Date: 2026-06-21

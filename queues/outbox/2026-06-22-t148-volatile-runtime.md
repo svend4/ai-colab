@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-148
 related: [D-022, docs/parallel-work-policy.md, tools/test_volatile.py]
-status: done
+status: historical
 ---
 
 # T-148 result — volatile runtime snapshots

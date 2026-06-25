@@ -1,3 +1,6 @@
+---
+status: historical
+---
 ﻿# T-124 — quickstart pipeline cleanup
 
 Завершён cleanup входных инструкций после перехода на `pipeline.py` как основной task engine.

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Conveyor backlog normalized dedup
 
 - Дата: 2026-06-23

@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: skills-usage-t113
 related: tasks/T-113.md, docs/skills-usage.md, skills/README.md
+status: historical
 ---
 
 # Project skills usage — T-113

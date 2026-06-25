@@ -1,7 +1,7 @@
 ---
 id: outbox-2026-06-23-tempfile-hardening
 type: report
-status: done
+status: historical
 agent: codex
 related: T-172, drivers/test_tmp.py, tools/friction.py, docs/project-audit-2026-06-23.md
 ---

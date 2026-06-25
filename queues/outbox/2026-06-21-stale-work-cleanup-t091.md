@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: stale-work-cleanup-t091
 related: tasks/T-091.md, docs/stale-work-cleanup-policy-2026-06-21.md, tasks/T-062.md, tasks/T-063.md, tasks/T-064.md
+status: historical
 ---
 
 # Stale work cleanup — T-091

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: driver acceptance batch passed (19/19)
 
 Автор: Claude

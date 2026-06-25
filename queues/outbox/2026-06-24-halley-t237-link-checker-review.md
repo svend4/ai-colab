@@ -1,13 +1,10 @@
 ---
 id: 2026-06-24-halley-t237-link-checker-review
 type: review
-status: done
+status: historical
 owner: halley
 date: 2026-06-24
-related:
-  - tasks/T-237.md
-  - tools/sandbox_link_checker.py
-  - queues/done/T-237.done.md
+related: 
 ---
 
 # Halley review: T-237 sandbox link checker

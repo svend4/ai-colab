@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: gateway-inprocess-test-t094
 related: tasks/T-094.md, docs/gateway-inprocess-test-result-2026-06-21.md, drivers/gateway/test_gateway.py
+status: historical
 ---
 
 # Gateway in-process test — T-094

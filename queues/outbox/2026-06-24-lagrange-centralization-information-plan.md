@@ -1,21 +1,11 @@
 ---
 id: 2026-06-24-lagrange-centralization-information-plan
 type: workflow-design
-status: proposed
+status: historical
 owner: lagrange
 scope: low-conflict/outbox-only
 date: 2026-06-24
-related:
-  - AGENTS.md
-  - PROTOCOL.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
-  - docs/top-layer-command-groups.md
-  - docs/document-synthesis-mechanism-2026-06-24.md
-  - docs/cauldron-two-lane-board-2026-06-24.md
-  - docs/workspace-pyramid-levels.md
-  - docs/external-code-sandbox.md
-  - docs/instruction-assurance.md
+related: 
 ---
 
 # Lagrange workflow/conveyor plan for information centralization

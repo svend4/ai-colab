@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: roadmap-reconciliation-t110
 related: tasks/T-110.md, docs/roadmap-reconciliation-result-2026-06-21.md, docs/layers-coverage.md
+status: historical
 ---
 
 # Roadmap reconciliation — T-110

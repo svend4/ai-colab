@@ -4,6 +4,7 @@ agent: codex
 task: T-173
 title: Assurance closure — promotion coverage and instruction flow
 date: 2026-06-23
+status: historical
 ---
 
 # Assurance closure — T-173

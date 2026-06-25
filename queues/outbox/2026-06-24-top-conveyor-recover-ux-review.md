@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # UX/safety review: `top.py conveyor-recover`
 
 - Date: 2026-06-24

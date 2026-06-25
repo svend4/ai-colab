@@ -1,14 +1,10 @@
 ---
 id: 2026-06-24-t237-sandbox-link-checker
 type: implementation-report
-status: done
+status: historical
 owner: codex
 date: 2026-06-24
-related:
-  - tasks/T-237.md
-  - tools/sandbox_link_checker.py
-  - tools/test_sandbox_link_checker.py
-  - queues/outbox/2026-06-24-halley-t237-link-checker-review.md
+related: 
 ---
 
 # T-237 sandbox link checker

@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: roadmap-usage-refresh-t118
 related: tasks/T-118.md, docs/roadmap-usage-refresh-result-2026-06-21.md, docs/layers-coverage.md, docs/bridge-usage.md
+status: historical
 ---
 
 # Roadmap/usage refresh — T-118

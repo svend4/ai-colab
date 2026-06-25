@@ -1,7 +1,7 @@
 ---
 id: outbox-2026-06-23-top-process-landed
 type: report
-status: done
+status: historical
 agent: codex
 related: T-170, tools/top.py, tools/test_top.py, docs/top-layer-throughput-methodology.md, skills/top-layer-orchestrator/SKILL.md
 ---

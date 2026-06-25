@@ -4,6 +4,7 @@ type: outbox
 topic: friction-retrospective
 author: codex
 related: [T-150, T-147, T-149, D-022]
+status: historical
 ---
 
 # T-150 — friction retrospective + automation

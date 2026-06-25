@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: driver acceptance batch prepared
 
 Адресаты: люди, AI-агенты, reviewer, summarizer.

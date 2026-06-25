@@ -4,6 +4,7 @@ type: outbox
 topic: stream-hygiene
 author: codex
 related: [T-151, T-150, F-013]
+status: historical
 ---
 
 # T-151 — stream hygiene cleanup

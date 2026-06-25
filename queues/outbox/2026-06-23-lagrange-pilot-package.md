@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Lagrange: pilot package for nested agents
 
 - Дата: 2026-06-23

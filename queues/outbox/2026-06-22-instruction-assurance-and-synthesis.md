@@ -4,6 +4,7 @@ type: outbox
 topic: instruction-assurance-and-agent-synthesis
 author: codex
 related: [T-153, D-017, D-018, D-022, docs/friction-retrospective-2026-06-22.md]
+status: historical
 ---
 
 # Instruction assurance and multi-agent synthesis questions

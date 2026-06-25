@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Conveyor output refs для landed workflow
 
 - Дата: 2026-06-23

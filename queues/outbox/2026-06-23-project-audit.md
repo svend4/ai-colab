@@ -1,7 +1,7 @@
 ---
 id: outbox-2026-06-23-project-audit
 type: report
-status: done
+status: historical
 agent: codex
 related: T-171, T-172, T-173, docs/project-audit-2026-06-23.md
 ---

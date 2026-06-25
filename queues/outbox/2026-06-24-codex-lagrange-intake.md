@@ -1,14 +1,10 @@
 ---
 id: 2026-06-24-codex-lagrange-intake
 type: workflow-intake
-status: done
+status: historical
 owner: codex
 date: 2026-06-24
-related:
-  - queues/outbox/2026-06-24-lagrange-centralization-information-plan.md
-  - queues/outbox/2026-06-24-codex-agent-workflow-loop.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
+related: 
 ---
 
 # Codex intake: Lagrange centralization workflow

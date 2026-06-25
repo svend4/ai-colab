@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-133 text-extract — отчёт Codex
 
 Дата: 2026-06-21.

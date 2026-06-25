@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-145
 related: [D-021, T-139]
-status: done
+status: historical
 ---
 
 # T-145 result — portal-location split

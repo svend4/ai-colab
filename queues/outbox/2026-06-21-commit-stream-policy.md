@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Commit stream policy
 
 По вопросу Stefan о commit-политике добавлена промежуточная модель `streams/`.

@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: knowledge-report-regression-t119
 related: tasks/T-119.md, docs/knowledge-report-regression-result-2026-06-21.md, tools/test_knowledge.py
+status: historical
 ---
 
 # Knowledge report regression — T-119

@@ -2,7 +2,7 @@
 id: 2026-06-24-codex-agent-workflow-loop
 type: report
 agent: codex
-status: proposed
+status: historical
 workflow_id: W-2026-06-24-lagrange-centralization
 related: docs/workflow-conveyor-policy.md, docs/top-layer-throughput-methodology.md, tools/flow.py, tools/conveyor.py
 ---

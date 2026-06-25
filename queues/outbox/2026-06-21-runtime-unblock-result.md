@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: runtime unblock result
 
 Date: 2026-06-21

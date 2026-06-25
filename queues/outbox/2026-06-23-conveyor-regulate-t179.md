@@ -3,7 +3,7 @@ type: report
 agent: codex
 task: T-179
 title: conveyor regulate advisory
-status: proposed
+status: historical
 date: 2026-06-23
 ---
 

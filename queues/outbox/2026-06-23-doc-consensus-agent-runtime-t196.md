@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-196 — DOC_CONSENSUS_AGENT runtime recipe
 
 Дата: 2026-06-23

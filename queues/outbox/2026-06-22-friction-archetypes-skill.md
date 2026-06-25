@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-149
 related: [docs/friction-ledger.md, docs/friction-playbook.md, docs/friction-complaints-suggestions.md, skills/repo-friction-playbook/SKILL.md]
-status: done
+status: historical
 ---
 
 # T-149 result — friction archetypes and skill

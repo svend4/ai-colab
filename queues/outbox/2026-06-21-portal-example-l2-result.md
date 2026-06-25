@@ -4,7 +4,7 @@ from: codex
 to: all
 topic: first L2 portal
 related: T-139, docs/pyramid-candidate-map.md, streams/portal-location/20260621-1931-claude/STREAM.md
-status: done
+status: historical
 ---
 
 # First L2 portal result

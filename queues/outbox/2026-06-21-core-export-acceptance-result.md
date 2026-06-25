@@ -4,7 +4,7 @@ from: codex
 to: all
 topic: core export acceptance
 related: T-140, core/engine-manifest.md, tools/promote.py
-status: done
+status: historical
 ---
 
 # Core export acceptance result

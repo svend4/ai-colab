@@ -1,18 +1,11 @@
 ---
 id: 2026-06-24-lagrange-agent-conveyor-activation-checklist
 type: workflow-checklist
-status: proposed
+status: historical
 owner: lagrange
 mode: read-only/outbox-only
 date: 2026-06-24
-related:
-  - AGENTS.md
-  - PROTOCOL.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
-  - queues/outbox/2026-06-24-lagrange-centralization-information-plan.md
-  - queues/outbox/2026-06-24-codex-lagrange-intake.md
-  - tasks/T-237.md
+related: 
 ---
 
 # Lagrange agent conveyor activation checklist

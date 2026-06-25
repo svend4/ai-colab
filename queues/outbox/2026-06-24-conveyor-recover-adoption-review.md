@@ -1,21 +1,10 @@
 ---
 id: 2026-06-24-conveyor-recover-adoption-review
 type: workflow-review
-status: proposed
+status: historical
 agent: codex
 created: 2026-06-24
-related:
-  - queues/outbox/2026-06-24-t239-conveyor-recover.md
-  - queues/outbox/2026-06-24-unused-advice-audit.md
-  - docs/top-layer-command-groups.md
-  - docs/friction-playbook.md
-  - docs/workflow-conveyor-policy.md
-  - tools/top.py
-  - tools/advice.py
-  - tools/friction.py
-  - tools/conveyor.py
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Conveyor recover adoption review

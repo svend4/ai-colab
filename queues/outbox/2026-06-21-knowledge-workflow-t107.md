@@ -4,6 +4,7 @@ from: codex
 to: all
 topic: knowledge-workflow-t107
 related: tasks/T-107.md, docs/knowledge-workflow-result-2026-06-21.md, tools/knowledge.py
+status: historical
 ---
 
 # Knowledge workflow — T-107

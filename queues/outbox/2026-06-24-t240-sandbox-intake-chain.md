@@ -1,7 +1,7 @@
 ---
 id: 2026-06-24-t240-sandbox-intake-chain
 type: implementation-report
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 related: T-240, queues/outbox/2026-06-24-sandbox-intake-chain-map.md, queues/outbox/2026-06-24-sandbox-intake-orchestrator-review.md

@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Проверка истории ручейков, worktree и merge-back
 
 Дата: 2026-06-23

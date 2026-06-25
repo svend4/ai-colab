@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: implementation stage report
 
 Адресаты: люди, AI-агенты, reviewer, summarizer.

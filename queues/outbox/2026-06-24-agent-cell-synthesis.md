@@ -1,19 +1,11 @@
 ---
 id: 2026-06-24-agent-cell-synthesis
 type: synthesis-report
-status: proposed
+status: historical
 owner: codex
 date: 2026-06-24
 mode: read-only-outbox-only
-related:
-  - queues/outbox/2026-06-24-observer-hierarchy-methodology.md
-  - queues/outbox/2026-06-24-sandbox-intake-chain-map.md
-  - queues/outbox/2026-06-24-unused-advice-audit.md
-  - queues/outbox/2026-06-24-codex-agent-hierarchy-operating-model.md
-  - docs/workflow-conveyor-policy.md
-  - docs/top-layer-throughput-methodology.md
-  - AGENTS.md
-  - PROTOCOL.md
+related: 
 ---
 
 # Agent cell synthesis

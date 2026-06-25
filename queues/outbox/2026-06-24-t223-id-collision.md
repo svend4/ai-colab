@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # T-223 id collision during pipeline reconciliation
 
 Codex detected an id collision while doing a small reconciliation cleanup.

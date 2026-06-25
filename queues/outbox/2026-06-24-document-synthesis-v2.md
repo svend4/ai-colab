@@ -3,15 +3,8 @@ type: report
 agent: codex
 date: 2026-06-24
 topic: document-synthesis-v2
-status: proposed
-related:
-  - tasks/T-218.md
-  - tools/doc_synthesis.py
-  - tools/top.py
-  - docs/document-synthesis-mechanism-2026-06-24.md
-  - docs/architecture-core-documents-synthesis-2026-06-24.md
-  - streams/architecture-core/README.generated.md
-  - streams/architecture-core/divergence.generated.md
+status: historical
+related: 
 applied: AGENTS.md, PROTOCOL.md, decisions/D-017.md, decisions/D-018.md, docs/document-synthesis-mechanism-2026-06-24.md, tools/doc_synthesis.py, tools/top.py, Checks
 ---
 

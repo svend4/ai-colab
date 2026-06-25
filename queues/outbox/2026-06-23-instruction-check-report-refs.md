@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Instruction check-report advisory reference verification
 
 - Дата: 2026-06-23

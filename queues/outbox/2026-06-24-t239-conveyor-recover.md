@@ -1,15 +1,10 @@
 ---
 id: 2026-06-24-t239-conveyor-recover
 type: implementation-report
-status: done
+status: historical
 owner: codex
 date: 2026-06-24
-related:
-  - tasks/T-239.md
-  - tools/conveyor.py
-  - tools/test_conveyor.py
-  - queues/outbox/2026-06-24-agent-cell-synthesis.md
-  - queues/outbox/2026-06-24-unused-advice-audit.md
+related: 
 ---
 
 # T-239 conveyor recover advisory

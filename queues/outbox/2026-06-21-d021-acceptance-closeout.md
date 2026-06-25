@@ -3,7 +3,7 @@ from: codex
 type: result
 task: T-143
 related: [D-021, T-136, T-137]
-status: done
+status: historical
 ---
 
 # T-143 result — D-021 acceptance closeout

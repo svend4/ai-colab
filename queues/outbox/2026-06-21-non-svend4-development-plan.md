@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Outbox: non-svend4 development plan
 
 Date: 2026-06-21

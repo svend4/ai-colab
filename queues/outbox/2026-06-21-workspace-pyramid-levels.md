@@ -1,3 +1,6 @@
+---
+status: historical
+---
 # Workspace pyramid levels
 
 По запросу Stefan оформлена 4-уровневая модель папок:

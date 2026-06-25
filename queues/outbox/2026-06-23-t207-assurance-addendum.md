@@ -4,6 +4,7 @@ agent: codex
 task: T-207-addendum
 title: T-207 assurance addendum for text_extract candidate
 date: 2026-06-23
+status: historical
 ---
 
 # T-207 assurance addendum — text_extract candidate
