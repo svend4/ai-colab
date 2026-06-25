@@ -268,5 +268,7 @@
 | T-252 | Independent-first variant streams: политика содержательных дублей и раскрытия вариантов | done | codex | — | Оформить proposed policy, усилить stream.py lifecycle, создать outbox и проверки. |
 | T-253 | Stream readiness check: проверка полноты ready-for-synthesis вариантов | done | codex | — | Добавить incomplete_ready diagnostics в stream.py check, обновить тесты и outbox. |
 | T-254 | Top variant-start: одна команда для independent-first варианта | done | codex | — | Добавить top.py variant-start wrapper, тесты, документацию и outbox. |
-| T-255 | Doc synthesis: читать stream-варианты как corpus | doing | codex | — | Реализовать автоматический corpus из streams/<topic>/*/STREAM.md для doc_synthesis/top.py. |
+| T-255 | Doc synthesis: читать stream-варианты как corpus | done | codex | — | Реализовать автоматический corpus из streams/<topic>/*/STREAM.md для doc_synthesis/top.py. |
+| T-256 | Ready-only stream corpus for doc synthesis | done | codex | — | Добавить --ready-only для doc_synthesis/top.py, чтобы synthesis читал только готовые stream-варианты. |
+| T-257 | Independent-first policy for preliminary code variants | doing | codex | — | Сначала раскрыть независимый вариант Codex по работе с предварительным кодом, затем сверить с sandbox/drafts и старыми механизмами. |
 <!-- GEN:tasks END -->
