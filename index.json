@@ -3207,6 +3207,17 @@
       "depends_on": "[T-258]",
       "topic": "",
       "next": "Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper."
+    },
+    {
+      "id": "T-260",
+      "title": "Draft-code no-execute packet manager for agent code variants",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-257, T-259]",
+      "topic": "",
+      "next": "Реализовать минимальный `tools/draft_code.py` create/check/list/review; top-wrapper оставить отдельным малым следующим шагом, если core manager зелёный."
     }
   ],
   "questions": [
