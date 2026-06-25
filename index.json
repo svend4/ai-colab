@@ -3068,6 +3068,17 @@
       "depends_on": "[T-246]",
       "topic": "topics/information-refactoring-cycle-1-2026-06-25.md",
       "next": "Add a read-only question_tree tool, first answer cycle, and sandbox idea lab for radical experiments."
+    },
+    {
+      "id": "T-248",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

@@ -258,4 +258,8 @@
 | T-242 | Kotel critique stage 1: CLI help guard and deterministic action plan | done | codex | — | Apply `_cli.help_guard` to the first criticized sys.argv tools and write a staged action plan for the kotel critique. |
 | T-243 | CLI inventory: machine-readable map of help/json risk | done | codex | — | Add a read-only inventory tool that classifies tools/*.py by argparse/help_guard/manual sys.argv risk. |
 | T-244 | CLI help_guard batch 1: manual-help and small report tools | done | codex | — | Apply `_cli.help_guard` with explicit HELP text to a small non-hot batch from cli_inventory. |
+| T-245 | Alpha-2 to Alpha-3 roadmap package for collective approval | done | codex | `topics/alpha2-to-alpha3-roadmap-2026-06-24.md` | Prepare a detailed proposed roadmap before further code implementation. |
+| T-246 | Information refactoring question tree for repository rejuvenation | done | codex | `topics/information-refactoring-question-tree-2026-06-25.md` | Convert the user's meta-question into a numbered question tree with status markers and proposed next actions. |
+| T-247 | Question tree cycle: extract, answer, extend, and sandbox radical ideas | done | codex | `topics/information-refactoring-cycle-1-2026-06-25.md` | Add a read-only question_tree tool, first answer cycle, and sandbox idea lab for radical experiments. |
+| T-248 | (зарезервировано — заполните) | todo | codex | — | зарезервировано через tools/next_id.py — заполните |
 <!-- GEN:tasks END -->
