@@ -24,11 +24,18 @@ DOC = """# Red-team записи темы X
 ## Минор всегда сохраняется без исключений
 - attack: контрпример — спам-claim кратности 1 засоряет резерв
 - verdict: refuted
+- severity: high,medium
 - reason: нужен порог осмысленности перед сохранением; абсолютная формулировка опровергнута
 
 ## Канонизация всегда детерминирована
 - attack: границы кластеров дрейфуют между прогонами
 - verdict: open
+
+## Слепота достаточна для независимости
+- attack: один опровергатель нашёл дыру (клоны в карантине)
+- verdict: refuted
+- severity: high
+- reason: один tombstone — независимо не подтверждено
 """
 
 
@@ -39,19 +46,22 @@ def main():
         open(p, "w", encoding="utf-8", newline="\n").write(DOC)
 
         recs = rg.parse_records(p)
-        if len(recs) != 3:
-            fails.append("ожидалось 3 записи, получено %d" % len(recs))
-        byv = {r["verdict"] for r in recs}
-        if byv != {"survived", "refuted", "open"}:
-            fails.append("вердикты разобраны неверно: %s" % byv)
+        if len(recs) != 4:
+            fails.append("ожидалось 4 записи, получено %d" % len(recs))
 
         g = rg.gate(recs)
         if len(g["cleared"]) != 1 or "Независимость" not in g["cleared"][0]["claim"]:
             fails.append("cleared должен содержать survived-claim: %s" % g["cleared"])
-        if len(g["rejected"]) != 1:
-            fails.append("rejected должен содержать 1 refuted")
+        # refuted с >=2 опровергателями (high,medium) → rejected (negative-set)
+        if len(g["rejected"]) != 1 or "Минор" not in g["rejected"][0]["claim"]:
+            fails.append("rejected должен содержать 2-опровергательский refuted: %s" % g["rejected"])
         elif not g["rejected"][0]["reason"]:
             fails.append("refuted обязан нести reason (антиген, RT-2): %s" % g["rejected"][0])
+        # СИММЕТРИЯ ADD↔REMOVE: refuted с 1 опровергателем → contested, НЕ убит
+        if len(g["contested"]) != 1 or "Слепота" not in g["contested"][0]["claim"]:
+            fails.append("1-опровергательский refuted должен быть contested (симметрия), а не rejected: %s" % g["contested"])
+        if any("Слепота" in r["claim"] for r in g["rejected"]):
+            fails.append("одиночный tombstone НЕ должен убивать claim (no-silent-delete фикс)")
         if len(g["pending"]) != 1:
             fails.append("pending должен содержать 1 open")
 

@@ -3189,13 +3189,24 @@
     {
       "id": "T-258",
       "title": "Independent-first guard for variant-start ordering",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-254, T-257]",
       "topic": "",
       "next": "Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard."
+    },
+    {
+      "id": "T-259",
+      "title": "Variant batch barrier for independent-first sub-agents",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-258]",
+      "topic": "",
+      "next": "Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper."
     }
   ],
   "questions": [

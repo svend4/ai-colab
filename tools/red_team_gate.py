@@ -27,6 +27,7 @@ configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 VERDICTS = ("survived", "refuted", "open")
+REFUTE_QUORUM = 2  # симметрия ADD↔REMOVE: убить claim нужно >=2 независимых опровергателя, не 1 tombstone
 
 
 def parse_records(path):
@@ -40,11 +41,11 @@ def parse_records(path):
     for ln in lines:
         h = re.match(r"^##\s+(.*)", ln)
         if h:
-            cur = {"claim": h.group(1).strip(), "verdict": "open", "reason": "", "attack": ""}
+            cur = {"claim": h.group(1).strip(), "verdict": "open", "reason": "", "attack": "", "severity": ""}
             recs.append(cur)
             continue
         if cur:
-            m = re.match(r"^\s*-\s*(verdict|reason|attack)\s*:\s*(.*)", ln, re.I)
+            m = re.match(r"^\s*-\s*(verdict|reason|attack|severity)\s*:\s*(.*)", ln, re.I)
             if m:
                 key, val = m.group(1).lower(), m.group(2).strip()
                 if key == "verdict":
@@ -55,11 +56,19 @@ def parse_records(path):
     return recs
 
 
+def _breaks(rec):
+    """Сколько НЕЗАВИСИМЫХ опровергателей реально сломали claim (по списку severity, 'survived' не в счёт)."""
+    return sum(1 for s in rec.get("severity", "").split(",") if s.strip() and s.strip().lower() != "survived")
+
+
 def gate(records):
-    """Маршрут: cleared(survived) · rejected(refuted, с причиной=антиген) · pending(open/нет)."""
+    """Маршрут с симметрией ADD↔REMOVE: убить claim (rejected) нужно >=REFUTE_QUORUM независимых
+    опровергателей; один tombstone → contested (как одиночный свидетель при добавлении — недостаточно)."""
+    refuted = [r for r in records if r["verdict"] == "refuted"]
     return {
         "cleared": [r for r in records if r["verdict"] == "survived"],
-        "rejected": [r for r in records if r["verdict"] == "refuted"],
+        "rejected": [r for r in refuted if _breaks(r) >= REFUTE_QUORUM],   # независимо подтверждено → negative-set
+        "contested": [r for r in refuted if _breaks(r) < REFUTE_QUORUM],   # 1 tombstone → нужно ещё (симметрия)
         "pending": [r for r in records if r["verdict"] == "open"],
     }
 
@@ -86,7 +95,9 @@ def _overlap(a, b):
 def _flags(g):
     f = []
     if g["rejected"]:
-        f.append("⛔ %d refuted → negative-set (НЕ молчаливо, с причиной)" % len(g["rejected"]))
+        f.append("⛔ %d refuted (>=кворума) → negative-set (НЕ молчаливо, с причиной)" % len(g["rejected"]))
+    if g.get("contested"):
+        f.append("◐ %d contested (1 опровергатель) — НЕ убит: нужен 2-й, симметрия с ADD" % len(g["contested"]))
     if g["pending"]:
         f.append("⏳ %d pending — промоушн запрещён до red team (RT-1)" % len(g["pending"]))
     return f
@@ -94,14 +105,16 @@ def _flags(g):
 
 def _report(g, title):
     print("=== RED-TEAM-ГЕЙТ (выход): %s ===" % title)
-    print("  cleared(survived→канон): %d · rejected(refuted→negative-set): %d · pending: %d" % (
-        len(g["cleared"]), len(g["rejected"]), len(g["pending"])))
+    print("  cleared→канон: %d · rejected→negative-set: %d · contested(1 tombstone): %d · pending: %d" % (
+        len(g["cleared"]), len(g["rejected"]), len(g.get("contested", [])), len(g["pending"])))
     for r in g["cleared"]:
         print("  ✅ %s" % r["claim"][:90])
     for r in g["rejected"]:
         print("  ⛔ %s" % r["claim"][:80])
         if r["reason"]:
             print("       причина(антиген): %s" % r["reason"][:100])
+    for r in g.get("contested", []):
+        print("  ◐ %s — оспорен 1 опровергателем, НЕ убит (нужен независимый 2-й)" % r["claim"][:70])
     for r in g["pending"]:
         print("  ⏳ %s — нужен red team" % r["claim"][:80])
     for fl in _flags(g):
