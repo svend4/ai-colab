@@ -26,20 +26,27 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py snapshot                 # side effect: regenerate derived snapshots
     python tools/top.py knowledge <corpus> [--query TEXT] [--out reports/x.md]
     python tools/top.py repo-search <query> [--limit N] [--json]
+    python tools/top.py variant-start <agent> <topic...> [--task T-id] [--search-now] [--json]  # create independent-first stream
+
+    python tools/top.py variant-batch <topic...> --agents a,b,c [--task T-id] [--json]  # batch barrier manifest
+    python tools/top.py question-tree [path] [--category open] [--action-plan] [--json]  # inspect numbered meta-questions
     python tools/top.py cycle <agent>            # print safe work cycle template
     python tools/top.py work-mode <agent> <task> # choose shared tree vs worktree
     python tools/top.py subagent-handoff <agent> <task> [context...] [--worktree] [--json]
     python tools/top.py conveyor [--target N] [--idle M] [--json]
     python tools/top.py cauldron-lanes [topic] [--json] [--out PATH]  # synthesis lanes: ratify-build/divergence-detail
-    python tools/top.py synthesize-docs [topic] [--json] [--out PATH] [--with-streams]  # doc synthesis v2
+    python tools/top.py synthesize-docs [topic] [--json] [--out PATH] [--with-streams] [--ready-only]  # doc synthesis v2
 """
 import argparse
+
+import datetime
 import json
 import os
 import subprocess
 import sys
 from _ioutil import configure_output
 import result_intake
+import stream as stream_tool
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PY = sys.executable
@@ -132,6 +139,33 @@ _BUTTONS = [
         "effect": "read-mostly; builds ignored logs/repo-knowledge.db if missing",
     },
     {
+        "id": "variant-start",
+        "audience": "agent",
+        "command": "python tools/top.py variant-start <agent> <topic...> [--task T-id] [--reason TEXT] [--search-now] [--json]",
+        "does": "Запустить independent-first вариант: сначала stream-пакет; repo-search отложен до явного --search-now или следующей команды.",
+        "effect": "writes stream packet; search deferred by default",
+    },
+    {
+        "id": "variant-batch",
+        "audience": "agent",
+        "command": "python tools/top.py variant-batch <topic...> --agents a,b,c [--task T-id] [--json]",
+        "does": "Создать batch/barrier manifest для нескольких independent-first агентов; stream-файлы агенты пишут сами.",
+        "effect": "writes streams/<topic>/_batches/<batch-id>.json only",
+    },
+    {
+        "id": "draft-code",
+        "audience": "both",
+        "command": "python tools/top.py draft-code create <draft-id> --owner <agent> --purpose <text>",
+        "does": "Прокси к no-execute draft-code manager: create/check/review/list для sandbox/drafts packets.",
+        "effect": "writes draft packet only for create; check/review/list are read-only",
+    },
+    {
+        "id": "info-draft",
+        "audience": "both",
+        "command": "python tools/top.py info-draft create <draft-id> --owner <agent> --purpose <text>",
+        "does": "Прокси к no-canon info/document draft manager: create/check/review/list для sandbox/info-drafts packets.",
+        "effect": "writes info draft packet only for create; check/review/list are read-only",
+    },    {
         "id": "report-diff",
         "audience": "both",
         "command": "python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md",
@@ -139,6 +173,12 @@ _BUTTONS = [
         "effect": "writes report if --out",
     },
     {
+        "id": "question-tree",
+        "audience": "both",
+        "command": "python tools/top.py question-tree [topics/information-refactoring-question-tree-2026-06-25.md] [--category open] [--action-plan] [--json]",
+        "does": "Показать старые/новые методологические вопросы или action-plan по статусам из question-tree.",
+        "effect": "read-only",
+    },    {
         "id": "cohort-board",
         "audience": "both",
         "command": "python tools/cohort.py board",
@@ -190,13 +230,13 @@ _BUTTONS = [
     {
         "id": "synthesize-docs",
         "audience": "both",
-        "command": "python tools/top.py synthesize-docs [topic] [--json] [--out docs/<name>.md] [--with-streams]",
-        "does": "Запустить doc_synthesis v2: candidates/source-line evidence/streams scaffold через верхнюю панель.",
+        "command": "python tools/top.py synthesize-docs [topic] [--json] [--out docs/<name>.md] [--with-streams] [--ready-only]",
+        "does": "Запустить doc_synthesis v2: candidates/source-line evidence/streams scaffold или ready-only stream corpus через верхнюю панель.",
         "effect": "read-only; writes report/streams only with explicit flags",
     },    {
         "id": "cauldron-lanes",
         "audience": "both",
-        "command": "python tools/top.py cauldron-lanes [topic] [--json] [--out docs/<name>.md]",
+        "command": "python tools/top.py cauldron-lanes [topic] [--json] [--out docs/<name>.md] [--ready-only]",
         "does": "Показать две полосы котла: ratify-build для ратификации/строительства и divergence-detail для детализации споров.",
         "effect": "read-only; writes report if --out",
     },
@@ -211,8 +251,15 @@ _BUTTONS = [
         "id": "stream-create",
         "audience": "agent",
         "command": "python tools/stream.py create <topic> <agent> <reason>",
-        "does": "Создать semi-commit stream-пакет для варианта решения без засорения mainline.",
+        "does": "Создать independent-first semi-commit stream-пакет для варианта решения без засорения mainline.",
         "effect": "writes stream packet",
+    },
+    {
+        "id": "stream-ready",
+        "audience": "agent",
+        "command": "python tools/stream.py mark <stream-id> ready-for-synthesis <note>",
+        "does": "Отметить, что независимый вариант раскрыт и готов к синтезу с другими вариантами.",
+        "effect": "writes stream front-matter",
     },
     {
         "id": "promote-check",
@@ -418,12 +465,442 @@ def cmd_repo_search(args):
         cmd.append("--json")
     return _run("repo search", cmd, timeout=90)
 
+def _capture_cmd(cmd, timeout=90):
+    try:
+        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=timeout,
+                           stdin=subprocess.DEVNULL)
+        return {"returncode": p.returncode, "stdout": p.stdout or "", "stderr": p.stderr or "",
+                "command": " ".join(cmd)}
+    except subprocess.TimeoutExpired as exc:
+        return {"returncode": 124, "stdout": exc.stdout or "", "stderr": exc.stderr or "",
+                "command": " ".join(cmd), "error": "timeout"}
+
+
+def _repo_rel(path):
+    try:
+        return os.path.relpath(path, ROOT).replace("\\", "/")
+    except ValueError:
+        return path
+
+
+def _resolve_repo_dir(path):
+    if not path:
+        return None
+    dest = path if os.path.isabs(path) else os.path.join(ROOT, path)
+    dest_r = os.path.realpath(dest)
+    root_r = os.path.realpath(ROOT)
+    if os.path.commonpath([dest_r, root_r]) != root_r:
+        raise ValueError("refusing path outside repo: %s" % path)
+    return dest_r
+
+
+def _variant_start_payload(args):
+    topic = " ".join(args.topic).strip()
+    if not topic:
+        raise ValueError("topic is required")
+    stream_root = _resolve_repo_dir(args.stream_root) if args.stream_root else None
+    reason = args.reason or "independent-first variant for %s" % topic
+
+    created = stream_tool.create(topic, args.agent, reason, root=stream_root)
+    stream_path = created["path"]
+    stream_rel = _repo_rel(stream_path)
+    topic_slug = created.get("topic") or _topic_slug(topic)
+
+    topic_for_ps = '"' + topic.replace('"', '`"') + '"'
+    repo_search_next_cmd = "python tools\\top.py repo-search %s --limit %s" % (topic_for_ps, args.search_limit)
+    repo_search_run_cmd = _tool("repo_search.py", "search", topic, "--limit", str(args.search_limit))
+
+    if args.no_search:
+        repo_search = {
+            "skipped": True,
+            "deferred": False,
+            "reason": "--no-search requested",
+            "command": repo_search_next_cmd,
+        }
+    elif args.search_now:
+        repo_search = _capture_cmd(repo_search_run_cmd, timeout=90)
+        repo_search["deferred"] = False
+        repo_search["search_now"] = True
+        repo_search["top_command"] = repo_search_next_cmd
+    else:
+        repo_search = {
+            "skipped": True,
+            "deferred": True,
+            "reason": "independent-first default: fill the stream before repo-search",
+            "command": repo_search_next_cmd,
+        }
+
+    root_suffix = ""
+    if args.stream_root:
+        root_suffix = " --root %s" % args.stream_root
+    mark_cmd = 'python tools\\stream.py mark %s ready-for-synthesis "variant completed"%s' % (created["id"], root_suffix)
+
+    preflight = None
+    preflight_cmd = None
+    if args.task:
+        preflight_cmd = "python tools\\top.py instruction-preflight %s %s" % (args.agent, args.task)
+        if not args.no_preflight:
+            preflight = _capture_cmd(_tool("instructions.py", "preflight", args.agent, args.task), timeout=45)
+
+    independent_check_cmd = "python tools\\independent_first.py check %s --json" % stream_rel
+    next_commands = [
+        "# edit %s first: fill independent sections 01-03 before repo-search" % stream_rel,
+        independent_check_cmd,
+    ]
+    if preflight_cmd:
+        next_commands.append(preflight_cmd)
+    if not args.no_search:
+        if args.search_now:
+            next_commands.append("# repo-search already executed by --search-now; repeat only if context changed")
+        next_commands.append(repo_search_next_cmd)
+    next_commands.extend([
+        mark_cmd,
+        "python tools\\stream.py check --max-age-days 7%s" % root_suffix,
+        "python tools\\synthesis_helper.py report %s --out topics\\%s-synthesis.md" % (topic_slug, topic_slug),
+    ])
+
+    return {
+        "schema": "top_variant_start.v1",
+        "mutates": True,
+        "agent": args.agent,
+        "task": args.task,
+        "topic": topic,
+        "reason": reason,
+        "stream": {"id": created["id"], "topic": topic_slug, "path": stream_path, "relpath": stream_rel},
+        "repo_search": repo_search,
+        "instruction_preflight": preflight,
+        "next_commands": next_commands,
+        "policy": "D-028 independent-first: write the independent variant before repo-search/comparison; do not treat same topic as duplicate before synthesis.",
+    }
+
+
+def cmd_variant_start(args):
+    try:
+        payload = _variant_start_payload(args)
+    except Exception as exc:
+        if args.json:
+            print(json.dumps({"schema": "top_variant_start.v1", "error": str(exc)}, ensure_ascii=False))
+        else:
+            print("ERROR: %s" % exc)
+        return 1
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    print("# Variant start")
+    print("")
+    print("agent: `%s`" % payload["agent"])
+    if payload.get("task"):
+        print("task: `%s`" % payload["task"])
+    print("topic: %s" % payload["topic"])
+    print("stream: `%s`" % payload["stream"]["relpath"])
+    print("stream id: `%s`" % payload["stream"]["id"])
+    print("")
+    print("## Next commands")
+    print("")
+    print("```powershell")
+    for cmd in payload["next_commands"]:
+        print(cmd)
+    print("```")
+    if payload.get("repo_search"):
+        print("")
+        print("## Repo search")
+        rs = payload["repo_search"]
+        if rs.get("skipped"):
+            status = "deferred" if rs.get("deferred") else "skipped"
+            print("status: `%s`" % status)
+            print("reason: %s" % rs.get("reason"))
+            if rs.get("command"):
+                print("command: `%s`" % rs.get("command"))
+        else:
+            print("status: `executed`")
+            if rs.get("top_command") or rs.get("command"):
+                print("command: `%s`" % (rs.get("top_command") or rs.get("command")))
+            print("returncode: `%s`" % rs.get("returncode"))
+            lines = (rs.get("stdout") or rs.get("stderr") or "").splitlines()
+            for line in lines[:40]:
+                print(line)
+            if len(lines) > 40:
+                print("... (%d more lines)" % (len(lines) - 40))
+    if payload.get("instruction_preflight"):
+        print("")
+        print("## Instruction preflight")
+        pf = payload["instruction_preflight"]
+        print("returncode: `%s`" % pf.get("returncode"))
+        lines = (pf.get("stdout") or pf.get("stderr") or "").splitlines()
+        for line in lines[:40]:
+            print(line)
+        if len(lines) > 40:
+            print("... (%d more lines)" % (len(lines) - 40))
+    return 0
+
+
+def _ps_quote(text):
+    return '"' + (text or "").replace('"', '`"') + '"'
+
+
+def _parse_agents(values):
+    agents = []
+    seen = set()
+    for value in values or []:
+        for raw in str(value).split(","):
+            agent = raw.strip()
+            if not agent or agent in seen:
+                continue
+            seen.add(agent)
+            agents.append(agent)
+    if not agents:
+        raise ValueError("--agents must contain at least one agent")
+    return agents
+
+
+def _stream_packet_ready(packet):
+    status = str(packet.get("status") or "").strip().lower()
+    ready = str(packet.get("synthesis_ready") or "").strip().lower()
+    return status == "ready-for-synthesis" or ready == "true"
+
+def _stream_topic_slug(topic):
+    slugger = getattr(stream_tool, "_slug", None)
+    if slugger:
+        return slugger(topic)
+    return _topic_slug(topic)
+
+
+def _variant_batch_payload(args):
+    topic = " ".join(args.topic).strip()
+    if not topic:
+        raise ValueError("topic is required")
+    agents = _parse_agents(args.agents)
+    quorum = args.quorum or len(agents)
+    if quorum < 1 or quorum > len(agents):
+        raise ValueError("--quorum must be between 1 and the number of agents")
+
+    stream_root = _resolve_repo_dir(args.stream_root) if args.stream_root else None
+    root = stream_tool.streams_root(stream_root)
+    topic_slug = _topic_slug(topic)
+    topic_dir = os.path.join(root, topic_slug)
+    batch_dir = os.path.join(topic_dir, "_batches")
+    os.makedirs(batch_dir, exist_ok=True)
+    batch_id = _topic_slug(args.batch_id) if args.batch_id else datetime.datetime.now().strftime("%Y%m%d-%H%M")
+    manifest_path = os.path.join(batch_dir, "%s.json" % batch_id)
+
+    existing = {}
+    if os.path.isfile(manifest_path):
+        try:
+            with open(manifest_path, encoding="utf-8") as f:
+                existing = json.load(f)
+        except Exception:
+            existing = {}
+
+    packets = stream_tool.list_packets(topic_slug, ready_only=False, root=stream_root)
+    by_agent = {agent: [] for agent in agents}
+    ready_by_agent = {agent: [] for agent in agents}
+    for packet in packets:
+        agent = packet.get("agent") or "?"
+        if agent not in by_agent:
+            continue
+        item = {
+            "id": packet.get("id"),
+            "status": packet.get("status"),
+            "synthesis_ready": packet.get("synthesis_ready"),
+            "path": _repo_rel(packet.get("path")),
+        }
+        by_agent[agent].append(item)
+        if _stream_packet_ready(packet):
+            ready_by_agent[agent].append(item)
+
+    ready_agents = [agent for agent in agents if ready_by_agent.get(agent)]
+    missing_agents = [agent for agent in agents if not ready_by_agent.get(agent)]
+    ready_count = len(ready_agents)
+    phase = "comparison-open" if ready_count >= quorum else "draft"
+
+    root_suffix = ""
+    if args.stream_root:
+        root_suffix = " --stream-root %s" % args.stream_root
+    task_suffix = ""
+    if args.task:
+        task_suffix = " --task %s" % args.task
+    topic_arg = _ps_quote(topic)
+    per_agent_commands = [
+        "python tools\\top.py variant-start %s %s%s --no-preflight%s" % (agent, topic_arg, task_suffix, root_suffix)
+        for agent in agents
+    ]
+    stream_check_cmd = "python tools\\stream.py check --max-age-days 7"
+    if args.stream_root:
+        stream_check_cmd += " --root %s" % args.stream_root
+    barrier_commands = [
+        stream_check_cmd,
+        "python tools\\top.py cauldron-lanes %s --ready-only" % topic_arg,
+        "python tools\\top.py synthesize-docs %s --ready-only --json" % topic_arg,
+    ]
+
+    now = datetime.datetime.now().replace(microsecond=0).isoformat()
+    manifest = {
+        "schema": "top_variant_batch.v1",
+        "batch_id": batch_id,
+        "topic": topic,
+        "topic_slug": topic_slug,
+        "task": args.task,
+        "agents": agents,
+        "quorum": quorum,
+        "created": existing.get("created") or now,
+        "updated": now,
+        "policy": "independent-first batch barrier: agents write streams before repo-search/compare/synthesis",
+        "phase": phase,
+        "ready_count": ready_count,
+        "missing_count": len(missing_agents),
+        "ready_agents": ready_agents,
+        "missing_agents": missing_agents,
+        "streams_by_agent": by_agent,
+        "ready_streams_by_agent": ready_by_agent,
+        "per_agent_commands": per_agent_commands,
+        "barrier_commands": barrier_commands,
+    }
+    with open(manifest_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+    return {
+        "schema": "top_variant_batch.v1",
+        "mutates": True,
+        "batch_id": batch_id,
+        "topic": topic,
+        "topic_slug": topic_slug,
+        "task": args.task,
+        "manifest": {"path": manifest_path, "relpath": _repo_rel(manifest_path)},
+        "phase": phase,
+        "agents": agents,
+        "quorum": quorum,
+        "ready_count": ready_count,
+        "missing_agents": missing_agents,
+        "ready_agents": ready_agents,
+        "per_agent_commands": per_agent_commands,
+        "barrier_commands": barrier_commands,
+        "policy": manifest["policy"],
+    }
+
+
+def cmd_variant_batch(args):
+    try:
+        payload = _variant_batch_payload(args)
+    except Exception as exc:
+        if args.json:
+            print(json.dumps({"schema": "top_variant_batch.v1", "error": str(exc)}, ensure_ascii=False))
+        else:
+            print("ERROR: %s" % exc)
+        return 1
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+
+    print("# Variant batch barrier")
+    print("")
+    print("topic: %s" % payload["topic"])
+    if payload.get("task"):
+        print("task: `%s`" % payload["task"])
+    print("manifest: `%s`" % payload["manifest"]["relpath"])
+    print("phase: `%s`  ready: `%s/%s`  quorum: `%s`" % (
+        payload["phase"], payload["ready_count"], len(payload["agents"]), payload["quorum"]))
+    if payload["missing_agents"]:
+        print("missing: %s" % ", ".join(payload["missing_agents"]))
+    print("")
+    print("## Per-agent independent draft commands")
+    print("")
+    print("```powershell")
+    for cmd in payload["per_agent_commands"]:
+        print(cmd)
+    print("```")
+    print("")
+    print("## Barrier / comparison commands")
+    print("")
+    print("```powershell")
+    for cmd in payload["barrier_commands"]:
+        print(cmd)
+    print("```")
+    return 0
+
+
+def cmd_draft_code(args):
+    draft_args = list(args.draft_args or [])
+    if not draft_args:
+        draft_args = ["list"]
+    cmd = _tool("draft_code.py", *draft_args)
+    if "--json" in draft_args:
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=90,
+                               stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+        if p.stdout:
+            print(p.stdout.strip())
+        if p.stderr:
+            print(p.stderr.strip(), file=sys.stderr)
+        return p.returncode
+    return _run("draft code", cmd, timeout=90)
+
+
+def cmd_info_draft(args):
+    info_args = list(args.info_args or [])
+    if not info_args:
+        info_args = ["list"]
+    cmd = _tool("info_draft.py", *info_args)
+    if "--json" in info_args:
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=90,
+                               stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+        if p.stdout:
+            print(p.stdout.strip())
+        if p.stderr:
+            print(p.stderr.strip(), file=sys.stderr)
+        return p.returncode
+    return _run("info draft", cmd, timeout=90)
+
+
 def cmd_report_diff(args):
     cmd = _tool("report_diff.py", args.a, args.b)
     if args.out:
         cmd += ["--out", args.out]
     return _run("report diff", cmd, timeout=45)
 
+def _default_question_tree_path():
+    return os.path.join("topics", "information-refactoring-question-tree-2026-06-25.md")
+
+
+def _question_tree_cmd(path=None, category=None, json_output=False, limit=None, action_plan=False):
+    cmd = _tool("question_tree.py", path or _default_question_tree_path())
+    if category:
+        cmd += ["--category", category]
+    if action_plan:
+        cmd.append("--action-plan")
+    if json_output:
+        cmd.append("--json")
+    if limit is not None:
+        cmd += ["--limit", str(limit)]
+    return cmd
+
+
+def cmd_question_tree(args):
+    cmd = _question_tree_cmd(args.path, args.category, args.json, args.limit, args.action_plan)
+    if args.json:
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=45)
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+        if p.stdout:
+            print(p.stdout.strip())
+        if p.stderr:
+            print(p.stderr.strip(), file=sys.stderr)
+        return p.returncode
+    return _run("question tree", cmd, timeout=45)
 def cmd_conveyor(args):
     cmd = _tool("conveyor.py", "status")
     if args.target is not None:
@@ -654,6 +1131,8 @@ def _run_doc_synthesis(label, args):
         cmd += ["--out", args.out]
     if getattr(args, "with_streams", False):
         cmd.append("--with-streams")
+    if getattr(args, "ready_only", False):
+        cmd.append("--ready-only")
     if getattr(args, "json", False):
         cmd.append("--json")
     if getattr(args, "json", False) and not getattr(args, "out", None) and not getattr(args, "with_streams", False):
@@ -840,12 +1319,47 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_repo_search)
 
+    p = sub.add_parser("variant-start", help="create an independent-first stream packet with context")
+    p.add_argument("agent")
+    p.add_argument("topic", nargs="+")
+    p.add_argument("--task")
+    p.add_argument("--reason")
+    p.add_argument("--search-limit", type=int, default=5)
+    p.add_argument("--stream-root", help="override streams root; must stay inside repo")
+    search_group = p.add_mutually_exclusive_group()
+    search_group.add_argument("--no-search", action="store_true")
+    search_group.add_argument("--search-now", action="store_true", help="run repo-search after creating the stream; default defers search for independent-first")
+    p.add_argument("--no-preflight", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_variant_start)
+    p = sub.add_parser("variant-batch", help="create/update an independent-first batch barrier manifest")
+    p.add_argument("topic", nargs="+")
+    p.add_argument("--agents", nargs="+", required=True, help="comma or space separated agent ids")
+    p.add_argument("--task")
+    p.add_argument("--quorum", type=int)
+    p.add_argument("--batch-id")
+    p.add_argument("--stream-root", help="override streams root; must stay inside repo")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_variant_batch)
+    p = sub.add_parser("draft-code", help="proxy to draft_code.py no-execute packet manager")
+    p.add_argument("draft_args", nargs=argparse.REMAINDER)
+    p.set_defaults(func=cmd_draft_code)
+    p = sub.add_parser("info-draft", help="proxy to info_draft.py no-canon packet manager")
+    p.add_argument("info_args", nargs=argparse.REMAINDER)
+    p.set_defaults(func=cmd_info_draft)
     p = sub.add_parser("report-diff", help="compare two knowledge reports")
     p.add_argument("a")
     p.add_argument("b")
     p.add_argument("--out")
     p.set_defaults(func=cmd_report_diff)
 
+    p = sub.add_parser("question-tree", help="inspect numbered question tree status and next actions")
+    p.add_argument("path", nargs="?", default=os.path.join("topics", "information-refactoring-question-tree-2026-06-25.md"))
+    p.add_argument("--category", choices=["solved", "partial", "open", "requires-decision", "unknown", "other"])
+    p.add_argument("--action-plan", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--limit", type=int, default=80)
+    p.set_defaults(func=cmd_question_tree)
     p = sub.add_parser("conveyor", help="show workflow conveyor supervisor status")
     p.add_argument("--target", type=int)
     p.add_argument("--idle", type=int)
@@ -871,6 +1385,7 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.add_argument("--out")
     p.add_argument("--with-streams", action="store_true")
+    p.add_argument("--ready-only", action="store_true")
     p.set_defaults(func=cmd_cauldron_lanes)
 
     p = sub.add_parser("synthesize-docs", help="run doc_synthesis v2 through the top layer")
@@ -879,6 +1394,7 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.add_argument("--out")
     p.add_argument("--with-streams", action="store_true")
+    p.add_argument("--ready-only", action="store_true")
     p.set_defaults(func=cmd_synthesize_docs)
 
     p = sub.add_parser("cycle", help="print safe agent work cycle")

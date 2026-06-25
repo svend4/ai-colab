@@ -74,5 +74,68 @@ class TestDocSynthesis(unittest.TestCase):
         self.assertTrue(any(p.endswith("divergence.md") for p in written), written)
 
 
+
+    def test_resolve_files_reads_stream_topic_corpus(self):
+        topic = "test-doc-synthesis-" + uuid.uuid4().hex[:8]
+        stream_dir = os.path.join(ROOT, "streams", topic, "20260625-codex")
+        os.makedirs(stream_dir, exist_ok=True)
+        stream_file = os.path.join(stream_dir, "STREAM.md")
+        with open(stream_file, "w", encoding="utf-8") as f:
+            f.write("\n".join([
+                "---",
+                "id: 20260625-codex",
+                "topic: %s" % topic,
+                "status: ready-for-synthesis",
+                "---",
+                "",
+                "# Stream fixture",
+                "",
+                "The top layer uses top.py, evidence, streams, divergence, and workflow checks.",
+            ]) + "\n")
+        expected = "streams/%s/20260625-codex/STREAM.md" % topic
+        files = doc_synthesis.resolve_files(topic, [])
+        self.assertEqual([expected], files)
+        data = json.loads(doc_synthesis.render(topic, files, as_json=True))
+        self.assertEqual(expected, data["documents"][0]["path"])
+        self.assertTrue(any(t["id"] == "top-layer-facade" for t in data["themes"]))
+
+
+    def test_resolve_files_ready_only_stream_topic_corpus(self):
+        topic = "test-doc-synthesis-" + uuid.uuid4().hex[:8]
+        ready_dir = os.path.join(ROOT, "streams", topic, "20260625-ready")
+        proposed_dir = os.path.join(ROOT, "streams", topic, "20260625-proposed")
+        os.makedirs(ready_dir, exist_ok=True)
+        os.makedirs(proposed_dir, exist_ok=True)
+        with open(os.path.join(ready_dir, "STREAM.md"), "w", encoding="utf-8") as f:
+            f.write("\n".join([
+                "---",
+                "id: 20260625-ready",
+                "topic: %s" % topic,
+                "status: ready-for-synthesis",
+                "---",
+                "",
+                "# Ready stream",
+                "",
+                "top.py evidence streams divergence workflow",
+            ]) + "\n")
+        with open(os.path.join(proposed_dir, "STREAM.md"), "w", encoding="utf-8") as f:
+            f.write("\n".join([
+                "---",
+                "id: 20260625-proposed",
+                "topic: %s" % topic,
+                "status: proposed",
+                "synthesis_ready: false",
+                "---",
+                "",
+                "# Proposed stream",
+            ]) + "\n")
+        all_files = doc_synthesis.resolve_files(topic, [])
+        ready_files = doc_synthesis.resolve_files(topic, [], ready_only=True)
+        self.assertEqual(2, len(all_files), all_files)
+        self.assertEqual(["streams/%s/20260625-ready/STREAM.md" % topic], ready_files)
+        data = json.loads(doc_synthesis.render(topic, ready_files, as_json=True))
+        self.assertEqual(1, len(data["documents"]))
+        self.assertIn("20260625-ready", data["documents"][0]["path"])
+
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,9 @@
 - `metrics.py` — сводка по канону и очереди; есть машинный режим `--json`.
 - `top.py` — верхняя панель сценариев/“кнопок”: status, health, friction, advice, agent-start, subagent-handoff, conveyor, take, snapshot, knowledge, report-diff, cycle, work-mode.
 - `friction.py` — read-mostly диагностика повторяющихся проблем: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links + рецепты F-001..F-019.
+- `draft_code.py` — no-execute manager для agent draft-code packets: `create/check/review/list` в `sandbox/drafts/` или `tmp-work`, где код является evidence, а не implementation.
+- `info_draft.py` — no-canon manager для document/information draft packets: `create/check/review/list` в `sandbox/info-drafts/` или `tmp-work`, где текст является evidence, а не accepted canon.
+- `independent_first.py` — guard перед repo-search/comparison: проверяет, что stream уже содержит собственные секции 01-03, алгоритм и псевдокод.
 - `report_diff.py` — механическое сравнение двух `knowledge.py report` Markdown-отчётов: документы, типы, hit-count.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html`, `.docx` на stdlib, с redaction через `files`/canonical redaction. PDF оставлен отдельным dependency decision.
 - `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
@@ -329,12 +332,21 @@ python tools/top.py snapshot
 python tools/top.py knowledge data/knowledge-corpus --query bridge --out reports/bridge.md
 python tools/top.py repo-search "parallel work policy" --limit 5
 python tools/top.py report-diff reports/a.md reports/b.md --out reports/diff.md
+python tools/top.py variant-start codex "parallel work policy" --task T-254
+python tools/independent_first.py check streams/<topic>/<stream-id>/STREAM.md --json
+python tools/top.py variant-batch "parallel work policy" --agents codex,mavis --task T-259
+python tools/top.py draft-code create demo-draft --owner codex --purpose "prototype safely" --task T-260
+python tools/top.py info-draft create doc-draft --owner codex --purpose "structure documentation safely" --task T-261
+python tools/draft_code.py create demo-draft --owner codex --purpose "prototype safely" --task T-260
+python tools/draft_code.py review sandbox/drafts/demo-draft --json
 python tools/top.py conveyor --json
+python tools/top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools/top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
 python tools/conveyor.py land w123 --output queues/outbox/w123-output.md
 python tools/top.py work-mode codex T-144 --parallel
 ```
 
-Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `assurance.py`, `flow.py` и `merge_gate.py`. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent; с `--json` он проксирует чистый машинный launch-пакет без служебных заголовков. `conveyor` поднимает runtime-надзирателя workflow-конвейера (`REFILL`/`PROCESS`/`IDLE`) в ту же верхнюю панель; `conveyor.py land --output` привязывает приземлившийся workflow к durable результату для последующей обработки. `assurance` показывает applied/currency/coverage/flow как advisory apex-снимок; `advice` связывает текущие friction/assurance-сигналы с уже существующими рецептами, а `agent-start` вызывает его автоматически. Строгий режим включается только явным `--strict`. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
+Это не новый источник правды. Это тонкая обёртка над `pipeline.py`, `validate.py`, `generate.py`, `capabilities.py`, `drivers_catalog.py`, `knowledge.py`, `repo_search.py`, `drift_check.py`, `assurance.py`, `flow.py` и `merge_gate.py`. `variant-start` создаёт independent-first stream-пакет по D-028/T-258, откладывает repo-search по умолчанию и показывает preflight/next commands; `variant-batch` создаёт `_batches/<batch-id>.json` manifest для пачки агентов и phase barrier перед synthesis; `synthesize-docs <custom-topic>` может читать `streams/<topic>/*/STREAM.md` как corpus без ручного списка файлов. `work-mode` помогает выбрать D-021 режим: Level 0 shared tree по умолчанию или Level 1 worktree при параллельной/конфликтной работе. `subagent-handoff` превращает `flow.py launch-plan` в верхнюю “кнопку” для запуска внешнего worker-agent; с `--json` он проксирует чистый машинный launch-пакет без служебных заголовков. `conveyor` поднимает runtime-надзирателя workflow-конвейера (`REFILL`/`PROCESS`/`IDLE`) в ту же верхнюю панель; `conveyor.py land --output` привязывает приземлившийся workflow к durable результату для последующей обработки. `assurance` показывает applied/currency/coverage/flow как advisory apex-снимок; `advice` связывает текущие friction/assurance-сигналы с уже существующими рецептами, а `agent-start` вызывает его автоматически. Строгий режим включается только явным `--strict`. `repo-search` пишет только ignored runtime-БД `logs/repo-knowledge.db`.
 
 ## Friction diagnostics (`friction.py`, T-150)
 
@@ -352,7 +364,7 @@ python tools/top.py friction
 
 - dirty shared tree и generated/shared files;
 - volatile snapshots (`LIVE.md`, `PIPELINE.md`, `logs/heartbeat.json`, `logs/pipeline.json`);
-- `generate.py --check`, `commit_lock.py status`, `pipeline.py status`, `drift_check.py`, `stream.py check`;
+- `generate.py --check`, `commit_lock.py status`, `pipeline.py status`, `drift_check.py`, `stream.py check` (`stale`/`broken`/`incomplete_ready`);
 - project-safe temp probe под `tmp-work/`;
 - наличие sandbox-контракта для external code;
 - связь skill `repo-friction-playbook` с каноническими docs/tool.
@@ -417,3 +429,14 @@ python tools/conveyor.py regulate --json --no-assurance
 | `process-first` | есть landed/missing-output; сначала обработать результат, потом масштабировать |
 
 Когда есть landed outputs с путями, команда best-effort использует `result_intake.py`, чтобы показать классы результатов. По умолчанию она также читает `assurance.py all --json`; `--no-assurance` нужен для быстрых smoke/tests.
+
+### Ready-only stream synthesis (T-256)
+
+`--ready-only` у `synthesize-docs` и `doc_synthesis.py scan` фильтрует автоматический stream corpus до вариантов со статусом `ready-for-synthesis` или `synthesis_ready: true`.
+
+```bash
+python tools/doc_synthesis.py scan <topic> --ready-only --json
+python tools/top.py synthesize-docs <topic> --ready-only --json
+```
+
+Явно переданные файлы не фильтруются: explicit corpus остаётся ответственностью вызывающего агента.

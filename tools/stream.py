@@ -47,10 +47,20 @@ import commit_lock as cl  # сериализация записи под общ�
 
 configure_output()
 
-READY_STATUSES = ("ready", "adopted")
+VALID_STATUSES = ("draft", "proposed", "developing", "ready", "ready-for-review", "ready-for-synthesis", "adopted", "superseded", "rejected", "archived")
+READY_STATUSES = ("ready", "ready-for-review", "ready-for-synthesis", "adopted")
 # Терминальные статусы — пакет «закрыт», не считается кладбищем.
 TERMINAL_STATUSES = ("adopted", "superseded", "rejected", "archived")
 REQUIRED_FM = ("id", "topic", "agent", "status", "created")
+READY_SYNTHESIS_REQUIRED_SECTIONS = (
+    ("01. Условия применимости", ("Опишите, при каких условиях",)),
+    ("02. Независимый ответ агента", ("Заполните свой полный вариант",)),
+    ("03. Потенциал, который нужно раскрыть до синтеза", ()),
+    ("04. Сравнение с известными вариантами", ()),
+    ("05. Evidence / проверки", ("Укажите файлы, команды, тесты",)),
+    ("06. Вопросы другим агентам и людям", ("- (вопрос)",)),
+    ("07. Synthesis contract", ("Перед переводом в `ready-for-synthesis` заполните",)),
+)
 
 def streams_root(override=None):
     return os.path.abspath(
@@ -81,16 +91,46 @@ def packet_text(ident, topic, agent, reason, created, status="proposed"):
         "agent: %s\n"
         "status: %s\n"
         "created: %s\n"
+        "variant_policy: independent-first\n"
+        "synthesis_ready: false\n"
         "---\n\n"
         "# Stream: %s\n\n"
-        "## Причина форка\n\n"
+        "## 00. Причина независимого варианта\n\n"
         "%s\n\n"
-        "## Вариант\n\n"
-        "(заполните: подход, patch/notes/evidence рядом в этой папке)\n\n"
-        "## Adoption\n\n"
-        "Перенос в mainline — только после review и явного `adopt` "
+        "## 01. Условия применимости\n\n"
+        "Опишите, при каких условиях этот вариант верен. Одинаковое название темы не делает вариант дублем; "
+        "дубль определяется только после сравнения условий, утверждений, evidence и открытых вопросов.\n\n"
+        "## 02. Независимый ответ агента\n\n"
+        "Заполните свой полный вариант до сверки с другими потоками. Не останавливайтесь только потому, "
+        "что похожая карточка уже существует.\n\n"
+        "## 03. Потенциал, который нужно раскрыть до синтеза\n\n"
+        "- новые под-вопросы:\n"
+        "- edge cases:\n"
+        "- альтернативные реализации:\n"
+        "- риски и ограничения:\n\n"
+        "## 04. Сравнение с известными вариантами\n\n"
+        "- Похожие пункты:\n"
+        "- Отличия:\n"
+        "- Что этот вариант добавляет сверх уже написанного:\n"
+        "- Что может оказаться настоящим шумовым дублем после синтеза:\n\n"
+        "## 05. Evidence / проверки\n\n"
+        "Укажите файлы, команды, тесты, источники или reasoning, на которых держится вариант.\n\n"
+        "## 06. Вопросы другим агентам и людям\n\n"
+        "- (вопрос)\n\n"
+        "## 07. Synthesis contract\n\n"
+        "Перед переводом в `ready-for-synthesis` заполните:\n\n"
+        "- consensus candidates: пункты, которые можно вынести в общую ветку;\n"
+        "- divergence candidates: пункты, требующие отдельного доказательного обсуждения;\n"
+        "- adoption target: docs/tools/tasks/questions/decisions/none;\n"
+        "- reject/supersede condition: когда этот вариант можно закрыть без потери знания.\n\n"
+        "Команда готовности:\n\n"
+        "```powershell\n"
+        "python tools\\stream.py mark %s ready-for-synthesis \"variant completed, ready for synthesis\"\n"
+        "```\n\n"
+        "## 08. Adoption\n\n"
+        "Перенос в mainline — только после review, synthesis и явного `adopt` "
         "(governance-решение остаётся в котле, D-018).\n"
-        % (ident, topic, agent, status, created, ident, reason or "(не указана)")
+        % (ident, topic, agent, status, created, ident, reason or "(не указана)", ident)
     )
 
 def create(topic, agent, reason, root=None):
@@ -130,7 +170,8 @@ def _iter_packets(root, topic=None):
             if not os.path.isfile(path):
                 continue
             with open(path, encoding="utf-8") as f:
-                fm = parse_front_matter(f.read())
+                text = f.read()
+            fm = parse_front_matter(text)
             yield {
                 "id": fm.get("id", ident),
                 "topic": fm.get("topic", t),
@@ -138,7 +179,10 @@ def _iter_packets(root, topic=None):
                 "status": fm.get("status", "?"),
                 "created": fm.get("created", "?"),
                 "adopted_commit": fm.get("adopted_commit"),
+                "synthesis_ready": fm.get("synthesis_ready"),
                 "path": path,
+                "fm": fm,
+                "text": text,
             }
 
 def list_packets(topic=None, ready_only=False, root=None):
@@ -155,11 +199,50 @@ def _rel(path):
     except ValueError:
         return path
 
+def _is_synthesis_ready(packet):
+    status = str(packet.get("status") or "").strip().lower()
+    ready = str(packet.get("synthesis_ready") or "").strip().lower()
+    return status == "ready-for-synthesis" or ready == "true"
+
+
+def _section_body(text, marker):
+    start = text.find(marker)
+    if start == -1:
+        return ""
+    start = text.find("\n", start)
+    if start == -1:
+        return ""
+    end = text.find("\n## ", start + 1)
+    if end == -1:
+        end = len(text)
+    return text[start:end]
+
+
+def _ready_issues(packet):
+    if not _is_synthesis_ready(packet):
+        return []
+    text = packet.get("text") or ""
+    issues = []
+    for section, placeholders in READY_SYNTHESIS_REQUIRED_SECTIONS:
+        marker = "## " + section
+        if marker not in text:
+            issues.append("missing-section:" + section)
+            continue
+        body = _section_body(text, marker)
+        if not body.strip():
+            issues.append("empty-section:" + section)
+            continue
+        for placeholder in placeholders:
+            if placeholder and placeholder in body:
+                issues.append("placeholder:" + section)
+                break
+    return issues
+
 def check(root=None, max_age_days=14):
     """Гигиена потоков (P-11 «кладбище»): открытые (не terminal) пакеты старше N дней без adoption +
     пакеты с битым/неполным front-matter. Возвращает {stale:[...], broken:[...]}."""
     today = datetime.date.today()
-    stale, broken = [], []
+    stale, broken, incomplete_ready = [], [], []
     for p in _iter_packets(root):
         missing = [k for k in REQUIRED_FM if not p.get(k) or p.get(k) == "?"]
         if missing:
@@ -167,6 +250,11 @@ def check(root=None, max_age_days=14):
             continue
         if p["status"] in TERMINAL_STATUSES:
             continue
+        ready_issues = _ready_issues(p)
+        if ready_issues:
+            incomplete_ready.append({"id": p["id"], "topic": p["topic"], "agent": p["agent"],
+                                     "status": p["status"], "path": _rel(p["path"]),
+                                     "issues": ready_issues})
         try:
             # терпим полный ISO datetime с tz (2026-06-24T06:57:38+00:00) — берём дату до 'T'/пробела
             datepart = str(p["created"]).strip().replace(" ", "T").split("T", 1)[0]
@@ -177,7 +265,7 @@ def check(root=None, max_age_days=14):
         if age > max_age_days:
             stale.append({"id": p["id"], "topic": p["topic"], "agent": p["agent"],
                           "status": p["status"], "age_days": age, "path": _rel(p["path"])})
-    return {"stale": stale, "broken": broken}
+    return {"stale": stale, "broken": broken, "incomplete_ready": incomplete_ready}
 
 def _find_packet(stream_id, root):
     for p in _iter_packets(root):
@@ -218,6 +306,25 @@ def _rewrite_front_matter(path, updates):
         f.write(new_text)
     os.replace(tmp, path)
 
+def mark(stream_id, status, note=None, agent="stream", root=None):
+    if status not in VALID_STATUSES:
+        raise ValueError("недопустимый stream status: %s" % status)
+    p = _find_packet(stream_id, root)
+    if p is None:
+        raise FileNotFoundError("stream не найден: %s" % stream_id)
+    locked = cl.acquire(agent, wait=cl_wait()) == 0
+    if not locked:
+        raise RuntimeError("не удалось взять commit-lock для mark")
+    try:
+        updates = {"status": status}
+        if status in ("ready", "ready-for-review", "ready-for-synthesis"):
+            updates["synthesis_ready"] = "true"
+        if note:
+            updates["status_note"] = note.replace("\n", " ")
+        _rewrite_front_matter(p["path"], updates)
+    finally:
+        cl.release(agent)
+    return {"id": stream_id, "path": p["path"], "status": status}
 def adopt(stream_id, commit, agent="stream", root=None):
     p = _find_packet(stream_id, root)
     if p is None:
@@ -309,6 +416,12 @@ def main():
                 print("%-7s %-20s %-22s %s%s"
                       % (p["status"], p["topic"], p["id"], p["agent"], extra))
             return 0
+        if cmd == "mark" and len(pos) >= 2:
+            note = " ".join(pos[2:]) if len(pos) > 2 else None
+            r = mark(pos[0], pos[1], note=note, root=root)
+            print("mark %s -> %s" % (r["id"], r["status"]))
+            print("Файл: %s" % r["path"])
+            return 0
         if cmd == "adopt" and len(pos) >= 2:
             r = adopt(pos[0], pos[1], root=root)
             print("adopt %s -> adopted (commit=%s)" % (r["id"], r["adopted_commit"]))
@@ -319,8 +432,8 @@ def main():
             r = check(root=root, max_age_days=max_age)
             if "--json" in argv:
                 print(json.dumps(r, ensure_ascii=False, indent=2))
-                return 1 if (r["stale"] or r["broken"]) else 0
-            if not r["stale"] and not r["broken"]:
+                return 1 if (r["stale"] or r["broken"] or r["incomplete_ready"]) else 0
+            if not r["stale"] and not r["broken"] and not r["incomplete_ready"]:
                 print("OK: stream-кладбища нет (открытые пакеты свежие, front-matter полон)")
                 return 0
             print("Гигиена потоков (P-11): stale=%d, broken=%d (порог %dд)"
@@ -330,6 +443,9 @@ def main():
                       % (s["id"], s["topic"], s["status"], s["age_days"], s["path"]))
             for b in r["broken"]:
                 print("  БИТЫЙ  %-22s %s  %s" % (b["id"], b["reason"], b["path"]))
+            for item in r["incomplete_ready"]:
+                print("  НЕПОЛН %-22s %-16s issues=%s  %s"
+                      % (item["id"], item["topic"], ",".join(item["issues"]), item["path"]))
             return 1
         if cmd == "archive":
             max_age = int(_argval(argv, "--max-age-days") or 14)

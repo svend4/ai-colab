@@ -23,9 +23,12 @@ python tools\top.py take codex
 python tools\top.py snapshot
 python tools\top.py knowledge data\knowledge-corpus --query bridge --out reports\bridge.md
 python tools\top.py repo-search "parallel work policy" --limit 5
+python tools\top.py variant-start codex "parallel work policy" --task T-254
 python tools\top.py conveyor --json
 python tools\top.py cauldron-lanes architecture-core
 python tools\top.py synthesize-docs architecture-core --with-streams
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
 ```
 
 ## Принцип
@@ -46,11 +49,13 @@ python tools\top.py synthesize-docs architecture-core --with-streams
 | Запуск sub-agent | получить готовый пакет запуска | выдать worker prompt и repo lane | `subagent-handoff` вызывает `flow.py launch-plan` |
 | Знания | получить отчёт | обработать corpus | `knowledge` вызывает L6 workflow |
 | Поиск по канону | найти решение/политику/задачу | быстро поднять контекст перед правкой | `repo-search` строит ignored FTS/BM25 индекс по docs/decisions/questions/темам/tasks |
+| Старт варианта | начать independent-first ветку | создать личный stream до сравнения | `variant-start` создаёт stream first; repo-search отложен до next command или явного `--search-now` |
+| Batch вариантов | запустить пачку independent-first агентов | manifest + phase barrier | `variant-batch` пишет `streams/<topic>/_batches/<batch-id>.json` и печатает per-agent команды |
 | Сравнение | увидеть разницу отчётов | оценить прогресс corpus | `report-diff` сравнивает documents/types/hits |
 | Снимки | обновить доски | синхронизировать derived files | `snapshot` вызывает capabilities/catalog/generate/pipeline snapshot |
 | Надзор конвейера | увидеть, нужен ли дозалив/обработка | не держать workflow в голове | `conveyor` вызывает `conveyor.py status` и показывает REFILL/PROCESS/IDLE |
 | Две полосы котла | увидеть готовое к строительству и спорное | выбрать ratio 50/50, 70/30 или 30/70 | `cauldron-lanes` вызывает `doc_synthesis.py` и показывает `ratify-build`/`divergence-detail` |
-| Синтез документов v2 | собрать candidates, refs и stream scaffold | не потерять evidence и divergence | `synthesize-docs` вызывает `doc_synthesis.py scan` с `--with-streams` по явному флагу |
+| Синтез документов v2 | собрать candidates, refs, stream scaffold или custom stream corpus | не потерять evidence и divergence | `synthesize-docs` вызывает `doc_synthesis.py scan`; custom topic без files может читать `streams/<topic>/*/STREAM.md` |
 | Обработка landed | увидеть следующий intake/verify/synthesis шаг | обработать output без потери контекста | `process-landed` строит read-only план по `landed` outputs |
 | Assurance apex | увидеть applied/currency/coverage/flow | начать работу с проверяемого состояния инструкций | `assurance` вызывает `assurance.py`; `health` показывает его как warning-layer |
 
@@ -211,6 +216,8 @@ python tools\flow.py launch-plan mavis T-161 agent launch workflow --worktree
 ```powershell
 python tools\top.py cauldron-lanes architecture-core
 python tools\top.py synthesize-docs architecture-core --with-streams
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
 python tools\top.py cauldron-lanes architecture-core --json
 python tools\top.py cauldron-lanes architecture-core --out docs\architecture-core-documents-synthesis-2026-06-24.md
 ```
@@ -233,6 +240,8 @@ python tools\doc_synthesis.py candidates architecture-core
 python tools\top.py synthesize-docs architecture-core --json
 python tools\top.py synthesize-docs architecture-core --out docs\architecture-core-documents-synthesis-2026-06-24.md
 python tools\top.py synthesize-docs architecture-core --with-streams
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
 ```
 
 Что добавлено:
@@ -245,3 +254,131 @@ python tools\top.py synthesize-docs architecture-core --with-streams
 | `top.py synthesize-docs` | сделать synthesis доступным как верхнюю команду |
 
 Safety-правило: `--with-streams` не перезаписывает существующий ручной `streams/<topic>/divergence.md`; если файл уже есть, создаётся `streams/<topic>/divergence.generated.md` для ручного сравнения.
+
+## Расширение T-252: independent-first variant streams
+
+После T-252 верхний слой должен помогать агенту не останавливаться на слове “дубль”, если работа содержательная:
+
+```powershell
+python tools\stream.py create <topic> <agent> "parallel independent variant"
+python tools\stream.py mark <stream-id> ready-for-synthesis "variant completed"
+python tools\stream.py list <topic> --ready-only
+python tools\stream.py check --max-age-days 7
+python tools\top.py synthesize-docs <topic> --with-streams
+```
+
+Смысл:
+
+| Команда | Роль |
+|---|---|
+| `stream.py create` | создать личное дерево варианта без правки mainline |
+| `stream.py mark ... ready-for-synthesis` | явно показать, что вариант раскрыт и готов к сверке |
+| `stream.py list --ready-only` | найти варианты, которые уже можно сравнивать |
+| `stream.py check --max-age-days 7` | найти stale/broken/incomplete_ready stream-пакеты перед synthesis |
+| `synthesize-docs --with-streams` | построить proposed synthesis и scaffolds для divergence |
+
+Правило: consensus выносится в общий слой только после synthesis/adoption; divergence не стирается.
+
+## Расширение T-254: variant-start
+
+После T-254 верхний слой умеет запускать independent-first вариант одной командой:
+
+```powershell
+python tools\top.py variant-start <agent> <topic...> [--task T-id] [--reason TEXT] [--search-now]
+python tools\independent_first.py check <stream-id-or-path> --json
+python tools\top.py variant-start <agent> <topic...> --json
+```
+
+Что делает команда:
+
+| Шаг | Эффект |
+|---|---|
+| deferred repo-search | по умолчанию не выполняется сразу; команда поиска печатается как next step после заполнения independent draft |
+| stream create | создаёт личное дерево `streams/<topic>/<stream-id>/STREAM.md` |
+| instruction-preflight | если указан `--task`, показывает применимые правила |
+| next commands | печатает команду `ready-for-synthesis`, stream-check и synthesis-helper |
+
+Уточнение T-258: прежний ранний порядок `repo-search -> stream create` считается устаревшим для strict independent-first задач. Актуальный порядок: `stream create -> independent draft -> repo-search/compare -> ready-for-synthesis`. Старый режим возможен только явно через `--search-now`, когда задача не требует защиты от раннего якорения.
+
+Команда не делает synthesis и не принимает решений. Она только делает правильный старт независимого варианта короче и видимее.
+
+## Расширение T-255: stream corpus для synthesize-docs
+
+После T-255 верхний слой закрывает полный цикл независимого варианта:
+
+```powershell
+python tools\top.py variant-start codex doc-synthesis-stream-corpus --task T-255
+python tools\stream.py mark 20260625-1756-codex ready-for-synthesis "variant completed"
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
+```
+
+Что изменилось:
+
+| Шаг | Раньше | Теперь |
+|---|---|---|
+| independent variant | stream создавался отдельно | `variant-start` создаёт stream и показывает preflight |
+| synthesis corpus | custom scan требовал ручной список файлов | custom topic без files берёт `streams/<topic>/*/STREAM.md` |
+| observer work | надо было помнить пути stream-пакетов | достаточно знать topic |
+
+Safety-граница: команда не принимает `accepted` решений и не сливает divergence. Она только поднимает stream-пакеты в proposed synthesis.
+## Расширение T-256: ready-only synthesis
+
+После T-256 верхний слой умеет отделять все варианты от вариантов, готовых к сверке:
+
+```powershell
+python tools\top.py synthesize-docs <topic> --ready-only --json
+python tools\top.py cauldron-lanes <topic> --ready-only
+```
+
+| Режим | Что читает | Когда применять |
+|---|---|---|
+| без `--ready-only` | все `streams/<topic>/*/STREAM.md` | ранний обзор и диагностика темы |
+| `--ready-only` | только `ready-for-synthesis` / `synthesis_ready: true` | observer/synthesizer перед consensus/divergence |
+
+Это делает котёл более управляемым: агенты могут писать черновые варианты параллельно, но строительный synthesis не обязан их учитывать до готовности.
+## Расширение T-259: variant-batch barrier
+
+После T-259 верхний слой умеет запускать не только один independent-first вариант, но и пачку агентов через manifest/barrier:
+
+```powershell
+python tools\top.py variant-batch <topic...> --agents codex,mavis,reviewer [--task T-id] [--quorum N]
+python tools\top.py variant-batch <topic...> --agents codex,mavis --batch-id t259 --json
+```
+
+Что делает команда:
+
+| Шаг | Эффект |
+|---|---|
+| batch manifest | пишет `streams/<topic>/_batches/<batch-id>.json` |
+| per-agent commands | печатает `variant-start` команды без `--search-now` и с `--no-preflight` |
+| barrier status | считает ready streams по `status: ready-for-synthesis` или `synthesis_ready: true` |
+| comparison commands | печатает `stream.py check`, `cauldron-lanes --ready-only`, `synthesize-docs --ready-only` |
+
+Команда не создаёт `STREAM.md` за других агентов. Это принципиально: независимый вариант должен написать сам агент. По умолчанию `quorum = число агентов`; `--quorum N` допустим только как заранее объявленный режим, а не как silent downgrade после того, как агент не ответил.
+## Смежное расширение T-260: draft-code no-execute manager
+
+T-260 добавляет нижний безопасный инструмент и тонкий `top.py` proxy:
+
+```powershell
+python tools\top.py draft-code create <draft-id> --owner <agent> --purpose "..." --task T-260
+python tools\draft_code.py create <draft-id> --owner <agent> --purpose "..." --task T-260
+python tools\draft_code.py check <draft-id-or-path> --json
+python tools\draft_code.py review <draft-id-or-path> --json
+python tools\draft_code.py list --json
+```
+
+Смысл: агент может раскрыть кодовый вариант в `sandbox/drafts/<draft-id>/` как evidence, но не менять mainline. `review` использует read-only `sandbox_intake_chain.py`; `execution_allowed` остаётся `false`. `top.py draft-code ...` не содержит отдельной бизнес-логики: он проксирует `tools/draft_code.py`, чтобы люди и агенты могли вызывать draft lane из верхней панели.
+## Смежное расширение T-261: info/document no-canon manager
+
+T-261 добавляет для документации и информации такой же промежуточный слой, какой T-260 добавил для кода:
+
+```powershell
+python tools\top.py info-draft create <draft-id> --owner <agent> --purpose "..." --task T-261
+python tools\info_draft.py create <draft-id> --owner <agent> --purpose "..." --task T-261
+python tools\info_draft.py check <draft-id-or-path> --json
+python tools\info_draft.py review <draft-id-or-path> --json
+python tools\info_draft.py list --json
+```
+
+Смысл: агент может раскрыть документный или информационный вариант в `sandbox/info-drafts/<draft-id>/` как evidence, но не превращать его сразу в `docs/` или accepted governance. `review` проверяет структуру, claims, sources, open questions и divergence; route `ready-for-synthesis` означает только готовность к сравнению, а не принятие текста.

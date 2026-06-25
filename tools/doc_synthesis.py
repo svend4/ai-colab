@@ -27,6 +27,7 @@ CLI:
     python tools/doc_synthesis.py scan architecture-core --with-streams
     python tools/doc_synthesis.py scan architecture-core --out docs/architecture-core-documents-synthesis-2026-06-24.md
     python tools/doc_synthesis.py scan custom --out report.md file1.md file2.md ...
+    python tools/doc_synthesis.py scan <topic> --ready-only
 """
 import argparse
 import json
@@ -430,6 +431,49 @@ def stream_path(topic):
     safe = re.sub(r"[^0-9A-Za-zА-Яа-я_-]+", "-", topic).strip("-") or "topic"
     return "streams/%s" % safe
 
+def read_front_matter(path):
+    """Read simple YAML-like front matter from a repo-relative Markdown file."""
+    try:
+        text = read_text(path)
+    except OSError:
+        return {}
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}
+    data = {}
+    for raw in lines[1:]:
+        if raw.strip() == "---":
+            break
+        if ":" not in raw:
+            continue
+        key, value = raw.split(":", 1)
+        data[key.strip()] = value.strip().strip('"').strip("'")
+    return data
+
+
+def stream_is_ready(path):
+    fm = read_front_matter(path)
+    status = (fm.get("status") or "").strip().lower()
+    ready = (fm.get("synthesis_ready") or "").strip().lower()
+    return status == "ready-for-synthesis" or ready == "true"
+
+
+def stream_topic_files(topic, ready_only=False):
+    """Return STREAM.md files for a custom topic stream tree."""
+    base = repo_path(stream_path(topic))
+    if not os.path.isdir(base):
+        return []
+    files = []
+    for dirpath, dirnames, filenames in os.walk(base):
+        dirnames[:] = [d for d in dirnames if not d.startswith(".")]
+        if "STREAM.md" in filenames:
+            full = os.path.join(dirpath, "STREAM.md")
+            rel = relpath(os.path.relpath(full, ROOT))
+            if ready_only and not stream_is_ready(rel):
+                continue
+            files.append(rel)
+    return sorted(files)
+
 
 def render_stream_readme(topic, files, lanes):
     return "\n".join([
@@ -658,12 +702,20 @@ def render(topic, files, as_json=False):
     return "\n".join(lines).rstrip() + "\n"
 
 
-def resolve_files(topic, positional):
-    if topic == "architecture-core" and not positional:
+def resolve_files(topic, positional, ready_only=False):
+    if positional:
+        return [relpath(p) for p in positional]
+    if ready_only:
+        stream_files = stream_topic_files(topic, ready_only=True)
+        if stream_files:
+            return stream_files
+        raise SystemExit("ready-only scan found no ready streams in streams/<topic>/*/STREAM.md")
+    if topic == "architecture-core":
         return ARCHITECTURE_CORE_FILES
-    if not positional:
-        raise SystemExit("custom scan requires at least one file")
-    return [relpath(p) for p in positional]
+    stream_files = stream_topic_files(topic)
+    if stream_files:
+        return stream_files
+    raise SystemExit("custom scan requires at least one file or streams/<topic>/*/STREAM.md")
 
 
 def main():
@@ -681,6 +733,7 @@ def main():
     p.add_argument("--out")
     p.add_argument("--json", action="store_true")
     p.add_argument("--with-streams", action="store_true")
+    p.add_argument("--ready-only", action="store_true", help="when no files are given, scan only ready-for-synthesis stream packets")
     args = parser.parse_args()
 
     if args.cmd == "candidates":
@@ -691,7 +744,7 @@ def main():
         parser.print_help()
         return 2
 
-    files = resolve_files(args.topic, args.files)
+    files = resolve_files(args.topic, args.files, ready_only=args.ready_only)
     missing = [f for f in files if not os.path.exists(repo_path(f))]
     if missing:
         print("Missing files:")

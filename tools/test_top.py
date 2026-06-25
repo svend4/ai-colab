@@ -15,6 +15,9 @@ import os
 import sys
 import json
 import subprocess
+import shutil
+import io
+import contextlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -33,7 +36,12 @@ def run():
     assert "take-task" in ids, ids
     assert "knowledge-report" in ids, ids
     assert "repo-search" in ids, ids
+    assert "variant-start" in ids, ids
+    assert "variant-batch" in ids, ids
+    assert "draft-code" in ids, ids
+    assert "info-draft" in ids, ids
     assert "report-diff" in ids, ids
+    assert "question-tree" in ids, ids
     assert "cohort-board" in ids, ids
     assert "conveyor-status" in ids, ids
     assert "conveyor-recover" in ids, ids
@@ -55,13 +63,20 @@ def run():
     assert "python tools/top.py agent-start <agent> [--task T-id] [--context" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
     assert "python tools/top.py repo-search" in rendered, rendered
+    assert "python tools/top.py variant-start" in rendered, rendered
+    assert "python tools/top.py variant-batch" in rendered, rendered
+    assert "python tools/top.py draft-code" in rendered, rendered
+    assert "python tools/top.py info-draft" in rendered, rendered
     assert "python tools/top.py report-diff" in rendered, rendered
+    assert "python tools/top.py question-tree" in rendered, rendered
+    assert "--action-plan" in rendered, rendered
     assert "python tools/top.py conveyor" in rendered, rendered
     assert "python tools/top.py conveyor-recover" in rendered, rendered
     assert "python tools/top.py work-mode" in rendered, rendered
     assert "python tools/top.py subagent-handoff" in rendered, rendered
     assert "python tools/top.py cauldron-lanes" in rendered, rendered
     assert "python tools/top.py synthesize-docs" in rendered, rendered
+    assert "--ready-only" in rendered, rendered
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
@@ -83,6 +98,26 @@ def run():
     assert kargs.cmd == "knowledge" and kargs.db == "tmp-work/x.db", kargs
     rsargs = parser.parse_args(["repo-search", "parallel", "policy", "--limit", "3", "--json"])
     assert rsargs.cmd == "repo-search" and rsargs.query == ["parallel", "policy"] and rsargs.limit == 3 and rsargs.json, rsargs
+    vargs = parser.parse_args(["variant-start", "codex", "parallel", "policy", "--task", "T-254", "--reason", "smoke", "--json", "--no-search", "--no-preflight", "--stream-root", "tmp-work/top-variant-test"])
+    assert vargs.cmd == "variant-start" and vargs.agent == "codex" and vargs.topic == ["parallel", "policy"] and vargs.task == "T-254" and vargs.reason == "smoke" and vargs.json and vargs.no_search, vargs
+    snargs = parser.parse_args(["variant-start", "codex", "parallel", "policy", "--search-now", "--no-preflight"])
+    assert snargs.cmd == "variant-start" and snargs.search_now and not snargs.no_search, snargs
+    vbargs = parser.parse_args(["variant-batch", "batch", "topic", "--agents", "codex,mavis", "--task", "T-259", "--quorum", "2", "--batch-id", "smoke", "--stream-root", "tmp-work/top-variant-batch-test", "--json"])
+    assert vbargs.cmd == "variant-batch" and vbargs.topic == ["batch", "topic"] and vbargs.agents == ["codex,mavis"] and vbargs.task == "T-259" and vbargs.quorum == 2 and vbargs.batch_id == "smoke" and vbargs.json, vbargs
+    dcargs = parser.parse_args(["draft-code", "list", "--root", "tmp-work/top-draft-code-test", "--json"])
+    assert dcargs.cmd == "draft-code" and dcargs.draft_args == ["list", "--root", "tmp-work/top-draft-code-test", "--json"], dcargs
+    idargs = parser.parse_args(["info-draft", "list", "--root", "tmp-work/top-info-draft-test", "--json"])
+    assert idargs.cmd == "info-draft" and idargs.info_args == ["list", "--root", "tmp-work/top-info-draft-test", "--json"], idargs
+    try:
+        with contextlib.redirect_stderr(io.StringIO()):
+            parser.parse_args(["variant-start", "codex", "parallel", "policy", "--no-search", "--search-now"])
+        raise AssertionError("variant-start accepted conflicting search flags")
+    except SystemExit:
+        pass
+    qtargs = parser.parse_args(["question-tree", "topics/information-refactoring-question-tree-2026-06-25.md", "--category", "open", "--action-plan", "--json", "--limit", "5"])
+    assert qtargs.cmd == "question-tree" and qtargs.category == "open" and qtargs.action_plan and qtargs.json and qtargs.limit == 5, qtargs
+    qcmd = top._question_tree_cmd(qtargs.path, qtargs.category, qtargs.json, qtargs.limit, qtargs.action_plan)
+    assert "question_tree.py" in qcmd[1] and "--action-plan" in qcmd and "--category" in qcmd and "--json" in qcmd, qcmd
     cvargs = parser.parse_args(["conveyor", "--target", "2", "--idle", "10", "--json"])
     assert cvargs.cmd == "conveyor" and cvargs.target == 2 and cvargs.idle == 10 and cvargs.json, cvargs
     crargs = parser.parse_args(["conveyor-recover", "--limit", "3", "--json"])
@@ -90,10 +125,10 @@ def run():
     crcmd = top._conveyor_recover_cmd(limit=3, json_output=True)
     assert crcmd[-5:] == [os.path.join(ROOT, "tools", "conveyor.py"), "recover", "--json", "--limit", "3"] or ("recover" in crcmd and "--json" in crcmd and "--limit" in crcmd), crcmd
     assert not any(part in crcmd for part in ["land", "ship", "dismiss", "launch", "tick"]), crcmd
-    clargs = parser.parse_args(["cauldron-lanes", "architecture-core", "--json"])
-    assert clargs.cmd == "cauldron-lanes" and clargs.topic == "architecture-core" and clargs.json, clargs
-    sdargs = parser.parse_args(["synthesize-docs", "architecture-core", "--with-streams", "--out", "docs/x.md"])
-    assert sdargs.cmd == "synthesize-docs" and sdargs.with_streams and sdargs.out == "docs/x.md", sdargs
+    clargs = parser.parse_args(["cauldron-lanes", "architecture-core", "--json", "--ready-only"])
+    assert clargs.cmd == "cauldron-lanes" and clargs.topic == "architecture-core" and clargs.json and clargs.ready_only, clargs
+    sdargs = parser.parse_args(["synthesize-docs", "architecture-core", "--with-streams", "--ready-only", "--out", "docs/x.md"])
+    assert sdargs.cmd == "synthesize-docs" and sdargs.with_streams and sdargs.ready_only and sdargs.out == "docs/x.md", sdargs
     hargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree"])
     assert hargs.cmd == "subagent-handoff" and hargs.agent == "mavis" and hargs.task == "T-200" and hargs.context == ["parallel", "policy"] and hargs.worktree and not hargs.json, hargs
     hjargs = parser.parse_args(["subagent-handoff", "mavis", "T-200", "parallel", "policy", "--worktree", "--json"])
@@ -103,11 +138,122 @@ def run():
     assert p.returncode == 0, (p.stdout, p.stderr)
     payload = json.loads(p.stdout)
     assert payload["schema"] == "subagent_launch_plan.v1" and payload["task"] == "T-200", payload
+
+    variant_root = os.path.join(ROOT, "tmp-work", "top-variant-test")
+    shutil.rmtree(variant_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "variant-start", "codex", "variant", "start", "smoke", "--reason", "smoke", "--json", "--no-search", "--no-preflight", "--stream-root", "tmp-work/top-variant-test"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    vp = json.loads(p.stdout)
+    assert vp["schema"] == "top_variant_start.v1" and vp["mutates"] is True, vp
+    assert vp["stream"]["id"] and vp["stream"]["relpath"].startswith("tmp-work/top-variant-test/"), vp
+    assert os.path.exists(vp["stream"]["path"]), vp
+    assert vp["repo_search"]["skipped"] and not vp["repo_search"]["deferred"], vp
+    assert not any(cmd.startswith("python tools\\\\top.py repo-search") for cmd in vp["next_commands"]), vp
+    assert any("independent_first.py check" in cmd for cmd in vp["next_commands"]), vp
+    assert any("ready-for-synthesis" in cmd for cmd in vp["next_commands"]), vp
+    shutil.rmtree(variant_root, ignore_errors=True)
+
+    defer_root = os.path.join(ROOT, "tmp-work", "top-variant-defer-test")
+    shutil.rmtree(defer_root, ignore_errors=True)
+
+    draft_root = os.path.join(ROOT, "tmp-work", "top-draft-code-test")
+    shutil.rmtree(draft_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "draft-code", "list", "--root", "tmp-work/top-draft-code-test", "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    dp = json.loads(p.stdout)
+    assert dp["schema"] == "draft_code_list.v1" and dp["drafts"] == [], dp
+    shutil.rmtree(draft_root, ignore_errors=True)
+    info_root = os.path.join(ROOT, "tmp-work", "top-info-draft-test")
+    shutil.rmtree(info_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "info-draft", "list", "--root", "tmp-work/top-info-draft-test", "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    ip = json.loads(p.stdout)
+    assert ip["schema"] == "info_draft_list.v1" and ip["drafts"] == [], ip
+    shutil.rmtree(info_root, ignore_errors=True)
+    batch_root = os.path.join(ROOT, "tmp-work", "top-variant-batch-test")
+    shutil.rmtree(batch_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "variant-batch", "variant", "batch", "smoke", "--agents", "codex,mavis", "--task", "T-259", "--batch-id", "smoke", "--json", "--stream-root", "tmp-work/top-variant-batch-test"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    bp = json.loads(p.stdout)
+    assert bp["schema"] == "top_variant_batch.v1" and bp["mutates"] is True, bp
+    assert bp["batch_id"] == "smoke" and bp["agents"] == ["codex", "mavis"], bp
+    assert bp["phase"] == "draft" and bp["missing_agents"] == ["codex", "mavis"], bp
+    assert bp["manifest"]["relpath"].startswith("tmp-work/top-variant-batch-test/variant-batch-smoke/_batches/"), bp
+    assert os.path.exists(bp["manifest"]["path"]), bp
+    with open(bp["manifest"]["path"], encoding="utf-8") as f:
+        bm = json.load(f)
+    assert bm["schema"] == "top_variant_batch.v1" and bm["quorum"] == 2, bm
+    assert all("variant-start" in cmd and "--no-preflight" in cmd for cmd in bp["per_agent_commands"]), bp
+    assert any("cauldron-lanes" in cmd and "--ready-only" in cmd for cmd in bp["barrier_commands"]), bp
+    created_streams = []
+    for root, _dirs, files in os.walk(batch_root):
+        for name in files:
+            if name == "STREAM.md":
+                created_streams.append(os.path.join(root, name))
+    assert not created_streams, created_streams
+    shutil.rmtree(batch_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "variant-start", "codex", "variant", "start", "defer", "--reason", "defer", "--json", "--no-preflight", "--stream-root", "tmp-work/top-variant-defer-test"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    dvp = json.loads(p.stdout)
+    assert dvp["repo_search"]["skipped"] and dvp["repo_search"]["deferred"], dvp
+    assert dvp["next_commands"][0].startswith("# edit "), dvp
+    assert any("independent_first.py check" in cmd for cmd in dvp["next_commands"]), dvp
+    assert any("repo-search" in cmd for cmd in dvp["next_commands"]), dvp
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "variant-start", "codex", "variant", "start", "text", "--reason", "text", "--no-preflight", "--stream-root", "tmp-work/top-variant-defer-test"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    assert "status: `deferred`" in p.stdout and "repo-search" in p.stdout, p.stdout
+    shutil.rmtree(defer_root, ignore_errors=True)
+
+    draft_root = os.path.join(ROOT, "tmp-work", "top-draft-code-test")
+    shutil.rmtree(draft_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "draft-code", "list", "--root", "tmp-work/top-draft-code-test", "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    dp = json.loads(p.stdout)
+    assert dp["schema"] == "draft_code_list.v1" and dp["drafts"] == [], dp
+    shutil.rmtree(draft_root, ignore_errors=True)
+    info_root = os.path.join(ROOT, "tmp-work", "top-info-draft-test")
+    shutil.rmtree(info_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "info-draft", "list", "--root", "tmp-work/top-info-draft-test", "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    ip = json.loads(p.stdout)
+    assert ip["schema"] == "info_draft_list.v1" and ip["drafts"] == [], ip
+    shutil.rmtree(info_root, ignore_errors=True)
+    batch_root = os.path.join(ROOT, "tmp-work", "top-variant-batch-test")
+    shutil.rmtree(batch_root, ignore_errors=True)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "variant-batch", "variant", "batch", "smoke", "--agents", "codex,mavis", "--task", "T-259", "--batch-id", "smoke", "--json", "--stream-root", "tmp-work/top-variant-batch-test"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    bp = json.loads(p.stdout)
+    assert bp["schema"] == "top_variant_batch.v1" and bp["mutates"] is True, bp
+    assert bp["batch_id"] == "smoke" and bp["agents"] == ["codex", "mavis"], bp
+    assert bp["phase"] == "draft" and bp["missing_agents"] == ["codex", "mavis"], bp
+    assert bp["manifest"]["relpath"].startswith("tmp-work/top-variant-batch-test/variant-batch-smoke/_batches/"), bp
+    assert os.path.exists(bp["manifest"]["path"]), bp
+    with open(bp["manifest"]["path"], encoding="utf-8") as f:
+        bm = json.load(f)
+    assert bm["schema"] == "top_variant_batch.v1" and bm["quorum"] == 2, bm
+    assert all("variant-start" in cmd and "--no-preflight" in cmd for cmd in bp["per_agent_commands"]), bp
+    assert any("cauldron-lanes" in cmd and "--ready-only" in cmd for cmd in bp["barrier_commands"]), bp
+    created_streams = []
+    for root, _dirs, files in os.walk(batch_root):
+        for name in files:
+            if name == "STREAM.md":
+                created_streams.append(os.path.join(root, name))
+    assert not created_streams, created_streams
+    shutil.rmtree(batch_root, ignore_errors=True)
     wargs = parser.parse_args(["work-mode", "codex", "T-144", "--parallel"])
     assert wargs.cmd == "work-mode" and top._work_mode_choice(wargs) == "worktree", wargs
     sargs = parser.parse_args(["work-mode", "codex", "T-144", "--mode", "shared"])
     assert top._work_mode_choice(sargs) == "shared", sargs
-    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/conveyor/conveyor-recover/process-landed/assurance parser+json")
+    print("TESTS OK top: buttons/cycle/take/work-mode/subagent-handoff/variant-start/variant-batch/conveyor/conveyor-recover/process-landed/assurance parser+json")
     return 0
 
 
