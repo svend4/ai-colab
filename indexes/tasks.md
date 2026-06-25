@@ -254,4 +254,4 @@
 | [T-245.md](../tasks/T-245.md) | task | done | The user asked to stop before implementation and first produce a detailed plan for collect |
 | [T-246.md](../tasks/T-246.md) | task | done | The user asked to formulate a deep, logically structured and grammatically clean numbered  |
 | [T-247.md](../tasks/T-247.md) | task | done | The user asked to continue studying the numbered question tree, ask new clarifying and qua |
-| [T-248.md](../tasks/T-248.md) | task | todo | — |
+| [T-248.md](../tasks/T-248.md) | task | doing | Сделать результаты `tools/question_tree.py` доступными через верхний слой `tools/top.py`,  |

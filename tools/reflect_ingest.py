@@ -15,6 +15,7 @@ CLI:
   python tools/reflect_ingest.py --summary           # сводка ledger (открытые/рецидивы по severity)
   python tools/reflect_ingest.py --menu | python tools/decision_menu.py -   # находки→меню человеку (шаг 5)
   python tools/reflect_ingest.py --accept <hash|tool> --reason "..."   # принять (wontfix) — не каждый рецидив дефект
+  echo '{"findings":[...]}' | python tools/reflect_ingest.py --source <имя> --commit <sha>  # ЛЮБОЙ источник → один цикл (7.3)
 """
 import os
 from _ioutil import configure_output
@@ -63,6 +64,27 @@ def findings_from_blocks(data):
         out.append({"hash": _hash(tool, sym), "tool": tool, "block": block,
                     "severity": sev, "symptom": sym, "detail": (st.get("tail") or "")[:300]})
     return out
+
+
+def findings_from_generic(data, source="external"):
+    """ОБОБЩЁННЫЙ источник: {"findings":[{tool,symptom,severity,detail?}]} → находки. Любой агент/тул/
+    детектор шлёт находки в ОДИН метаболический цикл (стигмергия: следы в общем ledger, рецидив=сила
+    следа). Большой объём от группы → единая обработка/дедуп/ROUTE. Вопрос 7.3 / 2.2.2."""
+    out = []
+    for f in data.get("findings", []):
+        tool = f.get("tool") or source
+        sym = f.get("symptom") or f.get("title") or "?"
+        sev = f.get("severity") or f.get("sev") or "medium"
+        out.append({"hash": _hash(tool, sym), "tool": tool, "block": f.get("block") or source,
+                    "severity": sev, "symptom": sym, "detail": (f.get("detail") or "")[:300]})
+    return out
+
+
+def findings_auto(data, source="external"):
+    """Авто-детект формата: blocks (есть steps) или обобщённый (есть findings)."""
+    if isinstance(data, dict) and "steps" in data:
+        return findings_from_blocks(data)
+    return findings_from_generic(data, source)
 
 
 def load_ledger():
@@ -236,12 +258,17 @@ def main(argv):
         raw = open(src, encoding="utf-8").read() if src else sys.stdin.read()
         data = json.loads(raw)
     except (OSError, json.JSONDecodeError) as e:
-        print("reflect_ingest: не прочитать blocks-JSON (%s)" % e); return 2
-    findings = findings_from_blocks(data)
+        print("reflect_ingest: не прочитать JSON (%s)" % e); return 2
+    source = "external"
+    if "--source" in argv:
+        i = argv.index("--source")
+        if i + 1 < len(argv):
+            source = argv[i + 1]
+    findings = findings_auto(data, source)  # blocks ИЛИ обобщённый источник (любой агент/тул)
     led = ingest(findings, commit)
     s = summarize(led)
-    print("ingest: блок %s — находок %d (high %d/med %d); ledger открытых %d, полых циклов %d" % (
-        data.get("block", "?"), len(findings),
+    print("ingest: источник %s — находок %d (high %d/med %d); ledger открытых %d, полых циклов %d" % (
+        data.get("block", source), len(findings),
         sum(1 for f in findings if f["severity"] == "high"),
         sum(1 for f in findings if f["severity"] == "medium"),
         s["open_total"], len(s["recurring"])))
