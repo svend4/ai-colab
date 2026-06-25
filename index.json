@@ -3046,6 +3046,28 @@
       "depends_on": "[T-244]",
       "topic": "topics/alpha2-to-alpha3-roadmap-2026-06-24.md",
       "next": "Prepare a detailed proposed roadmap before further code implementation."
+    },
+    {
+      "id": "T-246",
+      "title": "Information refactoring question tree for repository rejuvenation",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-245]",
+      "topic": "topics/information-refactoring-question-tree-2026-06-25.md",
+      "next": "Convert the user's meta-question into a numbered question tree with status markers and proposed next actions."
+    },
+    {
+      "id": "T-247",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

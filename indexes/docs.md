@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 119 файлов
+# Индекс папки `docs/` — 120 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -57,6 +57,7 @@
 | [git-log-second-verification-result-2026-06-21.md](../docs/git-log-second-verification-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [glossary.md](../docs/glossary.md) | — | — | Термины проекта в алфавитном порядке. Каждый термин: имя → определение → где встречается.  |
 | [implementation-stage-report-2026-06-20.md](../docs/implementation-stage-report-2026-06-20.md) | — | — | Дата: 2026-06-20 |
+| [information-refactoring-sanation-standard.md](../docs/information-refactoring-sanation-standard.md) | doc | proposed | Отвечает на открытые мета-вопросы (реестр 4.1/4.2/4.3/4.5/5.1/6): инфо-рефакторинг = оздор |
 | [ingest-acceptance-result-2026-06-21.md](../docs/ingest-acceptance-result-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [ingest-hardening.md](../docs/ingest-hardening.md) | — | — | Дата: 2026-06-20 |
 | [instruction-assurance.md](../docs/instruction-assurance.md) | doc | done | task: T-XXX |
