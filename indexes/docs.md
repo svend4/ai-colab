@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 120 файлов
+# Индекс папки `docs/` — 121 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -7,6 +7,7 @@
 
 | файл | type | status | суть |
 |---|---|---|---|
+| [agent-approval-matrix.md](../docs/agent-approval-matrix.md) | doc | proposed | Большое число агентов ускоряет только сбор и первичную обработку информации. Окончательное |
 | [agent-capacity-methodology.md](../docs/agent-capacity-methodology.md) | doc | proposed | Канон (`docs/agent-capacity-methodology.md:20-26`) фиксирует ровно четыре зашитых потолка  |
 | [agent-launch-workflow.md](../docs/agent-launch-workflow.md) | — | accepted | Дата: 2026-06-23. |
 | [agent-layer-design.md](../docs/agent-layer-design.md) | — | — | Есть две крайности: |

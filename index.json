@@ -3083,13 +3083,24 @@
     {
       "id": "T-249",
       "title": "Question-tree action-plan и status-backfill старых методологических вопросов",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "medium",
       "depends_on": "[T-248]",
       "topic": "",
       "next": "Добавить режим action-plan, убрать unknown из старого question-tree структурными статусами, создать цикл 3 и отчет."
+    },
+    {
+      "id": "T-250",
+      "title": "Agent approval matrix и workflow субагентов для Q-023",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-249, Q-023]",
+      "topic": "",
+      "next": "Создать docs/agent-approval-matrix.md, proposed decision, outbox-отчет и интегрировать отчеты scout-субагентов."
     }
   ],
   "questions": [
@@ -3246,6 +3257,13 @@
       "status": "answered",
       "where": "topics/architecture-fundamentals-2026-06-24.md",
       "outcome": "ДА, портабельна — доказано acceptance-тестом tools/portability_check.py (git-archive HEAD → чистый temp → validate/generate). Свежий clone требует РОВНО 1 документированный bootstrap `python tools/pipeline.py snapshot` (воссоздаёт 2 генерируемых снимка PIPELINE.md + logs/pipeline.json, gitignored/untracked по дизайну D-011). После bootstrap: validate rc=0, generate rc=0, ноль хардкода хост-путей."
+    },
+    {
+      "id": "Q-023",
+      "title": "Какая матрица полномочий нужна для людей и AI-агентов?",
+      "status": "open",
+      "where": "topics/information-refactoring-cycle-3-2026-06-25.md",
+      "outcome": "pending"
     }
   ],
   "decisions": [
@@ -3430,6 +3448,13 @@
       "status": "proposed",
       "date": "2026-06-24",
       "file": "decisions/D-026.md"
+    },
+    {
+      "id": "D-027",
+      "title": "Матрица полномочий для людей, AI-агентов, observer/integrator ролей и скриптов",
+      "status": "proposed",
+      "date": "2026-06-25",
+      "file": "decisions/D-027.md"
     }
   ],
   "drivers": [

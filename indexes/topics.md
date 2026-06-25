@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 61 файлов, 4 подпапок
+# Индекс папки `topics/` — 63 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -18,6 +18,7 @@
 | [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
 | [agent-self-reflection-delegation.md](../topics/agent-self-reflection-delegation.md) | topic | active | Мы успешно внедрили и протестировали методику "Dogfooding / Self-Reflection" (использовани |
 | [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
+| [alchemy_synthesis_20260625_144041.md](../topics/alchemy_synthesis_20260625_144041.md) | — | — | **Дата генерации:** 2026-06-25 14:40:41.695715 |
 | [alpha2-to-alpha3-roadmap-2026-06-24.md](../topics/alpha2-to-alpha3-roadmap-2026-06-24.md) | topic | proposed | Этот документ выводит на коллективное согласование следующий этап развития проекта. Он осн |
 | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | topic | proposed | File-native движок координации агентов — единый канон организации знания и кода по двум ос |
 | [assurance-and-doc-merge-2026-06-22.md](../topics/assurance-and-doc-merge-2026-06-22.md) | topic | proposed | **Переформулировка:** Вопрос о трёх проблемах гарантирования инструкций: 1. ПРИМЕНЕНИЕ: ка |
@@ -42,6 +43,7 @@
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
 | [information-refactoring-cycle-1-2026-06-25.md](../topics/information-refactoring-cycle-1-2026-06-25.md) | topic | proposed | Команда: |
 | [information-refactoring-cycle-2-2026-06-25.md](../topics/information-refactoring-cycle-2-2026-06-25.md) | topic | proposed | Команда верхнего слоя: |
+| [information-refactoring-cycle-3-2026-06-25.md](../topics/information-refactoring-cycle-3-2026-06-25.md) | topic | proposed | Добавлен режим action-plan: |
 | [information-refactoring-question-tree-2026-06-25.md](../topics/information-refactoring-question-tree-2026-06-25.md) | topic | proposed | Этот документ превращает исходную мысль пользователя в пронумерованную систему вопросов. Е |
 | [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |

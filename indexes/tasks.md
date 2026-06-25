@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 249 файлов
+# Индекс папки `tasks/` — 250 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -255,4 +255,5 @@
 | [T-246.md](../tasks/T-246.md) | task | done | The user asked to formulate a deep, logically structured and grammatically clean numbered  |
 | [T-247.md](../tasks/T-247.md) | task | done | The user asked to continue studying the numbered question tree, ask new clarifying and qua |
 | [T-248.md](../tasks/T-248.md) | task | done | Сделать результаты `tools/question_tree.py` доступными через верхний слой `tools/top.py`,  |
-| [T-249.md](../tasks/T-249.md) | task | doing | Продолжить работу с накопившимися вопросами: не только показывать дерево вопросов, но и пр |
+| [T-249.md](../tasks/T-249.md) | task | done | Продолжить работу с накопившимися вопросами: не только показывать дерево вопросов, но и пр |
+| [T-250.md](../tasks/T-250.md) | task | doing | Ответить на Q-023: какая матрица полномочий нужна для людей, AI-агентов, scout/observer/in |

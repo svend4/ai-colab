@@ -70,17 +70,20 @@ def commit_stats(n=SAMPLE):
     return stats
 
 
+# «антитела» (Т-клетки). Аномалия = КВОРУМ (≥QUORUM сигналят), как иммунный ответ требует ко-стимуляции.
+# Смешиваем ОТНОСИТЕЛЬНОЕ (адаптивный профиль) и АБСОЛЮТНЫЕ сигнатуры стрипа — чтобы отличить
+# массовое СТИРАНИЕ (опасно) от крупной ЛЕГИТИМНОЙ правки (много файлов, но добавление-доминантна).
+QUORUM = 2
+NET_DELETION_RATIO = 1.0   # del/add > 1 = нетто-ПОТЕРЯ информации (абс. сигнатура стрипа)
+LARGE_DELETION = 500       # абс. порог удалений (согласован с D-026)
+
+
 def profile(stats):
+    """Учим относительный профиль «своего» по числу файлов (адаптивно к истории репо)."""
     files = [s["files"] for s in stats]
-    dele = [s["deletions"] for s in stats]
-    fm, dm = _median(files), _median(dele)
-    return {
-        "n_commits": len(stats),
-        "files_median": fm, "files_mad": _mad(files, fm),
-        "del_median": dm, "del_mad": _mad(dele, dm),
-        "files_threshold": round(fm + K_MAD * _mad(files, fm), 1),
-        "del_threshold": round(dm + K_MAD * _mad(dele, dm), 1),
-    }
+    fm = _median(files)
+    return {"n_commits": len(stats), "files_median": round(fm, 1), "files_mad": round(_mad(files, fm), 1),
+            "files_threshold": round(fm + K_MAD * _mad(files, fm), 1)}
 
 
 def current_diff():
@@ -104,13 +107,18 @@ MIN_SAMPLE = 10  # меньше — профиль ненадёжен, не вы
 
 def assess(cur, prof):
     if prof["n_commits"] < MIN_SAMPLE:
-        return {"anomaly": False, "reasons": [], "insufficient": True}
-    reasons = []
-    if cur["files"] > prof["files_threshold"]:
-        reasons.append("файлов %d > порог %.0f (норма ~%.0f)" % (cur["files"], prof["files_threshold"], prof["files_median"]))
-    if cur["deletions"] > prof["del_threshold"]:
-        reasons.append("удалений %d > порог %.0f (норма ~%.0f)" % (cur["deletions"], prof["del_threshold"], prof["del_median"]))
-    return {"anomaly": bool(reasons), "reasons": reasons}
+        return {"anomaly": False, "fired": [], "insufficient": True}
+    ratio = cur["deletions"] / max(1, cur["additions"])
+    fired = []
+    if cur["files"] > prof["files_threshold"]:                       # относит.: необычно много файлов
+        fired.append({"dim": "many_files", "label": "файлов %d (порог %.0f, норма ~%.0f)" % (
+            cur["files"], prof["files_threshold"], prof["files_median"])})
+    if ratio > NET_DELETION_RATIO:                                   # абс.: нетто-потеря (стрип-сигнатура)
+        fired.append({"dim": "net_deletion", "label": "удал./добавл. %.1f > 1 (нетто-потеря)" % ratio})
+    if cur["deletions"] > LARGE_DELETION:                            # абс.: крупное удаление (D-026)
+        fired.append({"dim": "large_deletion", "label": "удалений %d > %d (D-026)" % (cur["deletions"], LARGE_DELETION)})
+    # кворум ≥2: «много файлов» само по себе = крупная правка (ок); + нетто-потеря/крупное удаление = стрип.
+    return {"anomaly": len(fired) >= QUORUM, "fired": fired, "quorum": QUORUM}
 
 
 def main(argv):
@@ -122,30 +130,32 @@ def main(argv):
         if as_json:
             print(json.dumps(prof, ensure_ascii=False, indent=2)); return 0
         print("=== ИММУННЫЙ ПРОФИЛЬ «своего» (по %d коммитам) ===" % prof["n_commits"])
-        print("  файлов/коммит: медиана %.0f ± MAD %.0f → порог %.0f" % (
+        print("  файлов/коммит: медиана %.0f ± MAD %.0f → относит. порог %.0f" % (
             prof["files_median"], prof["files_mad"], prof["files_threshold"]))
-        print("  удалений/коммит: медиана %.0f ± MAD %.0f → порог %.0f" % (
-            prof["del_median"], prof["del_mad"], prof["del_threshold"]))
+        print("  абс. сигнатуры стрипа: нетто-потеря (del/add>%.0f), крупное удаление (>%d, D-026)" % (
+            NET_DELETION_RATIO, LARGE_DELETION))
+        print("  кворум аномалии: ≥%d антител разом" % QUORUM)
         return 0
     cur = current_diff()
     a = assess(cur, prof)
+    ratio = cur["deletions"] / max(1, cur["additions"])
     if as_json:
-        print(json.dumps({"current": cur, "profile": prof, **a}, ensure_ascii=False, indent=2))
+        print(json.dumps({"current": cur, "ratio": round(ratio, 2), "profile": prof, **a}, ensure_ascii=False, indent=2))
         return 1 if a["anomaly"] else 0
     if a.get("insufficient"):
         print("=== ИММУННАЯ СИСТЕМА ===\n  недостаточно истории (%d < %d коммитов) — вердикт не выносится" % (
             prof["n_commits"], MIN_SAMPLE))
         return 0
-    print("=== ИММУННАЯ СИСТЕМА — рабочее дерево vs профиль «своего» ===")
-    print("  текущее: %d файлов, −%d / +%d строк  (профиль: ≤%.0f файлов, ≤%.0f удалений)" % (
-        cur["files"], cur["deletions"], cur["additions"], prof["files_threshold"], prof["del_threshold"]))
+    print("=== ИММУННАЯ СИСТЕМА — рабочее дерево vs профиль «своего» (Т-клетки + кворум) ===")
+    print("  текущее: %d файлов, −%d / +%d строк (удал./добавл. %.2f)" % (
+        cur["files"], cur["deletions"], cur["additions"], ratio))
+    print("  сигналят антител: %d (кворум %d)" % (len(a["fired"]), a["quorum"]))
+    for f in a["fired"]:
+        print("      ⚠ %s" % f["label"])
     if a["anomaly"]:
-        print("\n  🛑 АНОМАЛИЯ («чужое» — статистический выброс):")
-        for r in a["reasons"]:
-            print("      • %s" % r)
-        print("    → проверь намеренность; если массовое стирание — страховка (D-026/bulk_guard).")
+        print("\n  🛑 АНОМАЛИЯ («чужое» — кворум): проверь намеренность; массовое стирание → страховка (D-026/bulk_guard).")
         return 1
-    print("\n  ✓ в пределах «своего» (нормальный коммит по истории репо)")
+    print("\n  ✓ в пределах «своего» (кворум не набран — крупная, но легитимная правка или норма)")
     return 0
 
 

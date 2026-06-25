@@ -26,25 +26,33 @@ def main():
     if immune._mad([1, 2, 3, 4, 100], m) != 1:
         fails.append("_mad не робастна к выбросу: %s" % immune._mad([1, 2, 3, 4, 100], m))
 
-    # профиль из «нормальных» коммитов (~3 файла, ~2 удаления)
+    # профиль из «нормальных» коммитов (~3 файла, ~2 удаления, добавление-доминантных)
     normal = [{"files": 3, "deletions": 2, "additions": 5}] * 30 + [{"files": 5, "deletions": 4, "additions": 8}] * 20
     prof = immune.profile(normal)
     if prof["n_commits"] != 50:
         fails.append("profile n_commits != 50")
-    if prof["files_median"] < 2 or prof["files_median"] > 5:
+    if not (2 <= prof["files_median"] <= 5):
         fails.append("files_median вне нормы: %s" % prof["files_median"])
 
-    # ИНЦИДЕНТ: 147 файлов / 8643 удаления → ОБЯЗАН быть аномалией
+    # ИНЦИДЕНТ: 147 файлов / 8643 удал / 269 добавл → many_files + net_deletion + large_deletion → АНОМАЛИЯ
     incident = immune.assess({"files": 147, "deletions": 8643, "additions": 269}, prof)
-    if not incident["anomaly"]:
-        fails.append("инцидент outbox-strip НЕ помечен аномалией (провал иммунитета!)")
+    if not incident["anomaly"] or len(incident["fired"]) < 2:
+        fails.append("инцидент outbox-strip НЕ аномалия (провал иммунитета!): fired=%s" % incident["fired"])
 
-    # нормальный коммит (3 файла, 2 удаления) → НЕ аномалия
-    normal_commit = immune.assess({"files": 3, "deletions": 2, "additions": 5}, prof)
-    if normal_commit["anomaly"]:
-        fails.append("нормальный коммит ложно помечен аномалией")
+    # нормальный коммит → 0 антител → НЕ аномалия
+    if immune.assess({"files": 3, "deletions": 2, "additions": 5}, prof)["anomaly"]:
+        fails.append("нормальный коммит ложно аномалия")
 
-    # guard: <MIN_SAMPLE коммитов → вердикт не выносится (нет ложного срабатывания)
+    # КВОРУМ: легитимная КРУПНАЯ ДОБАВКА (много файлов, мало удалений, addition-доминантна) →
+    # только many_files (1 антитело) < кворум → НЕ аномалия (ключевое отличие стрипа от роста)
+    big_add = immune.assess({"files": 100, "deletions": 3, "additions": 4000}, prof)
+    fired_dims = {f["dim"] for f in big_add["fired"]}
+    if big_add["anomaly"]:
+        fails.append("легитимная крупная добавка ложно аномалия: %s" % big_add["fired"])
+    if "many_files" not in fired_dims:
+        fails.append("many_files-антитело должно сигналить на 100 файлов")
+
+    # guard: <MIN_SAMPLE → воздержаться
     thin = immune.profile([{"files": 3, "deletions": 2, "additions": 5}] * 5)
     g = immune.assess({"files": 999, "deletions": 999, "additions": 0}, thin)
     if g["anomaly"] or not g.get("insufficient"):
