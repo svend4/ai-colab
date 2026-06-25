@@ -3060,14 +3060,14 @@
     },
     {
       "id": "T-247",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Question tree cycle: extract, answer, extend, and sandbox radical ideas",
+      "status": "done",
       "owner": "codex",
-      "priority": "normal",
+      "priority": "high",
       "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "depends_on": "[T-246]",
+      "topic": "topics/information-refactoring-cycle-1-2026-06-25.md",
+      "next": "Add a read-only question_tree tool, first answer cycle, and sandbox idea lab for radical experiments."
     }
   ],
   "questions": [

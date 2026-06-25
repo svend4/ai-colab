@@ -253,4 +253,4 @@
 | [T-244.md](../tasks/T-244.md) | task | done | T-243 added `tools/cli_inventory.py` and showed 45 remaining CLI-risk entries. The next sa |
 | [T-245.md](../tasks/T-245.md) | task | done | The user asked to stop before implementation and first produce a detailed plan for collect |
 | [T-246.md](../tasks/T-246.md) | task | done | The user asked to formulate a deep, logically structured and grammatically clean numbered  |
-| [T-247.md](../tasks/T-247.md) | task | todo | — |
+| [T-247.md](../tasks/T-247.md) | task | done | The user asked to continue studying the numbered question tree, ask new clarifying and qua |

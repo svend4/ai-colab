@@ -27,6 +27,31 @@ import decay
 
 TERMINAL = ("done", "accepted", "answered", "rejected", "superseded", "archived", "historical")
 
+# «биты беспорядка» верхушки: вклад каждого дефекта в энтропию H(top). Веса — прокси (не абсолютны),
+# смысл в ДЕЛЬТЕ: санация должна H(top) СНИЖАТЬ при неизменном теле (фальсифицируемый вердикт, не «файлов меньше»).
+H_COST = {"no_visitka": 2.0, "hard": 4.0, "soft": 0.5, "isolate": 1.0, "redundant": 0.5}
+
+
+def _similar(a, b):
+    import difflib
+    return difflib.SequenceMatcher(None, a.lower(), b.lower()).ratio() > 0.72
+
+
+def top_entropy(nodes, gc):
+    """H(top) — энтропия ВЕРХУШКИ в «битах»: недостающие визитки + дублирование title≈gist +
+    мягкие/жёсткие рёбра + изоляты. Единая фальсифицируемая метрика (санация → H↓, тело неизменно)."""
+    no_card = sum(1 for n in nodes.values() if not (n["fm"].get("title") or "").strip())
+    redundant = sum(1 for n in nodes.values()
+                    if (n["fm"].get("title") or "").strip() and (n["fm"].get("gist") or "").strip()
+                    and _similar(n["fm"]["title"], n["fm"]["gist"]))
+    hard = len(gc["dangling"]) + len(gc["cycles"])
+    soft = len(gc.get("topic_unresolved", [])) + len(gc.get("asym_related", []))
+    isolate = len(gc.get("active_isolates", []))
+    bits = (no_card * H_COST["no_visitka"] + hard * H_COST["hard"] + soft * H_COST["soft"]
+            + isolate * H_COST["isolate"] + redundant * H_COST["redundant"])
+    return {"H_top_bits": round(bits, 1), "no_visitka": no_card, "hard": hard, "soft": soft,
+            "isolate": isolate, "redundant": redundant}
+
 
 def collect():
     nodes, by_id, by_slug = edges.load_nodes()
@@ -56,6 +81,7 @@ def collect():
 
     freshness = dec["counts"]
     return {
+        "entropy": top_entropy(nodes, gc),
         "top_health": {
             "atoms": total,
             "visitka_covered": with_card,
@@ -88,18 +114,50 @@ def apply_safe():
         return ["WARN: %s" % e]
 
 
+def check_drift():
+    """Дрейф верхушки: производные индексы навигации отстали от тела (гомеостаз, не пишет)."""
+    try:
+        import folder_index
+        return [d for d in folder_index.BIG if folder_index.check(d) is False]
+    except Exception:
+        return []
+
+
+def _avg_maturity():
+    try:
+        import maturity
+        rows = maturity.collect()
+        return round(sum(r["score"] for r in rows) / len(rows)) if rows else 0
+    except Exception:
+        return 0
+
+
 def main(argv):
     help_guard(__doc__, argv)
     as_json = "--json" in argv
     do_apply = "--apply" in argv
+    if "--check" in argv:  # дрейф-детектор (гомеостаз): exit 1, если верхушка отстала
+        drift = check_drift()
+        if as_json:
+            print(json.dumps({"drift": drift}, ensure_ascii=False)); return 1 if drift else 0
+        print("=== САНАЦИЯ --check (дрейф верхушки) ===")
+        print("  ✗ устаревшие индексы: %s" % ", ".join(drift) if drift
+              else "  ✓ верхушка свежа (дрейфа индексов нет)")
+        return 1 if drift else 0
     r = collect()
+    mat_before = _avg_maturity() if do_apply else None
     if do_apply:
         r["applied_indexes"] = apply_safe()
+        r["maturity_before"] = mat_before
+        r["maturity_after"] = _avg_maturity()
     if as_json:
         print(json.dumps(r, ensure_ascii=False, indent=2))
         return 0
+    e = r["entropy"]
     h = r["top_health"]
     print("=== САНАЦИЯ — здоровье ВЕРХУШКИ канона (омоложение, не переписывание) ===")
+    print("  H(top) = %.1f бит  (нет-визитки %d · жёстких %d · мягких %d · изолятов %d · дубль %d) ← санация снижает" % (
+        e["H_top_bits"], e["no_visitka"], e["hard"], e["soft"], e["isolate"], e["redundant"]))
     print("  атомов: %d · визитка: %d (%d%%) · граф: %d жёстких / %d мягких" % (
         h["atoms"], h["visitka_covered"], h["visitka_pct"], h["graph_hard_defects"], h["graph_soft"]))
     print("  свежесть: 🔥%d hot · 🌡%d warm · ❄%d cold · застывших-активных: %d" % (
@@ -114,9 +172,12 @@ def main(argv):
         print("        нет %-5s %s" % (x.get("lack", "?"), x["id"]))
     print("    • застывшее активное (ре-оценка): %d" % len(c["stale_active"]))
     if do_apply:
-        print("\n  ✓ верхушка омоложена: регенерированы индексы %s" % ", ".join(r["applied_indexes"]))
+        d = r["maturity_after"] - r["maturity_before"]
+        print("\n  ✓ верхушка омоложена: индексы %s" % ", ".join(r["applied_indexes"]))
+        print("    maturity ‰ до→после: %d→%d (Δ%+d) — идемпотентность: 2-й прогон даст Δ≈0" % (
+            r["maturity_before"], r["maturity_after"], d))
     else:
-        print("\n  (--apply: безопасно регенерировать folder-индексы; контент-санация — через ROUTE)")
+        print("\n  (--apply: регенерировать индексы + дельта maturity; --check: дрейф; контент-санация — ROUTE)")
     return 0
 
 

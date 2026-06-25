@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 59 файлов, 4 подпапок
+# Индекс папки `topics/` — 60 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -40,6 +40,7 @@
 | [governance-proposals-2026-06-23.md](../topics/governance-proposals-2026-06-23.md) | topic | proposed | Два предложения для **котла (D-018, не solo)**, проверены против файлов. Источник: нода фл |
 | [incident-outbox-mass-strip-2026-06-24.md](../topics/incident-outbox-mass-strip-2026-06-24.md) | topic | open | Несанкционированный массовый авто-стрип 147 отчётов агентов в единый стаб status:historica |
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
+| [information-refactoring-cycle-1-2026-06-25.md](../topics/information-refactoring-cycle-1-2026-06-25.md) | topic | proposed | Команда: |
 | [information-refactoring-question-tree-2026-06-25.md](../topics/information-refactoring-question-tree-2026-06-25.md) | topic | proposed | Этот документ превращает исходную мысль пользователя в пронумерованную систему вопросов. Е |
 | [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
