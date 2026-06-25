@@ -3211,7 +3211,7 @@
     {
       "id": "T-260",
       "title": "Draft-code no-execute packet manager for agent code variants",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",

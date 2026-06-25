@@ -98,6 +98,33 @@ def seal_verified(path, root=None):
     return {"verified": False, "why": "тело изменено после первого коммита (печать нарушена)"}
 
 
+def provenance_independence(a, b, root=None):
+    """Парная провенанс-независимость по git: ранее-закоммиченный НЕ мог скопировать поздний.
+
+    Независимость по совпадению — это суждение; здесь — проверяемый ФАКТ порядка. Если A в git раньше B,
+    то A НЕ мог скопировать B (A независим от B по провенансу); B — под подозрением (мог видеть A). Один
+    коммит (атомарно вместе) → взаимная независимость (ни один не видел другого до общей печати).
+    """
+    root = root or ROOT
+    ta = _first_commit_time(a, root)
+    tb = _first_commit_time(b, root)
+    na, nb = os.path.basename(a), os.path.basename(b)
+    if ta is None or tb is None:
+        return {"direction": "unknown", "why": "не в git (порядок недоказуем)"}
+    both_verified = seal_verified(a, root)["verified"] and seal_verified(b, root)["verified"]
+    if ta == tb:
+        return {"direction": "mutual", "independent": "both", "both_verified": both_verified}
+    early, late = (na, nb) if ta < tb else (nb, na)
+    return {"direction": "ordered", "independent": early, "suspect": late, "both_verified": both_verified}
+
+
+def _first_commit_time(path, root):
+    rel = os.path.relpath(os.path.abspath(path), root).replace("\\", "/")
+    out = _git(["log", "--diff-filter=A", "--format=%ct", "--", rel], root)
+    times = [int(t) for t in out.splitlines() if t.strip().isdigit()]
+    return min(times) if times else None
+
+
 def _git(args, cwd):
     try:
         p = subprocess.run(["git"] + args, cwd=cwd, capture_output=True, text=True,
@@ -181,6 +208,19 @@ def main(argv):
                   "✅ git-verified (%s)" % v["seal_commit"] if v["verified"] else "✗ " + v.get("why", "")))
             ok += 1 if v["verified"] else 0
         print("  итого: %d/%d печатей подтверждены git (тело == первый коммит)" % (ok, len(paths)))
+        return 0
+    if "--provenance" in argv:
+        i = argv.index("--provenance")
+        rest = [a for a in argv[i + 1:] if not a.startswith("--")]
+        d = rest[0] if rest else "variants"
+        d = d if os.path.isabs(d) else os.path.join(ROOT, d)
+        files = glob.glob(os.path.join(d, "*.md")) or glob.glob(os.path.join(d, "**", "*.md"), recursive=True)
+        rows = [(f, _first_commit_time(f, ROOT)) for f in files]
+        rows = sorted([r for r in rows if r[1] is not None], key=lambda r: r[1])
+        print("=== ПРОВЕНАНС-ПОРЯДОК по git (ранее = независим от поздних) ===")
+        for f, _ in rows:
+            print("  %s" % os.path.basename(f))
+        print("  → каждый независим (по провенансу) от всех НИЖЕ; верхний ни у кого не мог скопировать")
         return 0
     args = [a for a in argv if not a.startswith("--")]
     if "--board" in argv or not args:
