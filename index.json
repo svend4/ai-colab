@@ -3123,13 +3123,24 @@
     {
       "id": "T-252",
       "title": "Independent-first variant streams: политика содержательных дублей и раскрытия вариантов",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[D-017, D-024, T-251]",
       "topic": "",
       "next": "Оформить proposed policy, усилить stream.py lifecycle, создать outbox и проверки."
+    },
+    {
+      "id": "T-253",
+      "title": "Stream readiness check: проверка полноты ready-for-synthesis вариантов",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-252, D-028]",
+      "topic": "",
+      "next": "Добавить incomplete_ready diagnostics в stream.py check, обновить тесты и outbox."
     }
   ],
   "questions": [

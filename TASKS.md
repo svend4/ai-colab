@@ -264,5 +264,7 @@
 | T-248 | Верхний слой: вывести question-tree в top.py и продолжить цикл методологических ответов | done | codex | — | Добавить top.py question-tree, зафиксировать цикл 2 ответов/вопросов, прогнать тесты и закрыть отчетом. |
 | T-249 | Question-tree action-plan и status-backfill старых методологических вопросов | done | codex | — | Добавить режим action-plan, убрать unknown из старого question-tree структурными статусами, создать цикл 3 и отчет. |
 | T-250 | Agent approval matrix и workflow субагентов для Q-023 | done | codex | — | Создать docs/agent-approval-matrix.md, proposed decision, outbox-отчет и интегрировать отчеты scout-субагентов. |
-| T-251 | Триадный фрактал золотой середины: машинный вопросник и методология формулирования проблем | doing | codex | — | Нормализовать triadic questionnaire, создать методологию triad/fractal/immune-memory, outbox и проверки. |
+| T-251 | Триадный фрактал золотой середины: машинный вопросник и методология формулирования проблем | done | codex | — | Нормализовать triadic questionnaire, создать методологию triad/fractal/immune-memory, outbox и проверки. |
+| T-252 | Independent-first variant streams: политика содержательных дублей и раскрытия вариантов | done | codex | — | Оформить proposed policy, усилить stream.py lifecycle, создать outbox и проверки. |
+| T-253 | Stream readiness check: проверка полноты ready-for-synthesis вариантов | done | codex | — | Добавить incomplete_ready diagnostics в stream.py check, обновить тесты и outbox. |
 <!-- GEN:tasks END -->
