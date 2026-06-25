@@ -273,5 +273,5 @@
 | T-257 | Independent-first policy for preliminary code variants | done | codex | — | Сначала раскрыть независимый вариант Codex по работе с предварительным кодом, затем сверить с sandbox/drafts и старыми механизмами. |
 | T-258 | Independent-first guard for variant-start ordering | done | codex | — | Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard. |
 | T-259 | Variant batch barrier for independent-first sub-agents | done | codex | — | Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper. |
-| T-260 | Draft-code no-execute packet manager for agent code variants | doing | codex | — | Реализовать минимальный `tools/draft_code.py` create/check/list/review; top-wrapper оставить отдельным малым следующим шагом, если core manager зелёный. |
+| T-260 | Draft-code no-execute packet manager for agent code variants | doing | codex | — | Проверить `tools/draft_code.py`, top proxy, docs/capabilities; закрыть через pipeline с outbox-отчётом. |
 <!-- GEN:tasks END -->

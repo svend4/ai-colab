@@ -3217,7 +3217,7 @@
       "risk": "medium",
       "depends_on": "[T-257, T-259]",
       "topic": "",
-      "next": "Реализовать минимальный `tools/draft_code.py` create/check/list/review; top-wrapper оставить отдельным малым следующим шагом, если core manager зелёный."
+      "next": "Проверить `tools/draft_code.py`, top proxy, docs/capabilities; закрыть через pipeline с outbox-отчётом."
     }
   ],
   "questions": [

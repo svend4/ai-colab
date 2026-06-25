@@ -22,6 +22,7 @@ from _cli import help_guard
 import sys
 import glob
 import hashlib
+import subprocess
 
 configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -68,6 +69,41 @@ def seal_hash(path):
         return hashlib.sha1(_body(open(path, encoding="utf-8", errors="replace").read())
                             .encode("utf-8")).hexdigest()[:12]
     except OSError:
+        return ""
+
+
+def seal_verified(path, root=None):
+    """Провенанс печати по GIT: тело НЕ менялось с ПЕРВОГО коммита → печать цела (не подделана задним числом).
+
+    Закрывает OQ-вопрос: `sealed: blind` — самозаявленный флаг, подделываем. Здесь — проверяемый ФАКТ:
+    sha1 тела сейчас == sha1 тела в коммите, который ВПЕРВЫЕ добавил файл. Иначе печать нарушена/недоказуема.
+    """
+    root = root or ROOT
+    path = os.path.abspath(path)
+    rel = os.path.relpath(path, root).replace("\\", "/")
+    log = _git(["log", "--diff-filter=A", "--format=%H", "--", rel], root)
+    commits = [c for c in log.splitlines() if c.strip()]
+    if not commits:
+        return {"verified": False, "why": "не в git (провенанс недоказуем)"}
+    first = commits[-1]
+    orig = _git(["show", "%s:%s" % (first, rel)], root)
+    if not orig:
+        return {"verified": False, "why": "не прочесть первый коммит файла"}
+    try:
+        cur = open(path, encoding="utf-8", errors="replace").read()
+    except OSError as e:
+        return {"verified": False, "why": str(e)[:40]}
+    if hashlib.sha1(_body(orig).encode("utf-8")).hexdigest() == hashlib.sha1(_body(cur).encode("utf-8")).hexdigest():
+        return {"verified": True, "seal_commit": first[:12]}
+    return {"verified": False, "why": "тело изменено после первого коммита (печать нарушена)"}
+
+
+def _git(args, cwd):
+    try:
+        p = subprocess.run(["git"] + args, cwd=cwd, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+        return p.stdout if p.returncode == 0 else ""
+    except (OSError, ValueError):
         return ""
 
 
@@ -135,6 +171,17 @@ def main(argv):
             print("sealed: blind  # seal_hash: %s" % seal_hash(p))
             return 0
         print("ripeness_gate: --seal требует файл"); return 2
+    if "--verify" in argv:
+        paths = sorted(glob.glob(os.path.join(ROOT, "variants", "**", "*.md"), recursive=True))
+        print("=== ПРОВЕРКА ПЕЧАТИ ПО GIT (провенанс, не самозаявление) ===")
+        ok = 0
+        for p in paths:
+            v = seal_verified(p)
+            print("  %-46s %s" % (os.path.basename(p),
+                  "✅ git-verified (%s)" % v["seal_commit"] if v["verified"] else "✗ " + v.get("why", "")))
+            ok += 1 if v["verified"] else 0
+        print("  итого: %d/%d печатей подтверждены git (тело == первый коммит)" % (ok, len(paths)))
+        return 0
     args = [a for a in argv if not a.startswith("--")]
     if "--board" in argv or not args:
         paths = sorted(glob.glob(os.path.join(ROOT, "variants", "**", "*.md"), recursive=True))
