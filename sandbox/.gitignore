@@ -24,3 +24,6 @@ reports/*
 
 drafts/*
 !drafts/README.md
+
+info-drafts/*
+!info-drafts/README.md

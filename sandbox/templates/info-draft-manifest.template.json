@@ -1,0 +1,35 @@
+{
+  "schema": "info-draft-proposal.v1",
+  "id": "info-YYYYMMDD-short-name",
+  "title": "Short draft title",
+  "status": "draft",
+  "owner_agent": "agent-id",
+  "created_at": "YYYY-MM-DD",
+  "kind": "doc",
+  "purpose": "What this information draft is trying to clarify",
+  "source_context": [
+    "related task, question, stream, report, or document"
+  ],
+  "allowed_review": [
+    "read-only file review",
+    "structural review",
+    "source/evidence review",
+    "synthesis readiness review"
+  ],
+  "canon_status": "not-canonical-until-synthesized-and-promoted",
+  "contains_private_data": false,
+  "contains_secrets": false,
+  "target_promotion": {
+    "kind": "none|task|doc|topic|decision-material|portal-note|question-tree",
+    "candidate_paths": []
+  },
+  "forbidden": [
+    "accepted decision without governance",
+    "direct overwrite of clean docs",
+    "deleting divergence",
+    "secrets in repository",
+    "promotion without separate task"
+  ],
+  "suggested_static_checks": [],
+  "review_notes": ""
+}
