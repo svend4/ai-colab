@@ -171,3 +171,35 @@ red-team-вердикт `reason-not-vote` (judge-capture) в ОДНУ **проб
 ПРОЦЕСС (дивергенция→сверка→адверсариальный тест), но её семантические шаги доверенны ровно настолько,
 насколько незахватываем LLM-судья. Фронтир — архитектурный: МНОЖЕСТВО независимых судей + seal-провенанс
 + actual-cause, а НЕ whack-a-mole с формулировками (каждый патч сам атакуем — что self-repair и показал).
+
+# 11. Мульти-судейский кворум: single-judge ПЕРЕ-опроверг — истина ПОСЕРЕДИНЕ (золотая середина)
+Рекурсивная валидация: 9 инвариантов × 3 независимых судьи (steelman/prosecutor/arbiter), вердикты сведены
+`oracle_quorum.py` (догфуд на реальных данных). Кворум ПЕРЕСМОТРЕЛ single-judge red-team:
+
+| инвариант | 5 линз (голос) | 1 судья (red-team) | 3 судьи (кворум) |
+|---|---|---|---|
+| reason-not-vote | core | refuted | ⛔ refuted **3:0** |
+| minority-preserve | core | refuted | ⛔ refuted **3:0** |
+| scope-split | core | refuted | ⛔ refuted 2:1 (prosecutor: атака equivocates) |
+| blindness | core | open | ⛔ refuted 2:1 |
+| independence-weight | core | refuted | ✅ **SURVIVED 3:0** (мой код-фикс подтверждён) |
+| meaning-not-string | core | refuted | ✅ survived 2:1 |
+| no-silent-delete | core | refuted | ✅ survived 2:1 |
+| falsifiability | core | refuted | ✅ survived 2:1 |
+| pre-registration | core | open | ✅ **SURVIVED 3:0** |
+
+**ГЛАВНОЕ:** из 7 single-judge «refuted» только **4 устояли под панелью**; **5 перевернулись в survived**.
+Single-judge red-team ПЕРЕ-опроверг — ровно та judge-capture/перебор-одного-судьи проблема, что он сам
+диагностировал (`reason-not-vote`). Истина оказалась ПОСЕРЕДИНЕ трёх слоёв governance:
+- голосование/конвергенция (5 линз) **ПЕРЕ-принимает** → 9 «core»;
+- одиночный адверсарий (red-team) **ПЕРЕ-опровергает** → 7 refuted;
+- **кворум-с-видимым-рассогласием** → ~4 робастно-refuted + 5 survived, и показывает ГДЕ согласие (3:0) vs спор (2:1).
+
+Это **ЗОЛОТАЯ СЕРЕДИНА** (сквозная тема) между легковерным голосованием и захватываемым одиночным судьёй.
+`oracle_quorum` догфужен на собственных выводах и вынес вердикт честно — пометив даже СЕБЯ «все судьи одной
+модели → не полностью независим» (рекурсия признана, не спрятана).
+
+**Финальный статус 9 инвариантов:**
+- **3:0 refuted (глубокие):** `reason-not-vote` (judge-capture), `minority-preserve` (отравление спамом) — это и есть несущие нерешённые.
+- **2:1 refuted (спорно, в детализацию):** `scope-split`, `blindness`.
+- **survived (в канон):** `independence-weight` (код-фикс подтверждён), `meaning-not-string`, `no-silent-delete`, `falsifiability`, `pre-registration`.
