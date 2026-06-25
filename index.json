@@ -3141,6 +3141,17 @@
       "depends_on": "[T-252, D-028]",
       "topic": "",
       "next": "Добавить incomplete_ready diagnostics в stream.py check, обновить тесты и outbox."
+    },
+    {
+      "id": "T-254",
+      "title": "Top variant-start: одна команда для independent-first варианта",
+      "status": "doing",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-252, T-253, D-028]",
+      "topic": "",
+      "next": "Добавить top.py variant-start wrapper, тесты, документацию и outbox."
     }
   ],
   "questions": [
