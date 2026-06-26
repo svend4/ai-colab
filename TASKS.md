@@ -274,5 +274,7 @@
 | T-258 | Independent-first guard for variant-start ordering | done | codex | — | Сначала записать независимый вариант порядка работы variant-start, затем сверить с top.py и реализовать минимальный guard. |
 | T-259 | Variant batch barrier for independent-first sub-agents | done | codex | — | Сначала зафиксировать independent stream по batch/barrier, затем сверить с top.py/streams/doc_synthesis и реализовать минимальный верхний wrapper. |
 | T-260 | Draft-code no-execute packet manager for agent code variants | done | codex | — | Проверить `tools/draft_code.py`, top proxy, docs/capabilities; закрыть через pipeline с outbox-отчётом. |
-| T-261 | Info/document no-execute draft packet manager | doing | codex | — | Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков. |
+| T-261 | Info/document no-execute draft packet manager | done | codex | — | Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков. |
+| T-262 | Independent-first process guard and self-critique | done | codex | — | Зафиксировать причину нарушения independent-first и добавить проверяемый guard перед repo-search/synthesis. |
+| T-263 | Cross-agent commit coordination and synthesis gate | done | codex | — | Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум. |
 <!-- GEN:tasks END -->

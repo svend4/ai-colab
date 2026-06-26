@@ -3222,13 +3222,35 @@
     {
       "id": "T-261",
       "title": "Info/document no-execute draft packet manager",
-      "status": "doing",
+      "status": "done",
       "owner": "codex",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[T-260]",
       "topic": "",
       "next": "Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков."
+    },
+    {
+      "id": "T-262",
+      "title": "Independent-first process guard and self-critique",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-258, T-259, T-260, T-261]",
+      "topic": "",
+      "next": "Зафиксировать причину нарушения independent-first и добавить проверяемый guard перед repo-search/synthesis."
+    },
+    {
+      "id": "T-263",
+      "title": "Cross-agent commit coordination and synthesis gate",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "high",
+      "depends_on": "[T-244, T-245, T-246, T-247, T-248, T-249, T-250, T-251, T-252, T-253, T-254, T-255, T-256, T-257, T-258, T-259, T-260, T-261, T-262]",
+      "topic": "",
+      "next": "Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум."
     }
   ],
   "questions": [
