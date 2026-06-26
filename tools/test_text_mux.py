@@ -2,7 +2,6 @@
 import os
 import sys
 import json
-import tempfile
 
 os.environ.setdefault("PYTHONUTF8", "1")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +22,8 @@ def cell(cid, owner, kind="claim", row="r1", body="", status="proposed", lamport
 
 def main():
     fails = []
+    temp_root = os.path.join(os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE), "tmp-work", "text_mux_test")
+    os.makedirs(temp_root, exist_ok=True)
 
     # 1) валидация
     ok, _ = tm.validate_cell(cell("c1", "a"))
@@ -97,19 +98,21 @@ def main():
         fails.append("10s должен перечислить владельцев")
 
     # 8) load_cells + провод events (файл-нативный, офлайн)
-    with tempfile.TemporaryDirectory() as d:
-        os.makedirs(os.path.join(d, "cells"))
-        json.dump(cell("c1", "a", body="ok"), open(os.path.join(d, "cells", "c1.json"), "w", encoding="utf-8"))
-        open(os.path.join(d, "cells", "bad.json"), "w", encoding="utf-8").write("{не json")
-        loaded, warn = tm.load_cells(d)
-        if len(loaded) != 1 or not warn:
-            fails.append("load_cells: 1 валидная + 1 предупреждение, получено %d/%d" % (len(loaded), len(warn)))
-        ob = os.path.join(d, "outbox")
-        tm.emit_event(ob, {"kind": "cell_seed", "id": "c1"})
-        tm.emit_event(ob, {"kind": "status", "id": "c1", "status": "accepted"})
-        ev = tm.read_events(ob)
-        if len(ev) != 2 or ev[1]["status"] != "accepted":
-            fails.append("провод events.jsonl: 2 события, последнее accepted: %s" % ev)
+    d = os.path.join(temp_root, "run_%s_%d" % (os.getpid(), len(os.listdir(temp_root))))
+    os.makedirs(os.path.join(d, "cells"), exist_ok=True)
+    with open(os.path.join(d, "cells", "c1.json"), "w", encoding="utf-8") as fh:
+        json.dump(cell("c1", "a", body="ok"), fh, ensure_ascii=False)
+    with open(os.path.join(d, "cells", "bad.json"), "w", encoding="utf-8") as fh:
+        fh.write("{не json")
+    loaded, warn = tm.load_cells(d)
+    if len(loaded) != 1 or not warn:
+        fails.append("load_cells: 1 валидная + 1 предупреждение, получено %d/%d" % (len(loaded), len(warn)))
+    ob = os.path.join(d, "outbox")
+    tm.emit_event(ob, {"kind": "cell_seed", "id": "c1"})
+    tm.emit_event(ob, {"kind": "status", "id": "c1", "status": "accepted"})
+    ev = tm.read_events(ob)
+    if len(ev) != 2 or ev[1]["status"] != "accepted":
+        fails.append("провод events.jsonl: 2 события, последнее accepted: %s" % ev)
 
     if fails:
         print("FAIL test_text_mux:")
