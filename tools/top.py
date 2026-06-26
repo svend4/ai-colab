@@ -1249,12 +1249,15 @@ def _workspace_cell_payload(ref):
             stream = {"id": primary.get("stream_id")}
 
     blockers = []
+    hard_blocked = False
     if not primary:
         blockers.append("no thread object found for %s" % ref)
     if task_id and pipeline["state"] == "blocked":
+        hard_blocked = True
         blockers.append("task is blocked in pipeline snapshot")
     for item in outputs:
         if not item.get("exists"):
+            hard_blocked = True
             blockers.append("output missing: %s" % item.get("path"))
 
     next_commands = []
@@ -1268,7 +1271,7 @@ def _workspace_cell_payload(ref):
     next_commands.append("python tools\\validate.py")
     next_commands.append("python tools\\generate.py --check")
 
-    if blockers:
+    if hard_blocked:
         state = "blocked"
     elif primary and outputs:
         state = "ready-for-review"

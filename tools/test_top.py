@@ -163,7 +163,7 @@ def run():
         tp = top._workspace_cell_payload("T-999")
         assert tp["ref_type"] == "task" and tp["thread"]["id"] == "thread-test", tp
         nt = top._workspace_cell_payload("T-1000")
-        assert nt["state"] == "blocked" and nt["ref_type"] == "task", nt
+        assert nt["state"] == "needs-thread" and nt["ref_type"] == "task", nt
         nt["next_commands"][0].encode("ascii")
         assert "headless" in nt["next_commands"][0], nt
     finally:

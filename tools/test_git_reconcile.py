@@ -1,7 +1,7 @@
 """Тест git_reconcile.py — merge-driver интерфейс (base/ours/theirs → field-merge в ours, exit-код)."""
 import os
 import sys
-import tempfile
+import time
 
 os.environ.setdefault("PYTHONUTF8", "1")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +24,9 @@ def _w(d, name, related, status, body):
 
 def main():
     fails = []
-    with tempfile.TemporaryDirectory() as d:
+    d = os.path.join(os.path.dirname(HERE), "tmp-work", "git_reconcile_test_%d_%d" % (os.getpid(), time.time_ns()))
+    os.makedirs(d, exist_ok=True)
+    if True:
         # чистый случай: ours добавил c, theirs добавил d, тело тронул только theirs
         base = _w(d, "base.md", ["a", "b"], "proposed", "базовое тело")
         ours = _w(d, "ours.md", ["a", "b", "c"], "accepted", "базовое тело")
