@@ -3728,6 +3728,13 @@
       "status": "proposed",
       "date": "2026-06-25",
       "file": "decisions/D-030.md"
+    },
+    {
+      "id": "D-031",
+      "title": "commit_queue как стандартный путь коммита внутри Уровня 0 (очередь + обратная связь + предсохранение)",
+      "status": "accepted",
+      "date": "2026-06-26",
+      "file": "decisions/D-031.md"
     }
   ],
   "drivers": [
