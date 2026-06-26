@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 126 файлов
+# Индекс папки `docs/` — 127 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -21,6 +21,7 @@
 | [bridge-usage-review-result-2026-06-21.md](../docs/bridge-usage-review-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [bridge-usage.md](../docs/bridge-usage.md) | — | — | Операционный гайд: как **запустить** и **подключить** уже построенный «средний слой» |
 | [build-plans-overview-2026-06-23.md](../docs/build-plans-overview-2026-06-23.md) | doc | proposed | **Что строим.** Opt-in стадию `--semantic`, наслоённую на `tools/doc_consensus.py`. Чистый |
+| [canon-merge-driver.md](../docs/canon-merge-driver.md) | — | — | Активирует кластер `git_reconcile → crdt_merge → seq_merge` как **git merge-driver** для к |
 | [card-standard.md](../docs/card-standard.md) | doc | proposed | Одна форма на всех уровнях (фрактал): |
 | [cauldron-two-lane-board-2026-06-24.md](../docs/cauldron-two-lane-board-2026-06-24.md) | cauldron-board | proposed | **Purpose.** Сделать видимыми две большие категории информации, которые попадают в котёл:  |
 | [cli-help-guard-convention-2026-06-24.md](../docs/cli-help-guard-convention-2026-06-24.md) | doc | proposed | Пропорциональный ответ на котёл-критику «hostile sys.argv»: общий _cli.help_guard(__doc__) |

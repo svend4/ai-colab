@@ -4,3 +4,7 @@
 
 # Скрипты-хуки обязательно LF (иначе ломаются под sh на Unix).
 tools/githooks/* text eol=lf
+tasks/**/*.md merge=crdt
+decisions/**/*.md merge=crdt
+questions/**/*.md merge=crdt
+topics/**/*.md merge=crdt

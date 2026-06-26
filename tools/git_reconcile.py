@@ -16,6 +16,7 @@ import os
 from _ioutil import configure_output
 from _cli import help_guard
 import sys
+import subprocess
 import crdt_merge as cm
 
 configure_output()
@@ -53,9 +54,41 @@ def _install_hint():
     )
 
 
+# Канон-файлы front-matter, для которых поле-уровневое слияние не теряет вкладов (grow-only).
+CANON_GLOBS = ["tasks/**/*.md", "decisions/**/*.md", "questions/**/*.md", "topics/**/*.md"]
+
+
+def _apply():
+    """Реально активировать драйвер: git config (локально) + идемпотентно дописать .gitattributes.
+    Grow-only: только ДОБАВляет конфиг/атрибуты, ничего не удаляет; merge3 union-ит list-поля."""
+    done = []
+    for k, v in (("merge.crdt.name", "canon field-level CRDT merge"),
+                 ("merge.crdt.driver", "python tools/git_reconcile.py %O %A %B")):
+        subprocess.run(["git", "config", k, v], cwd=ROOT, check=False, stdin=subprocess.DEVNULL)
+        done.append("git config %s" % k)
+    ga = os.path.join(ROOT, ".gitattributes")
+    text = _read(ga)
+    lines = text.splitlines()
+    added = []
+    for g in CANON_GLOBS:
+        if not any(ln.split() and ln.split()[0] == g and "merge=crdt" in ln for ln in lines):
+            text = text.rstrip("\n") + "\n%s merge=crdt\n" % g
+            added.append(g)
+    if added:
+        open(ga, "w", encoding="utf-8", newline="\n").write(text)
+    return done, added
+
+
 def main(argv):
     help_guard(__doc__, argv)
     if "--install" in argv:
+        if "--apply" in argv:
+            done, added = _apply()
+            print("=== git_reconcile --install --apply: драйвер канона активирован ===")
+            for d in done:
+                print("  ✓ " + d)
+            print("  .gitattributes: " + (", ".join(added) if added else "уже настроено (без изменений)"))
+            return 0
         print("=== Установка git_reconcile как merge-драйвера канона ===")
         print(_install_hint())
         return 0
