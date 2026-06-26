@@ -17,6 +17,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py buttons                  # human/agent command groups
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
+    python tools/top.py actions [--json]         # outbox action item status
     python tools/top.py assurance [section] [--json] [--strict]  # apex verifiability dashboard
     python tools/top.py advice <agent> [T-id]   # activate existing advice against current symptoms
     python tools/top.py health                   # validation/generator/capability checks
@@ -96,6 +97,13 @@ _BUTTONS = [
         "command": "python tools/top.py friction",
         "does": "Проверить повторяющиеся проблемы: dirty/stale/volatile/lock/pipeline/drift/streams/temp и получить рецепты.",
         "effect": "read-mostly",
+    },
+    {
+        "id": "outbox-actions",
+        "audience": "both",
+        "command": "python tools/top.py actions [--json]",
+        "does": "Показать статус outbox action items: unprocessed, partial, shipped, no-actions, historical.",
+        "effect": "read-only",
     },
     {
         "id": "assurance",
@@ -361,6 +369,24 @@ def cmd_status(args):
     if args.agent:
         rc = max(rc, _run("pipeline mine", _tool("pipeline.py", "mine", args.agent), timeout=20, fail_ok=True))
     return rc
+
+def cmd_actions(args):
+    cmd = _tool("action_tracker.py", "status")
+    if args.json:
+        cmd.append("--json")
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=45)
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+        if p.stdout:
+            print(p.stdout.strip())
+        if p.stderr:
+            print(p.stderr.strip(), file=sys.stderr)
+        return p.returncode
+    return _run("outbox actions", cmd, timeout=45)
+
 
 def cmd_friction(args):
     cmd = _tool("friction.py", "status")
@@ -1266,6 +1292,10 @@ def build_parser():
     p.add_argument("--json", action="store_true")
     p.add_argument("--strict", action="store_true")
     p.set_defaults(func=cmd_friction)
+
+    p = sub.add_parser("actions", help="show queues/outbox action item status")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_actions)
 
     p = sub.add_parser("assurance", help="show instruction assurance apex dashboard")
     p.add_argument("section", nargs="?", default="all", choices=["applied", "currency", "coverage", "flow", "all"])
