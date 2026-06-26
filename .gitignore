@@ -22,3 +22,14 @@ logs/adoption-baseline.json
 indexes/canon.db
 views/*.html
 views/*.md
+
+# scratch / runtime cruft (D-031 sanitation; keep sandbox/ visible unless a subdir is clearly runtime)
+reports/audit_*.json
+reports/output_*.log
+queues/commit-queue/
+_picks.json
+
+# local sandbox runtime outputs; do not ignore sandbox/ as a whole
+sandbox/audit/
+sandbox/canvas-demo/
+sandbox/paradigm_shift/
