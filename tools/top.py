@@ -16,6 +16,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
 
     python tools/top.py buttons                  # human/agent command groups
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
+    python tools/top.py workspace-cell <id> [--json]  # task/thread/worktree/outbox/checks state card
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py actions [--json]         # outbox action item status
     python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]  # cauldron atom graph + synthesis prompt
@@ -90,6 +91,13 @@ _BUTTONS = [
         "audience": "both",
         "command": "python tools/top.py status [agent]",
         "does": "Быстро увидеть git status, pipeline status и drift_check.",
+        "effect": "read-only",
+    },
+    {
+        "id": "workspace-cell",
+        "audience": "both",
+        "command": "python tools/top.py workspace-cell <thread-or-task> [--json]",
+        "does": "Собрать read-only карточку task/thread/stream/worktree/outbox/checks/next action.",
         "effect": "read-only",
     },
     {
@@ -1116,6 +1124,179 @@ def _load_conveyor_ledger():
         data = {}
     return data.get("workflows", [])
 
+def _read_json(path, default):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return default
+
+def _repo_path(path):
+    if not path:
+        return None
+    if os.path.isabs(path):
+        return path
+    return os.path.join(ROOT, path)
+
+def _repo_rel(path):
+    if not path:
+        return None
+    try:
+        return os.path.relpath(path, ROOT).replace("\\", "/")
+    except ValueError:
+        return path.replace("\\", "/")
+
+def _load_pipeline_snapshot():
+    data = _read_json(os.path.join(ROOT, "logs", "pipeline.json"), {})
+    if not isinstance(data, dict):
+        data = {}
+    return {
+        "epoch": data.get("epoch"),
+        "doing": data.get("doing") or [],
+        "ready": data.get("ready") or [],
+        "blocked": data.get("blocked") or [],
+    }
+
+def _pipeline_entry_for(task_id):
+    snapshot = _load_pipeline_snapshot()
+    if not task_id:
+        return {"state": "none", "entry": None, "snapshot_epoch": snapshot.get("epoch")}
+    for state in ("doing", "ready", "blocked"):
+        for item in snapshot.get(state, []):
+            if item.get("id") == task_id:
+                return {"state": state, "entry": item, "snapshot_epoch": snapshot.get("epoch")}
+    return {"state": "none", "entry": None, "snapshot_epoch": snapshot.get("epoch")}
+
+def _task_from_index(task_id):
+    if not task_id:
+        return None
+    index = _read_json(os.path.join(ROOT, "index.json"), {})
+    for item in index.get("tasks", []) if isinstance(index, dict) else []:
+        if item.get("id") == task_id:
+            return item
+    return None
+
+def _iter_thread_records():
+    topics_root = os.path.join(ROOT, "topics")
+    if not os.path.isdir(topics_root):
+        return
+    for topic in sorted(os.listdir(topics_root)):
+        thread_root = os.path.join(topics_root, topic, "threads")
+        if not os.path.isdir(thread_root):
+            continue
+        for thread_id in sorted(os.listdir(thread_root)):
+            path = os.path.join(thread_root, thread_id, "THREAD.json")
+            data = _read_json(path, None)
+            if isinstance(data, dict):
+                yield path, data
+
+def _find_workspace_threads(ref):
+    exact = []
+    by_task = []
+    for path, data in _iter_thread_records() or []:
+        item = dict(data)
+        item["path"] = _repo_rel(path)
+        if data.get("id") == ref:
+            exact.append(item)
+        if data.get("task_id") == ref:
+            by_task.append(item)
+    return exact or by_task
+
+def _path_status(path):
+    full = _repo_path(path)
+    return {
+        "path": path,
+        "exists": bool(full and os.path.exists(full)),
+    }
+
+def _git_state():
+    result = {"branch": None, "dirty_count": None, "status_sample": [], "error": None}
+    try:
+        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8",
+                                errors="replace", timeout=10)
+        if branch.returncode == 0:
+            result["branch"] = (branch.stdout or "").strip()
+        status = subprocess.run(["git", "status", "--short", "--untracked-files=no"], cwd=ROOT,
+                                capture_output=True, text=True, encoding="utf-8",
+                                errors="replace", timeout=10)
+        if status.returncode == 0:
+            lines = [line for line in (status.stdout or "").splitlines() if line.strip()]
+            result["dirty_count"] = len(lines)
+            result["status_sample"] = lines[:20]
+        elif not result["error"]:
+            result["error"] = (status.stderr or status.stdout or "git status failed").strip()
+    except Exception as exc:
+        result["error"] = str(exc)
+    return result
+
+def _workspace_cell_payload(ref):
+    threads = _find_workspace_threads(ref)
+    primary = threads[0] if threads else None
+    task_id = (primary or {}).get("task_id") or (ref if str(ref).startswith("T-") else None)
+    task = _task_from_index(task_id)
+    pipeline = _pipeline_entry_for(task_id)
+    outputs = []
+    checks = []
+    worktree = None
+    stream = None
+    if primary:
+        outputs = [dict(item, **_path_status(item.get("path"))) for item in primary.get("outputs", [])]
+        checks = primary.get("checks") or []
+        if primary.get("worktree"):
+            worktree = _path_status(primary.get("worktree"))
+        if primary.get("stream_id"):
+            stream = {"id": primary.get("stream_id")}
+
+    blockers = []
+    if not primary:
+        blockers.append("no thread object found for %s" % ref)
+    if task_id and pipeline["state"] == "blocked":
+        blockers.append("task is blocked in pipeline snapshot")
+    for item in outputs:
+        if not item.get("exists"):
+            blockers.append("output missing: %s" % item.get("path"))
+
+    next_commands = []
+    if not primary and task_id:
+        topic_hint = _ascii_slug((task or {}).get("title") or task_id, fallback="task-%s" % task_id.lower())
+        next_commands.append("python tools\\thread.py init %s --agent codex --mode read-only --task-id %s" % (topic_hint, task_id))
+    elif primary and not outputs:
+        next_commands.append("python tools\\thread.py add-output %s queues\\outbox\\<report>.md --kind report" % primary.get("id"))
+    if primary:
+        next_commands.append("python tools\\thread.py status %s --json" % primary.get("id"))
+    next_commands.append("python tools\\validate.py")
+    next_commands.append("python tools\\generate.py --check")
+
+    if blockers:
+        state = "blocked"
+    elif primary and outputs:
+        state = "ready-for-review"
+    elif primary:
+        state = "open"
+    elif task_id:
+        state = "needs-thread"
+    else:
+        state = "unknown"
+
+    return {
+        "schema": "top_workspace_cell.v1",
+        "id": ref,
+        "state": state,
+        "ref_type": "thread" if primary and primary.get("id") == ref else ("task" if task_id else "unknown"),
+        "task": task or (pipeline.get("entry") if pipeline.get("entry") else None),
+        "pipeline": pipeline,
+        "thread": primary,
+        "threads": threads,
+        "stream": stream,
+        "worktree": worktree,
+        "outputs": outputs,
+        "checks": checks,
+        "git": _git_state(),
+        "blockers": blockers,
+        "next_commands": next_commands,
+    }
+
 def _output_kind(path):
     if not path or not os.path.exists(os.path.join(ROOT, path)):
         return "result", []
@@ -1146,6 +1327,16 @@ def _topic_slug(text):
             chars.append("-")
     slug = "".join(chars).strip("-")
     return slug[:64] or "landed-result"
+
+def _ascii_slug(text, fallback="workspace-cell"):
+    chars = []
+    for ch in (text or fallback).lower():
+        if "a" <= ch <= "z" or "0" <= ch <= "9":
+            chars.append(ch)
+        elif chars and chars[-1] != "-":
+            chars.append("-")
+    slug = "".join(chars).strip("-")
+    return slug[:64] or fallback
 
 def _landed_plan_for(workflow, topic=None):
     output = workflow.get("output") or "<missing-output>"
@@ -1247,6 +1438,51 @@ def cmd_process_landed(args):
         for cmd in plan["commands"]:
             print(cmd)
         print("```")
+    return 0
+
+def cmd_workspace_cell(args):
+    payload = _workspace_cell_payload(args.ref)
+    if args.json:
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+    print("# Workspace cell")
+    print("")
+    print("id: `%s`" % payload["id"])
+    print("state: `%s`" % payload["state"])
+    task = payload.get("task") or {}
+    if task:
+        print("task: `%s` %s" % (task.get("id") or "", task.get("title") or ""))
+    thread = payload.get("thread") or {}
+    if thread:
+        print("thread: `%s`  topic: `%s`  agent: `%s`  mode: `%s`" % (
+            thread.get("id"), thread.get("topic"), thread.get("agent"), thread.get("mode")))
+    pipeline = payload.get("pipeline") or {}
+    print("pipeline: `%s`" % pipeline.get("state"))
+    if payload.get("worktree"):
+        print("worktree: `%s` exists=`%s`" % (payload["worktree"].get("path"), str(payload["worktree"].get("exists")).lower()))
+    if payload.get("outputs"):
+        print("")
+        print("## Outputs")
+        for item in payload["outputs"]:
+            print("- `%s` kind=`%s` exists=`%s`" % (
+                item.get("path"), item.get("kind", "output"), str(item.get("exists")).lower()))
+    if payload.get("checks"):
+        print("")
+        print("## Checks")
+        for item in payload["checks"]:
+            print("- %s" % item)
+    if payload.get("blockers"):
+        print("")
+        print("## Blockers")
+        for item in payload["blockers"]:
+            print("- %s" % item)
+    print("")
+    print("## Next commands")
+    print("")
+    print("```powershell")
+    for item in payload["next_commands"]:
+        print(item)
+    print("```")
     return 0
 
 def cmd_stream_proxy(args):
@@ -1527,6 +1763,11 @@ def build_parser():
     p.add_argument("--all", action="store_true")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_process_landed)
+
+    p = sub.add_parser("workspace-cell", help="show read-only task/thread/worktree/outbox/checks card")
+    p.add_argument("ref", help="thread id or task id")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_workspace_cell)
 
     p = sub.add_parser("cauldron-lanes", help="show synthesis lanes: ratify-build and divergence-detail")
     p.add_argument("topic", nargs="?", default="architecture-core")

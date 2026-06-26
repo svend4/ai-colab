@@ -53,6 +53,7 @@ def run():
     assert "synthesis-helper" in ids, ids
     assert "cauldron-lanes" in ids, ids
     assert "synthesize-docs" in ids, ids
+    assert "workspace-cell" in ids, ids
     assert any(r["audience"] == "human" for r in rows), rows
     assert any(r["audience"] == "agent" for r in rows), rows
     rendered = top.format_buttons(rows)
@@ -78,6 +79,7 @@ def run():
     assert "python tools/top.py subagent-handoff" in rendered, rendered
     assert "python tools/top.py cauldron-lanes" in rendered, rendered
     assert "python tools/top.py synthesize-docs" in rendered, rendered
+    assert "python tools/top.py workspace-cell" in rendered, rendered
     assert "--ready-only" in rendered, rendered
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
@@ -96,6 +98,8 @@ def run():
     assert ip_args.cmd == "instruction-preflight" and ip_args.agent == "codex" and ip_args.task == "T-154" and ip_args.json, ip_args
     take_args = parser.parse_args(["take", "codex", "T-152"])
     assert take_args.cmd == "take" and take_args.agent == "codex" and take_args.task == "T-152", take_args
+    wcargs = parser.parse_args(["workspace-cell", "T-264", "--json"])
+    assert wcargs.cmd == "workspace-cell" and wcargs.ref == "T-264" and wcargs.json, wcargs
     args = parser.parse_args(["cycle", "codex"])
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])
@@ -118,6 +122,53 @@ def run():
         raise AssertionError("variant-start accepted conflicting search flags")
     except SystemExit:
         pass
+
+    cell_root = os.path.join(ROOT, "tmp-work", "top-workspace-cell-test")
+    old_top_root = top.ROOT
+    shutil.rmtree(cell_root, ignore_errors=True)
+    try:
+        top.ROOT = cell_root
+        thread_dir = os.path.join(cell_root, "topics", "workbench", "threads", "thread-test")
+        out_dir = os.path.join(cell_root, "queues", "outbox")
+        log_dir = os.path.join(cell_root, "logs")
+        os.makedirs(thread_dir, exist_ok=True)
+        os.makedirs(out_dir, exist_ok=True)
+        os.makedirs(log_dir, exist_ok=True)
+        with open(os.path.join(out_dir, "report.md"), "w", encoding="utf-8", newline="\n") as f:
+            f.write("# Report\n")
+        with open(os.path.join(thread_dir, "THREAD.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump({
+                "schema": "thread.v1",
+                "id": "thread-test",
+                "topic": "workbench",
+                "status": "open",
+                "agent": "codex",
+                "mode": "read-only",
+                "task_id": "T-999",
+                "stream_id": "stream-1",
+                "worktree": "worktrees/codex-T-999",
+                "outputs": [{"kind": "report", "path": "queues/outbox/report.md"}],
+                "checks": ["python tools\\validate.py"],
+            }, f, ensure_ascii=False, indent=2)
+        with open(os.path.join(cell_root, "index.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"tasks": [{"id": "T-999", "title": "Workspace cell smoke", "status": "todo"}, {"id": "T-1000", "title": "Русский headless тест", "status": "todo"}]}, f, ensure_ascii=False)
+        with open(os.path.join(log_dir, "pipeline.json"), "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"epoch": 1, "doing": [], "ready": [{"id": "T-999", "title": "Workspace cell smoke"}], "blocked": []}, f, ensure_ascii=False)
+        wp = top._workspace_cell_payload("thread-test")
+        assert wp["schema"] == "top_workspace_cell.v1" and wp["state"] == "ready-for-review", wp
+        assert wp["ref_type"] == "thread" and wp["thread"]["id"] == "thread-test", wp
+        assert wp["task"]["id"] == "T-999" and wp["pipeline"]["state"] == "ready", wp
+        assert wp["outputs"][0]["exists"] is True and wp["worktree"]["exists"] is False, wp
+        assert any("thread.py status thread-test" in cmd for cmd in wp["next_commands"]), wp
+        tp = top._workspace_cell_payload("T-999")
+        assert tp["ref_type"] == "task" and tp["thread"]["id"] == "thread-test", tp
+        nt = top._workspace_cell_payload("T-1000")
+        assert nt["state"] == "blocked" and nt["ref_type"] == "task", nt
+        nt["next_commands"][0].encode("ascii")
+        assert "headless" in nt["next_commands"][0], nt
+    finally:
+        top.ROOT = old_top_root
+        shutil.rmtree(cell_root, ignore_errors=True)
 
     butterfly_root = os.path.join(ROOT, "tmp-work", "top-butterfly-test")
     shutil.rmtree(butterfly_root, ignore_errors=True)
