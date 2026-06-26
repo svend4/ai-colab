@@ -8,7 +8,7 @@
 # DEPTH_LEVEL: 1
 # SUMMARY: Acceptance-тест переносимости: materialize git-tracked HEAD и проверить validate/generate без host paths.
 # ==========================================
-"""portability_check.py — acceptance-тест портабельности (Q-022 ФУНД-E).
+HELP = """portability_check.py — acceptance-тест портабельности (Q-022 ФУНД-E).
 
 Доказывает clone-and-run ИЛИ находит хост-зависимости. Материализует РОВНО git-tracked дерево HEAD
 (`git archive` — точная модель свежего clone: без untracked, без gitignored, без логов/кэшей) в чистый
@@ -34,6 +34,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -135,6 +136,7 @@ def check():
 
 
 def main(argv):
+    help_guard(HELP, argv)
     as_json = "--json" in argv
     r = check()
     if as_json:

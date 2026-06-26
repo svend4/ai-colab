@@ -10,7 +10,7 @@
 # SUMMARY: Скрипт drivers_catalog.py. Описание сгенерировано автоматически.
 # ==========================================
 """
-"""
+HELP = """
 Генератор каталога драйверов (T-030).
 
 Собирает `drivers/index.json` (машинный срез) и `drivers/CATALOG.md` (человеческая
@@ -22,6 +22,7 @@
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import glob
 import json
 
@@ -62,6 +63,7 @@ def render_catalog(items):
     return "\n".join(out) + "\n"
 
 def main():
+    help_guard(HELP)
     check = "--check" in sys.argv[1:]
     items = collect()
     index_text = json.dumps({"drivers": items}, ensure_ascii=False, indent=2) + "\n"

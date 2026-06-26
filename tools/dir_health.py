@@ -8,7 +8,7 @@
 # SUMMARY: Скрипт dir_health.py. Описание сгенерировано автоматически.
 # ==========================================
 """
-"""dir_health.py — health-gate каталога (C-10 консенсус) — пороги структуры как код.
+HELP = """dir_health.py — health-gate каталога (C-10 консенсус) — пороги структуры как код.
 
 Из architecture-fundamentals §3.2 + razbor-consensus C-10: организация каталога проверяется ЧИСЛАМИ,
 как код (не на глаз). Пороги (консенсус 2+ агентов): файлов в папке >200 FAIL / >100 WARN (цель 7-50);
@@ -30,6 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 
@@ -123,9 +124,10 @@ def _parse_args(argv):
 
 
 def main(argv):
+    help_guard(HELP, argv)
     as_json, root, help_requested, error = _parse_args(argv)
     if help_requested:
-        print(__doc__)
+        print(HELP)
         return 0
     if error:
         print("ОШИБКА: %s" % error)

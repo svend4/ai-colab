@@ -73,6 +73,12 @@ def main():
         ("conveyor.py", "python tools/conveyor.py status"),
         ("dispatch.py", "python tools/dispatch.py next"),
         ("reconcile_state.py", "python tools/reconcile_state.py check"),
+        ("dir_health.py", "python tools/dir_health.py [root]"),
+        ("sandbox_intake_demo.py", "python tools/sandbox_intake_demo.py [source-dir]"),
+        ("drivers_catalog.py", "python tools/drivers_catalog.py --check"),
+        ("heading_check.py", "python tools/heading_check.py <file>"),
+        ("portability_check.py", "python tools/portability_check.py --json"),
+        ("report_diff.py", "python tools/report_diff.py reports/a.md reports/b.md"),
     ]
     for script, marker in help_cases:
         p = _run_help(script)

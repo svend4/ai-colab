@@ -8,7 +8,7 @@
 # SUMMARY: Скрипт heading_check.py. Описание сгенерировано автоматически.
 # ==========================================
 """
-"""heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация.
+HELP = """heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация.
 
 Из architecture-fundamentals §4 + razbor-consensus C-11: длинный файл — это дерево (метаданные →
 тело → хвост, общее→частное), и крупные доки несут АБСОЛЮТНУЮ dotted-decimal нумерацию (1, 1.2, 1.2.3).
@@ -30,6 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
+from _cli import help_guard
 
 configure_output()
 import json
@@ -97,6 +98,7 @@ def scan(paths=None):
 
 
 def main(argv):
+    help_guard(HELP, argv)
     as_json = "--json" in argv
     pos = [a for a in argv if not a.startswith("--")]
     paths = [a if os.path.isabs(a) else os.path.join(ROOT, a) for a in pos] or None

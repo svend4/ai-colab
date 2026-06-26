@@ -43,3 +43,44 @@ def configure_output():
         stream = getattr(sys, name, None)
         if stream is not None and hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="replace")
+
+
+class DataLossGuardException(Exception):
+    """Исключение, выбрасываемое при попытке удалить слишком много данных из файла."""
+    pass
+
+
+def safe_write(filepath, new_content, force_truncate=False, max_loss_ratio=0.15, max_loss_lines=20):
+    """Безопасная запись с предохранителем от случайного удаления данных.
+
+    Сравнивает старый и новый размер файла (если файл существует).
+    Блокирует запись, если новый контент меньше старого более чем на `max_loss_ratio` (по умолчанию 15%)
+    ИЛИ если удалено больше `max_loss_lines` строк.
+
+    Для обхода предохранителя необходимо явно передать `force_truncate=True`.
+    """
+    if os.path.exists(filepath) and not force_truncate:
+        with open(filepath, "r", encoding="utf-8") as f:
+            old_content = f.read()
+
+        old_len = len(old_content)
+        new_len = len(new_content)
+
+        old_lines = len(old_content.splitlines())
+        new_lines = len(new_content.splitlines())
+
+        if old_len > 0 and new_len < old_len:
+            loss_ratio = (old_len - new_len) / old_len
+            line_loss = old_lines - new_lines
+
+            if loss_ratio > max_loss_ratio or line_loss > max_loss_lines:
+                raise DataLossGuardException(
+                    f"DATA LOSS GUARD: Попытка удалить слишком много данных в {filepath}.\n"
+                    f"Удаляется {old_len - new_len} байт ({loss_ratio*100:.1f}%) и {line_loss} строк.\n"
+                    f"Предохранитель сработал (допустимо: {max_loss_ratio*100}% или {max_loss_lines} строк).\n"
+                    f"Используйте force_truncate=True, если это удаление намеренно."
+                )
+
+    # Если всё хорошо или это новый файл (записываем с unix-переносами)
+    with open(filepath, "w", encoding="utf-8", newline="\n") as f:
+        f.write(new_content)

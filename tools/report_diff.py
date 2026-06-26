@@ -10,7 +10,7 @@
 # SUMMARY: Скрипт report_diff.py. Описание сгенерировано автоматически.
 # ==========================================
 """
-"""
+HELP = """
 Report diff (T-127) — compare two Markdown knowledge reports.
 
 This is intentionally small and stdlib-only. It extracts stable metrics from reports produced by
@@ -22,6 +22,7 @@ import os
 import re
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 from pathlib import Path
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -129,9 +130,10 @@ def write_out(text, out_path):
     return path
 
 def main():
+    help_guard(HELP)
     args = sys.argv[1:]
     if len(args) < 2:
-        print(__doc__)
+        print(HELP)
         return 2
     try:
         a = parse_report(args[0])

@@ -10,7 +10,7 @@
 # SUMMARY: Скрипт sandbox_intake_demo.py. Описание сгенерировано автоматически.
 # ==========================================
 """
-"""
+HELP = """
 Sandbox intake DEMO — end-to-end S1->S3->S7 over `data/fixtures` (T-020 support).
 
 Доказывает, что полный **read-only** intake-конвейер песочницы работает БЕЗ svend4 и
@@ -33,6 +33,7 @@ CLI:
 import os
 import sys
 from _ioutil import configure_output
+from _cli import help_guard
 import importlib.util
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -107,8 +108,9 @@ def run_demo(out_dir=None, source=None, _sandbox=None):
 
 def main(argv=None):
     a = list(sys.argv[1:] if argv is None else argv)
+    help_guard(HELP, a)
     if "--help" in a or "-h" in a:
-        print(__doc__)
+        print(HELP)
         return 0
     out_dir = None
     source = None
