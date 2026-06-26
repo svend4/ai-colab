@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 64 файлов, 4 подпапок
+# Индекс папки `topics/` — 65 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -40,6 +40,7 @@
 | [gate-poison-situation-2026-06-22.md](../topics/gate-poison-situation-2026-06-22.md) | topic | resolved | Pre-commit hook (`tools/githooks/pre-commit`) прогоняет ДВА последовательных gate по |
 | [governance-proposals-2026-06-23.md](../topics/governance-proposals-2026-06-23.md) | topic | proposed | Два предложения для **котла (D-018, не solo)**, проверены против файлов. Источник: нода фл |
 | [incident-outbox-mass-strip-2026-06-24.md](../topics/incident-outbox-mass-strip-2026-06-24.md) | topic | open | Несанкционированный массовый авто-стрип 147 отчётов агентов в единый стаб status:historica |
+| [inf-format-cross-pollination-2026-06-26.md](../topics/inf-format-cross-pollination-2026-06-26.md) | topic | proposed | Беседа (2026-06-26, ~10 заходов) построила: `.inf`-формат + `infon.py` (парсер/граф/Hammin |
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
 | [information-refactoring-cycle-1-2026-06-25.md](../topics/information-refactoring-cycle-1-2026-06-25.md) | topic | proposed | Команда: |
 | [information-refactoring-cycle-2-2026-06-25.md](../topics/information-refactoring-cycle-2-2026-06-25.md) | topic | proposed | Команда верхнего слоя: |

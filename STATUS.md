@@ -99,6 +99,7 @@
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `topics/friction-subsystems-synthesis-2026-06-22.md` | proposed |  |
 | Отравление общего gate чужой half-done задачей — ситуация и слои решений | `topics/gate-poison-situation-2026-06-22.md` | resolved |  |
 | Котёл-предложения (D-018) — диспозиция 7 flow-сирот + конвенция last_verified | `topics/governance-proposals-2026-06-23.md` | proposed |  |
+| Кросс-опыление .inf-формат ↔ наш канон — что заимствовать в проект | `topics/inf-format-cross-pollination-2026-06-26.md` | proposed |  |
 | Котёл: Системная Критика, Технический Долг и Ответственность | `topics/kotel-system-critique-2026-06-24.md` | proposed |  |
 | Котёл: пошаговый план после системной критики | `topics/kotel-system-critique-2026-06-24-action-plan.md` | proposed |  |
 | Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность) | `topics/navigation-vs-sharding-2026-06-24.md` | proposed |  |
