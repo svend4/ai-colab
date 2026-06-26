@@ -1,0 +1,252 @@
+{
+  "audit": {
+    "id": "audit-claude-2026-06-26",
+    "title": "Full workspace audit — AI-colab multi-agent collaboration workspace",
+    "auditor": "claude (Opus 4.8)",
+    "date": "2026-06-26",
+    "method": "6-dimension multi-agent fan-out (canon/index, code/tests, queues/pipeline, governance, git/repo, content-staleness) + adversarial verification of high/critical findings + independent ground-truth checks by the orchestrator",
+    "agents_used": 13,
+    "language_note": "This JSON is the English machine-readable artifact. The human report is delivered in Russian."
+  },
+  "snapshot": {
+    "note": "Counts shifted DURING the audit because a concurrent agent (codex) was writing to the working tree (see E-05). Values below are the last reconciled reading.",
+    "tasks": 264,
+    "questions": 23,
+    "decisions": 30,
+    "decision_id_gap": "D-029 missing (sequence ... D-028, D-030, D-031)",
+    "topics_top_level": 78,
+    "topics_in_index_json": 64,
+    "topics_missing_from_index": 14,
+    "tracked_files": 1400,
+    "tools_scripts": 210,
+    "test_files": 107
+  },
+  "health": {
+    "canon_validator": "tools/validate.py => OK=12 WARN=0 ERROR=0 (structurally consistent)",
+    "generated_nav": "tools/generate.py --check => STALE: STATUS.md, board.md, index.json",
+    "test_suite": "~105 pass; 2 real deterministic failures; 2-3 flaky (rotating) due to non-isolated tmp-work fixtures; unittest layer 34/34 pass",
+    "git_hygiene": "gitignore effective: 0 tracked .pyc / 0 tracked tmp-work / 0 tracked .db; layer pyramid (sandbox->collab->portals->core) not violated",
+    "data_safety": "outbox mass-strip incident did NOT lose data: destructive strip never committed; soft sanation (status:historical, bodies preserved) committed as 92917d5; triple backup (tag backup-outbox-full-2026-06-24 + external copy + bundle)"
+  },
+  "severity_counts": { "high": 5, "medium": 15, "low": 6, "info_positive": 5 },
+  "findings": [
+    {
+      "id": "B-01", "dimension": "code-tests", "severity": "high", "verify": "confirmed",
+      "title": "test_instruction_trace.py fails deterministically (rc=1): D-001 now grounded, test expects it dangling",
+      "evidence": "4/4 runs rc=1. Assert at tools/test_instruction_trace.py:49 `assert not r1['grounded'] and r1['surfaced_by']==[]`. Actual trace('D-001') => grounded:True, surfaced_by:[collab-protocol/PROTOCOL.md]. Root: tools/instructions.py:58 collab-protocol surfaces include 'D-001'.",
+      "impact": "A red/broken test in the suite masks a real drift between data (PROTOCOL surfaces) and the test contract.",
+      "recommendation": "Decide source of truth: if D-001 should be grounded via PROTOCOL, update the test (47-49); if D-001 is background-only, remove 'D-001' from surfaces in instructions.py:58. Record the decision."
+    },
+    {
+      "id": "B-02", "dimension": "code-tests", "severity": "high", "verify": "confirmed",
+      "title": "test_synthesis_helper.py fails deterministically (rc=1): skeleton lost '## Варианты' section (and 'Расхождения' renamed to 'Разногласия')",
+      "evidence": "rc=1, 'TEST FAIL: нет ## Варианты в скелете'. Test expects markers at lines 55-58; synthesis_helper.py now emits '## 1. Общие пункты', '## 2. Исходные документы', '## 3. Разногласия и Детализация'. Tool itself runs fine (rc=0).",
+      "impact": "Format contract of the synthesis skeleton (D-018 cauldron button) diverged from implementation; at least 2 expected markers missing.",
+      "recommendation": "Reconcile actual `synthesis_helper.py report agent-onboarding` output with the test markers; restore the section or update the test."
+    },
+    {
+      "id": "D-01", "dimension": "governance", "severity": "high", "verify": "confirmed",
+      "title": "Outbox mass-strip incident still OPEN, no answer from antigravity",
+      "evidence": "topics/incident-outbox-mass-strip-2026-06-24.md status:open, addressed_to:antigravity, §5 demands explanation (sub-agent control + human consent for deleting 8643 lines). grep of queues/streams shows no answer to §5.",
+      "impact": "Open governance debt since 2026-06-24 about uncontrolled bulk deletion and missing human consent. Content is safe (triple backup) but the accountability loop is unclosed.",
+      "recommendation": "Get antigravity's answer to §5 OR a human verdict, then close the topic. Cross-ref D-026 / commit 92917d5."
+    },
+    {
+      "id": "F-01", "dimension": "content-staleness", "severity": "high", "verify": "confirmed",
+      "title": "STATUS.md 'Next step' points to already-completed tasks T-201/T-204/T-205",
+      "evidence": "STATUS.md:12 references T-201/T-204/T-205; tasks/T-201.md:5, T-204.md:5, T-205.md:5 all status:done.",
+      "impact": "The first-read file directs work toward finished tasks → idle/duplicated activity.",
+      "recommendation": "Regenerate 'Next step' from real todo/doing tasks (or make it a GEN block)."
+    },
+    {
+      "id": "F-02", "dimension": "content-staleness", "severity": "high", "verify": "confirmed",
+      "title": "STATUS.md headline counts are false: '205 tasks, 24 decisions, 41 topics' vs real 264 / 30 / 78",
+      "evidence": "STATUS.md:7 literal '205 задач, 24 решения, 41 тема — канон стабильно держится без ERROR'. Disk: 264 tasks, 30 decisions, 78 topics. Off by 22-90%.",
+      "impact": "False scale metrics in the primary file undermine trust in the canon.",
+      "recommendation": "Make the headline metrics a GEN block sourced from index.json."
+    },
+    {
+      "id": "A-01", "dimension": "canon-index", "severity": "medium", "verify": "independently-confirmed",
+      "title": "14 topics on disk are absent from index.json / navigation (no front-matter title)",
+      "evidence": "index.json topics=64 vs disk topics=78. Missing include: information-refactoring-cycle-1/2/3, *-question-tree, adoption-statistics-2026-06-23, alpha2-to-alpha3-roadmap, drivers-subsystem-state, new-problems, parallel-forks-history, q016-assurance-state, solver-report, text-extract-deps-evidence, alchemy_synthesis_*.",
+      "impact": "These topics are invisible in STATUS/board navigation and the machine index; orphaned from discovery.",
+      "recommendation": "Add YAML front-matter (id/title/status) to the missing topic files, then regenerate; add a validate.py check 'topic file without front-matter'."
+    },
+    {
+      "id": "B-03", "dimension": "code-tests", "severity": "medium", "verify": "confirmed",
+      "title": "Flaky tests (rotating set: test_info_draft/test_top/test_draft_code) — pass standalone, fail in batch",
+      "evidence": "Each passes rc=0 standalone but fails in a back-to-back batch. Cause: fixed shared paths instead of unique temp dirs, e.g. test_info_draft.py:20 DRAFT_ROOT_REL=tmp-work/info-draft-test; test_top.py:105-114 tmp-work/top-*.",
+      "impact": "Non-deterministic red dilutes the 'green suite' signal and breeds tolerance to red.",
+      "recommendation": "Switch fixtures to tempfile.mkdtemp() with finally-cleanup instead of fixed tmp-work/ paths."
+    },
+    {
+      "id": "B-04", "dimension": "code-tests", "severity": "medium", "verify": "independently-confirmed",
+      "title": "Central modules reconcile_state.py and dispatch.py have CR-only line endings (bare \\r)",
+      "evidence": "Byte scan: reconcile_state.py LF=2 bareCR=314; dispatch.py LF=2 bareCR=80; rest of repo clean. Python universal-newlines runs them fine.",
+      "impact": "Latent corruption: line-oriented tooling (wc/grep/diff/linters/git diffs) sees one giant line — review/merge of these two key modules (DAG readiness + state reconcile) is crippled; echoes the mass-strip pattern.",
+      "recommendation": "Normalize newlines to LF (or repo CRLF convention). Add a pre-commit/CI check rejecting bare-CR files."
+    },
+    {
+      "id": "B-05", "dimension": "code-tests", "severity": "medium", "verify": "independently-confirmed",
+      "title": "tools/README.md references non-existent queue.py (real: agent_queue.py) — broken CLI examples",
+      "evidence": "9 occurrences (README.md lines 9,10,148,153-158,189,220,231) of `python tools/queue.py ...`; ls tools/queue*.py => none; real module agent_queue.py. Also F-05: docs/glossary.md uses queue.py too.",
+      "impact": "A newcomer following the README cannot run basic queue / integrity-check commands.",
+      "recommendation": "Replace queue.py -> agent_queue.py in tools/README.md and docs/glossary.md; run links through sandbox_link_checker/command_index."
+    },
+    {
+      "id": "C-01", "dimension": "queues-pipeline", "severity": "medium", "verify": "adjusted (high->medium)",
+      "title": "Stale failed-markers: T-184/T-185 exist simultaneously in queues/failed/ and queues/done/",
+      "evidence": "4 separate files. failed/*.failed.md mtime 24.06 08:02-08:03 ('testing release', antigravity); done/*.done.md mtime 08:56-08:59 (real completion). Canon tasks/T-184.md & T-185.md = status:done.",
+      "impact": "Not a false reopen (failed precedes done; canon=done) — a fail->retry->success where the old failed markers were never cleaned. Queue hygiene.",
+      "recommendation": "Delete queues/failed/T-184.failed.md and T-185.failed.md."
+    },
+    {
+      "id": "C-02", "dimension": "queues-pipeline", "severity": "medium", "verify": "agent-reported",
+      "title": "Orphaned claim T-202.claim.md (lease expired ~66h), task already done bypassing pipeline",
+      "evidence": "queues/claimed/T-202.claim.md, lease expired; tasks/T-202.md status:done; completion bypassed the pipeline.",
+      "impact": "done/claim/blocked texts diverge; misleading active-claim.",
+      "recommendation": "Remove the orphaned claim; reconcile via reconcile_state.py."
+    },
+    {
+      "id": "C-03", "dimension": "queues-pipeline", "severity": "medium", "verify": "agent-reported",
+      "title": "Legacy smoke-test claim from 2026-06-19 left in queues/claimed/",
+      "evidence": "queues/claimed/2026-06-19-2044-smoke-test-claude.md; result exists in outbox; filename not in T-id.claim.md pattern.",
+      "impact": "Dangling legacy claim though the work is done.",
+      "recommendation": "Delete the legacy claim file."
+    },
+    {
+      "id": "C-04", "dimension": "queues-pipeline", "severity": "medium", "verify": "adjusted (high->medium)",
+      "title": "Garbage UTF-16 16-byte stubs T-210.md / T-211.md in queues/inbox/",
+      "evidence": "xxd => UTF-16LE BOM ff fe + 'inbox' + CRLF, 16 bytes each. Real tasks/T-210.md (1117b) & T-211.md (964b) exist, valid, pass validate.py. No numbering conflict.",
+      "impact": "Two garbage stubs (wrong encoding + wrong name) in inbox. Hygiene, not an integrity threat.",
+      "recommendation": "Delete both inbox stubs."
+    },
+    {
+      "id": "D-02", "dimension": "governance", "severity": "medium", "verify": "agent-reported",
+      "title": "5 'proposed' decisions are already implemented in code/docs but never ratified",
+      "evidence": "D-024 (synthesis_helper with-streams), D-026 (bulk_guard.py), D-027 (agent-approval-matrix.md), D-028 (stream.py), D-030 (pipeline tools). All status:proposed; D-006 ratification not done.",
+      "impact": "The system runs on 5 unratified rules — status diverges from reality.",
+      "recommendation": "Batch human ratification of D-024/D-026/D-027/D-028/D-030 (and review D-031)."
+    },
+    {
+      "id": "D-03", "dimension": "governance", "severity": "medium", "verify": "independently-confirmed",
+      "title": "D-026 (anti bulk-erase) is in neither PROTOCOL.md nor AGENTS.md; bulk_guard is advisory, not a gate",
+      "evidence": "grep D-026 PROTOCOL.md=0, AGENTS.md=0. pre-commit hook does not call bulk_guard; bulk_guard.py only WARNs.",
+      "impact": "The safety rule born from the mass-strip incident does not actually block a repeat.",
+      "recommendation": "Write D-026 into PROTOCOL.md/AGENTS.md and wire bulk_guard.py into the pre-commit hook as a blocking gate."
+    },
+    {
+      "id": "E-01", "dimension": "git-repo", "severity": "medium", "verify": "confirmed (also B-06)",
+      "title": "0-byte typo file driversrepo-runnerfixture-report.json committed at repo root",
+      "evidence": "tracked, 0 bytes, mtime 20.06, committed in a8b10ac. Name is a path-join without separators (drivers+repo-runner+fixture-report.json). Real reports: drivers/repo-runner/fixture-report.json (5097b), drivers/file-inventory/fixture-report.json (63673b).",
+      "impact": "Broken empty artifact in git index since June 20; clutters root; signals a past path-concat bug.",
+      "recommendation": "git rm the file and commit the deletion; locate/fix the path-join bug if a writer is found."
+    },
+    {
+      "id": "E-02", "dimension": "git-repo", "severity": "medium", "verify": "independently-confirmed",
+      "title": "reports/*.json and reports/*.log runtime artifacts accumulate, not covered by .gitignore",
+      "evidence": "13 untracked audit json + output log over 2 days; reports/README allows only .md to be versioned but .gitignore has no reports/ rule.",
+      "impact": "A `git add -A` would commit sandbox-run logs, violating reports/README.",
+      "recommendation": "Add reports/*.json and reports/*.log to .gitignore (keep reports/*.md); clean the accumulated logs."
+    },
+    {
+      "id": "F-03", "dimension": "content-staleness", "severity": "medium", "verify": "agent-reported",
+      "title": "STATUS.md change-log stops at June 23 and is non-chronological; tone says 'stable' while an incident is open",
+      "evidence": "STATUS.md:14-62 has no 24-26 June entries (D-030/31, incident); rows 18-20 precede 21-29; line 7 'стабильно' vs open incident, failed T-184/185, claimed T-202.",
+      "impact": "A 3-day history gap and a tone that hides risk.",
+      "recommendation": "Append 24-26 June; reflect the incident or close the markers."
+    },
+    {
+      "id": "F-04", "dimension": "content-staleness", "severity": "medium", "verify": "independently-confirmed",
+      "title": "README.md structure table omits 13 directories, including the canon core tasks/questions/decisions",
+      "evidence": "README.md:18-44 lacks collab, decisions, divergence, drivers, indexes, kotel, logs, questions, quorum, redteam, tasks, variants, views.",
+      "impact": "A newcomer cannot find the canon core or half the subsystems.",
+      "recommendation": "Complete the table; add a directory<=>README check in validate.py."
+    },
+    {
+      "id": "F-05", "dimension": "content-staleness", "severity": "medium", "verify": "agent-reported",
+      "title": "Stale docs/protocol: glossary uses queue.py; PROTOCOL uses agent-codex/agent-reviewer not in registry; dialog.md 167KB unrotated; 'Active topics' is a dumping ground",
+      "evidence": "glossary.md:8/11/16/24 queue.py (cleanup tasks T-124/T-192 done); glossary D-001..D-009 while max is D-031; PROTOCOL:119-120 agent-codex vs AGENTS:21-28 'codex'; dialog.md 167264 bytes not migrated (D-007); STATUS:88-133 dozens of proposed topics with no action.",
+      "impact": "Glossary/protocol teach the old API; finished cleanup tasks not carried through; dialog bloated.",
+      "recommendation": "queue.py->pipeline.py and drop D-001..D-009 in glossary; PROTOCOL->codex/reviewer; rotate/archive dialog.md; filter GEN topics by status."
+    },
+    {
+      "id": "C-05", "dimension": "queues-pipeline", "severity": "low", "verify": "agent-reported",
+      "title": "Inbox paste-junk; outbox is historical archive (not backlog); heartbeat shows 3 'fresh' with 0 doing",
+      "evidence": "inbox: powershell-output-paste.md, documentoutput.md, 2026-06-21-driver-acceptance-output.txt; outbox 172 files mostly status:historical; heartbeat diverges from conveyor (0 doing).",
+      "impact": "Inbox clutter; outbox is an archive not an integration backlog; stale heartbeat.",
+      "recommendation": "Move paste files to an archive; treat outbox as archive; clear stale heartbeat entries."
+    },
+    {
+      "id": "D-04", "dimension": "governance", "severity": "low", "verify": "agent-reported",
+      "title": "Reservation-lock metadata left on proposed decisions",
+      "evidence": "D-027 reservation_token 14ad111694be; D-028 reserved_epoch 1782392690; D-030 reserved_by claude.",
+      "impact": "Stale reservation tokens are noise in decision metadata.",
+      "recommendation": "Strip reserved_by / reservation_token / reserved_epoch from finalized-proposed decisions."
+    },
+    {
+      "id": "E-03", "dimension": "git-repo", "severity": "low", "verify": "agent-reported",
+      "title": "test_guard.md test stub left untracked in repo root",
+      "evidence": "untracked test_guard.md, ~50 lines, all repeated 'big file' line — a fixture left at top level.",
+      "impact": "Test junk at root; a git add would pull it in.",
+      "recommendation": "Delete or move to tmp-work/ (gitignored)."
+    },
+    {
+      "id": "E-04", "dimension": "git-repo", "severity": "low", "verify": "agent-reported",
+      "title": "Empty tracked files in queues (inbox T-210/T-211, outbox t244-cli-help-guard-batch-1.md)",
+      "evidence": "0-byte tracked queue files committed; .gitkeep in data/ is legitimate.",
+      "impact": "Empty committed queue artifacts; echoes the outbox-strip pattern (content loss).",
+      "recommendation": "Restore from git log -p or delete; add a validate.py check for 0-byte .md in queues/tasks."
+    },
+    {
+      "id": "E-05", "dimension": "git-repo", "severity": "low", "verify": "observed-by-orchestrator",
+      "title": "Working tree mutated during the audit — concurrent agent (codex) writing untracked files",
+      "evidence": "Session-start snapshot 17 changes; during audit grew to 30+. New mid-run: decisions/D-031.md, tools/commit_queue.py + test_commit_queue.py, reports/audit_20260626_15*.json, queues/outbox/2026-06-26-*-codex.md (incl full-audit-codex.md). _picks.json appeared then changed.",
+      "impact": "Unstable git snapshot; multiple agents writing the uncommitted tree risks races on git add / lost edits. Note: Stefan already had codex run a parallel full audit today.",
+      "recommendation": "Commit atomically via commit_lock/commit_queue; freeze the tree before an audit; gitignore _picks.json."
+    },
+    {
+      "id": "P-00", "dimension": "positive", "severity": "info", "verify": "confirmed",
+      "title": "Canon is structurally consistent and git hygiene is good",
+      "evidence": "validate.py OK=12 WARN=0 ERROR=0 (ids unique, links checked, depends_on intact, all filenames ASCII per D-005). .gitignore effective (0 tracked pyc/tmp-work/db). Layer pyramid (PROTOCOL §11) not violated. 210 scripts byte-compile; central modules import clean; no real TODO/FIXME/HACK; seq_merge/crdt_merge are a correct layered pair, not duplicates.",
+      "impact": "Core structural integrity and engineering discipline are solid.",
+      "recommendation": "Maintain. The issues above are drift/hygiene, not architectural breakage."
+    },
+    {
+      "id": "P-01", "dimension": "positive", "severity": "info", "verify": "confirmed",
+      "title": "Mass-strip incident: no data lost; soft sanation applied; triple backup",
+      "evidence": "Destructive strip never committed. Committed instead: 92917d5 'bulk-санация outbox (status: proposed->historical)' with bodies preserved (171/172 outbox full, 1 stub). Backup tags backup-outbox-full-2026-06-24 + backup-pre-agent-save-2026-06-25.",
+      "impact": "The data-loss risk was contained correctly; only the governance closure (D-01) remains.",
+      "recommendation": "Close the incident topic; ratify D-026 and enforce it."
+    },
+    {
+      "id": "P-02", "dimension": "positive", "severity": "info", "verify": "confirmed",
+      "title": "D-019 is a model proposed->superseded transition",
+      "evidence": "decisions/D-019.md superseded_by D-021/D-022 (accepted); DECISIONS.md index consistent.",
+      "impact": "A good template for resolving the 5 stuck 'proposed' decisions.",
+      "recommendation": "Use D-019 as the pattern for D-024..D-031."
+    }
+  ],
+  "action_plan": [
+    { "priority": "P0", "items": [
+      "Close the open incident (D-01): get antigravity's §5 answer or a human verdict; then flip incident topic to resolved.",
+      "Ratify or supersede the 5 stuck proposed decisions D-024/026/027/028/030 (+D-031) (D-02).",
+      "Write D-026 into PROTOCOL.md/AGENTS.md and wire bulk_guard.py as a blocking pre-commit gate (D-03)."
+    ]},
+    { "priority": "P1", "items": [
+      "Fix the 2 red tests (B-01 instruction_trace, B-02 synthesis_helper) by deciding the source of truth, then green the suite.",
+      "Regenerate navigation: run tools/generate.py to refresh STATUS.md/board.md/index.json; make STATUS headline counts + 'Next step' GEN blocks (F-01, F-02).",
+      "Add front-matter to the 14 orphaned topics and regenerate so they enter the index (A-01)."
+    ]},
+    { "priority": "P2", "items": [
+      "Queue hygiene: remove stale failed-markers T-184/185 (C-01), orphaned claims T-202 + smoke-test (C-02/C-03), UTF-16 inbox stubs T-210/211 (C-04), inbox paste-junk (C-05).",
+      "Repo hygiene: git rm the 0-byte typo file (E-01), gitignore reports/*.json|*.log (E-02), remove test_guard.md (E-03), restore/remove empty tracked queue files (E-04).",
+      "Make tests deterministic: tempfile.mkdtemp() fixtures (B-03); normalize CR-only line endings in reconcile_state.py/dispatch.py + add a bare-CR pre-commit check (B-04)."
+    ]},
+    { "priority": "P3", "items": [
+      "Docs refresh: queue.py->pipeline.py in README/glossary (B-05/F-05); complete README directory table (F-04); append STATUS log 24-26 June (F-03); rotate dialog.md (F-05).",
+      "Process: commit atomically via commit_lock; freeze tree before audits; gitignore _picks.json (E-05).",
+      "Minor code: specific excepts in dcard_indexer.py; clarify portal.py vs portals.py naming (B-07)."
+    ]}
+  ]
+}
