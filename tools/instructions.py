@@ -112,7 +112,8 @@ INSTRUCTIONS = [
         "path": "docs/commit-stream-policy.md",
         "scope": "commit-or-variant",
         "why": "commit-lock, selective-add, streams как полу-коммиты вариантов",
-        "evidence": "указать, что staged был явный список файлов или создан stream",
+        "evidence": "указать, что staged был явный список файлов, создан stream, или commit прошел через commit_queue по D-031",
+        "surfaces": ["D-031"],
     },
     {
         "id": "external-sandbox",
