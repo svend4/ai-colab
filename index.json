@@ -372,6 +372,13 @@
       "next": ""
     },
     {
+      "id": "svend4-infon-assessment-2026-06-26",
+      "title": "svend4/infon assessment for multi-agent repo work",
+      "file": "topics/svend4-infon-assessment-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "time-axis-decay-2026-06-24",
       "title": "Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06",
       "file": "topics/time-axis-decay-2026-06-24.md",

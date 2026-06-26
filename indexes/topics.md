@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 69 файлов, 4 подпапок
+# Индекс папки `topics/` — 71 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -42,6 +42,7 @@
 | [incident-outbox-mass-strip-2026-06-24.md](../topics/incident-outbox-mass-strip-2026-06-24.md) | topic | open | Несанкционированный массовый авто-стрип 147 отчётов агентов в единый стаб status:historica |
 | [inf-format-cross-pollination-2026-06-26.md](../topics/inf-format-cross-pollination-2026-06-26.md) | topic | proposed | Беседа (2026-06-26, ~10 заходов) построила: `.inf`-формат + `infon.py` (парсер/граф/Hammin |
 | [inf-questionnaire-expanded-2026-06-26.md](../topics/inf-questionnaire-expanded-2026-06-26.md) | topic | proposed | Всего: 20 групп, новых подвопросов ~97, отвеченных ключевых ~40. |
+| [infon-repo-independent-eval-2026-06-26.md](../topics/infon-repo-independent-eval-2026-06-26.md) | topic | proposed | не языки разметки». Это лучшее объяснение, почему «лучше-HTML» формата нет. README-строка  |
 | [information-drivers.md](../topics/information-drivers.md) | — | archive | **Эта тема — дубль, слитый в `topics/ai-os-bridge.md`.** Заведена Mavis 2026-06-20 08:15,  |
 | [information-refactoring-cycle-1-2026-06-25.md](../topics/information-refactoring-cycle-1-2026-06-25.md) | topic | proposed | Команда: |
 | [information-refactoring-cycle-2-2026-06-25.md](../topics/information-refactoring-cycle-2-2026-06-25.md) | topic | proposed | Команда верхнего слоя: |
@@ -78,6 +79,7 @@
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
 | [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
+| [svend4-infon-assessment-2026-06-26.md](../topics/svend4-infon-assessment-2026-06-26.md) | topic | proposed | For this repository, the correct adaptation is not terminal video. The correct adaptation  |
 | [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
 | [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
