@@ -71,6 +71,7 @@ BLOCKS = {
             ("adoption.py", [], "advisory"),
             ("metrics.py", [], "advisory"),
             ("bulk_guard.py", [], "advisory"),  # D-026: массовое стирание без страховки (WARN до ратификации)
+            ("immune.py", [], "advisory"),  # D-032: иммунный детектор стрип-аномалий (negative-selection, read-only)
         ],
     },
     "improve": {
@@ -127,6 +128,7 @@ BLOCKS = {
             ("heading_check.py", [], "advisory"),
             ("dir_health.py", [], "advisory"),
             ("folder_index.py", ["check-all"], "advisory"),
+            ("immune.py", [], "advisory"),  # D-032: авто-детект стрип-аномалий на каждом коммите (post-commit)
         ],
     },
 }
