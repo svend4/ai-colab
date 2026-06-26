@@ -162,6 +162,18 @@ def run():
         rendered_recover = c.render_recover(rec)
         assert "CONVEYOR RECOVER" in rendered_recover, rendered_recover
         assert "landed-no-output" in rendered_recover, rendered_recover
+        # --- recover: если action_tracker доступен, показываем только active/unprocessed отчеты ---
+        tools_dir = os.path.join(rec_root, "tools")
+        os.makedirs(tools_dir, exist_ok=True)
+        with open(os.path.join(tools_dir, "action_tracker.py"), "w", encoding="utf-8", newline="\n") as f:
+            f.write("import json\n")
+            f.write("print(json.dumps([{'file':'orphan.md','status':'unprocessed'}, "
+                    "{'file':'existing.md','status':'shipped'}]))\n")
+        rec_tracked = c.recover(drec, NOW, root=rec_root, output_limit=5)
+        tracked_kinds = {f["kind"] for f in rec_tracked["findings"]}
+        assert "unprocessed-outbox-reports" in tracked_kinds, rec_tracked
+        assert "unreferenced-outbox-reports" not in tracked_kinds, rec_tracked
+        assert rec_tracked["checked_outbox_reports"] == 1, rec_tracked
         # --- plan_hierarchy: reduce-дерево 3:1 (динамическое появление уровней) ---
         def top(n, span=3):
             return c.plan_hierarchy(n, span)[-1]
