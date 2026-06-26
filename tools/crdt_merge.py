@@ -117,8 +117,8 @@ def _merge_body(bb, ob, tb):
         return tb, False
     if tb.strip() == bb.strip():
         return ob, False
-    merged = ("<<<<<<< ours\n%s\n=======\n%s\n>>>>>>> theirs\n" % (ob.rstrip(), tb.rstrip()))
-    return merged, True
+    import seq_merge                            # ПОСТРОЧНЫЙ diff3: непересекающиеся правки тела сливаются
+    return seq_merge.merge_lines(bb, ob, tb)    # маркеры только на пересекающихся строках, не на всём теле
 
 
 def main(argv):
