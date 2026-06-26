@@ -3289,14 +3289,14 @@
     },
     {
       "id": "T-264",
-      "title": "(зарезервировано — заполните)",
+      "title": "Thread schema MVP — файловые треды для headless Zed-like workbench",
       "status": "todo",
-      "owner": "unknown",
+      "owner": "pool",
       "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
+      "risk": "medium",
+      "depends_on": "[D-017, D-018, D-021, D-022]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "Реализовать stdlib-only `tools/thread.py init/status/add-message` и тесты"
     }
   ],
   "questions": [

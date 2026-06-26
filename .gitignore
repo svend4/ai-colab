@@ -17,3 +17,8 @@ logs/heartbeat.json
 logs/pipeline.json
 logs/conveyor.json
 logs/adoption-baseline.json
+
+# generated artifacts (не коммитить)
+indexes/canon.db
+views/*.html
+views/*.md
