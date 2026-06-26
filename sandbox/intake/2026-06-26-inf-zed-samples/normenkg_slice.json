@@ -1,0 +1,16 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {"id": "A1", "type": "Norm", "label": "\u00a710 Abs.2 S\u00e4chsAGSGB \u2014 \u00f6rtliche Zust\u00e4ndigkeit beim \u00f6rtlichen Tr\u00e4ger"},
+    {"id": "A2", "type": "Norm", "label": "\u00a799 SGB IX \u2014 Leistungsberechtigte der Eingliederungshilfe"},
+    {"id": "P1", "type": "Prinzip", "label": "Gew\u00f6hnlicher Aufenthalt bestimmt die \u00f6rtliche Zust\u00e4ndigkeit", "q6": "-+--+-"},
+    {"id": "B1", "type": "Berechnung", "label": "Stundensatz Arbeitgebermodell aus TV\u00f6D-P, BGW und PflegeArbbV"}
+  ],
+  "links": [
+    {"source": "A1", "target": "P1", "relation": "context"},
+    {"source": "A2", "target": "P1", "relation": "context"},
+    {"source": "B1", "target": "A1", "relation": "context"}
+  ]
+}

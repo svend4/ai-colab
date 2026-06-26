@@ -1,0 +1,17 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {"id": "norm_10", "type": "Norm", "label": "§10 Abs.2 SächsAGSGB — örtliche Zuständigkeit"},
+    {"id": "norm_99", "type": "Norm", "label": "§99 SGB IX — Leistungsberechtigte"},
+    {"id": "fall_A", "type": "Fall", "label": "Antrag auf Persönliches Budget, ambulant"},
+    {"id": "prinzip_1", "type": "Prinzip", "label": "Nachrang der Sozialhilfe", "q6": "+--++-"}
+  ],
+  "links": [
+    {"source": "fall_A", "target": "norm_10", "relation": "anwendbar"},
+    {"source": "fall_A", "target": "norm_99", "relation": "anwendbar"},
+    {"source": "norm_10", "target": "prinzip_1", "relation": "context"},
+    {"source": "norm_99", "target": "prinzip_1", "relation": "exception"}
+  ]
+}
