@@ -1,0 +1,68 @@
+{
+  "schema": "top_variant_batch.v1",
+  "batch_id": "t259",
+  "topic": "variant-batch-barrier",
+  "topic_slug": "variant-batch-barrier",
+  "task": "T-259",
+  "agents": [
+    "codex",
+    "subagent-worker"
+  ],
+  "quorum": 2,
+  "created": "2026-06-25T19:22:21",
+  "updated": "2026-06-25T19:27:32",
+  "policy": "independent-first batch barrier: agents write streams before repo-search/compare/synthesis",
+  "phase": "comparison-open",
+  "ready_count": 2,
+  "missing_count": 0,
+  "ready_agents": [
+    "codex",
+    "subagent-worker"
+  ],
+  "missing_agents": [],
+  "streams_by_agent": {
+    "codex": [
+      {
+        "id": "20260625-1913-codex",
+        "status": "ready-for-synthesis",
+        "synthesis_ready": "true",
+        "path": "streams/variant-batch-barrier/20260625-1913-codex/STREAM.md"
+      }
+    ],
+    "subagent-worker": [
+      {
+        "id": "20260625-subagent-worker",
+        "status": "ready-for-synthesis",
+        "synthesis_ready": "true",
+        "path": "streams/variant-batch-barrier/20260625-subagent-worker/STREAM.md"
+      }
+    ]
+  },
+  "ready_streams_by_agent": {
+    "codex": [
+      {
+        "id": "20260625-1913-codex",
+        "status": "ready-for-synthesis",
+        "synthesis_ready": "true",
+        "path": "streams/variant-batch-barrier/20260625-1913-codex/STREAM.md"
+      }
+    ],
+    "subagent-worker": [
+      {
+        "id": "20260625-subagent-worker",
+        "status": "ready-for-synthesis",
+        "synthesis_ready": "true",
+        "path": "streams/variant-batch-barrier/20260625-subagent-worker/STREAM.md"
+      }
+    ]
+  },
+  "per_agent_commands": [
+    "python tools\\top.py variant-start codex \"variant-batch-barrier\" --task T-259 --no-preflight",
+    "python tools\\top.py variant-start subagent-worker \"variant-batch-barrier\" --task T-259 --no-preflight"
+  ],
+  "barrier_commands": [
+    "python tools\\stream.py check --max-age-days 7",
+    "python tools\\top.py cauldron-lanes \"variant-batch-barrier\" --ready-only",
+    "python tools\\top.py synthesize-docs \"variant-batch-barrier\" --ready-only --json"
+  ]
+}
