@@ -18,7 +18,7 @@
 | [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
 | [agent-self-reflection-delegation.md](../topics/agent-self-reflection-delegation.md) | topic | active | Мы успешно внедрили и протестировали методику "Dogfooding / Self-Reflection" (использовани |
 | [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
-| [alchemy_synthesis_20260625_144041.md](../topics/alchemy_synthesis_20260625_144041.md) | — | — | **Дата генерации:** 2026-06-25 14:40:41.695715 |
+| [alchemy_synthesis_20260625_144041.md](../topics/alchemy_synthesis_20260625_144041.md) | topic | proposed | **Дата генерации:** 2026-06-25 14:40:41.695715 |
 | [alpha2-to-alpha3-roadmap-2026-06-24.md](../topics/alpha2-to-alpha3-roadmap-2026-06-24.md) | topic | proposed | Этот документ выводит на коллективное согласование следующий этап развития проекта. Он осн |
 | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | topic | proposed | File-native движок координации агентов — единый канон организации знания и кода по двум ос |
 | [assurance-and-doc-merge-2026-06-22.md](../topics/assurance-and-doc-merge-2026-06-22.md) | topic | proposed | **Переформулировка:** Вопрос о трёх проблемах гарантирования инструкций: 1. ПРИМЕНЕНИЕ: ка |
