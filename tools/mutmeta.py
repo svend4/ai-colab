@@ -19,6 +19,7 @@ from _cli import help_guard
 import sys
 import re
 import json
+import glob
 import shutil
 import subprocess
 
@@ -114,6 +115,63 @@ def run_meta(module, test, tools_dir=None, cap=12, timeout=60):
         pass
 
 
+DEFAULT_SWEEP = ["metrics", "assurance", "doc_consensus", "drift_check",
+                 "crdt_merge", "view", "text_mux", "commit_queue"]
+
+
+def discover_pairs(tools_dir=None, only=None):
+    """[(module, test)] для test_X.py, у которых есть X.py. only — множество имён модулей-фильтр."""
+    tools_dir = tools_dir or TOOLS
+    pairs = []
+    for tp in sorted(glob.glob(os.path.join(tools_dir, "test_*.py"))):
+        name = os.path.basename(tp)[5:-3]
+        if only and name not in only:
+            continue
+        if os.path.exists(os.path.join(tools_dir, name + ".py")):
+            pairs.append((name, "test_" + name))
+    return pairs
+
+
+def _run_one_in(dst, module, test, cap, timeout, env):
+    """Мета-тест ОДНОГО модуля в УЖЕ скопированном dst (sweep копирует tools/ один раз) → verdict."""
+    dst_mod, dst_test = os.path.join(dst, module + ".py"), os.path.join(dst, test + ".py")
+    if not (os.path.exists(dst_mod) and os.path.exists(dst_test)):
+        return {"error": "нет модуля/теста"}
+    src = open(dst_mod, encoding="utf-8", errors="replace").read()
+    mutants = gen_mutants(src, cap)
+    if not mutants:
+        return {"error": "нет мутантов"}
+    results = []
+    for label, mut in mutants:
+        with open(dst_mod, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(mut)
+        try:
+            p = subprocess.run([sys.executable, dst_test], capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL,
+                               timeout=timeout, env=env, cwd=dst)
+            caught = (p.returncode != 0)
+        except subprocess.TimeoutExpired:
+            caught = True
+        results.append((label, caught))
+    with open(dst_mod, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(src)
+    return verdict(results)
+
+
+def sweep(pairs, tools_dir=None, cap=8, timeout=60):
+    """Прогон по многим (module,test). Копирует tools/ ОДИН раз (эффективно). → [{module,test,**verdict}]."""
+    tools_dir = tools_dir or TOOLS
+    tmp_root = os.path.join(ROOT, "tmp-work", "mutmeta_sweep")
+    os.makedirs(tmp_root, exist_ok=True)
+    tmp, n = os.path.join(tmp_root, "run_%d" % os.getpid()), 0
+    while os.path.exists(tmp):
+        n += 1; tmp = os.path.join(tmp_root, "run_%d_%d" % (os.getpid(), n))
+    dst = os.path.join(tmp, "tools")
+    shutil.copytree(tools_dir, dst)
+    env = dict(os.environ); env["PYTHONUTF8"] = "1"
+    return [{"module": m, "test": t, **_run_one_in(dst, m, t, cap, timeout, env)} for m, t in pairs]
+
+
 def _opt(argv, flag, default=None):
     if flag in argv:
         i = argv.index(flag)
@@ -136,11 +194,31 @@ def main(argv):
         if a.startswith("--"):
             continue
         args.append(a)
+    cap = int(_opt(argv, "--cap", "12"))
+    if "--sweep" in argv:
+        only = set(args) if args else set(DEFAULT_SWEEP)
+        res = sweep(discover_pairs(only=only), cap=cap)
+        if "--json" in argv:
+            print(json.dumps(res, ensure_ascii=False, indent=2)); return 0
+        rank = sorted(res, key=lambda r: (not r.get("co_defective"),
+                      r.get("mutation_score") if r.get("mutation_score") is not None else 1.0))
+        print("=== MUTMETA SWEEP · здоровье детекторов (%d) ===" % len(res))
+        for r in rank:
+            if "error" in r:
+                print("  —  %-15s %s" % (r["module"], r["error"]))
+            elif r.get("co_defective"):
+                print("  ✗ CO-DEFECTIVE %-15s 0/%d — тест НЕ ловит мутации источника" % (r["module"], r["valid_mutants"]))
+            elif (r.get("mutation_score") or 0) < 0.5:
+                print("  ⚠ слабый       %-15s score %.2f (%d/%d)" % (r["module"], r["mutation_score"], r["caught"], r["valid_mutants"]))
+            else:
+                print("  ✓ ок           %-15s score %.2f" % (r["module"], r["mutation_score"]))
+        co = [r["module"] for r in res if r.get("co_defective")]
+        print("\n  co-defective: %s" % (", ".join(co) or "нет"))
+        return 1 if co else 0
     if not args:
-        print("mutmeta: нужен <module>. Пример: mutmeta.py metrics"); return 2
+        print("mutmeta: нужен <module> или --sweep. Пример: mutmeta.py metrics"); return 2
     module = args[0]
     test = args[1] if len(args) > 1 else "test_" + module
-    cap = int(_opt(argv, "--cap", "12"))
     v, results = run_meta(module, test, cap=cap)
     if "error" in v:
         print("mutmeta: %s" % v["error"]); return 2
