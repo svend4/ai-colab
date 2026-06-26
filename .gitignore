@@ -28,6 +28,7 @@ reports/audit_*.json
 reports/output_*.log
 queues/commit-queue/
 _picks.json
+test_guard.md
 
 # local sandbox runtime outputs; do not ignore sandbox/ as a whole
 sandbox/audit/

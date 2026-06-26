@@ -24,7 +24,7 @@ def main():
         "?? queues/commit-queue/123-abc.json",      # scratch
         "?? _picks.json",                           # scratch
         "?? topics/new-real-topic.md",              # canon-md (работа без коммита)
-        "?? test_guard.md",                         # stray-root
+        "?? test_guard.md",                         # scratch known guard
         "?? somedir/newtool.py",                    # other
         "A  queues/outbox/codex.md",                # staged (риск)
         " M tools/view.py",                         # НЕ staged (рабочая правка, X=' ')
@@ -32,12 +32,12 @@ def main():
     c = rh.classify(lines)
 
     if set(c["scratch"]) != {"sandbox/canvas-demo/", "reports/audit_20260626_151910.json",
-                             "reports/output_x.log", "queues/commit-queue/123-abc.json", "_picks.json"}:
+                             "reports/output_x.log", "queues/commit-queue/123-abc.json", "_picks.json", "test_guard.md"}:
         fails.append("scratch неверно: %s" % c["scratch"])
     if c["canon_md"] != ["topics/new-real-topic.md"]:
         fails.append("canon-md должно быть [topics/new-real-topic.md]: %s" % c["canon_md"])
-    if c["stray_root"] != ["test_guard.md"]:
-        fails.append("stray-root должно быть [test_guard.md]: %s" % c["stray_root"])
+    if c["stray_root"] != []:
+        fails.append("stray-root должен быть пустым: %s" % c["stray_root"])
     if c["other"] != ["sandbox/tvcp_fetched/", "somedir/newtool.py"]:
         fails.append("other должно быть [sandbox/tvcp_fetched/, somedir/newtool.py]: %s" % c["other"])
     if c["staged"] != ["queues/outbox/codex.md"]:
@@ -47,7 +47,7 @@ def main():
     sugg = rh.gitignore_suggestions(c["scratch"], existing_patterns={"sandbox/canvas-demo/"})
     if "sandbox/canvas-demo/" in sugg:
         fails.append("уже существующий паттерн sandbox/canvas-demo/ не должен предлагаться")
-    for need in ("reports/audit_*.json", "reports/output_*.log", "queues/commit-queue/", "_picks.json"):
+    for need in ("reports/audit_*.json", "reports/output_*.log", "queues/commit-queue/", "_picks.json", "test_guard.md"):
         if need not in sugg:
             fails.append("должен предложить %s: %s" % (need, sugg))
     if len(sugg) != len(set(sugg)):

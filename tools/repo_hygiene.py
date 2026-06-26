@@ -45,7 +45,7 @@ def is_scratch(path):
         or re.match(r"reports/audit_.*\.json$", p)
         or re.match(r"reports/output_.*\.log$", p)
         or p.endswith(".lock") or p.endswith(".tmp") or p.endswith(".pyc")
-        or p == "_picks.json"
+        or p == "_picks.json" or p == "test_guard.md"
     )
 
 
@@ -63,6 +63,8 @@ def _gitignore_pattern(path):
         return "reports/output_*.log"
     if p == "_picks.json":
         return "_picks.json"
+    if p == "test_guard.md":
+        return "test_guard.md"
     if p.endswith(".lock"):
         return "*.lock"
     if p.endswith(".tmp"):
