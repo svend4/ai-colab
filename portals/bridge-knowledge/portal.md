@@ -4,7 +4,7 @@ type: portal
 level: L2
 title: Bridge-knowledge (L2 — поиск по operational knowledge-корпусу)
 description: L2-портал поверх универсального ядра (D-016) над РЕАЛЬНЫМ корпусом data/knowledge-corpus/ (8 файлов) — доказывает, что L2 обобщается за пределы 2-файлового demo.
-l1_basis: [tools/knowledge.py, tools/text_extract.py]
+l1_basis: [tools/knowledge.py, tools/text_extract.py, tools/_ioutil.py, tools/_cli.py]
 corpus_ref: data/knowledge-corpus
 topics: [handbook, glossary, pipeline, risk, workflows]
 links:
@@ -14,14 +14,14 @@ links:
 
 # Портал: bridge-knowledge (L2)
 
-**Чистовая** L2-область поверх универсального ядра L1 (`tools/knowledge.py` + `tools/text_extract.py`),
+**Чистовая** L2-область поверх универсального ядра L1 (`tools/knowledge.py` + `tools/text_extract.py`) и общего helper-базиса (`tools/_ioutil.py` + `tools/_cli.py`),
 построенная над **уже существующим** корпусом `data/knowledge-corpus/` (8 файлов: agent-handbook,
 glossary, pipeline-faq, risk-register, workflow-table, operations-note, README, corpus-manifest).
 Ноль новых данных — чистое переиспользование ядра через `tools/portal.py` (build → `knowledge.build`,
 report → FTS5/bm25). Назначение портала — доказать, что L2-слой обобщается за пределы 2-файлового
 `portals/example`, и дать второго реального потребителя ядра (закрывает корень orphan-L1: портал был один).
 
-- **Идентичность/настройки** — этот файл (`l1_basis` = машинная опора на L1).
+- **Идентичность/настройки** — этот файл (`l1_basis` = машинная опора на L1, включая `_ioutil.py` и `_cli.py` как общий CLI/IO helper-базис).
 - **Текущее состояние** — `current-state.md`.
 - **Источники** — `sources.md`.
 - **Корпус (данные)** — `data/knowledge-corpus/` (операционный слой, строится `tools/portal.py`).

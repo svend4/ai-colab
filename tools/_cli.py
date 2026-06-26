@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# ==========================================
+# [FILE ID CARD]
+# ID: tools._cli
+# TYPE: helper-module
+# DOMAIN: core.cli
+# DEPTH_LEVEL: 1
+# SUMMARY: Общий CLI helper для help_guard и stderr error exits.
+# ==========================================
 """_cli.py — общий CLI-хелпер (агент-дружелюбный --help без argparse-бойлерплейта).
 
 Лечит ВЕРИФИЦИРОВАННУЮ боль из kotel-system-critique-2026-06-24: ручной sys.argv не даёт `--help`

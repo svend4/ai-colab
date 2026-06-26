@@ -16,6 +16,7 @@ tests: [tools/test_commit_lock.py, tools/test_merge_gate.py]
 любому многоагентному file-native проекту.
 
 - **Канон + гейт:** `_canon.py` (front-matter), `validate.py`, `generate.py`.
+- **CLI/IO helper-базис:** `_ioutil.py` (UTF-8/safe_write), `_cli.py` (help_guard/die) — общий UX-слой для переносимых команд.
 - **Атомарный котёл + лок + гейт:** `next_id.py`, `commit_lock.py`, `pipeline.py`, `dispatch.py`,
   `merge_gate.py`.
 - **Тесты ядра:** `test_commit_lock.py`, `test_merge_gate.py`.
