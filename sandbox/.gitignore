@@ -22,6 +22,10 @@ reports/*
 *.7z
 *.rar
 
+# External fetched TVCP snapshot: keep only intake manifest in Git until provenance/license snapshot is complete.
+tvcp_fetched/*
+!tvcp_fetched/README.intake.md
+
 drafts/*
 !drafts/README.md
 
