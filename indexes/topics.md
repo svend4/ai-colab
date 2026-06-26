@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 65 файлов, 4 подпапок
+# Индекс папки `topics/` — 66 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -68,6 +68,7 @@
 | [razbor-consensus-2026-06-24.md](../topics/razbor-consensus-2026-06-24.md) | topic | proposed | Каждый пункт — ОДИН смысл, собранный из нескольких доков. В скобках — кто подтвердил. |
 | [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | topic | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
 | [razbor-divergence-status-2026-06-24.md](../topics/razbor-divergence-status-2026-06-24.md) | topic | proposed | Из 21 разногласия ~9 разрешены этой сессией (мигрируют в консенсус), ~4 tracked/partial, ~ |
+| [repo-as-collaborative-dev-service-2026-06-26.md](../topics/repo-as-collaborative-dev-service-2026-06-26.md) | topic | proposed | доски; провалы — merge-конфликты + изолированные окна, не видящие правок друг друга. Никто |
 | [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
 | [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | open | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |

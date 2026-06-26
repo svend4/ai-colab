@@ -323,6 +323,13 @@
       "next": ""
     },
     {
+      "id": "repo-as-collaborative-dev-service-2026-06-26",
+      "title": "Наш репо как collaborative-dev-service — субстрат + governance (позиционирование)",
+      "file": "topics/repo-as-collaborative-dev-service-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "safe-auto-apply-design-2026-06-23",
       "title": "Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal)",
       "file": "topics/safe-auto-apply-design-2026-06-23.md",
