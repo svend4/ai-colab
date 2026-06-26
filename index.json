@@ -421,6 +421,13 @@
       "next": ""
     },
     {
+      "id": "tvcp-patch-advice-2026-06-26",
+      "title": "Патч-совет svend4/infon (TVCP) — конкретные правки по прочитанному коду + текст-канва как новый режим",
+      "file": "topics/tvcp-patch-advice-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "tvcp-text-diffusion-hybrid-2026-06-26",
       "title": "\"textscene — 2D полу-диффузионная многоагентная текстовая модель (мощь TVCP-видеосвязи → текст)\"",
       "file": "topics/tvcp-text-diffusion-hybrid-2026-06-26.md",

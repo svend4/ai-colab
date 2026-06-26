@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 76 файлов, 4 подпапок
+# Индекс папки `topics/` — 77 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -87,6 +87,7 @@
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
 | [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
 | [tvcp-live-repo-eval-2026-06-26.md](../topics/tvcp-live-repo-eval-2026-06-26.md) | topic | proposed | TVCP: видеосвязь внутри терминала (Unicode-кварт-блоки `.babe`-кодек, 382 kbps vs 1.8 Mbps |
+| [tvcp-patch-advice-2026-06-26.md](../topics/tvcp-patch-advice-2026-06-26.md) | topic | proposed | **Где:** `pkg/scene/scene.go:75` `Apply`; `case "rect"` (`:85`) и `case "disc"` (`:126`) г |
 | [tvcp-text-diffusion-hybrid-2026-06-26.md](../topics/tvcp-text-diffusion-hybrid-2026-06-26.md) | topic | proposed | **Доки (+):** drift-guard встроен в документацию, а не декларирован: `TVCP_AI_PROTOCOL` §0 |
 | [typed-link-graph-2026-06-24.md](../topics/typed-link-graph-2026-06-24.md) | topic | proposed | Рёбра уже неявно лежат во front-matter (depends_on/related/superseded_by/topic/l1_basis);  |
 | [zed-multiplayer-agents-analysis-2026-06-26.md](../topics/zed-multiplayer-agents-analysis-2026-06-26.md) | topic | proposed | Zed важен для этого проекта не как "еще один AI editor", а как внешний |

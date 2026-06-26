@@ -75,6 +75,7 @@
 | Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06 | `topics/time-axis-decay-2026-06-24.md` | proposed | — |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed | — |  |
 | Живой svend4/infon = TVCP (не .inf) — независимая оценка по фактическому репо, для мульти-агентной работы | `topics/tvcp-live-repo-eval-2026-06-26.md` | proposed | — |  |
+| Патч-совет svend4/infon (TVCP) — конкретные правки по прочитанному коду + текст-канва как новый режим | `topics/tvcp-patch-advice-2026-06-26.md` | proposed | — |  |
 | "textscene — 2D полу-диффузионная многоагентная текстовая модель (мощь TVCP-видеосвязи → текст)" | `topics/tvcp-text-diffusion-hybrid-2026-06-26.md` | proposed | — |  |
 | Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08 | `topics/typed-link-graph-2026-06-24.md` | proposed | — |  |
 | Zed multiplayer agents analysis and repo synthesis | `topics/zed-multiplayer-agents-analysis-2026-06-26.md` | proposed | — |  |
