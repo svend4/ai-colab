@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 79 файлов, 4 подпапок
+# Индекс папки `topics/` — 80 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -79,6 +79,7 @@
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
 | [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | open | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
 | [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
+| [session-backlog-2026-06-26.md](../topics/session-backlog-2026-06-26.md) | topic | proposed | спец §5 «brain-adapter позже». Генерит `text_cell.v1` ПРЕДЛОЖЕНИЯ (status:proposed, owner: |
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
 | [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |

@@ -70,6 +70,7 @@
 | Lane B — статус 21 разногласия после churn-reconcile (что разрешено / открыто / в котёл) | `topics/razbor-divergence-status-2026-06-24.md` | proposed | — |  |
 | Наш репо как collaborative-dev-service — субстрат + governance (позиционирование) | `topics/repo-as-collaborative-dev-service-2026-06-26.md` | proposed | — |  |
 | Механизм safe-auto-apply — детекторы чинят тривиальное (D-018 proposal) | `topics/safe-auto-apply-design-2026-06-23.md` | proposed | — |  |
+| Backlog доделывания — заявленные пункты сессии (simple→complex, кто владелец) | `topics/session-backlog-2026-06-26.md` | proposed | — |  |
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `topics/session-state-2026-06-23.md` | proposed | — |  |
 | Промежуточный статус-доклад проекта (фундамент для дальнейшего развития, не финал) | `topics/session-status-2026-06-24.md` | proposed | — |  |
 | svend4/infon assessment for multi-agent repo work | `topics/svend4-infon-assessment-2026-06-26.md` | proposed | — |  |

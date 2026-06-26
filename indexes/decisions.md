@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `decisions/` — 31 файлов
+# Индекс папки `decisions/` — 32 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -38,3 +38,4 @@
 | [D-030.md](../decisions/D-030.md) | decision | proposed | Методичка «независимый вариант → сверка по смыслу» (D-028 fork-сторона + merge-сторона) бы |
 | [D-031.md](../decisions/D-031.md) | decision | accepted | (Уровень 0 = selective-add + commit_lock) и D-022 (триггеры Level-1); не противоречит им — |
 | [D-032.md](../decisions/D-032.md) | decision | proposed | детально»). Формальный флип в `accepted` оставляю человеку/интегратору — чтобы не плодить  |
+| [D-033.md](../decisions/D-033.md) | decision | proposed | ТЕРМИНАЛЬНОЕ действие = `accept` / `merge` / `commit` / `delete` / `publish` — то, что тру |

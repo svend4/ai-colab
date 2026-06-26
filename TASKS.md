@@ -277,5 +277,5 @@
 | T-261 | Info/document no-execute draft packet manager | done | codex | — | Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков. |
 | T-262 | Independent-first process guard and self-critique | done | codex | — | Зафиксировать причину нарушения independent-first и добавить проверяемый guard перед repo-search/synthesis. |
 | T-263 | Cross-agent commit coordination and synthesis gate | done | codex | — | Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум. |
-| T-264 | Thread schema MVP — файловые треды для headless Zed-like workbench | todo | pool | — | Реализовать stdlib-only `tools/thread.py init/status/add-message` и тесты |
+| T-264 | Thread schema MVP — файловые треды для headless Zed-like workbench | done | pool | — | Реализовать stdlib-only `tools/thread.py init/status/add-message` и тесты |
 <!-- GEN:tasks END -->
