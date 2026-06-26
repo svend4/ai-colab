@@ -30,6 +30,7 @@ import time
 import json
 import glob
 import binascii
+import re
 import subprocess
 
 configure_output()
@@ -41,6 +42,7 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 QDIR = os.path.join(ROOT, "queues", "commit-queue")
 FLAG = {"queued": "☐", "active": "⟳", "done": "★", "failed": "✗"}
 LIVE = ("queued", "active")
+TICKET_RE = re.compile(r"^\d+-[0-9a-f]{12}$")
 
 
 def now_epoch():
@@ -51,12 +53,22 @@ def _token():
     return binascii.hexlify(os.urandom(6)).decode()
 
 
+def _valid_ticket_id(tid):
+    return isinstance(tid, str) and bool(TICKET_RE.match(tid))
+
+
+def _require_ticket_id(tid):
+    if not _valid_ticket_id(tid):
+        raise ValueError("некорректный ticket id: %r" % tid)
+    return tid
+
+
 def _ticket_path(tid):
-    return os.path.join(QDIR, tid + ".json")
+    return os.path.join(QDIR, _require_ticket_id(tid) + ".json")
 
 
 def _patch_path(tid):
-    return os.path.join(QDIR, tid + ".patch")
+    return os.path.join(QDIR, _require_ticket_id(tid) + ".patch")
 
 
 def _load_all():
@@ -93,6 +105,8 @@ def enqueue(agent, intent="", staged_diff=None, epoch=None):
 
 def position(tid):
     """Позиция тикета среди живых (1 = голова). 0 — не в очереди."""
+    if not _valid_ticket_id(tid):
+        return 0
     for i, t in enumerate(_live(), 1):
         if t["id"] == tid:
             return i
@@ -105,6 +119,8 @@ def _save(t):
 
 
 def _get(tid):
+    if not _valid_ticket_id(tid):
+        return None
     for t in _load_all():
         if t["id"] == tid:
             return t
@@ -160,6 +176,8 @@ def board_text():
 
 def turn(agent, tid, ttl=120):
     """Моя ли очередь? Лок берёт ТОЛЬКО голова. Возвращает (ready: bool, feedback: str)."""
+    if not _valid_ticket_id(tid):
+        return False, "некорректный ticket id: %r" % tid
     q = _live()
     if not q or q[0]["id"] != tid:
         pos = position(tid)
@@ -181,6 +199,8 @@ def turn(agent, tid, ttl=120):
 
 def done(agent, tid):
     """Успех: отпустить commit-lock + закрыть тикет (удалить файлы тикета и предсохранение)."""
+    if not _valid_ticket_id(tid):
+        return "✗ некорректный ticket id: %r" % tid
     cl.release(agent)
     for p in (_ticket_path(tid), _patch_path(tid)):
         try:
@@ -192,6 +212,8 @@ def done(agent, tid):
 
 def fail(agent, tid, reason=""):
     """Неуспех: отпустить лок, тикет → failed (предсохранение СОХРАНЯЕТСЯ для recover)."""
+    if not _valid_ticket_id(tid):
+        return "✗ некорректный ticket id: %r" % tid
     cl.release(agent)
     t = _get(tid)
     if t:

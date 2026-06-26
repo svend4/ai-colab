@@ -183,6 +183,13 @@
       "next": "Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout"
     },
     {
+      "id": "commit-queue-and-synthesis-2026-06-26",
+      "title": "Очередь коммитов с обратной связью и предсохранением → обобщение на технический и СЕМАНТИЧЕСКИЙ синтез",
+      "file": "topics/commit-queue-and-synthesis-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "d014-execute-off-ratification-2026-06-23",
       "title": "D-014 execute OFF ratification packet",
       "file": "topics/d014-execute-off-ratification-2026-06-23.md",

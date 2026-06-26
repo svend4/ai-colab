@@ -1,12 +1,11 @@
-"""Тест commit_queue.py — FIFO-позиции · голова-берёт-лок · предсохранение+recover · fail · видимость .git/index.lock."""
+"""Тест commit_queue.py — FIFO-позиции · голова-берёт-лок · предсохранение+recover · fail · видимость .git/index.lock · path-safety."""
 import os
 import sys
-import shutil
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
-ROOT = os.path.join(REPO_ROOT, "tmp-work", "commit_queue_test_%d" % os.getpid())
-shutil.rmtree(ROOT, ignore_errors=True)
+ROOT = os.path.join(REPO_ROOT, "tmp-work", "commit_queue_test_%d_%d" % (os.getpid(), time.time_ns()))
 os.makedirs(os.path.join(ROOT, "queues"), exist_ok=True)
 os.environ["COLLAB_ROOT"] = ROOT  # ДО импорта: и commit_queue, и commit_lock возьмут этот ROOT
 
@@ -88,15 +87,24 @@ def run():
         if "index.lock ЗАНЯТ" not in cq.board_text():
             fails.append("board должен показывать занятый .git/index.lock")
 
+        # ticket id из CLI не должен превращаться в путь за пределами queues/commit-queue
+        bad = "..\\outside"
+        ready, msg = cq.turn("mallory", bad)
+        if ready or "некорректный ticket id" not in msg:
+            fails.append("turn должен отвергать path-like ticket id: %s" % msg)
+        msg = cq.done("mallory", bad)
+        if "некорректный ticket id" not in msg:
+            fails.append("done должен отвергать path-like ticket id: %s" % msg)
+
         if fails:
             print("FAIL test_commit_queue:")
             for f in fails:
                 print("  -", f)
             return 1
-        print("OK test_commit_queue: FIFO-позиции · голова-берёт-лок · фидбек-с-позицией · предсохранение+recover · fail · .git/index.lock-видимость")
+        print("OK test_commit_queue: FIFO-позиции · голова-берёт-лок · фидбек-с-позицией · предсохранение+recover · fail · .git/index.lock-видимость · ticket path-safety")
         return 0
     finally:
-        shutil.rmtree(ROOT, ignore_errors=True)
+        pass
 
 
 if __name__ == "__main__":
