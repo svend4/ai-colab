@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 67 файлов, 4 подпапок
+# Индекс папки `topics/` — 69 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -55,6 +55,7 @@
 | [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
+| [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
 | [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | open | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
 | [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
 | [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | — | — | Дата сборки: 2026-06-22. Историк/синтезатор. Документ прослеживает идею «уже не текст, но  |
@@ -81,3 +82,4 @@
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
 | [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
 | [typed-link-graph-2026-06-24.md](../topics/typed-link-graph-2026-06-24.md) | topic | proposed | Рёбра уже неявно лежат во front-matter (depends_on/related/superseded_by/topic/l1_basis);  |
+| [zed-multiplayer-agents-analysis-2026-06-26.md](../topics/zed-multiplayer-agents-analysis-2026-06-26.md) | topic | proposed | Zed важен для этого проекта не как "еще один AI editor", а как внешний |

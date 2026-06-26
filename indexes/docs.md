@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 125 файлов
+# Индекс папки `docs/` — 126 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -132,3 +132,4 @@
 | [workflow-conveyor-policy.md](../docs/workflow-conveyor-policy.md) | doc | proposed | Один контекст-оркестратор = один последовательный планировщик с N фоновыми воркерами. Узко |
 | [workflow-orchestration-policy.md](../docs/workflow-orchestration-policy.md) | doc | proposed | **воркфлоу** — кластер мелких под-агентов, работающих параллельно, плюс агент-**синтезатор |
 | [workspace-pyramid-levels.md](../docs/workspace-pyramid-levels.md) | — | — | Дата: 2026-06-21 |
+| [zed-like-headless-workbench-mvp.md](../docs/zed-like-headless-workbench-mvp.md) | doc | proposed | Этот документ фиксирует практический план: как использовать идеи Zed |

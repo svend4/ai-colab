@@ -277,4 +277,5 @@
 | T-261 | Info/document no-execute draft packet manager | done | codex | — | Реализовать `tools/info_draft.py` create/check/review/list и верхний proxy `top.py info-draft` для документных/информационных черновиков. |
 | T-262 | Independent-first process guard and self-critique | done | codex | — | Зафиксировать причину нарушения independent-first и добавить проверяемый guard перед repo-search/synthesis. |
 | T-263 | Cross-agent commit coordination and synthesis gate | done | codex | — | Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум. |
+| T-264 | (зарезервировано — заполните) | todo | unknown | — | зарезервировано через tools/next_id.py — заполните |
 <!-- GEN:tasks END -->

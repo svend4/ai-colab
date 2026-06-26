@@ -267,6 +267,13 @@
       "next": ""
     },
     {
+      "id": "offline-headless-workbench-mvp-2026-06-26",
+      "title": "Offline/headless Zed-like workbench — реалистичный MVP (план, подтверждён Goodall)",
+      "file": "topics/offline-headless-workbench-mvp-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "parallel-work-divergences-2026-06-22",
       "title": "Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017)",
       "file": "topics/parallel-work-divergences-2026-06-22.md",
@@ -375,6 +382,13 @@
       "id": "typed-link-graph-2026-06-24",
       "title": "Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08",
       "file": "topics/typed-link-graph-2026-06-24.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "zed-multiplayer-agents-analysis-2026-06-26",
+      "title": "Zed multiplayer agents analysis and repo synthesis",
+      "file": "topics/zed-multiplayer-agents-analysis-2026-06-26.md",
       "status": "proposed",
       "next": ""
     }
@@ -3272,6 +3286,17 @@
       "depends_on": "[T-244, T-245, T-246, T-247, T-248, T-249, T-250, T-251, T-252, T-253, T-254, T-255, T-256, T-257, T-258, T-259, T-260, T-261, T-262]",
       "topic": "",
       "next": "Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум."
+    },
+    {
+      "id": "T-264",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "unknown",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

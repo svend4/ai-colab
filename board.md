@@ -53,6 +53,7 @@
 | Котёл: Системная Критика, Технический Долг и Ответственность | `topics/kotel-system-critique-2026-06-24.md` | proposed | — |  |
 | Котёл: пошаговый план после системной критики | `topics/kotel-system-critique-2026-06-24-action-plan.md` | proposed | — |  |
 | Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность) | `topics/navigation-vs-sharding-2026-06-24.md` | proposed | — |  |
+| Offline/headless Zed-like workbench — реалистичный MVP (план, подтверждён Goodall) | `topics/offline-headless-workbench-mvp-2026-06-26.md` | proposed | — |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `topics/parallel-work-divergences-2026-06-22.md` | proposed | — |  |
 | Перспективный бэклог — ранжированная очередь следующих волн конвейера (самопополнение) | `topics/perspective-backlog-2026-06-23.md` | proposed | — |  |
 | Заземление пирамиды (L2→L1) — consolidated plan (derive_reuse + наполнение порталов) | `topics/pyramid-grounding-consolidated-2026-06-23.md` | proposed | — |  |
@@ -69,6 +70,7 @@
 | Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06 | `topics/time-axis-decay-2026-06-24.md` | proposed | — |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed | — |  |
 | Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08 | `topics/typed-link-graph-2026-06-24.md` | proposed | — |  |
+| Zed multiplayer agents analysis and repo synthesis | `topics/zed-multiplayer-agents-analysis-2026-06-26.md` | proposed | — |  |
 <!-- GEN:topics-board END -->
 
 ## Как добавить новую тему
