@@ -40,22 +40,29 @@ def load_canon(root=ROOT, dirs=CANON_DIRS):
 
 
 def slice_ids(canon, seed, depth):
-    """Связный подграф: BFS от seed по рёбрам до глубины depth (включительно)."""
+    """Связный подграф: BFS от seed по рёбрам до глубины depth (включительно).
+
+    Порядок ДЕТЕРМИНИРОВАН: BFS-уровень, внутри уровня соседи отсортированы. Раньше
+    возвращали `[seed]+[i for i in seen]`, где seen — set: итерация set-а строк НЕ
+    insertion-ordered и зависит от PYTHONHASHSEED → порядок плыл между процессами
+    (комментарий «BFS-порядок сохранён» был неверен). Теперь порядок копим в список,
+    соседей (links — тоже set) сортируем перед обходом.
+    """
     if seed not in canon:
         return []
     seen = {seed}
+    order = [seed]
     frontier = [seed]
     for _ in range(max(0, depth)):
         nxt = []
         for nid in frontier:
-            for ln in canon.get(nid, {}).get("links", ()):
+            for ln in sorted(canon.get(nid, {}).get("links", ())):
                 if ln in canon and ln not in seen:
-                    seen.add(ln); nxt.append(ln)
+                    seen.add(ln); nxt.append(ln); order.append(ln)
         frontier = nxt
         if not frontier:
             break
-    # порядок: seed первым, дальше по близости (BFS-порядок сохранён через seen-вставку)
-    return [seed] + [i for i in seen if i != seed]
+    return order
 
 
 def assemble(canon, ids, mode="live", budget=0):

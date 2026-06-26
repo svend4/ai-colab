@@ -46,6 +46,13 @@ def main():
         if "z" in s2:
             fails.append("несвязанный z не должен попасть в срез")
 
+        # R1: порядок slice_ids ДЕТЕРМИНИРОВАН (BFS-уровень + сортировка соседей, не iter(set))
+        canon2 = {"A": {"links": {"C", "B"}}, "B": {"links": {"D"}}, "C": {"links": {"E"}},
+                  "D": {"links": set()}, "E": {"links": set()}}
+        order = v.slice_ids(canon2, "A", 2)
+        if order != ["A", "B", "C", "D", "E"]:
+            fails.append("R1: slice_ids порядок должен быть детерм. BFS+sorted [A,B,C,D,E]: %s" % order)
+
         # live = путь + GIST (первая строка); frozen = всё тело
         live, _ = v.assemble(canon, ["a", "b"], "live")
         if "tasks/a.md" not in live or "вторая строка деталь" in live:

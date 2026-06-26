@@ -35,12 +35,17 @@ def main():
     if m["conflicts"]:
         fails.append("чистое слияние не должно дать конфликтов: %s" % m["conflicts"])
 
-    # 2) конфликт-скаляр: оба сменили status по-разному
-    m2 = cm.merge3(base, item(["a"], "accepted", "базовое тело"), item(["a"], "rejected", "базовое тело"))
+    # 2) конфликт-скаляр: оба сменили status по-разному → флаг + КОММУТАТИВНЫЙ детерм. выбор (R9)
+    A = item(["a"], "accepted", "базовое тело")
+    B = item(["a"], "rejected", "базовое тело")
+    m2 = cm.merge3(base, A, B)
     if not any("status" in c for c in m2["conflicts"]):
         fails.append("оба сменили status по-разному → конфликт: %s" % m2["conflicts"])
-    if m2["fm"]["status"] != "accepted":
-        fails.append("при конфликте берётся ours (accepted): %s" % m2["fm"]["status"])
+    if m2["fm"]["status"] not in ("accepted", "rejected"):
+        fails.append("при конфликте выбран один из значений: %s" % m2["fm"]["status"])
+    m2r = cm.merge3(base, B, A)   # обратный порядок аргументов
+    if m2["fm"]["status"] != m2r["fm"]["status"]:
+        fails.append("R9: _merge_scalar НЕ коммутативен: %s vs %s" % (m2["fm"]["status"], m2r["fm"]["status"]))
 
     # 3) конфликт-тело: оба сменили тело по-разному → маркеры, НЕ потеря
     m3 = cm.merge3(base, item(["a"], "proposed", "версия ours"), item(["a"], "proposed", "версия theirs"))
@@ -57,12 +62,28 @@ def main():
     if re_parsed["fm"].get("status") != "accepted":
         fails.append("render→parse round-trip потерял status")
 
+    # 5) R7: удаление durable — конкурентная правка тела НЕ воскрешает удалённую карточку
+    base5 = item(["a", "b"], "proposed", "тело")
+    ours5 = item(["a", "c"], "proposed", "тело")          # убрал b, добавил c
+    theirs5 = item(["a", "b"], "proposed", "тело иное")   # оставил b, тронул только тело
+    m5 = cm.merge3(base5, ours5, theirs5)
+    rel5 = set(m5["fm"]["related"])
+    if "b" in rel5:
+        fails.append("R7: удалённая ours карточка b НЕ должна воскреснуть конкурентной правкой: %s" % rel5)
+    if rel5 != {"a", "c"}:
+        fails.append("R7: ожидалось {a,c} (b удалён durable, c добавлен): %s" % rel5)
+
+    # 6) R7: y убран ОБЕИМИ → durable; новое поле без base = чистый union
+    m6 = cm.merge3(item(["x", "y"], "proposed", "т"), item(["x"], "proposed", "т"), item(["x"], "proposed", "т"))
+    if "y" in set(m6["fm"]["related"]):
+        fails.append("R7: y убран обеими сторонами → не должен остаться: %s" % m6["fm"]["related"])
+
     if fails:
         print("FAIL test_crdt_merge:")
         for f in fails:
             print("  -", f)
         sys.exit(1)
-    print("OK test_crdt_merge: union-списков · status 3-way · конфликт-скаляр · конфликт-тело(без потерь+маркеры) · round-trip")
+    print("OK test_crdt_merge: 3-way OR-Set(add-wins+remove-durable R7) · скаляр-коммутативность R9 · конфликт-тело(маркеры) · round-trip")
 
 
 if __name__ == "__main__":

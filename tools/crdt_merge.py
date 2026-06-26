@@ -3,8 +3,11 @@
 Рациональная переработка CRDT-идеи из `.inf` (inf_crdt.py: LWW-регистры + OR-Set) под НАШ репо и его
 боль T-263 (две правки одного файла → git-конфликт). Отличия от .inf-оригинала:
   • у git ЕСТЬ merge-base → 3-way (не state-CRDT без базы);
-  • list-поля front-matter (related/tags/...) — OR-Set-UNION: НИЧЕГО не теряется (обе правки выживают);
-  • скаляры — 3-way: изменил один → берём его; изменили ОБА по-разному → КОНФЛИКТ (не молчаливый LWW);
+  • list-поля front-matter (related/tags/...) — 3-way OR-Set: добавленное любой стороной выживает,
+    но УДАЛЕНИЕ durable (было в base, сторона убрала → НЕ воскресает; чистый union раньше воскрешал —
+    тот же класс, что баг inf_crdt.remove_block);
+  • скаляры — 3-way: изменил один → берём его; изменили ОБА по-разному → КОНФЛИКТ-флаг + КОММУТАТИВНЫЙ
+    детерм. выбор (A⊕B==B⊕A), не позиционный «ours-wins» и не молчаливый LWW;
   • тело при двойной правке — КОНФЛИКТ-флаг, не тихая потеря (лечит LWW-on-body слабость .inf).
 
 Это «мёрж на уровне ПОЛЯ/секции, а не строки» — то, чего T-263 не хватало (хот-файлы Codex).
@@ -22,7 +25,7 @@ import re
 configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
-LIST_FIELDS = ("related", "tags", "participants", "depends_on", "links")  # OR-Set union (add-wins)
+LIST_FIELDS = ("related", "tags", "participants", "depends_on", "links")  # 3-way OR-Set: add-wins, remove durable via base
 
 
 def parse_item(text):
@@ -45,12 +48,12 @@ def merge3(base, ours, theirs):
     for k in keys:
         bv, ov, tv = base["fm"].get(k), ours["fm"].get(k), theirs["fm"].get(k)
         if k in LIST_FIELDS:
-            fm[k] = _union_lists(ov, tv)                      # OR-Set: обе стороны выживают
+            fm[k] = _union_lists(bv, ov, tv)                  # 3-way OR-Set: add-wins, remove durable
             continue
         merged, conf = _merge_scalar(bv, ov, tv)
         fm[k] = merged
         if conf:
-            conflicts.append("front-matter '%s': ours=%r theirs=%r (взято ours)" % (k, ov, tv))
+            conflicts.append("front-matter '%s': ours=%r theirs=%r (детерм. tie-break → %r)" % (k, ov, tv, merged))
     body, bconf = _merge_body(base["body"], ours["body"], theirs["body"])
     if bconf:
         conflicts.append("body: обе стороны изменили тело по-разному (помечено маркерами, НЕ потеряно)")
@@ -91,23 +94,43 @@ def _as_list(v):
     return v if isinstance(v, list) else [v]
 
 
-def _union_lists(ov, tv):
-    seen, out = set(), []
-    for x in _as_list(ov) + _as_list(tv):
-        if x not in seen:
-            seen.add(x); out.append(x)
+def _union_lists(bv, ov, tv):
+    """3-way OR-Set: добавленное любой стороной выживает; удалённое стороной (было в base,
+    нет у неё) — durable, НЕ воскресает. Без base (bv=None) = чистое объединение. Порядок
+    детерминирован (ours, затем theirs, с dedup)."""
+    base = set(_as_list(bv))
+    ours, theirs = _as_list(ov), _as_list(tv)
+    ours_set, theirs_set = set(ours), set(theirs)
+    out, decided = [], set()
+    for x in ours + theirs:
+        if x in decided:
+            continue
+        decided.add(x)
+        if x in base:
+            keep = (x in ours_set) and (x in theirs_set)   # удаление любой стороной — durable
+        else:
+            keep = True                                    # новое → add-wins
+        if keep:
+            out.append(x)
     return out
 
 
+def _scalar_hash(v):
+    import hashlib
+    return hashlib.sha256(repr(v).encode("utf-8")).hexdigest()
+
+
 def _merge_scalar(bv, ov, tv):
-    """3-way: (merged, conflict?). Изменил один → его; оба одинаково → оно; оба по-разному → конфликт."""
+    """3-way: (merged, conflict?). Изменил один → его; оба одинаково → оно; оба по-разному →
+    КОММУТАТИВНЫЙ детерм. tie-break по sha256 (A⊕B==B⊕A) + конфликт-флаг (видимо, не молча)."""
     if ov == tv:
         return ov, False
     if ov == bv:
         return tv, False        # ours не трогал → берём theirs
     if tv == bv:
         return ov, False        # theirs не трогал → берём ours
-    return ov, True             # оба изменили по-разному → конфликт (берём ours, флажим)
+    winner = max((ov, tv), key=_scalar_hash)   # порядко-независимо: один и тот же на (ov,tv) и (tv,ov)
+    return winner, True         # оба изменили по-разному → конфликт, выбор детерминирован
 
 
 def _merge_body(bb, ob, tb):
