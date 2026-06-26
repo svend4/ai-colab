@@ -3749,6 +3749,13 @@
       "status": "accepted",
       "date": "2026-06-26",
       "file": "decisions/D-031.md"
+    },
+    {
+      "id": "D-032",
+      "title": "gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula",
+      "status": "proposed",
+      "date": "2026-06-26",
+      "file": "decisions/D-032.md"
     }
   ],
   "drivers": [

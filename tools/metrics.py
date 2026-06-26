@@ -74,7 +74,7 @@ def build():
     tasks = load("tasks")
     questions = load("questions")
     decisions = load("decisions")
-    topics = load("темы")
+    topics = load("topics")
     ready, blocked = ready_blocked(tasks)
     return {
         "tasks": {"total": len(tasks), "by_status": by_status(tasks),

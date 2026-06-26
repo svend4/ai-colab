@@ -50,7 +50,7 @@ def write_md(path, fm, body=""):
 
 
 def make_canon(root):
-    for sub in ("tasks", "questions", "decisions", "темы",
+    for sub in ("tasks", "questions", "decisions", "topics",
                 "queues/inbox", "queues/claimed", "queues/done", "queues/failed"):
         os.makedirs(os.path.join(root, sub), exist_ok=True)
 
@@ -71,7 +71,7 @@ def make_canon(root):
 
     write_md(os.path.join(root, "questions", "Q-001.md"), {"id": "Q-001", "status": "open"})
     write_md(os.path.join(root, "decisions", "D-001.md"), {"id": "D-001", "status": "accepted"})
-    write_md(os.path.join(root, "темы", "TOP-001.md"), {"id": "TOP-001", "status": "active"})
+    write_md(os.path.join(root, "topics", "TOP-001.md"), {"id": "TOP-001", "status": "active"})
 
     # очередь: count_dir по суффиксам
     open(os.path.join(root, "queues/inbox", "a.md"), "w").close()

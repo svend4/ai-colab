@@ -432,7 +432,7 @@ KNOWN_REPO_EXTS = (".md", ".markdown", ".py", ".json", ".txt", ".text", ".ps1", 
 KNOWN_REPO_ROOTS = {
     "AGENTS.md", "PROTOCOL.md", "STATUS.md", "TASKS.md", "QUESTIONS.md", "DECISIONS.md",
     "docs", "tools", "queues", "tasks", "decisions", "questions", "drivers", "core", "portals",
-    "collab", "sandbox", "streams", "reports", "tmp-work", "data", "skills", "темы",
+    "collab", "sandbox", "streams", "reports", "tmp-work", "data", "skills", "topics",
 }
 CHECK_RUNNERS = {"python", "python3", "py", "pytest", "pwsh", "powershell", "git", "node", "npm", "bash", "sh"}
 

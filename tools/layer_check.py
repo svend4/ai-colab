@@ -35,7 +35,7 @@ from _canon import parse_front_matter
 configure_output()
 
 LAYER_BY_DIR = {"core": "L1", "portals": "L2", "sandbox": "L4"}
-L3_DIRS = {"tasks", "decisions", "questions", "streams", "topics", "темы", "collab"}
+L3_DIRS = {"tasks", "decisions", "questions", "streams", "topics", "collab"}
 
 
 def layer_of(rel):

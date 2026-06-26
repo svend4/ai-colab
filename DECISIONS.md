@@ -37,4 +37,5 @@
 | D-028 | Independent-first variants — содержательные дубли раскрываются до синтеза | proposed | 2026-06-25 | `decisions/D-028.md` |
 | D-030 | Independent-consensus — валидированное ядро после полного адверсариального прогона | proposed | 2026-06-25 | `decisions/D-030.md` |
 | D-031 | commit_queue как стандартный путь коммита внутри Уровня 0 (очередь + обратная связь + предсохранение) | accepted | 2026-06-26 | `decisions/D-031.md` |
+| D-032 | gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula | proposed | 2026-06-26 | `decisions/D-032.md` |
 <!-- GEN:decisions END -->

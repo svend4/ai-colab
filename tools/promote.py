@@ -54,7 +54,7 @@ L1_DIR = "core"
 L2_DIR = "portals"
 L4_DIR = "sandbox"
 # collab логически = эти корневые каталоги (карта L3, без физического переноса).
-L3_DIRS = ["tasks", "decisions", "questions", "streams", "темы", "collab"]
+L3_DIRS = ["tasks", "decisions", "questions", "streams", "topics", "collab"]
 
 def _root(root=None):
     return os.path.abspath(root) if root else ROOT
