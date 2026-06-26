@@ -45,6 +45,7 @@
 | Очередь коммитов с обратной связью и предсохранением → обобщение на технический и СЕМАНТИЧЕСКИЙ синтез | `topics/commit-queue-and-synthesis-2026-06-26.md` | proposed | — |  |
 | D-014 execute OFF ratification packet | `topics/d014-execute-off-ratification-2026-06-23.md` | proposed | — |  |
 | Proposal: Глобальная очистка очередей и ресайклинг технического долга (Вторсырье) | `topics/debt-cleanup-recycling-proposal-2026-06-24.md` | proposed | — |  |
+| Систематическая формула решения дефектов многоагентной работы (класс «конкурентного вклада») + аудит истории | `topics/defect-class-formula-2026-06-26.md` | proposed | — |  |
 | FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов) | `topics/finder-frontier-2026-06-23.md` | proposed | — |  |
 | Дизайны флота (2026-06-23) — reconcile_state fix + наполнение L2-порталов | `topics/fleet-designs-2026-06-23.md` | proposed | — |  |
 | Синтез двух подсистем трения/параллельной работы (Claude cohort/policy ↔ Codex friction) — D-017 | `topics/friction-subsystems-synthesis-2026-06-22.md` | proposed | — |  |

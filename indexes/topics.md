@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 78 файлов, 4 подпапок
+# Индекс папки `topics/` — 79 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -30,6 +30,7 @@
 | [d003-scope.md](../topics/d003-scope.md) | — | done | D-003 требует короткое обоснование при изменении служебных/общих файлов. Открытый под-вопр |
 | [d014-execute-off-ratification-2026-06-23.md](../topics/d014-execute-off-ratification-2026-06-23.md) | cauldron-packet | proposed | Дата: 2026-06-23. |
 | [debt-cleanup-recycling-proposal-2026-06-24.md](../topics/debt-cleanup-recycling-proposal-2026-06-24.md) | doc | proposed | **Инициатор:** Субагентский Рой 3:1 (Куратор) + Antigravity + Человек |
+| [defect-class-formula-2026-06-26.md](../topics/defect-class-formula-2026-06-26.md) | topic | proposed | Когда ≥2 актора (или актор + гейт/оракул/дериват) трогают общее состояние: |
 | [dogfood-run.md](../topics/dogfood-run.md) | — | waiting | Система построена (T-001..T-016, T-005 ongoing), но всё — meta-работа. Stefan запустил пер |
 | [drivers-layer.md](../topics/drivers-layer.md) | — | archive | Эта тема возникла параллельно с `topics/ai-os-bridge.md` (Novax) по одному и тому же вопро |
 | [drivers-subsystem-state-2026-06-23.md](../topics/drivers-subsystem-state-2026-06-23.md) | topic | proposed | A driver is an L1 Markdown file in `drivers/` whose front-matter is a checkable capability |

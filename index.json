@@ -211,6 +211,13 @@
       "next": ""
     },
     {
+      "id": "defect-class-formula-2026-06-26",
+      "title": "Систематическая формула решения дефектов многоагентной работы (класс «конкурентного вклада») + аудит истории",
+      "file": "topics/defect-class-formula-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "finder-frontier-2026-06-23",
       "title": "FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов)",
       "file": "topics/finder-frontier-2026-06-23.md",
