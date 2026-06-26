@@ -122,9 +122,20 @@ def _opt(argv, flag, default=None):
     return default
 
 
+VALUE_FLAGS = ("--cap",)
+
+
 def main(argv):
     help_guard(__doc__, argv)
-    args = [a for a in argv if not a.startswith("--")]
+    args, skip = [], False
+    for a in argv:                      # позиционные = не флаги И не значения value-флагов (--cap 8)
+        if skip:
+            skip = False; continue
+        if a in VALUE_FLAGS:
+            skip = True; continue
+        if a.startswith("--"):
+            continue
+        args.append(a)
     if not args:
         print("mutmeta: нужен <module>. Пример: mutmeta.py metrics"); return 2
     module = args[0]
