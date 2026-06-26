@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 71 файлов, 4 подпапок
+# Индекс папки `topics/` — 76 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -54,6 +54,7 @@
 | [kotel-system-critique-2026-06-24.md](../topics/kotel-system-critique-2026-06-24.md) | doc | proposed | *Статус: Консенсус достигнут. Ожидается подтверждение Человека на перевод в `accepted`.* |
 | [meta-sanation-questions-2026-06-24.md](../topics/meta-sanation-questions-2026-06-24.md) | topic | open | Пронумерованный реестр концептуальных вопросов (6 разделов, подвопросы разной глубины) о т |
 | [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
+| [mmorpg-2d-text-workbench-2026-06-26.md](../topics/mmorpg-2d-text-workbench-2026-06-26.md) | topic | proposed | Идея сильная: взять не графику MMORPG, а её **организационную механику** и перевести в 2D- |
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
 | [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
@@ -80,8 +81,12 @@
 | [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [svend4-infon-assessment-2026-06-26.md](../topics/svend4-infon-assessment-2026-06-26.md) | topic | proposed | For this repository, the correct adaptation is not terminal video. The correct adaptation  |
+| [text-diffusion-canvas-from-infon-2026-06-26.md](../topics/text-diffusion-canvas-from-infon-2026-06-26.md) | topic | proposed | turn a terminal into a multi-layer communication surface |
 | [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
+| [textscene-unified-spec-2026-06-26.md](../topics/textscene-unified-spec-2026-06-26.md) | topic | proposed | cols=актор/владелец (матрица консенсуса). → **Примирение: это ДВА режима проекции одного c |
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
 | [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
+| [tvcp-live-repo-eval-2026-06-26.md](../topics/tvcp-live-repo-eval-2026-06-26.md) | topic | proposed | TVCP: видеосвязь внутри терминала (Unicode-кварт-блоки `.babe`-кодек, 382 kbps vs 1.8 Mbps |
+| [tvcp-text-diffusion-hybrid-2026-06-26.md](../topics/tvcp-text-diffusion-hybrid-2026-06-26.md) | topic | proposed | **Доки (+):** drift-guard встроен в документацию, а не декларирован: `TVCP_AI_PROTOCOL` §0 |
 | [typed-link-graph-2026-06-24.md](../topics/typed-link-graph-2026-06-24.md) | topic | proposed | Рёбра уже неявно лежат во front-matter (depends_on/related/superseded_by/topic/l1_basis);  |
 | [zed-multiplayer-agents-analysis-2026-06-26.md](../topics/zed-multiplayer-agents-analysis-2026-06-26.md) | topic | proposed | Zed важен для этого проекта не как "еще один AI editor", а как внешний |

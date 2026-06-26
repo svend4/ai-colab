@@ -53,6 +53,7 @@
 | Независимая ручная оценка svend4/infon (.inf) — что взять сюда, что посоветовать туда | `topics/infon-repo-independent-eval-2026-06-26.md` | proposed | — |  |
 | Котёл: Системная Критика, Технический Долг и Ответственность | `topics/kotel-system-critique-2026-06-24.md` | proposed | — |  |
 | Котёл: пошаговый план после системной критики | `topics/kotel-system-critique-2026-06-24-action-plan.md` | proposed | — |  |
+| MMORPG reverse engineering into 2D text workbench for humans and agents | `topics/mmorpg-2d-text-workbench-2026-06-26.md` | proposed | — |  |
 | Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность) | `topics/navigation-vs-sharding-2026-06-24.md` | proposed | — |  |
 | Offline/headless Zed-like workbench — реалистичный MVP (план, подтверждён Goodall) | `topics/offline-headless-workbench-mvp-2026-06-26.md` | proposed | — |  |
 | Разногласия двух политик коммитов/параллели — вынесено и обосновано (D-017) | `topics/parallel-work-divergences-2026-06-22.md` | proposed | — |  |
@@ -69,8 +70,12 @@
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `topics/session-state-2026-06-23.md` | proposed | — |  |
 | Промежуточный статус-доклад проекта (фундамент для дальнейшего развития, не финал) | `topics/session-status-2026-06-24.md` | proposed | — |  |
 | svend4/infon assessment for multi-agent repo work | `topics/svend4-infon-assessment-2026-06-26.md` | proposed | — |  |
+| Text diffusion canvas from svend4/infon for multi-agent work | `topics/text-diffusion-canvas-from-infon-2026-06-26.md` | proposed | — |  |
+| Единый спек 2D-текст-workbench — консолидация 3 независимо сошедшихся дизайнов | `topics/textscene-unified-spec-2026-06-26.md` | proposed | — |  |
 | Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06 | `topics/time-axis-decay-2026-06-24.md` | proposed | — |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed | — |  |
+| Живой svend4/infon = TVCP (не .inf) — независимая оценка по фактическому репо, для мульти-агентной работы | `topics/tvcp-live-repo-eval-2026-06-26.md` | proposed | — |  |
+| "textscene — 2D полу-диффузионная многоагентная текстовая модель (мощь TVCP-видеосвязи → текст)" | `topics/tvcp-text-diffusion-hybrid-2026-06-26.md` | proposed | — |  |
 | Типизированный граф связей — вторая ось (дерево ⟂ граф), реализация DIV-07/08 | `topics/typed-link-graph-2026-06-24.md` | proposed | — |  |
 | Zed multiplayer agents analysis and repo synthesis | `topics/zed-multiplayer-agents-analysis-2026-06-26.md` | proposed | — |  |
 <!-- GEN:topics-board END -->

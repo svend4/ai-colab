@@ -267,6 +267,13 @@
       "next": ""
     },
     {
+      "id": "mmorpg-2d-text-workbench-2026-06-26",
+      "title": "MMORPG reverse engineering into 2D text workbench for humans and agents",
+      "file": "topics/mmorpg-2d-text-workbench-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "navigation-vs-sharding-2026-06-24",
       "title": "Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность)",
       "file": "topics/navigation-vs-sharding-2026-06-24.md",
@@ -379,6 +386,20 @@
       "next": ""
     },
     {
+      "id": "text-diffusion-canvas-from-infon-2026-06-26",
+      "title": "Text diffusion canvas from svend4/infon for multi-agent work",
+      "file": "topics/text-diffusion-canvas-from-infon-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "textscene-unified-spec-2026-06-26",
+      "title": "Единый спек 2D-текст-workbench — консолидация 3 независимо сошедшихся дизайнов",
+      "file": "topics/textscene-unified-spec-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "time-axis-decay-2026-06-24",
       "title": "Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06",
       "file": "topics/time-axis-decay-2026-06-24.md",
@@ -389,6 +410,20 @@
       "id": "topics/finder-doc-vs-reality-2026-06-23.md",
       "title": "\"FINDER — doc-vs-reality синтез (26 подтверждённых находок)\"",
       "file": "topics/finder-doc-vs-reality-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "tvcp-live-repo-eval-2026-06-26",
+      "title": "Живой svend4/infon = TVCP (не .inf) — независимая оценка по фактическому репо, для мульти-агентной работы",
+      "file": "topics/tvcp-live-repo-eval-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "tvcp-text-diffusion-hybrid-2026-06-26",
+      "title": "\"textscene — 2D полу-диффузионная многоагентная текстовая модель (мощь TVCP-видеосвязи → текст)\"",
+      "file": "topics/tvcp-text-diffusion-hybrid-2026-06-26.md",
       "status": "proposed",
       "next": ""
     },
