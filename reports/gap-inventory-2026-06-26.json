@@ -1,0 +1,75 @@
+{
+  "report": {
+    "id": "gap-inventory-2026-06-26",
+    "title": "Intent-vs-reality gap inventory (defect-class formula applied repo-wide)",
+    "author": "claude (Opus 4.8)",
+    "date": "2026-06-26",
+    "method": "executable detector tools/gap_scan.py + 5-strand read-only swarm + cross-check with topics/defect-class-formula-2026-06-26",
+    "language_note": "English machine-readable artifact; human report in Russian (gap-inventory-2026-06-26.md)."
+  },
+  "delivered_this_session": {
+    "commit": "8538738 (landed THROUGH commit_queue — dogfood of D-031; queue serialized with no race)",
+    "new_tools": ["tools/gap_scan.py", "tools/test_gap_scan.py"],
+    "drift_fixed": {
+      "files": ["metrics.py", "promote.py", "instructions.py", "layer_check.py", "test_metrics.py"],
+      "change": "темы -> topics",
+      "verified": "metrics topics count 0 -> 75; gap_scan drift = 0"
+    },
+    "recurrence_gate": "pre-commit runs `gap_scan drift --strict` — dead dir literal blocks commit (fail-open on tool error)",
+    "decision": "decisions/D-032.md (proposed)"
+  },
+  "formula_reference": {
+    "topic": "topics/defect-class-formula-2026-06-26 (status: proposed)",
+    "symptoms": ["a silent-failure", "b work-loss", "c unfair-contention", "d silent-merge", "e capturable-authority", "f silent-derivation-drift"],
+    "counter_invariants": ["C-I gate-recursion", "C-II fold-not-delete", "C-III meta-test-of-detector (mutmeta)"],
+    "note": "gap_scan.py is the missing executable arm for the 'built/decided/documented-but-not-active' class (esp. symptom f)."
+  },
+  "inventory": {
+    "f_derivation_drift": {
+      "status": "FIXED",
+      "was": "metrics/promote/instructions/layer_check read dead literal 'темы' -> metrics topics=0 over 75 topics (silent zero looks valid)",
+      "deep_fix_followup": "single CANON_DIRS registry imported by derivatives; load() of nonexistent path -> ERROR not 0"
+    },
+    "G1_orphan_code": {
+      "gap_scan_strict": ["cli_inventory", "repo_hygiene", "text_scene", "thread_runner", "workflow_recover"],
+      "swarm_broader": {
+        "archetype": "commit_queue (D-031 decided, 0 callers)",
+        "dead_merge_cluster": ["git_reconcile", "crdt_merge", "seq_merge"],
+        "D-030_semantic_oracle_apparatus_all_orphan": ["oracle_quorum", "consensus_by_meaning", "independence_measure", "divergence_detail", "red_team_gate"],
+        "others": ["immune", "autolink", "backlog_rescan (T-197 done but unwired)", "bulk_dcard_generator", "portals (dup name vs portal.py)", "workflow_recover (formula instance #3)"]
+      },
+      "method_note": "gap_scan and swarm found different sets: 'mentioned in a doc' != 'executed in active path'. Followup: add a 'referenced-only-in-docs, never-imported' tier to gap_scan."
+    },
+    "G2_unenforced_decisions": [
+      {"id": "D-026", "rule": "ban bulk-erase", "gap": "bulk_guard advisory, not a gate, not in PROTOCOL", "severity": "high"},
+      {"id": "D-022", "rule": "worktree mandatory by triggers", "gap": "cohort guard prints, does not block", "severity": "high"},
+      {"id": "D-031", "rule": "commit_queue standard", "gap": "tool is orphan (0 callers)", "severity": "high"},
+      {"id": "D-015", "rule": "driver-ready needs >=2 agents", "gap": "not enforced", "severity": "medium"},
+      {"id": "D-018", "rule": "double-recheck before accepted", "gap": "not enforced", "severity": "medium"},
+      {"id": "D-027", "rule": "authority matrix", "gap": "declared, not wired", "severity": "medium"},
+      {"id": "D-014", "rule": "10-gate execute preflight", "gap": "PARTIALLY wired (best example)", "severity": "medium"},
+      {"id": "D-023", "rule": "index-commit ownership", "gap": "relies on automation not enforced", "severity": "low"},
+      {"id": "self-application-paradox", "rule": "decision_propagation.py/adoption.py exist", "gap": "project does not self-apply them", "severity": "medium"}
+    ],
+    "G3_G5_uncoded_docs": {
+      "count": 15,
+      "examples": ["queue.py (real: agent_queue.py, T-009)", "safe_write", "skills_check", "file_card_check", "folder_budget", "backlog_suggest", "topic_summarize", "safety_gate", "synthesis_gate", "decisions_usage_scan"],
+      "gap": "canonical manuals reference tools that were never built"
+    },
+    "G4_chat_only_unpromoted": [
+      "defect-class-formula itself is a proposed topic, not a decision / not in PROTOCOL",
+      "commit_queue was chat-only until D-031",
+      "text_scene/thread_runner/workflow_recover: code experiments, no integration, no promotion task",
+      "many proposed decisions + synthesis topics never reach accepted (see audit D-02)"
+    ]
+  },
+  "root_cause": "Code and decisions outrun integration and ratification. The repo excels at producing mechanisms (tool / decision / formula) and is weak at WIRING them into the active path and ENFORCING them. Visible at every level: tool, decision, document.",
+  "next_actions": [
+    {"priority": "P1", "item": "Wire or explicitly retire each orphan cluster (D-030 oracle pipeline; git_reconcile as merge-driver; commit_queue into cohort ship)."},
+    {"priority": "P1", "item": "Enforce deferred decisions: cohort guard blocking in pre-commit (D-022); bulk_guard as gate (D-026)."},
+    {"priority": "P2", "item": "Deep fix (f): single CANON_DIRS registry; load() of nonexistent path -> ERROR not 0."},
+    {"priority": "P2", "item": "Docs vs code: run gap_scan dangling as a cleanup — create the tool or remove the reference."},
+    {"priority": "P3", "item": "Promote the formula from proposed topic to a decision / PROTOCOL (else the methodology is itself G4)."},
+    {"priority": "P3", "item": "Extend mutmeta operators (in / not in / startswith / regex) — currently false 'co-defective' on such code."}
+  ]
+}
