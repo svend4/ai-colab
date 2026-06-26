@@ -261,3 +261,24 @@
 - АНТИПАТТЕРН: Вариант 1 worktree+merge используется для ОЧЕНЬ МАЛЫХ правок (изменение одной строки). Результат: инфра-overhead, две ветки, merge-gate на trivial. Overkill. Решение: пороги (>200 строк файла? >50 строк change? >15 минут работы?) — маленькие правки остаются в Level 0. Но если hot-file или shared-state → Level 1 всё равно.
 - АНТИПАТТЕРН: commit_lock TIMEOUT не выставлена, агент ждёт бесконечно. Или TTL слишком короткая (10 секунд), упавший агент освобождает, но успевший взять новый агент тоже падает. Результат: дедлок. Решение: TTL ≈ 120 секунд (эмпирически), timeout на acquire ≈ 5 минут (потом error, не hanging).
 - АНТИПАТТЕРН: Worktree никогда не удаляется (tools/flow.py finish не вызван). Ветка зависает в git branch -a. Диск забит старыми ветками (не критично, но шумно). Решение: cleanup-tool (tools/flow.py clean-old <days>, удаляет orphan>days).
+
+## Дополнение 2026-06-25: Independent-first variants
+
+Связано: `D-028` (proposed), `docs/independent-variant-stream-policy.md`, `tools/stream.py mark`.
+
+Уточнение к `D-017`: для содержательных вопросов, архитектуры, методологии, ревью и больших предложений похожая тема не является основанием остановить агента. Правильная процедура:
+
+1. агент создаёт независимый stream/worktree;
+2. раскрывает вариант до состояния `ready-for-synthesis`;
+3. только после этого observer/synthesizer сравнивает варианты;
+4. повторяющиеся пункты становятся candidates для `consensus` / `ratify-build`;
+5. расхождения и edge cases остаются в `divergence-detail`;
+6. шумовой дубль закрывается только после synthesis, если он не добавил условий, evidence, рисков, вопросов или реализации.
+
+Команда готовности:
+
+```powershell
+python tools\stream.py mark <stream-id> ready-for-synthesis "variant completed"
+```
+
+Dedup по-прежнему действует для механики: id, generated indexes, locks, manifests, claim-файлы и accepted canonical records.

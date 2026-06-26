@@ -4,7 +4,7 @@ type: methodology
 status: proposed
 owner: codex
 date: 2026-06-24
-last_verified: 2026-06-24
+last_verified: 2026-06-25
 related:
   - decisions/D-017.md
   - decisions/D-018.md
@@ -60,6 +60,9 @@ python tools\doc_synthesis.py scan architecture-core --out docs\architecture-cor
 python tools\top.py synthesize-docs architecture-core --json
 python tools\top.py synthesize-docs architecture-core --out docs\architecture-core-documents-synthesis-2026-06-24.md --with-streams
 python tools\doc_synthesis.py scan custom --out report.md file1.md file2.md ...
+python tools\doc_synthesis.py scan doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
 ```
 
 Он делает первый машинный проход:
@@ -73,7 +76,8 @@ python tools\doc_synthesis.py scan custom --out report.md file1.md file2.md ...
 7. извлекает вопросительные и proposal snippets;
 8. сохраняет proposed synthesis;
 9. показывает source-line evidence как `file:line`;
-10. по явному `--with-streams` создаёт stream scaffold без перезаписи ручного `streams/<topic>/divergence.md`.
+10. по явному `--with-streams` создаёт stream scaffold без перезаписи ручного `streams/<topic>/divergence.md`;
+11. для custom topic без файлов читает `streams/<topic>/*/STREAM.md` как corpus, если такие stream-пакеты уже есть.
 
 Важно: инструмент не принимает решения и не заменяет человека. Это intake/scaffold для котла.
 ## 04. Трёхслойный результат
@@ -160,3 +164,41 @@ python tools\top.py synthesize-docs architecture-core --out docs\architecture-co
 - question snippets: 26;
 - proposal snippets: 43;
 - stream scaffolds: `streams/architecture-core/README.generated.md`, `streams/architecture-core/divergence.generated.md`.
+## 08. Реализация T-255: stream corpus
+
+T-255 добавляет мост между independent-first streams и document synthesis:
+
+1. `tools/doc_synthesis.py resolve_files()` сначала уважает явно переданные файлы.
+2. `architecture-core` без файлов остаётся старым preset, чтобы не ломать существующий manual workflow.
+3. Для custom topic без файлов вызывается `stream_topic_files(topic)`.
+4. `stream_topic_files(topic)` ищет `STREAM.md` внутри `streams/<topic>/...` и возвращает отсортированный список repo-relative путей.
+5. Если ни files, ни stream corpus не найдены, команда падает с понятной подсказкой: нужен файл или `streams/<topic>/*/STREAM.md`.
+
+Проверочный сценарий:
+
+```powershell
+python tools\top.py variant-start codex doc-synthesis-stream-corpus --task T-255
+python tools\stream.py mark 20260625-1756-codex ready-for-synthesis "variant completed"
+python tools\doc_synthesis.py scan doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
+```
+
+Это не auto-adoption. Результат остаётся `status: proposed` и идёт в котёл: consensus можно переносить дальше, divergence остаётся отдельной полосой.
+## 09. Реализация T-256: ready-only corpus
+
+T-256 добавляет фильтр зрелости для stream corpus:
+
+1. `--ready-only` применяется только когда пользователь не передал явный список files.
+2. Готовым считается stream с `status: ready-for-synthesis` или `synthesis_ready: true`.
+3. Proposed/developing streams остаются в `streams/`, но не попадают в ready-only synthesis.
+4. Если готовых stream-пакетов нет, команда падает с явной подсказкой, а не строит пустой synthesis.
+
+Команды:
+
+```powershell
+python tools\doc_synthesis.py scan doc-synthesis-stream-corpus --ready-only --json
+python tools\top.py synthesize-docs doc-synthesis-stream-corpus --ready-only --json
+```
+
+Это промежуточный слой между свободной генерацией вариантов и строгим adoption: писать можно много, синтезировать для строительства нужно только дозревшее.
