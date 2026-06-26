@@ -48,6 +48,7 @@ COMMANDS = [
     {"cmd": "python tools/top.py conveyor [--target N] [--json]", "does": "верхний read-only статус workflow-конвейера: REFILL/PROCESS/IDLE"},
     {"cmd": "python tools/top.py cauldron-lanes [topic] [--json] [--out docs/<name>.md]", "does": "две полосы котла: ratify-build и divergence-detail из doc_synthesis"},
     {"cmd": "python tools/top.py synthesize-docs [topic] [--json] [--out docs/<name>.md] [--with-streams]", "does": "doc_synthesis v2 через верхний слой: source-line refs, candidates и streams scaffold"},
+    {"cmd": "python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]", "does": "dry-run смыслового графа котла и synthesis-task; запись только явными apply-флагами"},
     {"cmd": "python tools/top.py assurance [section] [--json] [--strict]", "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"},
     {"cmd": "python tools/top.py health", "does": "групповая проверка здоровья канона"},
     {"cmd": "python tools/top.py instruction-preflight <agent> [T-id]", "does": "показать применимые инструкции и evidence-шаблон"},

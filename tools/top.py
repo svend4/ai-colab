@@ -18,6 +18,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py actions [--json]         # outbox action item status
+    python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]  # cauldron atom graph + synthesis prompt
     python tools/top.py assurance [section] [--json] [--strict]  # apex verifiability dashboard
     python tools/top.py advice <agent> [T-id]   # activate existing advice against current symptoms
     python tools/top.py health                   # validation/generator/capability checks
@@ -104,6 +105,13 @@ _BUTTONS = [
         "command": "python tools/top.py actions [--json]",
         "does": "Показать статус outbox action items: unprocessed, partial, shipped, no-actions, historical.",
         "effect": "read-only",
+    },
+    {
+        "id": "butterfly-synthesis",
+        "audience": "both",
+        "command": "python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]",
+        "does": "Запустить безопасный dry-run смыслового графа и синтез-задачи из котла; запись только явными apply-флагами.",
+        "effect": "read-only by default; writes graph/topic only with explicit apply flags",
     },
     {
         "id": "assurance",
@@ -387,6 +395,102 @@ def cmd_actions(args):
         return p.returncode
     return _run("outbox actions", cmd, timeout=45)
 
+
+def _json_command_result(label, cmd, timeout=120):
+    try:
+        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return {
+            "label": label,
+            "ok": False,
+            "returncode": 124,
+            "command": cmd,
+            "error": "timeout after %ss" % timeout,
+        }
+    text = (p.stdout or "").strip()
+    payload = None
+    parse_error = None
+    if text:
+        try:
+            payload = json.loads(text)
+        except json.JSONDecodeError as exc:
+            parse_error = str(exc)
+    result = {
+        "label": label,
+        "ok": p.returncode == 0 and parse_error is None,
+        "returncode": p.returncode,
+        "command": cmd,
+        "payload": payload,
+    }
+    if parse_error:
+        result["parse_error"] = parse_error
+        result["stdout"] = text[:4000]
+    if p.stderr:
+        result["stderr"] = p.stderr.strip()[:4000]
+    return result
+
+
+def _butterfly_graph_cmd(args, json_output=False):
+    cmd = _tool("butterfly_graph_builder.py", "--source-dir", args.source_dir, "--graph", args.graph)
+    if args.limit is not None:
+        cmd += ["--limit", str(args.limit)]
+    if args.apply_graph:
+        cmd.append("--apply")
+    if args.force_truncate:
+        cmd.append("--force-truncate")
+    if json_output:
+        cmd.append("--json")
+    return cmd
+
+
+def _butterfly_alchemy_cmd(args, json_output=False):
+    cmd = _tool("butterfly_alchemist.py", "--graph", args.graph, "--sample-size", str(args.sample_size))
+    if args.seed:
+        cmd += ["--seed", args.seed]
+    if args.created_at:
+        cmd += ["--created-at", args.created_at]
+    if args.out:
+        cmd += ["--out", args.out]
+    else:
+        cmd += ["--out-dir", args.out_dir]
+    if args.apply_topic:
+        cmd.append("--apply")
+    if args.force_truncate:
+        cmd.append("--force-truncate")
+    if json_output:
+        cmd.append("--json")
+    return cmd
+
+
+def cmd_butterfly(args):
+    graph_cmd = _butterfly_graph_cmd(args, json_output=args.json)
+    alchemy_cmd = _butterfly_alchemy_cmd(args, json_output=args.json)
+    mutates = bool(args.apply_graph or args.apply_topic)
+    if args.json:
+        graph_result = _json_command_result("butterfly graph", graph_cmd)
+        alchemy_result = _json_command_result("butterfly alchemist", alchemy_cmd)
+        payload = {
+            "schema": "top_butterfly.v1",
+            "mutates": mutates,
+            "graph": graph_result,
+            "alchemy": alchemy_result,
+            "notes": [],
+        }
+        if not args.apply_graph:
+            payload["notes"].append("graph dry-run only; use --apply-graph to update the graph")
+        if not args.apply_topic:
+            payload["notes"].append("topic dry-run only; use --apply-topic to write the synthesis task")
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0 if graph_result["ok"] and alchemy_result["ok"] else 1
+
+    rc = _run("butterfly graph", graph_cmd, timeout=120)
+    step = _run("butterfly alchemist", alchemy_cmd, timeout=120, fail_ok=True)
+    if step != 0:
+        rc = step
+    if not mutates:
+        print("\nread-only: no graph/topic writes were made; use --apply-graph and/or --apply-topic explicitly")
+    return rc
 
 def cmd_friction(args):
     cmd = _tool("friction.py", "status")
@@ -1296,6 +1400,21 @@ def build_parser():
     p = sub.add_parser("actions", help="show queues/outbox action item status")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_actions)
+
+    p = sub.add_parser("butterfly", help="safe cauldron graph refresh and synthesis prompt preview")
+    p.add_argument("--source-dir", default=os.path.join("queues", "outbox"))
+    p.add_argument("--graph", default=os.path.join("indexes", "cauldron_graph.json"))
+    p.add_argument("--limit", type=int, default=0)
+    p.add_argument("--sample-size", type=int, default=3)
+    p.add_argument("--seed")
+    p.add_argument("--created-at")
+    p.add_argument("--out-dir", default="topics")
+    p.add_argument("--out")
+    p.add_argument("--apply-graph", action="store_true")
+    p.add_argument("--apply-topic", action="store_true")
+    p.add_argument("--force-truncate", action="store_true")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=cmd_butterfly)
 
     p = sub.add_parser("assurance", help="show instruction assurance apex dashboard")
     p.add_argument("section", nargs="?", default="all", choices=["applied", "currency", "coverage", "flow", "all"])

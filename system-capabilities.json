@@ -25,6 +25,10 @@
       "does": "doc_synthesis v2 через верхний слой: source-line refs, candidates и streams scaffold"
     },
     {
+      "cmd": "python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]",
+      "does": "dry-run смыслового графа котла и synthesis-task; запись только явными apply-флагами"
+    },
+    {
       "cmd": "python tools/top.py assurance [section] [--json] [--strict]",
       "does": "apex-дашборд проверяемости инструкций: applied/currency/coverage/flow; advisory по умолчанию"
     },

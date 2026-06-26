@@ -31,6 +31,7 @@ def run():
     assert "health" in ids, ids
     assert "friction-status" in ids, ids
     assert "assurance" in ids, ids
+    assert "butterfly-synthesis" in ids, ids
     assert "advice-activator" in ids, ids
     assert "instruction-preflight" in ids, ids
     assert "take-task" in ids, ids
@@ -59,6 +60,7 @@ def run():
     assert "python tools/top.py health" in rendered, rendered
     assert "python tools/top.py friction" in rendered, rendered
     assert "python tools/top.py assurance" in rendered, rendered
+    assert "python tools/top.py butterfly" in rendered, rendered
     assert "python tools/top.py advice" in rendered, rendered
     assert "python tools/top.py agent-start <agent> [--task T-id] [--context" in rendered, rendered
     assert "python tools/top.py instruction-preflight" in rendered, rendered
@@ -80,6 +82,8 @@ def run():
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
     assert fargs.cmd == "friction" and fargs.json, fargs
+    bargs = parser.parse_args(["butterfly", "--seed", "codex", "--json", "--apply-graph", "--apply-topic"])
+    assert bargs.cmd == "butterfly" and bargs.seed == "codex" and bargs.json and bargs.apply_graph and bargs.apply_topic, bargs
     aargs = parser.parse_args(["assurance", "currency", "--json", "--max-age", "90"])
     assert aargs.cmd == "assurance" and aargs.section == "currency" and aargs.json and aargs.max_age == 90, aargs
     sargs = parser.parse_args(["assurance", "flow", "--strict"])
@@ -114,6 +118,38 @@ def run():
         raise AssertionError("variant-start accepted conflicting search flags")
     except SystemExit:
         pass
+
+    butterfly_root = os.path.join(ROOT, "tmp-work", "top-butterfly-test")
+    shutil.rmtree(butterfly_root, ignore_errors=True)
+    butterfly_source = os.path.join(butterfly_root, "outbox")
+    butterfly_index = os.path.join(butterfly_root, "indexes")
+    os.makedirs(butterfly_source, exist_ok=True)
+    os.makedirs(butterfly_index, exist_ok=True)
+    butterfly_graph = os.path.join(butterfly_index, "cauldron_graph.json")
+    butterfly_out = os.path.join(butterfly_root, "topics", "alchemy.md")
+    with open(os.path.join(butterfly_source, "report.md"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("# Report\n\nНовый dry-run атом для верхней панели и безопасной сверки котла.\n")
+    with open(butterfly_graph, "w", encoding="utf-8", newline="\n") as f:
+        json.dump([
+            {"hash": "a1", "source_file": "seed.md", "content": "Первый существующий атом для синтеза верхнего слоя."},
+            {"hash": "b2", "source_file": "seed.md", "content": "Второй существующий атом описывает безопасный dry-run."},
+            {"hash": "c3", "source_file": "seed.md", "content": "Третий существующий атом задает границу apply-флага."},
+        ], f, ensure_ascii=False)
+    p = subprocess.run([sys.executable, os.path.join(HERE, "top.py"), "butterfly",
+                        "--source-dir", butterfly_source,
+                        "--graph", butterfly_graph,
+                        "--out", butterfly_out,
+                        "--seed", "codex",
+                        "--created-at", "2026-06-26T00:00:00",
+                        "--json"],
+                       cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", stdin=subprocess.DEVNULL)
+    assert p.returncode == 0, (p.stdout, p.stderr)
+    butterfly_payload = json.loads(p.stdout)
+    assert butterfly_payload["schema"] == "top_butterfly.v1" and butterfly_payload["mutates"] is False, butterfly_payload
+    assert butterfly_payload["graph"]["payload"]["mode"] == "dry-run", butterfly_payload
+    assert butterfly_payload["alchemy"]["payload"]["mode"] == "dry-run", butterfly_payload
+    assert not os.path.exists(butterfly_out), butterfly_payload
+    shutil.rmtree(butterfly_root, ignore_errors=True)
     qtargs = parser.parse_args(["question-tree", "topics/information-refactoring-question-tree-2026-06-25.md", "--category", "open", "--action-plan", "--json", "--limit", "5"])
     assert qtargs.cmd == "question-tree" and qtargs.category == "open" and qtargs.action_plan and qtargs.json and qtargs.limit == 5, qtargs
     qcmd = top._question_tree_cmd(qtargs.path, qtargs.category, qtargs.json, qtargs.limit, qtargs.action_plan)
