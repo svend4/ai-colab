@@ -246,6 +246,13 @@
       "next": ""
     },
     {
+      "id": "infon-repo-independent-eval-2026-06-26",
+      "title": "Независимая ручная оценка svend4/infon (.inf) — что взять сюда, что посоветовать туда",
+      "file": "topics/infon-repo-independent-eval-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "kotel-system-critique-2026-06-24",
       "title": "Котёл: Системная Критика, Технический Долг и Ответственность",
       "file": "topics/kotel-system-critique-2026-06-24.md",
