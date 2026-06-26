@@ -2,12 +2,11 @@
 import os
 import sys
 import json
-import shutil
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
-ROOT = os.path.join(REPO_ROOT, "tmp-work", "wf_recover_test_%d" % os.getpid())
-shutil.rmtree(ROOT, ignore_errors=True)
+ROOT = os.path.join(REPO_ROOT, "tmp-work", "wf_recover_test_%d_%d" % (os.getpid(), time.time_ns()))
 os.makedirs(ROOT, exist_ok=True)
 os.environ["COLLAB_ROOT"] = ROOT
 
@@ -73,7 +72,7 @@ def run():
         print("OK test_workflow_recover: разбор журнала · started/completed/pending · counts · dump(dict+str) · _journal_path · missing")
         return 0
     finally:
-        shutil.rmtree(ROOT, ignore_errors=True)
+        pass
 
 
 if __name__ == "__main__":
