@@ -54,5 +54,17 @@ red-team. Итог: **7/9 опровергнуто, 2 выжили после р
 поймать правдоподобно-неверное, включая собственные выводы и собственный код (2 бага в тулах найдены
 red-team и починены). Детали: `kotel/...consensus...md` §9–10, `redteam/`.
 
+## Запуск всего конвейера одной командой (оркестратор)
+
+Раньше фазы 4–8 были разрозненными тулами (`consensus_by_meaning`, `oracle_quorum` — orphan-корни, никто не вызывал). Теперь конвейер соединён **grow-only оркестратором** (connector, существующие тулы не тронуты):
+
+```text
+python tools/independent_pipeline.py            # мета-доска всех 8 фаз (--board каждого тула)
+python tools/independent_pipeline.py <topic>    # фазы 4-5 по конкретной теме variants/<topic>/
+python tools/independent_pipeline.py --json
+```
+
+Он последовательно вызывает `ripeness_gate → portals → independence_measure → consensus_by_meaning → divergence_detail → red_team_gate → oracle_quorum` и агрегирует их доски в одну. Это делает аппарат семантического оракула (D-030) запускаемым и видимым как целое (ничего не удалено — добавлена связь). См. `D-032`/`reports/gap-inventory-2026-06-26.md`.
+
 ## Связи
 Карта консенсуса: `kotel/independent-first-reconcile-consensus-2026-06-25.md` (9 ядро-инвариантов). Политика fork-стороны: `D-028`. Предложение merge-стороны: `queues/outbox/2026-06-25-claude-independent-first-merge-side.md` (D-029).
