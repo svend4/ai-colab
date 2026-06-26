@@ -54,6 +54,7 @@ def run():
     assert "cauldron-lanes" in ids, ids
     assert "synthesize-docs" in ids, ids
     assert "workspace-cell" in ids, ids
+    assert "code-activation" in ids, ids
     assert any(r["audience"] == "human" for r in rows), rows
     assert any(r["audience"] == "agent" for r in rows), rows
     rendered = top.format_buttons(rows)
@@ -80,6 +81,7 @@ def run():
     assert "python tools/top.py cauldron-lanes" in rendered, rendered
     assert "python tools/top.py synthesize-docs" in rendered, rendered
     assert "python tools/top.py workspace-cell" in rendered, rendered
+    assert "python tools/top.py code-activation" in rendered, rendered
     assert "--ready-only" in rendered, rendered
     parser = top.build_parser()
     fargs = parser.parse_args(["friction", "--json"])
@@ -100,6 +102,8 @@ def run():
     assert take_args.cmd == "take" and take_args.agent == "codex" and take_args.task == "T-152", take_args
     wcargs = parser.parse_args(["workspace-cell", "T-264", "--json"])
     assert wcargs.cmd == "workspace-cell" and wcargs.ref == "T-264" and wcargs.json, wcargs
+    cargs = parser.parse_args(["code-activation", "tools/code_activation.py", "--driver-id", "demo", "--json"])
+    assert cargs.cmd == "code-activation" and cargs.target == "tools/code_activation.py" and cargs.driver_id == "demo" and cargs.json, cargs
     args = parser.parse_args(["cycle", "codex"])
     assert args.cmd == "cycle" and args.agent == "codex", args
     kargs = parser.parse_args(["knowledge", "docs", "--db", "tmp-work/x.db", "--query", "pipeline"])

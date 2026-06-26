@@ -17,6 +17,7 @@ pipeline/validate/knowledge/drivers; it makes them easier to call consistently.
     python tools/top.py buttons                  # human/agent command groups
     python tools/top.py status [agent]           # quick state: git + pipeline + drift
     python tools/top.py workspace-cell <id> [--json]  # task/thread/worktree/outbox/checks state card
+    python tools/top.py code-activation <target> [--json]  # read-only code activation gates
     python tools/top.py friction                 # repeated-problem diagnostics + recipes
     python tools/top.py actions [--json]         # outbox action item status
     python tools/top.py butterfly [--seed TEXT] [--json] [--apply-graph] [--apply-topic]  # cauldron atom graph + synthesis prompt
@@ -98,6 +99,13 @@ _BUTTONS = [
         "audience": "both",
         "command": "python tools/top.py workspace-cell <thread-or-task> [--json]",
         "does": "Собрать read-only карточку task/thread/stream/worktree/outbox/checks/next action.",
+        "effect": "read-only",
+    },
+    {
+        "id": "code-activation",
+        "audience": "both",
+        "command": "python tools/top.py code-activation <target> [--json]",
+        "does": "Build D-014/D-033 read-only code activation plan; no execute.",
         "effect": "read-only",
     },
     {
@@ -1488,6 +1496,29 @@ def cmd_workspace_cell(args):
     print("```")
     return 0
 
+def cmd_code_activation(args):
+    cmd = _tool("code_activation.py", "plan", args.target,
+                "--driver-id", args.driver_id,
+                "--require-confirmations", str(args.require_confirmations))
+    if args.json:
+        cmd.append("--json")
+    if args.command:
+        cmd.append("--command")
+        cmd.extend(args.command)
+    if args.json:
+        try:
+            p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=45)
+            if p.stdout:
+                print(p.stdout.strip())
+            if p.stderr:
+                print(p.stderr.strip(), file=sys.stderr)
+            return p.returncode
+        except subprocess.TimeoutExpired:
+            print(json.dumps({"error": "timeout", "command": " ".join(cmd)}, ensure_ascii=False))
+            return 124
+    return _run("code activation", cmd, timeout=45)
+
 def cmd_stream_proxy(args):
     """Proxy commands to tools/stream.py."""
     cmd = _tool("stream.py") + args.args
@@ -1766,6 +1797,14 @@ def build_parser():
     p.add_argument("--all", action="store_true")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=cmd_process_landed)
+
+    p = sub.add_parser("code-activation", help="read-only D-014/D-033 code activation gate card")
+    p.add_argument("target")
+    p.add_argument("--driver-id", default="code-activation")
+    p.add_argument("--require-confirmations", type=int, default=2)
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--command", nargs=argparse.REMAINDER, help="optional command to statically preflight; never executed")
+    p.set_defaults(func=cmd_code_activation)
 
     p = sub.add_parser("workspace-cell", help="show read-only task/thread/worktree/outbox/checks card")
     p.add_argument("ref", help="thread id or task id")
