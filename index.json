@@ -197,6 +197,13 @@
       "next": ""
     },
     {
+      "id": "context-graph-rag-cross-pollination-2026-06-26",
+      "title": "Context-graph слой для мульти-агентной памяти (статья TDS) — мы это уже построили + бенчмарк",
+      "file": "topics/context-graph-rag-cross-pollination-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "d014-execute-off-ratification-2026-06-23",
       "title": "D-014 execute OFF ratification packet",
       "file": "topics/d014-execute-off-ratification-2026-06-23.md",

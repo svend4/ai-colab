@@ -43,6 +43,7 @@
 | Авторитетная архитектура подсистемы безопасной коллаборации / параллельной работы (атомарные примитивы + ownership-детекторы + изоляция L0/L1) | `topics/collab-safety-subsystem-2026-06-23.md` | proposed | — |  |
 | Политика коммитов для многоагентной работы — «ручейки» (streams) в основную линию | `topics/commit-policy-streams-2026-06-21.md` | accepted | none | Закрыто D-021 — Level 0 дефолт, Level 1 worktree-streams явный режим --worktree; см. T-143 closeout |
 | Очередь коммитов с обратной связью и предсохранением → обобщение на технический и СЕМАНТИЧЕСКИЙ синтез | `topics/commit-queue-and-synthesis-2026-06-26.md` | proposed | — |  |
+| Context-graph слой для мульти-агентной памяти (статья TDS) — мы это уже построили + бенчмарк | `topics/context-graph-rag-cross-pollination-2026-06-26.md` | proposed | — |  |
 | D-014 execute OFF ratification packet | `topics/d014-execute-off-ratification-2026-06-23.md` | proposed | — |  |
 | Proposal: Глобальная очистка очередей и ресайклинг технического долга (Вторсырье) | `topics/debt-cleanup-recycling-proposal-2026-06-24.md` | proposed | — |  |
 | Систематическая формула решения дефектов многоагентной работы (класс «конкурентного вклада») + аудит истории | `topics/defect-class-formula-2026-06-26.md` | proposed | — |  |

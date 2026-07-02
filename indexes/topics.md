@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 80 файлов, 4 подпапок
+# Индекс папки `topics/` — 81 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -27,6 +27,7 @@
 | [collab-safety-subsystem-2026-06-23.md](../topics/collab-safety-subsystem-2026-06-23.md) | topic | proposed | Конкурентные агенты в этом репозитории **никогда** не используют потоки-замки ОС или базу  |
 | [commit-policy-streams-2026-06-21.md](../topics/commit-policy-streams-2026-06-21.md) | — | accepted | Форк-вариант Claude (по D-017) на вопрос Stefan: как агентам коммитить, **не блокируя друг |
 | [commit-queue-and-synthesis-2026-06-26.md](../topics/commit-queue-and-synthesis-2026-06-26.md) | topic | proposed | fatal: Unable to create '.../.git/index.lock': File exists. |
+| [context-graph-rag-cross-pollination-2026-06-26.md](../topics/context-graph-rag-cross-pollination-2026-06-26.md) | topic | proposed | Вектор-RAG структурно недостаточен для мульти-агентной памяти — не из-за окна, а потому чт |
 | [d003-scope.md](../topics/d003-scope.md) | — | done | D-003 требует короткое обоснование при изменении служебных/общих файлов. Открытый под-вопр |
 | [d014-execute-off-ratification-2026-06-23.md](../topics/d014-execute-off-ratification-2026-06-23.md) | cauldron-packet | proposed | Дата: 2026-06-23. |
 | [debt-cleanup-recycling-proposal-2026-06-24.md](../topics/debt-cleanup-recycling-proposal-2026-06-24.md) | doc | proposed | **Инициатор:** Субагентский Рой 3:1 (Куратор) + Antigravity + Человек |
