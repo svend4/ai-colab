@@ -1,7 +1,9 @@
-"""Тест commit_queue.py — FIFO-позиции · голова-берёт-лок · предсохранение+recover · fail · видимость .git/index.lock · path-safety."""
+"""Тест commit_queue.py — FIFO-позиции · голова-берёт-лок · предсохранение+recover · fail · видимость .git/index.lock · path-safety · битый-тикет-в-карантин · мусорный --ratio (аудит C37)."""
 import os
 import sys
 import time
+import io
+import contextlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(HERE)
@@ -96,12 +98,42 @@ def run():
         if "некорректный ticket id" not in msg:
             fails.append("done должен отвергать path-like ticket id: %s" % msg)
 
+        # битый JSON-тикет НЕ исчезает молча (аудит C37): WARN в stderr + карантин corrupt/
+        bad_name = "999-deadbeefdead.json"
+        bad_path = os.path.join(cq.QDIR, bad_name)
+        with open(bad_path, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write("{битый json")
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            ids = [t["id"] for t in cq._load_all()]
+        if "999-deadbeefdead" in ids:
+            fails.append("битый тикет не должен попадать в очередь")
+        if "WARN commit_queue" not in err.getvalue() or bad_name not in err.getvalue():
+            fails.append("битый тикет должен давать WARN с именем файла: %r" % err.getvalue()[:160])
+        if os.path.exists(bad_path):
+            fails.append("битый тикет должен быть перенесён из очереди (не оставаться в QDIR)")
+        if not os.path.exists(os.path.join(cq.QDIR, "corrupt", bad_name)):
+            fails.append("битый тикет должен лежать в queues/commit-queue/corrupt/ (след остаётся)")
+
+        # мусорный --ratio в pipeline.cmd_next → ошибка + rc=2, валидный — работает (аудит C37)
+        import pipeline as pl
+        out_bad, out_ok = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out_bad):
+            rc_bad = pl.cmd_next("tester", ratio="code;0.7")
+        with contextlib.redirect_stdout(out_ok):
+            rc_ok = pl.cmd_next("tester", ratio="code:7,docs:3")
+        if rc_bad != 2 or "ОШИБКА" not in out_bad.getvalue():
+            fails.append("мусорный --ratio должен давать rc=2 и ОШИБКА (rc=%r, out=%r)"
+                         % (rc_bad, out_bad.getvalue()[:120]))
+        if rc_ok != 0:
+            fails.append("валидный --ratio должен работать без ошибки (rc=%r)" % rc_ok)
+
         if fails:
             print("FAIL test_commit_queue:")
             for f in fails:
                 print("  -", f)
             return 1
-        print("OK test_commit_queue: FIFO-позиции · голова-берёт-лок · фидбек-с-позицией · предсохранение+recover · fail · .git/index.lock-видимость · ticket path-safety")
+        print("OK test_commit_queue: FIFO-позиции · голова-берёт-лок · фидбек-с-позицией · предсохранение+recover · fail · .git/index.lock-видимость · ticket path-safety · битый-тикет(WARN+corrupt/) · --ratio(мусор→rc=2)")
         return 0
     finally:
         pass

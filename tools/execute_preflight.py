@@ -44,27 +44,180 @@ def probe_sandbox_backend(sandbox_type):
         return False, f"Unknown sandbox type: {sandbox_type}"
 
 # Gate 4/5: mount/network
+# Белый список источников маунта: только work/out каталоги sandbox
+# (их создаёт execute_audit.AuditLogger.prepare_workspace в корне репозитория).
+_SANDBOX_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ALLOWED_MOUNT_SOURCES = (
+    os.path.join(_SANDBOX_ROOT, ".sandbox_work"),
+    os.path.join(_SANDBOX_ROOT, ".sandbox_out"),
+)
+
+# Запрещённые префиксы источников маунта (D-014: не монтировать профиль
+# пользователя и системные каталоги хоста). Сравниваем в нормализованном
+# виде: нижний регистр, прямые слэши.
+FORBIDDEN_MOUNT_PREFIXES = (
+    "c:/users",      # весь профиль пользователя Windows
+    "/c/users",      # тот же профиль в нотации git-bash
+    "/mnt/c/users",  # тот же профиль в нотации WSL
+    "/home",         # домашние каталоги Linux
+    "/root",
+    "/etc",
+)
+
+# Запрещённые фрагменты источника маунта (секреты и ключи по D-014).
+FORBIDDEN_MOUNT_FRAGMENTS = (
+    ".ssh",
+    ".gitconfig",
+    ".git-credentials",
+    ".aws",
+    ".gnupg",
+    "id_rsa",
+    "docker.sock",
+    "%userprofile%",
+    "$home",
+)
+
+
+def _norm_mount_path(path):
+    """Нормализует путь для сравнения: раскрывает ~ и %VAR%, делает
+    абсолютным, приводит к нижнему регистру и прямым слэшам."""
+    expanded = os.path.expandvars(os.path.expanduser(path))
+    return os.path.abspath(expanded).replace("\\", "/").lower()
+
+
+def _split_volume_source(value):
+    """Выделяет источник из значения -v/--volume вида SRC:DST[:opts].
+    Учитывает букву диска Windows (C:\\...) в начале источника.
+    Возвращает None для анонимного volume (значение без разделителя)."""
+    start = 2 if len(value) >= 2 and value[1] == ":" and value[0].isalpha() else 0
+    sep = value.find(":", start)
+    if sep == -1:
+        return None
+    return value[:sep]
+
+
+def _extract_mount_sources(args):
+    """Собирает источники маунтов из docker-аргументов.
+    Понимает формы: `-v SRC:DST` (два аргумента — именно так строит команду
+    sandbox_runner.py), `-v=SRC:DST`, `-vSRC:DST`, `--volume SRC:DST`,
+    `--volume=SRC:DST`, `--mount type=bind,source=SRC,target=DST`."""
+    sources = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        value = None
+        kind = None
+        for flag in ("--volume", "--mount", "-v"):
+            if arg == flag:
+                if i + 1 < len(args):
+                    value = args[i + 1]
+                    i += 1
+                kind = flag
+                break
+            if arg.startswith(flag + "="):
+                value = arg[len(flag) + 1:]
+                kind = flag
+                break
+            if flag == "-v" and arg.startswith("-v") and len(arg) > 2:
+                # Слитная короткая форма: -vC:\src:/dst
+                value = arg[2:]
+                kind = flag
+                break
+        if value is not None:
+            if kind == "--mount":
+                # Формат: type=bind,source=SRC,target=DST (source|src)
+                for part in value.split(","):
+                    key, _, val = part.partition("=")
+                    if key.strip().lower() in ("source", "src") and val:
+                        sources.append(val)
+            else:
+                src = _split_volume_source(value)
+                if src is not None:
+                    sources.append(src)
+        i += 1
+    return sources
+
+
+def _looks_like_host_path(source):
+    """Отличает хостовый путь от именованного docker-volume."""
+    if "/" in source or "\\" in source:
+        return True
+    if len(source) >= 2 and source[1] == ":" and source[0].isalpha():
+        return True
+    return source.startswith((".", "~", "%", "$"))
+
+
+def _check_mount_source(source):
+    """Проверяет один источник маунта (Gate 4). Возвращает (ok, msg)."""
+    raw = source.replace("\\", "/").lower()
+    norm = _norm_mount_path(source)
+    if _looks_like_host_path(source):
+        # 1. Белый список: только work/out каталоги sandbox. Проверяется
+        #    первым, потому что сам репозиторий может лежать под C:\Users.
+        for allowed in ALLOWED_MOUNT_SOURCES:
+            allowed_norm = _norm_mount_path(allowed)
+            if norm == allowed_norm or norm.startswith(allowed_norm + "/"):
+                return True, "Mount source is inside sandbox whitelist"
+        # 2. Явно запрещённые чувствительные пути и фрагменты (D-014).
+        for prefix in FORBIDDEN_MOUNT_PREFIXES:
+            if norm == prefix or norm.startswith(prefix + "/"):
+                return False, "Mounting sensitive host paths is forbidden (Gate 4): %s" % source
+        for frag in FORBIDDEN_MOUNT_FRAGMENTS:
+            if frag in raw or frag in norm:
+                return False, "Mounting sensitive host paths is forbidden (Gate 4): %s" % source
+        # 3. Всё остальное вне белого списка тоже запрещено (deny-by-default).
+        return False, "Mount source outside sandbox work/out whitelist is forbidden (Gate 4): %s" % source
+    # Именованный docker-volume: хостового пути нет, но чувствительные
+    # фрагменты всё равно запрещаем.
+    for frag in FORBIDDEN_MOUNT_FRAGMENTS:
+        if frag in raw:
+            return False, "Mounting sensitive host paths is forbidden (Gate 4): %s" % source
+    return True, "Named volume"
+
+
+def _extract_network_modes(args):
+    """Собирает значения --network/--net (алиас) в порядке следования,
+    включая формы `--network none`, `--network=none`, `--net host`, `--net=host`."""
+    modes = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        for flag in ("--network", "--net"):
+            if arg == flag:
+                if i + 1 < len(args):
+                    modes.append(args[i + 1])
+                    i += 1
+                break
+            if arg.startswith(flag + "="):
+                modes.append(arg[len(flag) + 1:])
+                break
+        i += 1
+    return modes
+
+
 def check_sandbox_isolation(args):
     # args: list of arguments, e.g. ["docker", "run", "--rm", "--network", "none", ...]
     args_str = " ".join(args)
-    
-    if "--network host" in args_str or "--network=host" in args_str:
+
+    # Gate 5: сеть. --net — алиас --network; docker берёт последнее значение,
+    # но host в любом месте запрещаем сразу.
+    net_modes = _extract_network_modes(args)
+    if any(mode == "host" for mode in net_modes):
         return False, "Host network is strictly forbidden (Gate 5)"
-    
     # We require explicit --network none
-    if "--network none" not in args_str and "--network=none" not in args_str:
+    if not net_modes or net_modes[-1] != "none":
         return False, "Explicit --network none is required (Gate 5)"
-        
+
     if "--privileged" in args_str:
         return False, "Privileged mode is strictly forbidden (Gate 4)"
-        
-    for arg in args:
-        if arg.startswith("-v") or arg.startswith("--volume"):
-            # Very basic check against mounting root or user dir
-            # In real usage we parse the mount source
-            if "C:\\" in arg and ("C:\\Users" in arg and ".ssh" in arg):
-                return False, "Mounting sensitive host paths is forbidden (Gate 4)"
-                
+
+    # Gate 4: маунты. Реально парсим значения -v/--volume/--mount (включая
+    # двухаргументную форму `-v <путь>`) и резолвим источник каждого маунта.
+    for src in _extract_mount_sources(args):
+        ok, msg = _check_mount_source(src)
+        if not ok:
+            return False, msg
+
     return True, "Isolation checks passed"
 
 # Gate 6: limits

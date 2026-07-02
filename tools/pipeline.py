@@ -35,8 +35,9 @@
 import os
 import re
 import sys
-from _ioutil import configure_output
+from _ioutil import configure_output, atomic_write
 from _cli import help_guard
+import hashlib
 import time
 import uuid
 import json
@@ -197,8 +198,8 @@ def set_status(path, new):
         return False
     head, rest = text[:end], text[end:]
     head2 = re.sub(r"(?m)^status:.*$", "status: " + new, head, count=1)
-    with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(head2 + rest)
+    # источник правды по статусу — tasks/*.md: пишем атомарно (аудит C49)
+    atomic_write(path, head2 + rest)
     return True
 
 def is_placeholder_task(t):
@@ -249,8 +250,12 @@ def cmd_next(agent, kind=None, ratio=None):
                 if r <= cumulative:
                     kind = k
                     break
-        except Exception:
-            pass # fallback if parsing fails
+        except Exception as exc:
+            # опечатка в --ratio больше НЕ игнорируется молча (аудит C37):
+            # раньше выбор шёл не по заявленным весам, и никто не узнавал
+            print("ОШИБКА: не удалось разобрать --ratio %r (%s). "
+                  "Формат: kind:вес[,kind:вес], например code:7,docs:3" % (ratio, exc))
+            return 2
 
     if kind:
         preferred = [t for t in ready if t.get("kind") == kind]
@@ -555,23 +560,44 @@ def cmd_status():
 def cmd_snapshot():
     state = build_pipeline_state()
     os.makedirs(LOGS, exist_ok=True)
-    with open(PIPELINE_JSON, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(state, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    with open(PIPELINE_MD, "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_pipeline_md(state))
+    # производные файлы пишем атомарно: параллельный читатель никогда не видит
+    # усечённый pipeline.json/PIPELINE.md (аудит C49)
+    atomic_write(PIPELINE_JSON, json.dumps(state, ensure_ascii=False, indent=2) + "\n")
+    atomic_write(PIPELINE_MD, render_pipeline_md(state))
     write_heartbeat_views()
     print("SNAPSHOT: PIPELINE.md + logs/pipeline.json обновлены")
     return 0
 
 def safe_agent_name(agent):
-    return re.sub(r"[^A-Za-z0-9_.-]+", "_", agent.strip()) or "unknown"
+    """Имя агента → безопасное имя heartbeat-файла (аудит C49).
+
+    Кириллица и прочие юникод-буквы сохраняются (\\w с re.UNICODE): «иван» и
+    «пётр» больше не схлопываются в один файл `_.json`. Если что-то всё же
+    пришлось вычистить — добавляется короткий хэш ИСХОДНОГО имени, так что два
+    разных «грязных» имени гарантированно не перетирают друг друга. Для чистых
+    ASCII-имён (claude, codex) результат совпадает с прежним — обратная
+    совместимость имён файлов сохранена.
+    """
+    raw = (agent or "").strip()
+    if not raw:
+        return "unknown"
+    cleaned = re.sub(r"[^\w.-]+", "_", raw, flags=re.UNICODE)
+    if cleaned != raw:
+        # часть символов вычищена — уникальность гарантирует хэш исходного имени
+        cleaned = "%s.%s" % (cleaned or "unknown", hashlib.sha1(raw.encode("utf-8")).hexdigest()[:8])
+    return cleaned
+
+# heartbeat по закрытой (done) задаче старше этого TTL — призрак: задача давно
+# завершена, запись только вводит читателя LIVE.md в заблуждение (аудит C22)
+DONE_HEARTBEAT_TTL_S = 15 * 60
 
 def collect_heartbeats():
     items = []
     if not os.path.isdir(HEARTBEAT_DIR):
         return items
     now = int(time.time())
+    # статусы задач — для автоочистки призрачных heartbeat по done-задачам (аудит C22)
+    statuses = {t["id"]: t["status"] for t in collect_tasks().values()}
     for fn in sorted(os.listdir(HEARTBEAT_DIR)):
         if not fn.endswith(".json"):
             continue
@@ -583,6 +609,16 @@ def collect_heartbeats():
             continue
         item["age_seconds"] = max(0, now - int(item.get("epoch", 0)))
         item["fresh"] = item["age_seconds"] <= 15 * 60
+        # автоочистка: задача закрыта (done), heartbeat старше TTL — удаляем
+        # per-agent файл (volatile runtime-артефакт), чтобы LIVE.md не показывал
+        # «работу в процессе» по давно закрытым задачам (аудит C22)
+        if (statuses.get(item.get("task")) == "done"
+                and item["age_seconds"] > DONE_HEARTBEAT_TTL_S):
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+            continue
         items.append(item)
     items.sort(key=lambda x: x.get("agent", ""))
     return items
@@ -615,11 +651,11 @@ def render_live_md(items):
 def write_heartbeat_views():
     items = collect_heartbeats()
     os.makedirs(LOGS, exist_ok=True)
-    with open(HEARTBEAT_JSON, "w", encoding="utf-8", newline="\n") as f:
-        json.dump({"epoch": int(time.time()), "agents": items}, f, ensure_ascii=False, indent=2)
-        f.write("\n")
-    with open(LIVE_MD, "w", encoding="utf-8", newline="\n") as f:
-        f.write(render_live_md(items))
+    # атомарно: параллельный collect_heartbeats/json.load не увидит обрезанный
+    # heartbeat.json (аудит C49)
+    atomic_write(HEARTBEAT_JSON,
+                 json.dumps({"epoch": int(time.time()), "agents": items}, ensure_ascii=False, indent=2) + "\n")
+    atomic_write(LIVE_MD, render_live_md(items))
 
 def cmd_heartbeat(agent, tid, progress, note, eta):
     os.makedirs(HEARTBEAT_DIR, exist_ok=True)

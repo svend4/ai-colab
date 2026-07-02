@@ -184,7 +184,7 @@ same topic + independent evidence = confirmation
 ### 9.2. Средний уровень
 
 - Добавить triad fields: object, scale, artifact_type, expected_output.
-- Сделать `tools/triad_lint.py`, который проверяет наличие triad fields.
+- Сделать `tools/triad_lint.py` [planned], который проверяет наличие triad fields.
 - Связать с `tools/card.py`.
 
 ### 9.3. Глобальный уровень

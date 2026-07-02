@@ -23,7 +23,8 @@
              из-за которых дериват (счётчик/индекс/портал) МОЛЧА читает несуществующий путь и
              возвращает 0/пусто. «Немой ноль выглядит как валидный ответ».
   dangling — G5: ссылки на tools/<name>.py в docs/README/PROTOCOL/AGENTS/glossary, где файла нет
-             (напр. queue.py → реально agent_queue.py).
+             (напр. queue.py → реально agent_queue.py). Строки с маркером [planned] пропускаются:
+             это явно помеченный roadmap-план, а не документация несуществующей команды (C40).
 
 CLI:
   python tools/gap_scan.py                  # все детекторы, человекочитаемо
@@ -52,6 +53,10 @@ TOOLS = os.path.join(ROOT, "tools")
 DEAD_DIR_LITERALS = {
     "темы": "topics",  # D-005/D-007: миграция кириллических имён к ASCII; дир теперь topics/
 }
+
+# Маркер «инструмент только запланирован, файла ещё нет» в доках (аудит C40): строку с ним
+# G5 не считает висячей ссылкой — план помечен явно, читатель не примет его за рабочую команду.
+PLANNED_MARKER = "[planned]"
 
 # Entrypoints/хелперы, которые легитимны без входящих ссылок (человеко-CLI, запускаются напрямую).
 # Намеренно узкий список: всё остальное без ссылок — настоящий orphan-кандидат.
@@ -168,7 +173,8 @@ def find_drift():
 
 
 def find_dangling():
-    """Ссылки на tools/<name>.py в доках, где файла нет (висячая ссылка, G5)."""
+    """Ссылки на tools/<name>.py в доках, где файла нет (висячая ссылка, G5).
+    Строки с PLANNED_MARKER пропускаются: помеченный roadmap-план — не висячая ссылка (C40)."""
     out = []
     ref = re.compile(r"tools/([A-Za-z_][A-Za-z0-9_]*)\.py")
     seen = set()
@@ -178,19 +184,21 @@ def find_dangling():
     for d in docs:
         if not os.path.isfile(d):
             continue
-        txt = _read(d)
-        for m in ref.finditer(txt):
-            name = m.group(1)
-            if not os.path.exists(os.path.join(TOOLS, name + ".py")):
-                key = (os.path.relpath(d, ROOT).replace("\\", "/"), name)
-                if key in seen:
-                    continue
-                seen.add(key)
-                out.append({
-                    "kind": "dangling-ref", "name": "tools/%s.py" % name,
-                    "evidence": "упомянут в %s, но файла нет" % key[0],
-                    "why": "доки/инструкции учат несуществующей команде (G5)",
-                })
+        for line in _read(d).splitlines():
+            if PLANNED_MARKER in line:
+                continue  # явный план [planned] — читатель предупреждён, не считаем разрывом
+            for m in ref.finditer(line):
+                name = m.group(1)
+                if not os.path.exists(os.path.join(TOOLS, name + ".py")):
+                    key = (os.path.relpath(d, ROOT).replace("\\", "/"), name)
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    out.append({
+                        "kind": "dangling-ref", "name": "tools/%s.py" % name,
+                        "evidence": "упомянут в %s, но файла нет" % key[0],
+                        "why": "доки/инструкции учат несуществующей команде (G5)",
+                    })
     return out
 
 

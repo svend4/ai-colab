@@ -1,3 +1,11 @@
+---
+id: adoption-statistics-2026-06-23
+type: topic
+title: Adoption Statistics — 2026-06-23
+status: proposed
+date: 2026-06-23
+---
+
 # Adoption Statistics — 2026-06-23
 
 status: proposed

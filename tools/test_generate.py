@@ -75,6 +75,8 @@ def _build_root(root):
     _write(root, "DECISIONS.md", DECISIONS)
     # topics/ — путь как в проде (кириллица), один источник правды
     _write(root, "topics/x.md", "---\nid: x\ntitle: Тема X\nstatus: open\nnext: шаг\n---\n# X\n")
+    # C18: тема БЕЗ front-matter — title должен взяться фоллбэком из первого '#'-заголовка
+    _write(root, "topics/no-fm.md", "# Тема без front-matter\n\nтекст\n")
     _write(root, "tasks/T-001.md",
            "---\nid: T-001\ntitle: Задача 1\nstatus: todo\nowner: pool\ntopic: themes/x\n---\n# t\n")
     _write(root, "questions/Q-001.md",
@@ -110,6 +112,11 @@ def run():
     assert rt.startswith("| ID | Задача |"), rt
     assert "| T-001 |" in rt and "`themes/x`" in rt, rt
 
+    # C18: фоллбэк заголовка — первый '# ...' вне код-фенсов; пусто, если заголовка нет
+    assert g.title_from_heading("# Заголовок\n\nтекст\n") == "Заголовок"
+    assert g.title_from_heading("```\n# комментарий в фенсе\n```\n# Реальный\n") == "Реальный"
+    assert g.title_from_heading("текст без заголовка\n") == ""
+
     # ---- слой 2: main() через subprocess ----
     with temp_dir("generate_") as root:
         _build_root(root)
@@ -126,6 +133,9 @@ def run():
             idx = json.load(f)
         assert {"topics", "tasks", "questions", "decisions", "drivers"} <= set(idx), idx
         assert idx["tasks"][0]["id"] == "T-001", idx["tasks"]
+        # C18: тема без front-matter видна в index.json с title из '#'-заголовка
+        titles = {t["title"] for t in idx["topics"]}
+        assert "Тема без front-matter" in titles, "фоллбэк-title не попал в index.json: %r" % titles
 
         # --check на актуальном каноне: нет дрейфа → rc=0, нет STALE
         rc, chk_out = _run_generate(root, "--check")
@@ -139,8 +149,8 @@ def run():
         assert rc == 1, "--check после правки источника должен валить (rc=%d):\n%s" % (rc, drift_out)
         assert "STALE" in drift_out, "--check не сообщил STALE при дрейфе:\n%s" % drift_out
 
-    print("TESTS OK generate: helpers (replace_block/render_tasks_table) + "
-          "main() контракт (fill→0, --check sync→0, --check drift→1 STALE, index.json)")
+    print("TESTS OK generate: helpers (replace_block/render_tasks_table/title_from_heading) + "
+          "main() контракт (fill→0, --check sync→0, --check drift→1 STALE, index.json, C18 фоллбэк)")
     return 0
 
 

@@ -16,14 +16,15 @@ STATUS.md и темами, чтобы заменить ручную «переп
 
 Запуск из корня проекта:
     python tools/validate.py
+    python tools/validate.py <ROOT>   # необязательный корень канона (существующий каталог)
 
-Выход: 0 — нет ERROR; 1 — есть ERROR. WARN не валит.
+Выход: 0 — нет ERROR; 1 — есть ERROR. WARN не валит. Мусорный аргумент → exit 2.
 """
 import os
 import re
 import sys
 from _ioutil import configure_output
-from _cli import help_guard
+from _cli import help_guard, die
 import datetime
 
 # Драйверы: манифест старше этого числа дней — WARN (advisory), пере-сверить с источником.
@@ -50,9 +51,27 @@ def driver_freshness_warning(date_str, today=None, max_days=DRIVER_FRESHNESS_DAY
 
 configure_output()
 
+def _root_from_argv():
+    """ROOT из argv[1] — только существующий каталог (аудит C48).
+
+    Раньше ЛЮБОЙ неизвестный аргумент (--json, --strict, опечатка) молча становился ROOT,
+    и валидатор на здоровом каноне ложно рапортовал «весь канон отсутствует» (exit 1).
+    --help/-h пропускаем — их обработает help_guard() в main().
+    """
+    if len(sys.argv) < 2:
+        return None
+    arg = sys.argv[1]
+    if arg in ("--help", "-h"):
+        return None
+    if arg.startswith("-") or not os.path.isdir(arg):
+        die("validate.py: неизвестный аргумент «%s» — это не флаг валидатора и не существующий "
+            "каталог-ROOT.\nЗапуск: python tools/validate.py [ROOT] (подробнее: --help)" % arg)
+    return arg
+
 ROOT = (
     os.environ.get("COLLAB_ROOT")
-    or (sys.argv[1] if len(sys.argv) > 1 else None)
+    # argv разбирается только при запуске как скрипт: при импорте (тесты) argv — чужой
+    or (_root_from_argv() if __name__ == "__main__" else None)
     or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 )
 
@@ -209,6 +228,32 @@ def check_nav():
                     missing += 1
         if missing == 0:
             ok(f"{fname}: ссылки на темы валидны")
+
+# ---------- темы: front-matter title (аудит C18) ----------
+def check_topics():
+    """Тема без front-matter title невидима для generate.py (index.json/STATUS/board),
+    хотя folder_index видит все файлы. WARN — чтобы расхождение охвата двух индексных
+    механизмов не копилось молча (аудит C18: 12 из 81 тем выпали из навигации)."""
+    d = os.path.join(ROOT, "topics")
+    if not os.path.isdir(d):
+        return
+    total = 0
+    missing = []
+    for fn in sorted(os.listdir(d)):
+        if not fn.endswith(".md") or not os.path.isfile(os.path.join(d, fn)):
+            continue
+        rel = "topics/%s" % fn
+        text = read(rel)
+        if text is None:
+            continue
+        total += 1
+        if not parse_front_matter(text).get("title"):
+            missing.append(rel)
+    for rel in missing:
+        warn("%s: нет front-matter title — в навигацию попадёт только фоллбэком "
+             "по первому '#'-заголовку (generate.py)" % rel)
+    if total and not missing:
+        ok("topics: %d тем, у всех есть front-matter title" % total)
 
 # ---------- имена файлов (D-005/D-007) ----------
 def check_naming():
@@ -545,6 +590,7 @@ def main():
     check_pipeline_d011()
     check_execute_d014()
     check_nav()
+    check_topics()
     check_naming()
     check_synthesis_reports()
 

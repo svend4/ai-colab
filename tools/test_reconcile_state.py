@@ -107,6 +107,12 @@ def run():
         import reconcile_state as rs
         assert rs.ROOT == tmp, "reconcile_state.ROOT не указывает на фикстуру: %s" % rs.ROOT
 
+        # регресс (аудит P3/B-04): в исходнике модуля нет bare-CR переводов строк
+        # (bare-CR ломает git-диффы: файл считается -text/binary)
+        raw = open(os.path.join(HERE, "reconcile_state.py"), "rb").read()
+        assert b"\r" not in raw.replace(b"\r\n", b"\n"), \
+            "bare-CR переводы строк в reconcile_state.py (git видит файл как binary)"
+
         report = rs.reconcile()
         codes = {(it["code"], it["task"]) for it in report["items"]}
 
@@ -135,7 +141,7 @@ def run():
         assert before == after, "check НЕ должен писать в outbox: %s" % (after - before)
 
         print("TESTS OK reconcile_state: done-missing-marker/orphan-done/orphan-claim/"
-              "index-drift/snapshot-drift детектятся на fixture; check без записи")
+              "index-drift/snapshot-drift детектятся на fixture; check без записи; нет bare-CR")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

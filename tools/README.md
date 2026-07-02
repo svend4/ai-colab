@@ -92,7 +92,7 @@ python tools/generate.py --check  # ничего не писать; exit 1, ес
 
 Между маркерами `<!-- GEN:topics-status START ... -->` … `END` и `<!-- GEN:topics-board START ... -->` … `END` править вручную не нужно — перезапишется. Остальной текст `STATUS.md`/`board.md` (включая журнал «Что изменилось») не трогается.
 
-Рабочий цикл: меняешь `status`/`next` в front-matter темы → `python tools/generate.py` → `git add -A && git commit` (hook проверит, что навигация актуальна).
+Рабочий цикл: меняешь `status`/`next` в front-matter темы → `python tools/generate.py` → `git add topics/<файл> STATUS.md board.md index.json && git commit` (hook проверит, что навигация актуальна). Широкий `git add -A` запрещён (PROTOCOL.md §10, selective-add only); в параллельной работе удобнее `python tools/cohort.py ship <agent> <файлы> --run` — selective-add + `commit_lock` одной командой.
 
 ## Машинный индекс (`index.json`)
 

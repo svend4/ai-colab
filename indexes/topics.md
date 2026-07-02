@@ -14,7 +14,7 @@
 
 | файл | type | status | суть |
 |---|---|---|---|
-| [adoption-statistics-2026-06-23.md](../topics/adoption-statistics-2026-06-23.md) | — | — | status: proposed |
+| [adoption-statistics-2026-06-23.md](../topics/adoption-statistics-2026-06-23.md) | topic | proposed | Примечание по двойному счёту: tools проходят двумя срезами (WIRING n=41 и GIT-ACTIVITY n=7 |
 | [agent-pipeline.md](../topics/agent-pipeline.md) | — | open | Сейчас работает, но статично: |
 | [agent-self-reflection-delegation.md](../topics/agent-self-reflection-delegation.md) | topic | active | Мы успешно внедрили и протестировали методику "Dogfooding / Self-Reflection" (использовани |
 | [ai-os-bridge.md](../topics/ai-os-bridge.md) | — | open | Есть два полюса: |
@@ -63,7 +63,7 @@
 | [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
 | [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | open | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
 | [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
-| [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | — | — | Дата сборки: 2026-06-22. Историк/синтезатор. Документ прослеживает идею «уже не текст, но  |
+| [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | topic | — | Каждый механизм — что это, где задокументировано, статус. Статусы: ПРИНЯТО (governance acc |
 | [parallel-work-divergences-2026-06-22.md](../topics/parallel-work-divergences-2026-06-22.md) | topic | proposed | — |
 | [perspective-backlog-2026-06-23.md](../topics/perspective-backlog-2026-06-23.md) | topic | proposed | Этот файл — стоячий источник будущих заданий для `tools/conveyor.py next`. Он должен отраж |
 | [pyramid-grounding-consolidated-2026-06-23.md](../topics/pyramid-grounding-consolidated-2026-06-23.md) | topic | proposed | Это сводный канон-документ двух согласованных дизайнов (оба `proposed`): механики **`deriv |
@@ -86,7 +86,7 @@
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [svend4-infon-assessment-2026-06-26.md](../topics/svend4-infon-assessment-2026-06-26.md) | topic | proposed | For this repository, the correct adaptation is not terminal video. The correct adaptation  |
 | [text-diffusion-canvas-from-infon-2026-06-26.md](../topics/text-diffusion-canvas-from-infon-2026-06-26.md) | topic | proposed | turn a terminal into a multi-layer communication surface |
-| [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | — | — | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
+| [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | topic | proposed | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
 | [textscene-unified-spec-2026-06-26.md](../topics/textscene-unified-spec-2026-06-26.md) | topic | proposed | cols=актор/владелец (матрица консенсуса). → **Примирение: это ДВА режима проекции одного c |
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
 | [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |

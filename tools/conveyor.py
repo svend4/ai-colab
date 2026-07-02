@@ -409,8 +409,11 @@ def recover(d, now, root=ROOT, target=None, idle_min=None, output_limit=10):
         active_reports = tracked_reports
         report_kind = "unprocessed-outbox-reports"
         report_suggestion = "process paragraphs with `- [x]` in these reports or move them to historical"
-    except Exception:
-        pass
+    except Exception as exc:
+        # деградация больше НЕ молчит (аудит C37): action_tracker недоступен или
+        # отдал битый вывод — WARN в stderr, откат на unreferenced-эвристику
+        print("WARN conveyor: tools/action_tracker.py недоступен (%s) — "
+              "использую unreferenced-эвристику по queues/outbox" % exc, file=sys.stderr)
 
     unreferenced = [r for r in active_reports if r["path"] not in referenced]
     if unreferenced:

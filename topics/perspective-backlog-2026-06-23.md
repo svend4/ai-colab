@@ -29,8 +29,7 @@ related: [workflow-conveyor-policy, Q-016, Q-017, Q-013, Q-010, Q-009, T-166, T-
 
 ## Готовы к запуску (независимые, по out-degree)
 
-1. DOC_CONSENSUS_AGENT runtime recipe and safe examples
-2. Workflow backlog rescan tool
+(пусто — оба кандидата выполнены, перенесены в Shipped / closed ниже: T-196, T-197)
 
 ## Ранжированный бэклог
 
@@ -40,8 +39,8 @@ related: [workflow-conveyor-policy, Q-016, Q-017, Q-013, Q-010, Q-009, T-166, T-
 | 2 | ~~Conveyor regulate: advisory target recommendation from intake/verify/synthesis metrics~~ | done | S | shipped T-179 | T-178 | Реализовано: `tools/conveyor.py regulate` |
 | 3 | ~~Synthesis gate: validate consensus/disagreement report structure~~ | done | M | shipped T-182 | none | Реализовано: проверка структуры синтеза добавлена в `validate.py` |
 | 4 | ~~Process-landed classification hardening: use result-intake classes in `top.py process-landed`~~ | done | M | shipped T-183 | Result intake classifier | Реализовано: интеграция result_intake.py в команду process-landed |
-| 5 | DOC_CONSENSUS_AGENT runtime recipe and safe examples | medium | S | docs/test | T-176 | T-176 закрыл seam и budget guard, но широкая semantic-сборка требует безопасного рецепта настройки `DOC_CONSENSUS_AGENT`, без auto-accept и без скрытого fan-out. |
-| 6 | Workflow backlog rescan tool | medium | M | workflow | none | Этот файл пока обновляется вручную. Нужен scanner, который сверяет backlog с tasks done, assurance findings, shipped workflows и docs TODO, затем предлагает patch. |
+| 5 | ~~DOC_CONSENSUS_AGENT runtime recipe and safe examples~~ | done | S | shipped T-196 | T-176 | Реализовано: `docs/doc-consensus-agent-runtime.md` — безопасный runtime recipe и примеры без auto-accept. |
+| 6 | ~~Workflow backlog rescan tool~~ | done | M | shipped T-197 | none | Реализовано: `tools/backlog_rescan.py` — сверка бэклога с tasks done. |
 | 7 | D-014 execute OFF ratification follow-up | high | S | governance | human approval | D-014 подготовлен T-175, но остаётся blocked до явного решения человека. Не запускать execute-build до acceptance. |
 | 8 | MCP async stdio Windows follow-up | medium | M | blocked-build | T-174 unblocked | T-174 доказал, что sync gateway работает, а async stdio падает до MCP с WinError 5. Нужен отдельный runtime/env fix после появления нового факта. |
 | 9 | Q-009/T-020 external code source decision | medium | S | decision | Stefan provides source or chooses generic path | Старый долг svend4/внешнего кода остаётся blocked: нужен read-only source или решение закрыть как generic local-repo sandbox path. |
@@ -60,6 +59,8 @@ related: [workflow-conveyor-policy, Q-016, Q-017, Q-013, Q-010, Q-009, T-166, T-
 | Conveyor regulate advisory | shipped T-179 | `tools/conveyor.py regulate`, `tools/test_conveyor.py`, `tools/README.md`. |
 | Synthesis gate | shipped T-182 | Добавлена строгая проверка в `validate.py`. |
 | Process-landed classification hardening | shipped T-183 | Интеграция `result_intake.py` в `top.py process-landed`. |
+| DOC_CONSENSUS_AGENT runtime recipe and safe examples | shipped T-196 | `docs/doc-consensus-agent-runtime.md`, `tasks/T-196.md` (status: done). |
+| Workflow backlog rescan tool | shipped T-197 | `tools/backlog_rescan.py`, `tasks/T-197.md` (status: done). |
 
 ## Как пользоваться
 

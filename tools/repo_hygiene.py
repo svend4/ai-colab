@@ -12,6 +12,8 @@ sanation.py оздоравливает семантическую верхушк
   • stray-root       — файл в корне, не канон и не scratch (на ревью, НЕ авто-удаляем)
   • other            — прочее untracked (новый инструмент без add и т.п.)
 Плюс: staged-файлы (риск selective-commit) и hygiene-score (0..100, измеримо).
+Плюс WARN (аудит C46): личные абсолютные пути (`C:\\Users\\<имя>`) в НОВЫХ файлах (untracked/staged) —
+ПД-гигиена и переносимость; ничего не блокирует, исторические доки не сканируем и не переписываем.
 
 Read-only по умолчанию. Единственное авто-действие — `--fix-gitignore` (идемпотентно дописывает БЕЗОПАСНЫЕ
 паттерны для уже-найденного scratch). Удаления нет вообще — по формуле «minority/чужое не теряем».
@@ -34,6 +36,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 CANON_RE = re.compile(r"^(tasks|decisions|questions|topics|docs)/.*\.md$")
 SANDBOX_SCRATCH = ("sandbox/audit", "sandbox/canvas-demo", "sandbox/paradigm_shift")
+# WARN-паттерн (аудит C46): личный абсолютный путь Windows (C:\Users\<имя>).
+# Плейсхолдеры (C:\Users\<user>) и общая папка (C:\Users\Public) личными НЕ считаются.
+PERSONAL_PATH_RE = re.compile(r"(?i)\b[a-z]:[\\/]+users[\\/]+(?!public\b)[^\\/\s\"'<>|*?]+")
 
 
 def is_scratch(path):
@@ -106,6 +111,17 @@ def gitignore_suggestions(scratch_paths, existing_patterns):
     return want
 
 
+def personal_path_hits(text):
+    """Чистая проверка текста на личные абсолютные пути (WARN, аудит C46). Дедуп, порядок появления."""
+    seen, out = set(), []
+    for m in PERSONAL_PATH_RE.finditer(text or ""):
+        v = m.group(0)
+        if v not in seen:
+            seen.add(v)
+            out.append(v)
+    return out
+
+
 def hygiene_score(cats):
     """0..100 — выше чище. Главный штраф — неигнорируемый scratch (зашумляет status)."""
     penalty = 2 * len(cats["scratch"]) + 3 * len(cats["stray_root"]) + 1 * len(cats["staged"]) + 1 * len(cats["other"])
@@ -128,10 +144,34 @@ def _existing_patterns():
     return {ln.strip() for ln in open(gi, encoding="utf-8") if ln.strip() and not ln.startswith("#")}
 
 
+def _scan_personal_paths(paths):
+    """IO-обёртка: читает НОВЫЕ файлы и ищет личные абсолютные пути (WARN, аудит C46).
+
+    Только новые файлы (untracked/staged) — исторические трекаемые доки не сканируем (по рекомендации аудита).
+    Нечитаемое/бинарное молча пропускаем; лимит чтения — защита от гигантских файлов.
+    """
+    found = []
+    for rel in paths:
+        full = os.path.join(ROOT, rel.rstrip("/"))
+        if not os.path.isfile(full):
+            continue
+        try:
+            with open(full, encoding="utf-8", errors="replace") as fh:
+                text = fh.read(512 * 1024)
+        except Exception:
+            continue
+        hits = personal_path_hits(text)
+        if hits:
+            found.append({"path": rel, "hits": hits[:3]})
+    return found
+
+
 def collect():
     cats = classify(_git_status())
     sugg = gitignore_suggestions(cats["scratch"], _existing_patterns())
-    return {"score": hygiene_score(cats), "cats": cats, "gitignore_suggest": sugg}
+    new_files = cats["canon_md"] + cats["stray_root"] + cats["other"] + cats["staged"]
+    return {"score": hygiene_score(cats), "cats": cats, "gitignore_suggest": sugg,
+            "personal_path_warns": _scan_personal_paths(new_files)}
 
 
 def fix_gitignore(suggest):
@@ -170,6 +210,10 @@ def main(argv):
         print("\n  → предложение .gitignore (--fix-gitignore): %s" % ", ".join(r["gitignore_suggest"]))
     if c["staged"]:
         print("\n  ⚠ перед коммитом: в индексе чужие/staged файлы — коммить пути явно: git commit -- <свои пути>")
+    if r["personal_path_warns"]:
+        print("\n  ⚠ WARN личные абсолютные пути в новых файлах (ПД-гигиена, аудит C46 — заменить на $WORKSPACE/относительные):")
+        for w in r["personal_path_warns"][:6]:
+            print("    - %s: %s" % (w["path"], ", ".join(w["hits"])))
     return 0
 
 

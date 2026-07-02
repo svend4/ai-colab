@@ -1,6 +1,7 @@
 ---
 id: information-refactoring-cycle-2-2026-06-25
 type: topic
+title: Information Refactoring Cycle 2 - ответы, новые вопросы и методы большой группы
 status: proposed
 owner: codex
 related: [T-247, T-248]

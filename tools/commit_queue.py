@@ -71,13 +71,35 @@ def _patch_path(tid):
     return os.path.join(QDIR, _require_ticket_id(tid) + ".patch")
 
 
+def _quarantine_corrupt(path, exc):
+    """Битый тикет НЕ исчезает молча (аудит C37): WARN в stderr + карантин.
+
+    Перекладываем файл в queues/commit-queue/corrupt/ (перемещение, не удаление —
+    след остаётся для разбора), а в stderr печатаем имя тикета и причину: агент,
+    вставший в очередь, больше не «пропадает» для остальных без диагностики.
+    """
+    name = os.path.basename(path)
+    cdir = os.path.join(QDIR, "corrupt")
+    try:
+        os.makedirs(cdir, exist_ok=True)
+        os.replace(path, os.path.join(cdir, name))
+        note = "перенесён в queues/commit-queue/corrupt/"
+    except OSError as move_exc:
+        note = "перенести в corrupt/ не удалось: %s" % move_exc
+    print("WARN commit_queue: битый тикет %s (%s) — %s" % (name, exc, note), file=sys.stderr)
+
+
 def _load_all():
     """Все тикеты, отсортированы по (created_epoch, id) = FIFO."""
     out = []
     for p in glob.glob(os.path.join(QDIR, "*.json")):
         try:
-            out.append(json.load(open(p, encoding="utf-8")))
-        except Exception:
+            # with-блок обязателен: иначе на Windows незакрытый handle из traceback
+            # не даст перенести битый файл в corrupt/ (os.replace → WinError 32)
+            with open(p, encoding="utf-8") as fh:
+                out.append(json.load(fh))
+        except Exception as exc:
+            _quarantine_corrupt(p, exc)
             continue
     return sorted(out, key=lambda t: (int(t.get("created_epoch", 0)), t.get("id", "")))
 

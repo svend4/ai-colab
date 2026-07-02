@@ -58,12 +58,71 @@ def main():
     if g["anomaly"] or not g.get("insufficient"):
         fails.append("малая выборка дала вердикт (должна воздержаться)")
 
+    # === C0: fail-closed при сбое git (сбой НЕ маскируется под «короткую историю», exit 0) ===
+    # 1) _git пробрасывает GitError при недоступном git (раньше глотал OSError в "")
+    real_run = immune.subprocess.run
+    def _boom(*a, **k):
+        raise OSError("git недоступен (симуляция)")
+    immune.subprocess.run = _boom
+    try:
+        try:
+            immune._git(["log", "-1"])
+            fails.append("_git проглотил OSError в пустую строку (fail-open)")
+        except immune.GitError:
+            pass
+    finally:
+        immune.subprocess.run = real_run
+
+    # 2) git недоступен → main() возвращает ненулевой exit (fail-closed), а не 0
+    import tempfile
+    real_root = immune.ROOT
+    immune.ROOT = tempfile.mkdtemp()  # не-git каталог: git выдаёт ненулевой код («not a git repository»)
+    try:
+        rc = immune.main(["--json"])
+    finally:
+        immune.ROOT = real_root
+    if rc == 0:
+        fails.append("git-сбой (не-git каталог) дал exit 0 — детектор молча самовыключился")
+
+    # 3) страховочная сверка: git log молча пуст, а rev-list видит 407 коммитов → сбой, exit != 0
+    #    (воспроизводит наблюдённый инцидент: «0 < 10 коммитов» при 407 реальных)
+    real_git = immune._git
+    def _fake_git(args):
+        if args[0] == "log":
+            return ""          # история «потерялась» при сборе
+        if args[0] == "rev-list":
+            return "407\n"     # а репозиторий её видит
+        return ""
+    immune._git = _fake_git
+    try:
+        rc = immune.main(["--json"])
+    finally:
+        immune._git = real_git
+    if rc == 0:
+        fails.append("пустой git log при 407 в rev-list дал exit 0 (сверка rev-list не сработала)")
+
+    # 4) честно короткая история (5 коммитов и rev-list подтверждает 5) → по-прежнему exit 0
+    def _short_git(args):
+        if args[0] == "log":
+            return "\n".join("C%s\n1\t1\tf.md" % ("a" * 40) for _ in range(5))
+        if args[0] == "rev-list":
+            return "5\n"
+        return ""              # пустой diff рабочего дерева
+    immune._git = _short_git
+    try:
+        rc = immune.main([])
+    finally:
+        immune._git = real_git
+    if rc != 0:
+        fails.append("честно короткая история (5 коммитов) должна давать exit 0, получено %s" % rc)
+
     if fails:
         print("FAIL test_immune:")
         for f in fails:
             print("  -", f)
         sys.exit(1)
-    print("OK test_immune: median + MAD-робастность + профиль + инцидент=аномалия + норма=ок + guard-малой-выборки")
+    print("OK test_immune: median + MAD-робастность + профиль + инцидент=аномалия + норма=ок + guard-малой-выборки"
+          " + fail-closed при сбое git (C0)")
 
 
 if __name__ == "__main__":

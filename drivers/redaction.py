@@ -25,11 +25,13 @@ SECRET_RE = re.compile(
 # «Голый» AWS access key id (AKIA + 16 символов), без key=value.
 AWS_KEY_RE = re.compile(r"\bAKIA[0-9A-Z]{16}\b")
 
-# Корневая директория проекта для маскировки абсолютных путей
+# Корневая директория проекта для маскировки абсолютных путей.
+# Fallback нейтральный (env COLLAB_ROOT или пустая строка) — личных путей тут быть не должно (аудит C46);
+# ветка except практически недостижима, а redact() корректно терпит пустой WORKSPACE_ROOT.
 try:
     WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..")).replace("\\", "/")
 except:
-    WORKSPACE_ROOT = "C:/Users/stefan/Documents/New project ai colab"
+    WORKSPACE_ROOT = os.environ.get("COLLAB_ROOT", "").replace("\\", "/")
 
 # Папка пользователя для маскировки (на случай если WORKSPACE_ROOT не покрывает)
 USER_HOME = os.path.expanduser("~").replace("\\", "/")

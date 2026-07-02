@@ -34,6 +34,11 @@ def _build(root):
     # docs ссылается на used_tool, drifter (оба существуют → не orphan) и ghost (нет файла → dangling)
     _w(os.path.join(root, "docs", "guide.md"),
        "См. `python tools/used_tool.py`, `tools/drifter.py`, и `python tools/ghost.py`.\n")
+    # roadmap: future_tool не существует, но строка помечена PLANNED_MARKER → G5 её пропускает (C40);
+    # ghost2 без маркера на соседней строке — настоящая висячая ссылка (маркер действует построчно)
+    _w(os.path.join(root, "docs", "roadmap.md"),
+       "Сделать `tools/future_tool.py` %s — план.\nА `tools/ghost2.py` — висячая ссылка.\n"
+       % gap_scan.PLANNED_MARKER)
     _w(os.path.join(root, "tools", "orphan_tool.py"), "print('никто не ссылается')\n")
     _w(os.path.join(root, "tools", "test_orphan_tool.py"), "import orphan_tool\n")  # свой тест — исключён
     _w(os.path.join(root, "tools", "used_tool.py"), "print('used')\n")
@@ -62,12 +67,15 @@ def run():
         ev = gap_scan.find_drift()[0]["evidence"]
         assert alive in ev and dead in ev, "evidence дрейфа должен называть и мёртвый, и живой каталог: %s" % ev
 
+        # [planned]-строка (future_tool) пропущена, немаркированные ghost/ghost2 пойманы (C40)
         dangling = {x["name"] for x in gap_scan.find_dangling()}
-        assert dangling == {"tools/ghost.py"}, "dangling должно быть РОВНО {ghost.py}: %s" % dangling
+        assert dangling == {"tools/ghost.py", "tools/ghost2.py"}, \
+            "dangling должно быть РОВНО {ghost.py, ghost2.py} (future_tool с %s — не разрыв): %s" % (
+                gap_scan.PLANNED_MARKER, dangling)
 
         # run() агрегирует все три; счётчики точные
         res = gap_scan.run()
-        assert len(res["orphans"]) == 1 and len(res["drift"]) == 1 and len(res["dangling"]) == 1, \
+        assert len(res["orphans"]) == 1 and len(res["drift"]) == 1 and len(res["dangling"]) == 2, \
             "run() агрегаты: %s" % {k: len(v) for k, v in res.items()}
 
         # --strict → rc=1 при находках, rc=0 если детектор пуст
@@ -81,7 +89,7 @@ def run():
         finally:
             shutil.rmtree(empty, ignore_errors=True)
 
-        print("TESTS OK gap_scan: orphan(allowlist+doc-ref+self-test) · drift(dead-dir->alive, точная строка) · dangling · strict 1/0")
+        print("TESTS OK gap_scan: orphan(allowlist+doc-ref+self-test) · drift(dead-dir->alive, точная строка) · dangling([planned] пропущен) · strict 1/0")
         return 0
     finally:
         gap_scan.ROOT, gap_scan.TOOLS = saved

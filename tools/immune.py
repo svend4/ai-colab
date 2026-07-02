@@ -10,6 +10,9 @@ CLI:
   python tools/immune.py              # профиль «своего» + проверка рабочего дерева (vs HEAD)
   python tools/immune.py profile      # только профиль (median±MAD по N коммитам)
   python tools/immune.py --json
+
+Exit-коды: 0 — норма/честно короткая история; 1 — аномалия; 2 — сбой git (fail-closed, аудит C0:
+сбой git НЕ маскируется под «недостаточно истории»).
 """
 import os
 from _ioutil import configure_output
@@ -41,12 +44,25 @@ def _mad(xs, med):
     return _median([abs(x - med) for x in xs])
 
 
+class GitError(RuntimeError):
+    """Сбой git (недоступен/таймаут/ненулевой код) — НЕ путать с честно короткой историей (аудит C0)."""
+
+
 def _git(args):
+    """git с fail-closed: любой сбой → GitError, а не пустая строка.
+
+    Раньше (OSError, SubprocessError) глотались в "" — сбой git был неотличим от пустого репозитория,
+    детектор молча самовыключался («недостаточно истории», exit 0). Для страховочного инструмента
+    тихий успех при собственном отказе — worst-case, поэтому пробрасываем признак сбоя (аудит C0)."""
     try:
-        return subprocess.run(["git"] + args, cwd=ROOT, capture_output=True, text=True,
-                              encoding="utf-8", errors="replace", timeout=60).stdout
-    except (OSError, subprocess.SubprocessError):
-        return ""
+        p = subprocess.run(["git"] + args, cwd=ROOT, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", timeout=60)
+    except (OSError, subprocess.SubprocessError) as e:
+        raise GitError("git %s: %s" % (args[0], e))
+    if p.returncode != 0:
+        err = (p.stderr or "").strip().splitlines()
+        raise GitError("git %s: код %d%s" % (args[0], p.returncode, (": " + err[0]) if err else ""))
+    return p.stdout
 
 
 def commit_stats(n=SAMPLE):
@@ -105,6 +121,20 @@ def current_diff():
 MIN_SAMPLE = 10  # меньше — профиль ненадёжен, не выносим вердикт (защита от ложных срабатываний)
 
 
+def history_crosscheck(prof):
+    """Страховочная сверка (аудит C0, второй эшелон): если распарсенная история короче MIN_SAMPLE,
+    а `git rev-list --count --no-merges HEAD` видит >=MIN_SAMPLE коммитов (с учётом лимита выборки
+    SAMPLE, не «в лоб» со всей историей) — это потеря истории при сборе (сбой git/парсинга),
+    а НЕ честно короткая история → GitError (fail-closed)."""
+    if prof["n_commits"] >= MIN_SAMPLE:
+        return
+    total = _git(["rev-list", "--count", "--no-merges", "HEAD"]).strip()
+    expected = min(int(total), SAMPLE) if total.isdigit() else 0
+    if expected >= MIN_SAMPLE:
+        raise GitError("распарсено %d коммитов, а rev-list видит %d (>=%d) — история потеряна при сборе" % (
+            prof["n_commits"], expected, MIN_SAMPLE))
+
+
 def assess(cur, prof):
     if prof["n_commits"] < MIN_SAMPLE:
         return {"anomaly": False, "fired": [], "insufficient": True}
@@ -125,18 +155,29 @@ def main(argv):
     help_guard(__doc__, argv)
     as_json = "--json" in argv
     args = [a for a in argv if not a.startswith("--")]
-    prof = profile(commit_stats())
-    if args and args[0] == "profile":
+    try:
+        prof = profile(commit_stats())
+        history_crosscheck(prof)
+        if args and args[0] == "profile":
+            if as_json:
+                print(json.dumps(prof, ensure_ascii=False, indent=2)); return 0
+            print("=== ИММУННЫЙ ПРОФИЛЬ «своего» (по %d коммитам) ===" % prof["n_commits"])
+            print("  файлов/коммит: медиана %.0f ± MAD %.0f → относит. порог %.0f" % (
+                prof["files_median"], prof["files_mad"], prof["files_threshold"]))
+            print("  абс. сигнатуры стрипа: нетто-потеря (del/add>%.0f), крупное удаление (>%d, D-026)" % (
+                NET_DELETION_RATIO, LARGE_DELETION))
+            print("  кворум аномалии: ≥%d антител разом" % QUORUM)
+            return 0
+        cur = current_diff()
+    except GitError as e:
+        # fail-closed (аудит C0): сбой git — явный ERROR и ненулевой код, а НЕ «недостаточно истории»
         if as_json:
-            print(json.dumps(prof, ensure_ascii=False, indent=2)); return 0
-        print("=== ИММУННЫЙ ПРОФИЛЬ «своего» (по %d коммитам) ===" % prof["n_commits"])
-        print("  файлов/коммит: медиана %.0f ± MAD %.0f → относит. порог %.0f" % (
-            prof["files_median"], prof["files_mad"], prof["files_threshold"]))
-        print("  абс. сигнатуры стрипа: нетто-потеря (del/add>%.0f), крупное удаление (>%d, D-026)" % (
-            NET_DELETION_RATIO, LARGE_DELETION))
-        print("  кворум аномалии: ≥%d антител разом" % QUORUM)
-        return 0
-    cur = current_diff()
+            print(json.dumps({"error": "git_failure", "detail": str(e), "fail_closed": True},
+                             ensure_ascii=False, indent=2))
+        else:
+            print("=== ИММУННАЯ СИСТЕМА ===\n  ERROR: сбой git (%s) — вердикт НЕ выносится, fail-closed"
+                  " (это НЕ короткая история)" % e)
+        return 2
     a = assess(cur, prof)
     ratio = cur["deletions"] / max(1, cur["additions"])
     if as_json:

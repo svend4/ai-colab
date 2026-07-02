@@ -57,6 +57,13 @@
       "next": "Реализовать консенсус-очередь (C1-C3 готовы к взятию); по расхождениям D1-D4 — доказательное обсуждение до консенсуса"
     },
     {
+      "id": "parallel-forks-history-2026-06-22",
+      "title": "Параллельная многоагентная работа без блокировки: «ручейки/streams», форк-варианты, worktree и merge-back",
+      "file": "topics/parallel-forks-history-2026-06-22.md",
+      "status": "open",
+      "next": ""
+    },
+    {
       "id": "repo-review-2026-06-21",
       "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
       "file": "topics/repo-review-2026-06-21.md",
@@ -141,6 +148,13 @@
       "next": ""
     },
     {
+      "id": "adoption-statistics-2026-06-23",
+      "title": "Adoption Statistics — 2026-06-23",
+      "file": "topics/adoption-statistics-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "agent-self-reflection-delegation",
       "title": "Оповещение: Практика Dogfooding и параллельные задачи",
       "file": "topics/agent-self-reflection-delegation.md",
@@ -151,6 +165,13 @@
       "id": "alchemy-synthesis-20260625-144041",
       "title": "Алхимический синтез - спираль бабочки",
       "file": "topics/alchemy_synthesis_20260625_144041.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "alpha2-to-alpha3-roadmap-2026-06-24",
+      "title": "Alpha-2 -> Alpha-3 roadmap: план развития проекта",
+      "file": "topics/alpha2-to-alpha3-roadmap-2026-06-24.md",
       "status": "proposed",
       "next": ""
     },
@@ -225,6 +246,13 @@
       "next": ""
     },
     {
+      "id": "drivers-subsystem-state-2026-06-23",
+      "title": "Drivers / AI-OS Bridge subsystem — authoritative state (2026-06-23)",
+      "file": "topics/drivers-subsystem-state-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "finder-frontier-2026-06-23",
       "title": "FINDER фронтира — рост-бэклог реально-нерешённого (37 пунктов)",
       "file": "topics/finder-frontier-2026-06-23.md",
@@ -281,6 +309,34 @@
       "next": ""
     },
     {
+      "id": "information-refactoring-cycle-1-2026-06-25",
+      "title": "Цикл 1: изучение вопросника, новые вопросы и ответы",
+      "file": "topics/information-refactoring-cycle-1-2026-06-25.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "information-refactoring-cycle-2-2026-06-25",
+      "title": "Information Refactoring Cycle 2 - ответы, новые вопросы и методы большой группы",
+      "file": "topics/information-refactoring-cycle-2-2026-06-25.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "information-refactoring-cycle-3-2026-06-25",
+      "title": "Information Refactoring Cycle 3 - action-plan, status-backfill и новые вопросы",
+      "file": "topics/information-refactoring-cycle-3-2026-06-25.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "information-refactoring-question-tree-2026-06-25",
+      "title": "Информационный рефакторинг репозитория: дерево вопросов",
+      "file": "topics/information-refactoring-question-tree-2026-06-25.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "kotel-system-critique-2026-06-24",
       "title": "Котёл: Системная Критика, Технический Долг и Ответственность",
       "file": "topics/kotel-system-critique-2026-06-24.md",
@@ -306,6 +362,13 @@
       "title": "Навигация-через-метаданные вместо шардинга — резолюция divergence (техническая реальность)",
       "file": "topics/navigation-vs-sharding-2026-06-24.md",
       "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "new-problems-2026-06-23",
+      "title": "Three newly-surfaced producer-workflow problems + designs (2026-06-23)",
+      "file": "topics/new-problems-2026-06-23.md",
+      "status": "resolved",
       "next": ""
     },
     {
@@ -340,6 +403,13 @@
       "id": "pyramid-grounding-plan-2026-06-23",
       "title": "Заземление пирамиды — derived coverage вместо самодекларации (план по находкам assurance)",
       "file": "topics/pyramid-grounding-plan-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "q016-assurance-state-2026-06-23",
+      "title": "Q-016 assurance — состояние «построено vs осталось» (2026-06-23)",
+      "file": "topics/q016-assurance-state-2026-06-23.md",
       "status": "proposed",
       "next": ""
     },
@@ -414,6 +484,13 @@
       "next": ""
     },
     {
+      "id": "solver-report-2026-06-23",
+      "title": "SOLVER report — 2026-06-23",
+      "file": "topics/solver-report-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "svend4-infon-assessment-2026-06-26",
       "title": "svend4/infon assessment for multi-agent repo work",
       "file": "topics/svend4-infon-assessment-2026-06-26.md",
@@ -424,6 +501,13 @@
       "id": "text-diffusion-canvas-from-infon-2026-06-26",
       "title": "Text diffusion canvas from svend4/infon for multi-agent work",
       "file": "topics/text-diffusion-canvas-from-infon-2026-06-26.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "text-extract-deps-evidence-2026-06-21",
+      "title": "Котёл: доказательная база по зависимостям text-extract (вход к T-137)",
+      "file": "topics/text-extract-deps-evidence-2026-06-21.md",
       "status": "proposed",
       "next": ""
     },

@@ -1,6 +1,7 @@
 ---
 id: alpha2-to-alpha3-roadmap-2026-06-24
 type: topic
+title: Alpha-2 -> Alpha-3 roadmap: план развития проекта
 status: proposed
 owner: codex
 date: 2026-06-24

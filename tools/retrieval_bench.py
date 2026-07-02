@@ -49,8 +49,9 @@ def write_fixture(root):
             fm.append("depends_on: [%s]" % ", ".join(spec["depends_on"]))
         if spec.get("related"):
             fm.append("related: [%s]" % ", ".join(spec["related"]))
-        open(os.path.join(d, nid + ".md"), "w", encoding="utf-8", newline="\n").write(
-            "---\n%s\n---\n# %s\n%s\n" % ("\n".join(fm), nid, spec.get("body", "")))
+        # with — дескриптор закрывается сразу (иначе на Windows незакрытый файл блокирует rmtree каталога)
+        with open(os.path.join(d, nid + ".md"), "w", encoding="utf-8", newline="\n") as f:
+            f.write("---\n%s\n---\n# %s\n%s\n" % ("\n".join(fm), nid, spec.get("body", "")))
 
 
 def build_edges():
@@ -118,7 +119,8 @@ def main(argv):
     try:
         rows = run(tmp, os.path.join(tmp, "idx.db"))
     finally:
-        pass
+        # уборка временного каталога — иначе tmp-work/retrieval_bench_<pid> копятся с каждым запуском
+        shutil.rmtree(tmp, ignore_errors=True)
     s = summarize(rows)
     if "--json" in argv:
         print(json.dumps({"summary": s, "rows": rows}, ensure_ascii=False, indent=2)); return 0

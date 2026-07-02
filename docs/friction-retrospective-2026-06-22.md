@@ -230,7 +230,7 @@ python tools\friction.py note F-004 --where tools/test_friction.py --result fixe
 
 ### P1. Skill/link validation
 
-Добавить проверку в `validate.py` или отдельный `tools/skills_check.py`: skill `repo-friction-playbook` должен ссылаться на `docs/friction-ledger.md`, `docs/friction-playbook.md`, `docs/friction-complaints-suggestions.md`, `tools/friction.py`.
+Добавить проверку в `validate.py` или отдельный `tools/skills_check.py` [planned]: skill `repo-friction-playbook` должен ссылаться на `docs/friction-ledger.md`, `docs/friction-playbook.md`, `docs/friction-complaints-suggestions.md`, `tools/friction.py`.
 
 ### P2. Safe writer вместо ручного PowerShell fallback
 

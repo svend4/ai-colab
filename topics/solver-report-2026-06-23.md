@@ -1,6 +1,7 @@
 ---
 id: solver-report-2026-06-23
 type: solver-report
+title: SOLVER report — 2026-06-23
 status: proposed
 date: 2026-06-23
 author: solver-orchestrator

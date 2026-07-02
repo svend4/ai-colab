@@ -1,6 +1,7 @@
 ---
 id: information-refactoring-cycle-1-2026-06-25
 type: topic
+title: Цикл 1: изучение вопросника, новые вопросы и ответы
 status: proposed
 owner: codex
 date: 2026-06-25

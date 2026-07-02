@@ -241,10 +241,10 @@ read current state
 1. `tools/onboard.py <agent>` — единая команда входа.
 2. `tools/capabilities.py snapshot` — единый manifest возможностей.
 3. `tools/drift_check.py` — искать stale statements и старые acceptance числа.
-4. `tools/backlog_suggest.py` — предлагать новые tasks из current roadmap.
+4. `tools/backlog_suggest.py` [planned] — предлагать новые tasks из current roadmap.
 5. `tools/report_diff.py` — сравнивать Markdown reports между запусками.
-6. `tools/topic_summarize.py` — обновлять summary без перезаписи истории.
-7. `tools/safety_gate.py` — единая проверка перед network/write/execute.
+6. `tools/topic_summarize.py` [planned] — обновлять summary без перезаписи истории.
+7. `tools/safety_gate.py` [planned] — единая проверка перед network/write/execute.
 
 Более концептуально:
 

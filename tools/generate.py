@@ -52,18 +52,37 @@ STATUS_RANK = {"needs-decision": 0, "waiting": 1, "open": 2, "done": 3, "archive
 from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
 
 
+def title_from_heading(text):
+    """Фоллбэк-заголовок темы: первый `# ...` вне код-фенсов (аудит C18).
+
+    Раньше тема без front-matter title молча выпадала из index.json/STATUS/board,
+    хотя folder_index её видел — 12 тем были невидимы в навигации.
+    """
+    in_fence = False
+    for line in text.splitlines():
+        s = line.strip()
+        if s.startswith("```"):
+            in_fence = not in_fence
+            continue
+        if not in_fence and s.startswith("# "):
+            return s[2:].strip()
+    return ""
+
+
 def collect_topics():
     topics = []
     for path in glob.glob(os.path.join(ROOT, "topics", "*.md")):
         with open(path, encoding="utf-8") as f:
-            fm = parse_front_matter(f.read())
-        if not fm.get("title"):
-            continue  # тема без front-matter в навигацию не попадает
+            text = f.read()
+        fm = parse_front_matter(text)
+        title = fm.get("title") or title_from_heading(text)
+        if not title:
+            continue  # тема без title (ни front-matter, ни '#'-заголовка) в навигацию не попадает
         rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
         topics.append(
             {
                 "id": fm.get("id", rel),
-                "title": fm["title"],
+                "title": title,
                 "file": rel,
                 "status": fm.get("status", "open"),
                 "wait": fm.get("wait", "—"),

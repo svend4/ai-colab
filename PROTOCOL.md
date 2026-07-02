@@ -29,8 +29,8 @@ topics/
     decisions.md
     messages/
       2026-06-19-1320-stefan.md
-      2026-06-19-1325-agent-codex.md
-      2026-06-19-1326-agent-reviewer.md
+      2026-06-19-1325-codex.md
+      2026-06-19-1326-reviewer.md
 ```
 
 Такой формат лучше для большой компании: каждый пишет отдельный файл-сообщение, поэтому почти нет конфликтов записи.
@@ -52,7 +52,7 @@ YYYY-MM-DD-HHMM-author-short-title.md
 Пример:
 
 ```text
-2026-06-19-1325-agent-codex-risk-analysis.md
+2026-06-19-1325-codex-risk-analysis.md
 ```
 
 Формат сообщения:
@@ -61,7 +61,7 @@ YYYY-MM-DD-HHMM-author-short-title.md
 # Сообщение
 
 - Дата: 2026-06-19 13:25
-- Автор: agent-codex
+- Автор: codex
 - Тип: answer
 - Адресовано: all
 - Связанные файлы:
@@ -116,8 +116,8 @@ YYYY-MM-DD-HHMM-task-id-agent-id.md
 ```md
 | ID | Роль | Может писать | Не должен делать |
 |---|---|---|---|
-| agent-codex | главный помощник | docs, tasks, decisions | удалять чужой текст |
-| agent-reviewer | проверка рисков | queues/outbox, темы | менять финальные решения |
+| codex | главный помощник | docs, tasks, decisions | удалять чужой текст |
+| reviewer | проверка рисков | queues/outbox, темы | менять финальные решения |
 ```
 
 ### 6. Запрет на перезапись
@@ -191,6 +191,17 @@ Git commit — это снимок основной линии, а не мест
 `git commit -a`. Коммитить можно только явный список файлов своей задачи. Если изменения смешались,
 нужен отдельный integration commit с понятным описанием.
 
+Стандартный путь коммита внутри Уровня-0 — очередь коммитов (D-031, `accepted`):
+`python tools/commit_queue.py enqueue <agent> --save` → `turn <agent> --ticket <id>` → `git commit`
+(правило selective-add остаётся в силе) → `done <agent> --ticket <id>`. Очередь даёт справедливый
+FIFO-порядок и обратную связь вместо немого `.git/index.lock`, а `--save` предсохраняет staged-правки
+(`python tools/commit_queue.py recover` восстанавливает работу упавшего коммитера).
+
+При триггерах D-022 (`accepted`) агент обязан уйти в Уровень-1 (worktree-на-агента), а не вставать в
+общую очередь: чужие незакоммиченные source-файлы; STALE-индекс не от своих правок; правка hot-файла;
+явная параллельная работа над одной темой; предсказанная same-file коллизия. Детектор триггеров —
+`python tools/cohort.py guard`; авто-регенерацию STALE-индекса делает `cohort ship`.
+
 Для спорных вариантов используется `streams/`:
 
 ```text
@@ -209,7 +220,7 @@ Stream — это "полу-коммит": уже структурированн
 Правило: дубликаты очереди можно схлопывать, но варианты решений нельзя терять. Если похожая карточка
 содержит другой технический подход, он переносится в stream или design comparison.
 
-Подробно: `docs/commit-stream-policy.md`.
+Подробно: `docs/commit-stream-policy.md`, `docs/parallel-work-policy.md`, решения `D-031` и `D-022`.
 
 ### 11. Четыре уровня папок
 

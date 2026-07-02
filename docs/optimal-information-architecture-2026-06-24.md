@@ -202,7 +202,7 @@ purpose: ...
 inputs: ...
 outputs: ...
 checks:
-  - python tools/test_x.py
+  - python tools/test_x.py  # [planned] плейсхолдер примера, не реальный файл
 """
 ```
 
@@ -733,8 +733,8 @@ drivers/<name>/
 ### 15.01. Ближайшие задачи
 
 1. **File-card standard.** Создать `docs/file-card-standard.md` и шаблоны для markdown/python/portal/task.
-2. **File-card checker.** Реализовать `tools/file_card_check.py` в read-only режиме.
-3. **Folder budget report.** Реализовать `tools/folder_budget.py` без автоправок.
+2. **File-card checker.** Реализовать `tools/file_card_check.py` [planned] в read-only режиме.
+3. **Folder budget report.** Реализовать `tools/folder_budget.py` [planned] без автоправок.
 4. **Top verify bundle.** Добавить или проверить команду `python tools/top.py verify`, которая запускает стандартный набор проверок.
 5. **Advice activation.** Начать `docs/advice-activation.md`: какие советы уже автоматизированы, какие нет.
 6. **Architecture stream.** Создать `streams/architecture-core/` для альтернативных вариантов по спорным пунктам.

@@ -51,12 +51,22 @@ def main():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
+    # уборка за собой (аудит C50): main() обязан удалить свой tmp-work/retrieval_bench_<pid> в finally,
+    # а write_fixture — закрывать дескрипторы (на Windows незакрытый файл блокирует rmtree)
+    cli_tmp = os.path.join(rb.ROOT, "tmp-work", "retrieval_bench_%d" % os.getpid())
+    rc = rb.main([])
+    if rc != 0:
+        fails.append("main([]) должен вернуть 0: %s" % rc)
+    if os.path.isdir(cli_tmp):
+        fails.append("main() не убрал за собой временный каталог: %s" % cli_tmp)
+        shutil.rmtree(cli_tmp, ignore_errors=True)
+
     if fails:
         print("FAIL test_retrieval_bench:")
         for f in fails:
             print("  -", f)
         sys.exit(1)
-    print("OK test_retrieval_bench: graph_walk(1/2/0-hop) · граф JOIN=100%% · FTS JOIN=0%% · граф>FTS overall · FTS силён на distant · токены")
+    print("OK test_retrieval_bench: graph_walk(1/2/0-hop) · граф JOIN=100%% · FTS JOIN=0%% · граф>FTS overall · FTS силён на distant · токены · main() убирает tmp")
 
 
 if __name__ == "__main__":

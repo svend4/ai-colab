@@ -1,6 +1,7 @@
 ---
 id: new-problems-2026-06-23
 type: topic
+title: Three newly-surfaced producer-workflow problems + designs (2026-06-23)
 status: resolved
 date: 2026-06-23
 related: [friction-subsystems-synthesis-2026-06-22, q016-assurance-state-2026-06-23, drivers-subsystem-state-2026-06-23, D-018]

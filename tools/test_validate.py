@@ -121,6 +121,22 @@ def _run_validate(root):
     return proc.returncode, proc.stdout
 
 
+def _run_validate_argv(args):
+    """Прогон validate.py с произвольным argv и БЕЗ COLLAB_ROOT (C48: разбор argv[1]).
+
+    Возвращает (returncode, stdout, stderr): die() пишет в stderr, stdout чистый.
+    """
+    env = dict(os.environ)
+    env.pop("COLLAB_ROOT", None)
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    proc = subprocess.run(
+        [sys.executable, os.path.join(HERE, "validate.py"), *args],
+        env=env, capture_output=True, text=True, encoding="utf-8",
+    )
+    return proc.returncode, proc.stdout, proc.stderr
+
+
 def _counters(stdout):
     for line in stdout.splitlines():
         if line.startswith("OK=") and "ERROR=" in line:
@@ -177,8 +193,41 @@ def run():
         assert rc == 1, "ссылка на несуществующее D-999 должна валить:\n%s" % out
         assert err >= 1, out
 
+    # WARN-кейс (C18): тема без front-matter title → WARN (не валит), тема названа в выводе
+    with temp_dir("validate_warn_topic_") as root:
+        _build_valid_root(root)
+        _write(root, "topics/no-title.md", "# Тема без title\n\nтекст\n")
+        rc, out = _run_validate(root)
+        ok, warn, err = _counters(out)
+        assert rc == 0, "тема без title не должна валить канон (rc=%d):\n%s" % (rc, out)
+        assert err == 0, "тема без title должна давать WARN, не ERROR:\n%s" % out
+        assert warn >= 1 and "topics/no-title.md" in out, \
+            "ожидался WARN про topics/no-title.md:\n%s" % out
+
+    # C48-кейс A: мусорный флаг НЕ трактуется как ROOT — die() вместо ложного «канон сломан»
+    rc, out, errout = _run_validate_argv(["--json"])
+    assert rc == 2, "мусорный флаг должен давать exit 2 (die), получили rc=%d:\n%s\n%s" % (rc, out, errout)
+    assert "отсутствует" not in out, "ложный «канон отсутствует» на мусорном флаге:\n%s" % out
+    assert "--json" in errout, "в stderr нет внятной подсказки про аргумент:\n%r" % errout
+
+    # C48-кейс B: несуществующий каталог как ROOT — тоже die(), а не ложные ERROR
+    rc, out, errout = _run_validate_argv(["no-such-dir-xyz"])
+    assert rc == 2, "несуществующий каталог должен давать exit 2:\n%s\n%s" % (out, errout)
+    assert "no-such-dir-xyz" in errout, errout
+
+    # C48-кейс C: позиционный ROOT (существующий каталог) по-прежнему принимается
+    with temp_dir("validate_root_arg_") as root:
+        _build_valid_root(root)
+        rc, out, _ = _run_validate_argv([root])
+        assert rc == 0, "валидный позиционный ROOT должен работать (rc=%d):\n%s" % (rc, out)
+
+    # C48-кейс D: --help не задет проверкой argv (help_guard печатает docstring, exit 0)
+    rc, out, _ = _run_validate_argv(["--help"])
+    assert rc == 0 and "Валидатор" in out, "--help сломан (rc=%d):\n%s" % (rc, out)
+
     print("TESTS OK validate: helpers (table_rows/md_paths/inline-list/fences) + "
-          "main() контракт OK/WARN/ERROR (valid→0, 3 ERROR-кейса→1)")
+          "main() контракт OK/WARN/ERROR (valid→0, 3 ERROR-кейса→1) + "
+          "C18 WARN тема-без-title + C48 argv (флаг/битый ROOT→die 2, каталог→ok, --help→0)")
     return 0
 
 

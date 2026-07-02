@@ -16,7 +16,7 @@ import os
 import sys
 import json
 import re
-import yaml
+from _canon import parse_front_matter
 from _cli import help_guard
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,7 +30,7 @@ def extract_py_dcard(path):
     try:
         with open(path, 'r', encoding='utf-8') as f:
             head = "".join([f.readline() for _ in range(30)])
-    except:
+    except (OSError, UnicodeDecodeError):
         return None
 
     match = DCARD_REGEX.search(head)
@@ -51,20 +51,17 @@ def extract_md_dcard(path):
     try:
         with open(path, 'r', encoding='utf-8') as f:
             head = "".join([f.readline() for _ in range(30)])
-    except:
+    except (OSError, UnicodeDecodeError):
         return None
-    
+
     if not head.startswith('---'):
         return None
-    
-    parts = head.split('---', 2)
-    if len(parts) >= 3:
-        yaml_str = parts[1]
-        try:
-            return yaml.safe_load(yaml_str)
-        except:
-            return None
-    return None
+
+    # Канонический парсер front-matter (_canon) вместо yaml.safe_load:
+    # визитки — простые пары key: value, полноценный YAML не нужен,
+    # а единственная сторонняя зависимость tools/ (PyYAML) исчезает.
+    card = parse_front_matter(head)
+    return card or None
 
 def build_index():
     cards = []

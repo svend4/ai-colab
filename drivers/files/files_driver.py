@@ -37,7 +37,7 @@ def configure_output():
 
 configure_output()
 
-MAX_OUTPUT_BYTES = 1_000_000
+MAX_OUTPUT_BYTES = 1_048_576  # совпадает с max_output_bytes в drivers/files.md
 DEFAULT_MAX_FILES = 1_000
 DEFAULT_MAX_HITS = 1_000
 SKIP_DIRS = {

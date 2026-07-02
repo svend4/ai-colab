@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Тесты files driver (read-only) на маленьком безопасном корпусе — T-043."""
 import os
+import re
 import sys
 import shutil
 
@@ -56,6 +57,16 @@ def run():
 
         s = fd.summarize(d)
         assert s["files"] == 5 and s["total_bytes"] > 0, s
+
+        # регрессия (аудит C45): лимит в коде обязан совпадать с max_output_bytes
+        # в манифесте drivers/files.md — контракт «манифест = код», как у data-драйвера
+        manifest = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "files.md")
+        with open(manifest, encoding="utf-8") as f:
+            m = re.search(r"^max_output_bytes:\s*(\d+)", f.read(), re.M)
+        assert m, "в drivers/files.md не найден max_output_bytes"
+        assert int(m.group(1)) == fd.MAX_OUTPUT_BYTES, (
+            "дрейф лимита: манифест %s != код %d" % (m.group(1), fd.MAX_OUTPUT_BYTES))
 
         print("TESTS OK files=%d hits=%d" % (len(files), len(hits)))
     except AssertionError as e:

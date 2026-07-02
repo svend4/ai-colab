@@ -1,6 +1,7 @@
 ---
 id: q016-assurance-state-2026-06-23
 type: topic
+title: Q-016 assurance — состояние «построено vs осталось» (2026-06-23)
 status: proposed
 date: 2026-06-23
 related: [Q-016, assurance-hardening-plan-2026-06-23]

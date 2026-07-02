@@ -13,6 +13,7 @@
 """Тест commit-lock (tools/commit_lock.py) — сериализация коммитов."""
 import os
 import sys
+import time
 import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -63,7 +64,34 @@ def run():
         assert (cl._read() or {}).get("agent") == "claude", cl._read()
         cl.release("claude")
 
-        print("TESTS OK commit_lock: acquire/busy/release/stale-takeover")
+        # C10-1 (гонка удаления): B перехватил протухший лок — A не должен снести лок B.
+        # Раньше acquire делал слепой os.remove(LOCK) по устаревшему чтению и сносил
+        # уже СВЕЖИЙ лок B (двойное владение); теперь перехват обязан провалиться.
+        with open(cl.LOCK, "w", encoding="utf-8", newline="\n") as f:
+            f.write("agent: ghost\nepoch: 1\nlease_epoch: 1\n")
+        stale = cl._read()  # A прочитал протухший лок и «завис» перед снятием
+        assert cl.acquire("B", wait=0) == 0, "B перехватывает тот же протухший лок"
+        b_lock = cl._read()
+        assert b_lock and b_lock.get("agent") == "B", b_lock
+        assert cl._takeover("A", 120, stale) is None, "перехват A по устаревшему чтению должен провалиться"
+        assert cl._read() == b_lock, "свежий лок B должен остаться нетронутым: %r" % (cl._read(),)
+        assert cl.acquire("A", wait=0) == 1, "лок B свежий — A не должен взять"
+        assert cl.release("A") == 1, "чужой release тоже не снимает лок B"
+        assert cl.release("B") == 0
+
+        # C10-2 (TOCTOU в release): сверяется token содержимого, а не только имя агента.
+        assert cl.acquire("claude", wait=0) == 0
+        now = int(time.time())
+        with open(cl.LOCK, "w", encoding="utf-8", newline="\n") as f:
+            # перехват ДРУГИМ экземпляром с тем же именем агента: другой token
+            f.write("agent: claude\nepoch: %d\nlease_epoch: %d\ntoken: deadbeef0000\n" % (now, now + 120))
+        assert cl.release("claude") == 1, "release не должен снимать перехваченный лок (токен не совпал)"
+        assert (cl._read() or {}).get("token") == "deadbeef0000", "перехваченный лок должен уцелеть"
+        assert cl.release("claude", token="deadbeef0000") == 0, "с верным токеном release снимает"
+        assert cl._read() is None, "после release лок снят"
+
+        print("TESTS OK commit_lock: acquire/busy/release/stale-takeover/"
+              "delete-race(C10)/release-token(C10)")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

@@ -75,6 +75,12 @@ def run():
         import dispatch as d
         assert d.ROOT == base, (d.ROOT, base)
 
+        # регресс (аудит P3/B-04): в исходнике модуля нет bare-CR переводов строк
+        # (bare-CR ломает git-диффы: файл считается -text/binary)
+        raw = open(os.path.join(HERE, "dispatch.py"), "rb").read()
+        assert b"\r" not in raw.replace(b"\r\n", b"\n"), \
+            "bare-CR переводы строк в dispatch.py (git видит файл как binary)"
+
         tasks = d.load_tasks()
         assert set(tasks) == {"T-400", "T-401", "T-402", "T-403", "T-410", "T-420"}, set(tasks)
         # deps извлекаются регуляркой T-\d+ из произвольного текста depends_on
@@ -131,7 +137,7 @@ def run():
             shutil.rmtree(empty, ignore_errors=True)
             os.environ["COLLAB_ROOT"] = base
 
-        print("TESTS OK dispatch: load_tasks(deps regex T-\\d+) + ready/blocked по depends_on + приоритет high<normal<low + next + пустой workspace")
+        print("TESTS OK dispatch: load_tasks(deps regex T-\\d+) + ready/blocked по depends_on + приоритет high<normal<low + next + пустой workspace + нет bare-CR")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

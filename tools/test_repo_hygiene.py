@@ -1,4 +1,4 @@
-"""Тест repo_hygiene.py — классификация porcelain · gitignore-предложения (дедуп) · score · sandbox visibility."""
+"""Тест repo_hygiene.py — классификация porcelain · gitignore-предложения (дедуп) · score · sandbox visibility · WARN личных путей (C46)."""
 import os
 import sys
 
@@ -74,12 +74,31 @@ def main():
     if not rh.is_scratch("queues/commit-queue/x.json"):
         fails.append("commit-queue тикет = scratch")
 
+    # WARN на личные абсолютные пути в новых файлах (аудит C46). Фикстуры собираем
+    # конкатенацией, чтобы сам тест-файл не содержал буквального личного пути.
+    users_bs = "C:" + "\\Users\\"
+    users_fwd = "C:" + "/Users/"
+    if rh.personal_path_hits("см. " + users_bs + "someuser" + "\\Documents\\x.md") == []:
+        fails.append("личный путь (backslash) должен давать WARN")
+    if rh.personal_path_hits("root=" + users_fwd + "someuser" + "/proj") == []:
+        fails.append("личный путь (forward slash) должен давать WARN")
+    if rh.personal_path_hits(users_bs + "<user>" + "\\x.txt") != []:
+        fails.append("плейсхолдер <user> НЕ личный путь")
+    if rh.personal_path_hits(users_fwd + "Public" + "/shared.txt") != []:
+        fails.append("Users/Public НЕ личный путь")
+    if rh.personal_path_hits("relative/users/x.md и D:/data/users.txt") != []:
+        fails.append("относительные пути и не-Users-каталоги не должны WARNить")
+    dup = users_fwd + "someuser" + "/a.txt"
+    hits = rh.personal_path_hits(dup + " и снова " + dup)
+    if len(hits) != 1:
+        fails.append("дедуп совпадений WARN: %s" % hits)
+
     if fails:
         print("FAIL test_repo_hygiene:")
         for f in fails:
             print("  -", f)
         sys.exit(1)
-    print("OK test_repo_hygiene: классификация(scratch/canon/stray/other/staged) · gitignore-дедуп · score · паттерны · канон≠scratch")
+    print("OK test_repo_hygiene: классификация(scratch/canon/stray/other/staged) · gitignore-дедуп · score · паттерны · канон≠scratch · WARN личных путей (C46)")
 
 
 if __name__ == "__main__":

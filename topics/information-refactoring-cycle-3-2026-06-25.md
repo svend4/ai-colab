@@ -1,6 +1,7 @@
 ---
 id: information-refactoring-cycle-3-2026-06-25
 type: topic
+title: Information Refactoring Cycle 3 - action-plan, status-backfill и новые вопросы
 status: proposed
 owner: codex
 related: [T-249, T-248, Q-023]

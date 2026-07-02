@@ -30,6 +30,7 @@ stdout/stderr переключаются на utf-8 с errors="replace" толь
 """
 import os
 import sys
+import uuid
 
 
 def configure_output():
@@ -48,6 +49,29 @@ def configure_output():
 class DataLossGuardException(Exception):
     """Исключение, выбрасываемое при попытке удалить слишком много данных из файла."""
     pass
+
+
+def atomic_write(filepath, text, newline="\n"):
+    """Атомарная запись текста: tmp-файл рядом + os.replace (аудит C11/C49).
+
+    Прямой `open(path, "w")` сначала усекает файл до нуля: падение процесса
+    (kill/OOM/disk-full) между truncate и write теряет ВЕСЬ файл. Здесь контент
+    пишется во временный файл рядом, затем атомарно подменяет оригинал через
+    os.replace — читатель никогда не видит пустой/усечённый файл. Паттерн тот же,
+    что в pipeline.cmd_heartbeat/try_claim; при сбое tmp-хвост подчищается.
+    """
+    tmp = "%s.tmp.%s" % (filepath, uuid.uuid4().hex[:8])
+    try:
+        with open(tmp, "w", encoding="utf-8", newline=newline) as f:
+            f.write(text)
+        os.replace(tmp, filepath)
+    finally:
+        # не оставлять tmp-хвостов, если запись/подмена упала
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
 
 
 def safe_write(filepath, new_content, force_truncate=False, max_loss_ratio=0.15, max_loss_lines=20):
@@ -81,6 +105,7 @@ def safe_write(filepath, new_content, force_truncate=False, max_loss_ratio=0.15,
                     f"Используйте force_truncate=True, если это удаление намеренно."
                 )
 
-    # Если всё хорошо или это новый файл (записываем с unix-переносами)
-    with open(filepath, "w", encoding="utf-8", newline="\n") as f:
-        f.write(new_content)
+    # Если всё хорошо или это новый файл (записываем с unix-переносами).
+    # Атомарно: tmp + os.replace — краш между truncate и write больше не может
+    # оставить пустой/усечённый файл (аудит C11).
+    atomic_write(filepath, new_content)

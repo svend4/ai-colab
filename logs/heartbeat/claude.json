@@ -1,8 +1,0 @@
-{
-  "agent": "claude",
-  "task": "T-092",
-  "progress": 100,
-  "note": "G: execute-sandbox gate в validate (ERROR без реальной изоляции)",
-  "eta": "done",
-  "epoch": 1782037173
-}

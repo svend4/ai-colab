@@ -1,6 +1,7 @@
 ---
 id: drivers-subsystem-state-2026-06-23
 type: topic
+title: Drivers / AI-OS Bridge subsystem — authoritative state (2026-06-23)
 status: proposed
 date: 2026-06-23
 related: [D-010, D-013, driver-safety-policy, pyramid-candidate-map]

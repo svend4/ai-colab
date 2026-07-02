@@ -224,8 +224,8 @@ python tools\conveyor.py ship <workflow-id>
 | `tools/result_intake.py` | классифицировать outbox/landed result | сначала стабилизировать форматы result |
 | `tools/top.py process-landed` | взять первый landed output и напечатать verify/synthesis plan | реализовано в T-170 как read-only advisory; дальнейший шаг — больше классификации после ручных циклов |
 | `tools/conveyor.py regulate` | advisory target +1/0/-1 / process-first | реализовано T-179 как read-only; следующий шаг — накопить метрики throughput |
-| `tools/synthesis_gate.py` | проверять consensus/disagreement структуру | сначала закрепить шаблон synthesis |
-| `tools/commit_batch.py` | подготовить selective-add batch под commit_lock | опасно без точного ownership classifier |
+| `tools/synthesis_gate.py` [planned] | проверять consensus/disagreement структуру | сначала закрепить шаблон synthesis |
+| `tools/commit_batch.py` [planned] | подготовить selective-add batch под commit_lock | опасно без точного ownership classifier |
 | `dashboard/app` или ChatGPT App | UI-кнопки для людей | имеет смысл после стабильного CLI contract |
 
 ## 6. Метрики верхнего слоя

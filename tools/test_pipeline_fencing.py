@@ -19,12 +19,17 @@
   2. done чужим агентом отклоняется (старое поведение сохранено);
   3. атомарный перехват протухшего claim: N параллельных try_claim → ровно 1 победитель;
   4. applied-warning: служебная задача без --applied получает WARN, обычная нет;
-  5. targeted claim: success/busy/not-ready/placeholder без wrong-next.
+  5. targeted claim: success/busy/not-ready/placeholder без wrong-next;
+  6. автоочистка призрачных heartbeat по done-задачам старше TTL (аудит C22);
+  7. safe_agent_name: кириллица сохраняется, разные имена не схлопываются (аудит C49);
+  8. snapshot: производные файлы валидны, tmp-хвостов атомарной записи нет (аудит C49).
 
 Изолированный COLLAB_ROOT во временной папке; pipeline импортируется ПОСЛЕ установки env.
 """
 import os
 import sys
+import json
+import time
 import shutil
 import threading
 import contextlib
@@ -214,7 +219,53 @@ def run():
 
         assert P.cmd_claim("codex", "T-999") == 1, "missing task должен отклоняться"
 
-        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; missing-claim rejection ok; applied-warning ok; claim success/busy/not-ready/placeholder ok"
+        # --- 6. автоочистка призрачных heartbeat по done-задачам (аудит C22) ---
+        os.makedirs(P.HEARTBEAT_DIR, exist_ok=True)
+        old_epoch = int(time.time()) - 7 * 24 * 3600  # «недельной давности»
+        ghost_path = os.path.join(P.HEARTBEAT_DIR, "ghost1.json")
+        with open(ghost_path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"agent": "ghost1", "task": "T-900", "progress": 95,
+                       "note": "", "eta": "", "epoch": old_epoch}, f)
+        fresh_done_path = os.path.join(P.HEARTBEAT_DIR, "fresh_done.json")
+        with open(fresh_done_path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"agent": "fresh_done", "task": "T-900", "progress": 100,
+                       "note": "", "eta": "", "epoch": int(time.time())}, f)
+        live_path = os.path.join(P.HEARTBEAT_DIR, "live1.json")
+        with open(live_path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump({"agent": "live1", "task": "T-903", "progress": 10,
+                       "note": "", "eta": "", "epoch": old_epoch}, f)
+        hb_agents = {i.get("agent") for i in P.collect_heartbeats()}
+        assert "ghost1" not in hb_agents, "heartbeat по done-задаче старше TTL должен вычищаться из LIVE"
+        assert not os.path.exists(ghost_path), "призрачный heartbeat-файл должен удаляться"
+        assert "fresh_done" in hb_agents, "свежий heartbeat по done-задаче (моложе TTL) должен оставаться"
+        assert "live1" in hb_agents and os.path.exists(live_path), \
+            "heartbeat по НЕзакрытой задаче не должен вычищаться, даже старый"
+
+        # --- 7. safe_agent_name: юникод-имена не схлопываются (аудит C49) ---
+        assert P.safe_agent_name("claude") == "claude", "ASCII-имя должно сохраняться как раньше"
+        ivan, pyotr = P.safe_agent_name("иван"), P.safe_agent_name("пётр")
+        assert ivan != pyotr, "«иван» и «пётр» не должны схлопываться в один heartbeat-файл"
+        assert "иван" in ivan and "пётр" in pyotr, "кириллица должна сохраняться в имени файла"
+        assert P.safe_agent_name("a b") != P.safe_agent_name("a?b"), \
+            "разные вычищенные имена должны отличаться (хэш исходного имени)"
+        assert P.safe_agent_name("") == "unknown", "пустое имя → unknown"
+
+        # --- 8. snapshot: производные файлы валидны, tmp-хвостов нет (аудит C49) ---
+        snap_out = io.StringIO()
+        with contextlib.redirect_stdout(snap_out):
+            assert P.cmd_snapshot() == 0, "snapshot должен отработать"
+        with open(P.PIPELINE_JSON, encoding="utf-8") as f:
+            state = json.load(f)
+        assert "doing" in state and "ready" in state, "pipeline.json должен быть валидным JSON-состоянием"
+        with open(P.HEARTBEAT_JSON, encoding="utf-8") as f:
+            hb = json.load(f)
+        assert "agents" in hb, "heartbeat.json должен быть валидным JSON"
+        assert os.path.exists(P.LIVE_MD), "LIVE.md должен быть записан"
+        for d in (P.LOGS, ROOT, os.path.join(ROOT, "tasks")):
+            leftovers = [fn for fn in os.listdir(d) if ".tmp." in fn]
+            assert not leftovers, "tmp-хвосты атомарной записи не должны оставаться: %s" % leftovers
+
+        print("TESTS OK fencing+takeover+targeted-claim: %d раундов по 8 потоков; done-fencing ok; missing-claim rejection ok; applied-warning ok; claim success/busy/not-ready/placeholder ok; heartbeat-автоочистка(done+TTL) ok; safe_agent_name-unicode ok; snapshot-атомарность ok"
               % rounds)
     except AssertionError as e:
         ok = False

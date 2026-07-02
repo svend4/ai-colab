@@ -1,6 +1,7 @@
 ---
 id: information-refactoring-question-tree-2026-06-25
 type: topic
+title: Информационный рефакторинг репозитория: дерево вопросов
 status: proposed
 owner: codex
 date: 2026-06-25

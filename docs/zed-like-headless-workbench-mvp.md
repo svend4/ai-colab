@@ -75,7 +75,7 @@ threads + MCP/local model routes** в одну рабочую поверхнос
 | Parallel agents | multiple agent threads | `workflow`, subagents, `conveyor`, `pipeline` | нет durable thread object |
 | Worktree isolation | linked Git worktrees | `tools/worktree.py`, `tools/flow.py --worktree`, `merge_gate.py` | нужен status/check/orphan view |
 | External agents | ACP | `subagent-handoff`, platform subagents, future MCP/ACP bridge | нет ACP adapter |
-| Terminal threads | CLI/TUI inside Zed thread | пока только обычный terminal + отчеты | нужен `tools/thread.py` или `tools/terminal_thread.py` |
+| Terminal threads | CLI/TUI inside Zed thread | пока только обычный terminal + отчеты | нужен `tools/thread.py` или `tools/terminal_thread.py` [planned] |
 | MCP | Zed MCP servers | `drivers/gateway/mcp_server.py`, files/repo/workbench drivers | read-only готов, execute закрыт |
 | Local models | Ollama/LM Studio/OpenAI-compatible | пока нет unified local LLM adapter | нужен `drivers/local-llm` |
 | UI panel | Agentic layout | `tools/top.py buttons`, docs, JSON | нужен dashboard/portal позже |

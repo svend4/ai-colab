@@ -31,6 +31,8 @@
 - Атомарность: новый claim создаётся через O_CREAT|O_EXCL (атомарно на одной ФС) —
   два агента не получат claim одновременно.
 - TTL: claim «свежий», пока lease_until в будущем; протухший claim можно перехватить.
+  Перехват тоже атомарен (порт схемы pipeline.try_claim, T-082/T-084): эксклюзивный
+  takeover-lock по claim_id старого claim + перепроверка под lock'ом + os.replace.
 - Fencing: каждый claim получает уникальный claim_id; complete/fail требуют его —
   агент, чей claim перехватили, не сможет завершить задачу и затереть чужую работу.
 """
@@ -96,17 +98,64 @@ def claim_text(d):
         "Lease до %(lease_until)s. Fencing claim_id: %(claim_id)s.\n"
     ) % d
 
-def write_claim(task, d, overwrite):
+def write_claim(task, d, old_claim=None):
+    """Записать claim. Без old_claim — атомарное создание через O_CREAT|O_EXCL
+    (FileExistsError пробрасывается наверх, как раньше).
+
+    С old_claim (перехват протухшего claim или продление своего) — атомарная
+    подмена по схеме pipeline.try_claim (T-082, ревью T-078 находка I;
+    перепроверка под lock'ом — T-084): эксклюзивный lock-файл, имя которого
+    выведено из claim_id СТАРОГО claim, повторная проверка под lock'ом, запись
+    во временный файл и os.replace. Два агента, увидевшие один и тот же
+    протухший claim, вычислят одно имя lock'а — победит ровно один.
+    Возвращает True при успехе, False — если claim уже перехвачен/обновлён
+    конкурентом (гонка проиграна).
+    """
     pth = claim_path(task)
     os.makedirs(os.path.dirname(pth), exist_ok=True)
     text = claim_text(d)
-    if overwrite:
-        with open(pth, "w", encoding="utf-8", newline="\n") as f:
-            f.write(text)
-    else:
+    if not old_claim:
         fd = os.open(pth, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
+        return True
+    lock = "%s.take.%s" % (pth, old_claim.get("claim_id") or "none")
+    try:
+        lfd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+    except (FileExistsError, PermissionError):
+        return False  # другой агент уже перехватывает этот же claim
+    try:
+        os.close(lfd)
+        # повторная проверка ПОД lock'ом: на диске всё ещё тот же claim?
+        # закрывает гонку, когда конкурент успел перехватить и снять lock между
+        # нашим чтением old_claim и взятием lock'а — иначе поздний писатель
+        # молча затёр бы уже СВЕЖИЙ claim победителя (двойной захват).
+        cur = read_claim(task)
+        if (cur is None
+                or cur.get("claim_id") != old_claim.get("claim_id")
+                or (is_fresh(cur) and cur.get("agent") != d["agent"])):
+            return False
+        tmp = "%s.tmp.%s" % (pth, d["claim_id"])
+        with open(tmp, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        # Windows может кратковременно запрещать os.replace, пока другой
+        # процесс трогает тот же путь — несколько попыток, затем честный отказ.
+        for _ in range(5):
+            try:
+                os.replace(tmp, pth)  # атомарная подмена старого claim новым
+                return True
+            except PermissionError:
+                time.sleep(0.02)
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        return False
+    finally:
+        try:
+            os.remove(lock)
+        except OSError:
+            pass
 
 def require_holder(task, agent, claim_id):
     c = read_claim(task)
@@ -144,9 +193,12 @@ def cmd_claim(a):
         "lease_epoch": str(lease),
     }
     try:
-        write_claim(task, d, overwrite=bool(existing))
+        ok = write_claim(task, d, old_claim=existing)
     except FileExistsError:
         print("RACE: claim только что создан другим агентом — повтори")
+        return 1
+    if not ok:
+        print("RACE: claim уже перехвачен/обновлён другим агентом — повтори")
         return 1
     if existing and not is_fresh(existing):
         note = "перехвачен протухший claim"

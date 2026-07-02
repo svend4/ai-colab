@@ -21,37 +21,23 @@ from _ioutil import configure_output, safe_write
 
 configure_output()
 
-try:
-    from _canon import parse_fm, dump_fm
-except ImportError:
-    # Fallback if _canon is not available or path is wrong
-    def parse_fm(text):
-        m = re.match(r"^---\r?\n(.*?)\r?\n---\r?\n", text, re.S)
-        if not m:
-            return {}
-        d = {}
-        for line in m.group(1).split("\n"):
-            if ":" in line:
-                k, v = line.split(":", 1)
-                d[k.strip()] = v.strip()
-        return d
-        
-    def dump_fm(d):
-        lines = ["---"]
-        for k, v in d.items():
-            lines.append(f"{k}: {v}")
-        lines.append("---")
-        return "\n".join(lines) + "\n"
+# Канонический парсер front-matter (T-085). Раньше здесь был try/except с
+# фоллбэк-копией парсера: импорт `dump_fm` из _canon всегда падал (его там нет),
+# и фоллбэк работал постоянно, расходясь с каноном (аудит C34). dump_fm остаётся
+# локальным — перенос в _canon отложен до консолидации C35.
+from _canon import parse_fm
 
-def replace_fm(text, d):
-    fm_text = dump_fm(d) if "dump_fm" in globals() else "---" # simple fallback logic is handled
-    # proper implementation
+
+def dump_fm(d):
     lines = ["---"]
     for k, v in d.items():
         lines.append(f"{k}: {v}")
     lines.append("---")
-    fm_text = "\n".join(lines) + "\n"
-    
+    return "\n".join(lines) + "\n"
+
+
+def replace_fm(text, d):
+    fm_text = dump_fm(d)
     m = re.match(r"^---\r?\n.*?\r?\n---\r?\n", text, re.S)
     if m:
         return fm_text + text[m.end():]

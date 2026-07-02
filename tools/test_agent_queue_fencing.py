@@ -14,6 +14,7 @@ import os
 import shutil
 import tempfile
 import sys
+import threading
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -99,6 +100,129 @@ class TestAgentQueueFencing(unittest.TestCase):
         
         failed_path = os.path.join(agent_queue.Q, "failed", self.task + ".failed.md")
         self.assertFalse(os.path.exists(failed_path))
+
+    # --- атомарность перехвата протухшего claim (аудит 2026-07-02, C9) ---
+
+    def _write_stale_claim(self, agent="agent-old", claim_id="oldcid0001"):
+        # Протухший claim: lease_epoch в прошлом.
+        past = agent_queue.now_epoch() - 3600
+        d = {
+            "task": self.task,
+            "agent": agent,
+            "claim_id": claim_id,
+            "claimed_at": agent_queue.human(past - 60),
+            "lease_until": agent_queue.human(past),
+            "lease_epoch": str(past),
+        }
+        pth = agent_queue.claim_path(self.task)
+        with open(pth, "w", encoding="utf-8", newline="\n") as f:
+            f.write(agent_queue.claim_text(d))
+        return d
+
+    def _claim_args(self, agent):
+        class Args: pass
+        a = Args()
+        a.task = self.task
+        a.agent = agent
+        a.ttl = 30
+        return a
+
+    def test_stale_takeover_is_atomic_second_writer_loses(self):
+        # Репродукция гонки из аудита (детерминированный интерливинг):
+        # оба агента прочитали ОДИН И ТОТ ЖЕ протухший claim, оба пишут.
+        # До фикса оба write_claim «успевали» (plain overwrite) — двойной захват;
+        # теперь поздний писатель обязан проиграть перепроверку под lock'ом.
+        self._write_stale_claim()
+        old = agent_queue.read_claim(self.task)  # общий снимок для A и B
+
+        def new_claim(agent):
+            cid = agent_queue.token()
+            lease = agent_queue.now_epoch() + 30 * 60
+            return {
+                "task": self.task,
+                "agent": agent,
+                "claim_id": cid,
+                "claimed_at": agent_queue.human(agent_queue.now_epoch()),
+                "lease_until": agent_queue.human(lease),
+                "lease_epoch": str(lease),
+            }
+
+        d_a, d_b = new_claim("agent-A"), new_claim("agent-B")
+        self.assertTrue(agent_queue.write_claim(self.task, d_a, old_claim=old),
+                        "первый перехватчик должен победить")
+        self.assertFalse(agent_queue.write_claim(self.task, d_b, old_claim=old),
+                         "поздний писатель со старым снимком должен проиграть")
+        cur = agent_queue.read_claim(self.task)
+        self.assertEqual(cur.get("agent"), "agent-A",
+                         "на диске должен остаться claim победителя")
+        self.assertEqual(cur.get("claim_id"), d_a["claim_id"])
+
+    def test_stale_takeover_blocked_by_takeover_lock(self):
+        # Пока конкурент держит takeover-lock по тому же старому claim_id —
+        # write_claim честно отказывает, а не пишет поверх.
+        self._write_stale_claim(claim_id="lockedcid")
+        old = agent_queue.read_claim(self.task)
+        lock = agent_queue.claim_path(self.task) + ".take.lockedcid"
+        fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.close(fd)
+        try:
+            d = {
+                "task": self.task, "agent": "agent-B",
+                "claim_id": agent_queue.token(),
+                "claimed_at": agent_queue.human(agent_queue.now_epoch()),
+                "lease_until": agent_queue.human(agent_queue.now_epoch() + 60),
+                "lease_epoch": str(agent_queue.now_epoch() + 60),
+            }
+            self.assertFalse(agent_queue.write_claim(self.task, d, old_claim=old))
+            cur = agent_queue.read_claim(self.task)
+            self.assertEqual(cur.get("claim_id"), "lockedcid",
+                             "старый claim не должен быть затёрт под чужим lock'ом")
+        finally:
+            os.remove(lock)
+
+    def test_stale_takeover_single_agent_succeeds(self):
+        # Одиночный перехват протухшего claim по-прежнему работает.
+        self._write_stale_claim()
+        rc = agent_queue.cmd_claim(self._claim_args("agent-new"))
+        self.assertEqual(rc, 0)
+        cur = agent_queue.read_claim(self.task)
+        self.assertEqual(cur.get("agent"), "agent-new")
+        self.assertTrue(agent_queue.is_fresh(cur))
+
+    def test_renew_own_fresh_claim_still_works(self):
+        # Продление собственного свежего claim идёт тем же атомарным путём.
+        a = self._claim_args("agent1")
+        self.assertEqual(agent_queue.cmd_claim(a), 0)
+        first = agent_queue.read_claim(self.task)
+        self.assertEqual(agent_queue.cmd_claim(a), 0, "продление своего claim")
+        second = agent_queue.read_claim(self.task)
+        self.assertEqual(second.get("agent"), "agent1")
+        self.assertNotEqual(second.get("claim_id"), first.get("claim_id"),
+                            "продление ротирует claim_id")
+
+    def test_concurrent_stale_takeover_only_one_wins(self):
+        # Сценарий аудита «в лоб»: два потока конкурентно перехватывают один
+        # протухший claim — OK (rc=0) должен получить ровно один.
+        self._write_stale_claim()
+        results = {}
+        barrier = threading.Barrier(2)
+
+        def worker(agent):
+            barrier.wait()
+            results[agent] = agent_queue.cmd_claim(self._claim_args(agent))
+
+        threads = [threading.Thread(target=worker, args=(ag,))
+                   for ag in ("agent-A", "agent-B")]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        winners = [ag for ag, rc in results.items() if rc == 0]
+        self.assertEqual(len(winners), 1,
+                         "ровно один агент должен перехватить протухший claim: %r" % results)
+        cur = agent_queue.read_claim(self.task)
+        self.assertEqual(cur.get("agent"), winners[0],
+                         "на диске — claim победителя")
 
 if __name__ == "__main__":
     unittest.main()

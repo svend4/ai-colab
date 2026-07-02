@@ -14,11 +14,11 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-DRAFT_ROOT_REL = os.path.join("tmp-work", "info-draft-test")
-DRAFT_ROOT = os.path.join(ROOT, DRAFT_ROOT_REL)
+TMP_BASE = os.path.join(ROOT, "tmp-work")
 TOOL = os.path.join(HERE, "info_draft.py")
 
 
@@ -41,9 +41,19 @@ def load_json(stdout):
 
 
 def run():
-    shutil.rmtree(DRAFT_ROOT, ignore_errors=True)
-    os.makedirs(DRAFT_ROOT, exist_ok=True)
+    # Изоляция от параллельных прогонов: уникальный каталог через tempfile.mkdtemp,
+    # уборка в finally. База обязана лежать внутри репо — info_draft.py отклоняет
+    # --root вне репо ("refusing path outside repo").
+    os.makedirs(TMP_BASE, exist_ok=True)
+    draft_root = tempfile.mkdtemp(prefix="info-draft-test-", dir=TMP_BASE)
+    draft_root_rel = os.path.relpath(draft_root, ROOT)
+    try:
+        return _run_checks(draft_root_rel)
+    finally:
+        shutil.rmtree(draft_root, ignore_errors=True)
 
+
+def _run_checks(draft_root_rel):
     p = run_cmd([
         "create",
         "Doc Draft",
@@ -64,7 +74,7 @@ def run():
         "--target",
         "docs/example.md",
         "--root",
-        DRAFT_ROOT_REL,
+        draft_root_rel,
         "--json",
     ])
     created = load_json(p.stdout)
@@ -77,7 +87,7 @@ def run():
         assert os.path.isfile(os.path.join(draft_path, name)), name
 
     duplicate = subprocess.run(
-        [sys.executable, TOOL, "create", "doc-draft", "--owner", "codex", "--purpose", "duplicate", "--root", DRAFT_ROOT_REL],
+        [sys.executable, TOOL, "create", "doc-draft", "--owner", "codex", "--purpose", "duplicate", "--root", draft_root_rel],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -87,10 +97,10 @@ def run():
     )
     assert duplicate.returncode != 0 and "already exists" in duplicate.stderr, duplicate.stderr
 
-    check = load_json(run_cmd(["check", "doc-draft", "--root", DRAFT_ROOT_REL, "--json"]).stdout)
+    check = load_json(run_cmd(["check", "doc-draft", "--root", draft_root_rel, "--json"]).stdout)
     assert check["schema"] == "info_draft_check.v1" and check["status"] == "ok", check
 
-    review = load_json(run_cmd(["review", "doc-draft", "--root", DRAFT_ROOT_REL, "--json"]).stdout)
+    review = load_json(run_cmd(["review", "doc-draft", "--root", draft_root_rel, "--json"]).stdout)
     assert review["schema"] == "info_draft_review.v1", review
     assert review["source"]["canon_status"] == "not-canonical-until-synthesized-and-promoted", review
     assert review["recommendation"]["route"] in {"keep-quarantine", "ready-for-synthesis"}, review
@@ -103,10 +113,10 @@ def run():
         f.write("- source: docs/example.md\n- source: streams/example/STREAM.md\n")
     with open(os.path.join(draft_path, "open_questions.md"), "a", encoding="utf-8", newline="\n") as f:
         f.write("- question: one\n- question: two\n")
-    ready = load_json(run_cmd(["review", "doc-draft", "--root", DRAFT_ROOT_REL, "--json"]).stdout)
+    ready = load_json(run_cmd(["review", "doc-draft", "--root", draft_root_rel, "--json"]).stdout)
     assert ready["recommendation"]["route"] == "ready-for-synthesis", ready
 
-    list_payload = load_json(run_cmd(["list", "--root", DRAFT_ROOT_REL, "--json"]).stdout)
+    list_payload = load_json(run_cmd(["list", "--root", draft_root_rel, "--json"]).stdout)
     assert list_payload["schema"] == "info_draft_list.v1", list_payload
     assert [d["id"] for d in list_payload["drafts"]] == ["doc-draft"], list_payload
 
@@ -118,7 +128,7 @@ def run():
         json.dump(manifest, f, ensure_ascii=False, indent=2)
         f.write("\n")
     bad = subprocess.run(
-        [sys.executable, TOOL, "check", "doc-draft", "--root", DRAFT_ROOT_REL, "--json"],
+        [sys.executable, TOOL, "check", "doc-draft", "--root", draft_root_rel, "--json"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -141,7 +151,6 @@ def run():
     )
     assert outside.returncode == 2 and "outside repo" in outside.stderr, outside.stderr
 
-    shutil.rmtree(DRAFT_ROOT, ignore_errors=True)
     print("TESTS OK info_draft: create/check/review/list/no-canon/path-safety")
     return 0
 
