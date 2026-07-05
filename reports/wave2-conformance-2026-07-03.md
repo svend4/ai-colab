@@ -1,0 +1,61 @@
+# Волна 2 аудита — матрица соответствия исполнения решениям Stefan
+
+**Дата:** 2026-07-03/05 · **Аудит:** reports/audit-claude-2026-07-02.md · **План:** reports/fix-wave2-plan-2026-07-02.md
+
+**Метод проверки:** 6 параллельных конформанс-воркфлоу (29 независимых проверяющих) + оркестратор (C3, C36). Каждый проверяющий: выписал определение выбранной буквы из плана → проверил фактический код/файлы → прогнал минимум один тест сам → вынес вердикт. Отчётам исполнителей верить на слово было запрещено.
+
+**Итог:** 31 пунктов — 0 missing, 0 partial. 14 conform · 12 superset · 4 pending-git · 1 deviation-justified
+
+| Пункт | Выбор Stefan | Вердикт | Реализовано как |
+|---|---|---|---|
+| **C44** | C44-c («C44-a + добавить в хук permissions.py и (по D-026) bulk_guard», план fix-wave2-… | ⚖️ deviation-justified | C44-a полностью + условный bulk_guard ровно по Q-W2-13(c). (1) tools/githooks/pre-commit:44-53 — при отсутствии Python fail-open сохранён (exit 0), но факт пропуска дописывается чистым sh (printf+date) JSON-строкой {ts, fid:"precommit-sk… |
+| **C14** | C14-c (гибрид, план reports/fix-wave2-plan-2026-07-02.md:164): условие — часть каталого… | 🔧 pending-git | Ровно C14-c: 130 tools/test_*.py перенесены в tools/tests/ (125 через git mv staged-rename R100 + 5 untracked plain mv), в каждый вставлен sys.path-бутстрап _TOOLS_DIR для standalone-запуска; программные потребители путей обновлены (gap_… |
+| **C51** | C51-c (a+b) + Q-W2-14 (c): фикс инструментов (newline='\n') сразу силами исполнителя + … | 🔧 pending-git | Половина C51-b реализована полностью в рабочем дереве (не закоммичено): во все текстовые open(...,'w'/'a') в tools/** вставлен newline="\n"; bulk_dcard_generator.py мигрирован на _ioutil.safe_write -> atomic_write(newline="\n") — LF зафи… |
+| **C54** | C54-c (a сейчас + b как политика) + Q-W2-16(c): git gc + git maintenance выполняет орке… | 🔧 pending-git | Рой не правил файлы для C54 (files_changed=[] — так и требует план: «весь пункт исполняется человеком»). Вклад роя ровно по плану (строка 723): (1) задел в tools/janitor.py — опция --gc (off-by-default) вызывает `git gc --auto` через run… |
+| **C56** | C56-a (механика архивной ротации dialog.md: реплики старше N недель → dialog-archive-YY… | 🔧 pending-git | (b) .gitignore:25-27 — комментарий + паттерн indexes/cauldron_graph.json; файл сознательно оставлен tracked и цел (721801 байт), git rm --cached передан оркестратору в git_ops_for_human (wave2-execution.json строки 19-21), как требует пл… |
+| **C12** | C12-a (fixture `root` в conftest) + Q-W2-3 (c) двухступенчатый тестовый контур | ✅ superset | Создан tools/tests/conftest.py (не tools/conftest.py — тесты перенесены в tools/tests/ по C14, адаптация задокументирована в докстринге conftest, строки 15-22): pytest-fixture root(request, tmp_path) воспроизводит контракт run() самозапу… |
+| **C13** | C13-c «двухступенчатый канон» (план reports/fix-wave2-plan-2026-07-02.md:146): условие … | ✅ superset | Ровно C13-c плюс совместимые дополнения. Ядро: создан раннер tools/test_all.py (обнаружение самозапускающихся test_*.py по литералу `if __name__ ==`, запуск каждого subprocess-ом с PYTHONUTF8/timeout, агрегация exit-кодов «хотя бы один н… |
+| **C15** | C15-a + Q-W2-1 (a)+(b): все 8 сирот задокументировать в автоиндексе; полезные (repo_hyg… | ✅ superset | C15-a+b+d. (a) repo_hygiene.py и workflow_recover.py описаны в tools/README.md с точками входа; (Q-W2-1a) все 8 бывших сирот присутствуют в автоиндексе GEN:tools-index; (b) 6 остальных (cli_inventory, fold, retrieval_bench, text_brain, t… |
+| **C19** | C19-a (создать decisions/D-029.md, status: proposed) + ответ котла Q-W2-5(a); определен… | ✅ superset | C19-a полностью + совместимый сверх-объём из C19-c: (a) создан decisions/D-029.md (status: proposed, source: outbox 2026-06-25, 9 merge-инвариантов перенесены из outbox, ратификация явно оставлена человеку); сверх выбранного — валидатор … |
+| **C27** | C27-a + C27-b | ✅ superset | C27-a+b целиком, только в docs/glossary.md (единственный изменённый файл, uncommitted). C27-a: строка «Текущий канон: D-001..D-009» удалена; статусы blocked/review дописаны; все 7 требуемых терминов добавлены (pipeline, stream, worktree,… |
+| **C36** | C36-a + Q-W2-9(a)+(b) | ✅ superset | AGENTS_ROSTER статичный (C36-a/Q-W2-9a) + observed_agents динамическая сверка (Q-W2-9b, WARN) в validate |
+| **C39** | C39-a (+ ответ котла Q-W2-10a: git rm --cached не нужен — heartbeat уже untracked волно… | ✅ superset | В рабочем дереве (не закоммичено, как и вся волна 2) .gitignore дополнен каталожным паттерном `logs/heartbeat/` (строка 18) с комментарием «пер-агентные heartbeat volatile по D-022 (аудит C39, Q-W2-10a)» (строка 17). git rm --cached в gi… |
+| **C41** | C41-b (+ ответ котла Q-W2-11 (a)+(b): человек проходит по 5 потокам + назначить интегра… | ✅ superset | Создан reports/stale-streams-2026-07-05.md (untracked, новый файл) — эскалационный список для Q-W2-11: таблица 5 потоков находки с путём/топиком/статусом/владельцем/возрастом на 07-02 и 07-05; явно зафиксировано «никаких автоматических a… |
+| **C53** | C53-b (janitor только dry-run/отчёт; удаление — вручную по решению человека, Q-W2-15 (b)) | ✅ superset | Новый tools/janitor.py: по умолчанию dry-run-отчёт по 4 секциям (пары reports/audit_*+output_* сверх N=10, logs/reflection сверх N=100 + 0-байтные, tmp-work старше X=14 дн., реплики dialog.md старше 8 нед. кроме хвоста 20); ничего не уда… |
+| **P1** | P1-c: «выяснить эталон скелета» — условие: неясно, какой формат синтеза канонический; ш… | ✅ superset | P1-c → P1-a (заявлено исполнителем как «P1-c→a» и подтверждено фактами): эталон определён как заголовки с ключевых слов «Консенсус/Варианты/Расхождения» (совпадает с T-182-регексами validate.py и маркерами теста), затем генератор приведё… |
+| **P11** | P11-c + P11-b; Q-W2-19 (b): развести роли portal/portals в docstring/README | ✅ superset | P11-b полностью: перекрёстные блоки «НЕ ПУТАТЬ…» в docstring обоих файлов + разведение ролей в tools/README.md; P11-c (факт-сбор) — инвентаризация вызывателей/доков зафиксирована в wave2-execution.json и подтверждена независимо; эскалаци… |
+| **P9** | P9-a | ✅ superset | P9-a реализован полностью: единый реестр в tools/_canon.py (CANON_DIRS = 5 каталогов, стр. 37; CANON_DIRS_EXTENDED = +4, стр. 38), локальные константы из view.py/canon_index.py/info_verify.py удалены, все импортируют из _canon; контракт … |
+| **C1** | C1-b | ✅ conform | C1-b в точности: (а) хвост C1-a закрыт коммитом f7de6d7 «chore: refresh nav indexes (context-graph topic)» — ровно 4 регенерата (STATUS.md, board.md, index.json, indexes/topics.md); (б) новый хелпер tools/staged_check.py — гейт staged-сн… |
+| **C17** | C17-a + C17-b | ✅ conform | C17-b: в tools/generate.py добавлена render_counters() (generate.py:256-269) — счётчики задач/решений/вопросов/тем/драйверов из тех же front-matter-коллекций, что питают index.json; новая цель ("STATUS.md","counters",...) в main() (gener… |
+| **C2** | C2-a | ✅ conform | C2-a в чистом виде: в обоих quickstart-ах `blocks.py scan` заменён на существующую команду `blocks.py pyramid` (docs/quickstart.md:32; docs/agent-quickstart.md:112 блок команд + :126 строка таблицы назначений). Алиас `scan` в blocks.py Н… |
+| **C29** | C29-c (= C29-a + C29-b) + Q-W2-6(a): завести T-задачи сейчас + advisory-WARN с порогом … | ✅ conform | C29-a: три новые задачи tasks/T-269.md (закрытие инцидента outbox-mass-strip), tasks/T-270.md (ратификация очереди из 8 proposed-решений), tasks/T-271.md (приёмка Q-023/D-027) — все status: todo, owner: stefan, с явной оговоркой «создани… |
+| **C3** | C3-a + C3-b (Q-W2-1a) | ✅ conform | C3-b раздел «Ключевые» + C3-a полный GEN-автоиндекс 122 инструментов в tools/README.md через generate.py (T-268 done) |
+| **C30** | C30-c (= C30-a «разобрать три файла» + C30-b «TTL-правило на inbox»); human-gate по суд… | ✅ conform | C30-a через Q-W2-7(a): три inbox-залежи конвертированы в T-задачи — tasks/T-265.md (driver-acceptance-output.txt), tasks/T-266.md (powershell-output-paste.md), tasks/T-267.md (триаж 66КБ documentoutput.md; судьба перемещения явно делегир… |
+| **C33** | C33-c («a для критичных + b как политика»: мигрировать высокорисковые на safe_write; ос… | ✅ conform | Три слоя, точно по C33-c/Q-W2-8(c). (1) Инвентаризация + правило-монитор в tools/adoption.py: writer_status()/classify_writers() (строки 154-266) со статусами safe-write/direct-marked/direct-allowlisted/direct-canon/direct-other/no-write… |
+| **C35** | C35-a | ✅ conform | C35-a в точности: создан общий модуль tools/_claims.py с примитивами claim_file/read_claim/is_fresh/claim_is_fresh/create_claim(O_CREAT\|O_EXCL)/takeover_claim(lock по claim_id старого claim + перепроверка под lock'ом T-084 + os.replace … |
+| **C43** | «C43-a: восстановить из внешнего бэкапа» — условие: «Внешний бэкап содержит полную верс… | ✅ conform | C43-a→b, ровно в порядке из плана и ответа котла. Шаг a: бэкап ai-colab-backup-2026-06-24 проверен исчерпывающе (рабочая копия queues/outbox, полнотекстовый поиск, git-бандл по всем refs и всем 293 коммитам) — тела нет, условие C43-a («б… |
+| **C55** | C55-c | ✅ conform | C55-c полностью: (a) разовая пересборка indexes/canon.db выполнена (mtime 2026-07-05 16:57, 6.8МБ, gitignored по .gitignore:24); (b) tools/githooks/post-commit:48-51 — отдельный детач-фон "$PY" tools/canon_index.py build ниже общего thro… |
+| **C7** | C7-a (по ответу котла Q-W2-2 (a): validate mode:execute → ERROR без машинной ссылки на … | ✅ conform | Ровно C7-a, все три шага плана (fix-wave2-plan-2026-07-02.md:105): (1) контракт поля манифеста `execute_decision: D-0XX`; (2) tools/validate.py — новая check_execute_d014() (строки 511-557): ERROR если mode:execute без поля (:538), decis… |
+| **P0** | P0-c | ✅ conform | P0-c → P0-a: сначала выяснение эталона (governance-диспозиция D-001 = «фоном» + git-история: D-001 попал в surfaces bulk-коммитом 82aab13, не являющимся предком коммита теста 53e6d61), затем D-001 убран из surfaces collab-protocol в tool… |
+| **P10** | P10-b («сначала advisory (WARN)»: те же проверки D-015 driver-ready≥2 и D-023 ownership… | ✅ conform | Две advisory-проверки в tools/validate.py, обе строго WARN: (1) check_driver_ready_verification() — драйвер type:driver со status:ready без front-matter verified_by с ≥2 агентами → warn(), докстринг явно ссылается на «решение Stefan Q-W2… |
+| **P8** | P8-c | ✅ conform | P8-c полностью: (b) детектор find_missing_dcards() + CLI-режим "dcard" в tools/gap_scan.py и нерушащий WARN-шаг в tools/githooks/pre-commit; (a) батч из ровно 33 комментарий-блоков [FILE ID CARD] по не-тестовым tools/*.py — покрытие не-т… |
+
+## Легенда вердиктов
+
+- **conform** — реализована ровно выбранная буква.
+- **superset** — выбранное + совместимое сверх (в рамках дефолтов плана, не противоречит выбору).
+- **pending-git** — код и подготовка на месте; недоставало только git-операции, сознательно отложенной оркестратору. **Все выполнены при закрытии волны** (коммит переноса тестов, untrack cauldron_graph, перенормализация CRLF, gc+maintenance).
+- **deviation-justified** — C44: bulk_guard в pre-commit блокирует только при status:accepted у D-026 (машинная проверка) — осознанная конструкция по Q-W2-13(c); буквы с такой логикой в плане не было.
+
+## Git-закрытие волны (выполнено оркестратором)
+
+- Коммит `6903e90` — вся волна 2 (контент + перенос 130 test_*.py в tools/tests/ staged-renames, с `git add -A` чтобы бутстрапы вошли).
+- Коммит `fea5438` — `git rm --cached indexes/cauldron_graph.json` (Q-W2-17a).
+- Перенормализация CRLF: индекс уже был чист (1487 файлов `i/lf`, 0 bare-CR/mixed) — .gitattributes нормализовал при коммите.
+- `git config maintenance.strategy incremental` + `git gc` (14184→2 loose, ~51МБ упаковано) + `git maintenance start`.
+
+## Осталось человеку
+
+- **11 human-gate** находок волны 1 (ратификация D-026, права permissions, закрытие инцидента, ветка main и др.) — см. reports/audit-claude-2026-07-02.md.
+- **Новые advisory-WARN** от волны 2 (задуманы как сигнал): 3 агента вне AGENTS_ROSTER (antigravity/subagent-worker/unknown — C32/Q-W2-9); 8 драйверов ready без multi-agent verify (D-015); 7 topics open без задачи (частично закрыто T-269..271); порог dir_health queues/done=226 (Q-W2-4 — пересмотр порогов отдельным решением).
+- **Новые канон-объекты ждут ратификации:** D-029 (proposed), T-265..T-272.
