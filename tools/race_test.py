@@ -52,7 +52,7 @@ def one_round(n):
     try:
         for d in ("inbox", "claimed", "done", "failed"):
             os.makedirs(os.path.join(root, "queues", d))
-        with open(os.path.join(root, "queues", "inbox", "racetask.md"), "w", encoding="utf-8") as f:
+        with open(os.path.join(root, "queues", "inbox", "racetask.md"), "w", encoding="utf-8", newline="\n") as f:
             f.write("# racetask\n")
 
         env = dict(os.environ, COLLAB_ROOT=root)

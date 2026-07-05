@@ -69,6 +69,8 @@ def build(dirpath):
 
 
 def write(name):
+    # direct-write-ok: генерат indexes/<name>.md — переписывается целиком по определению;
+    # канон-каталоги здесь только ЧИТАЮТСЯ для оглавления (C33)
     dirpath = os.path.join(ROOT, name)
     if not os.path.isdir(dirpath):
         print("нет папки %s" % name)

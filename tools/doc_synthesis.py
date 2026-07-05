@@ -557,6 +557,8 @@ def write_streams(topic, files):
             dest_abs = os.path.join(base_abs, fallback)
         else:
             dest_abs = primary_abs
+        # direct-write-ok: генерат-скелеты stream; существующий файл НЕ перезаписывается
+        # (уходит в *.generated.md рядом) — потеря рукописного невозможна (C33)
         with open(dest_abs, "w", encoding="utf-8", newline="\n") as f:
             f.write(body)
         written.append(relpath(os.path.relpath(dest_abs, ROOT)))

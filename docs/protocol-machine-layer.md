@@ -54,7 +54,7 @@ next_unblock_check: "Ожидание ответа от User"
 ```text
 Checks:
 - python tools/generate.py -> OK
-- pytest tests/ -> OK
+- py -3 -m pytest tools/tests/ -> OK
 ```
 
 ## 5. Контроль побочных эффектов (Dry-run by default)

@@ -40,7 +40,7 @@
 
 Ручное решение стало стабильным: короткие команды, таймауты, UTF-8 setup, `tmp-work/` или `C:\tmp`, `drivers/test_tmp.py`, `stdin=subprocess.DEVNULL` для subprocess.
 
-В `T-150` этот архетип повторился буквально: первый `tools/test_friction.py` использовал `tempfile.mkdtemp()` и упал с `PermissionError`. Исправление: тестовый root выбирается из `C:\tmp` или repo `tmp-work/`.
+В `T-150` этот архетип повторился буквально: первый `tools/tests/test_friction.py` использовал `tempfile.mkdtemp()` и упал с `PermissionError`. Исправление: тестовый root выбирается из `C:\tmp` или repo `tmp-work/`.
 
 ### Этап 3. Git/index.lock/shared-worktree
 
@@ -145,7 +145,7 @@
 Эта задача сама подтвердила несколько архетипов:
 
 1. `apply_patch` снова отказался работать из-за Windows sandbox wrapper. Решение: documented PowerShell UTF-8 fallback.
-2. `tools/test_friction.py` сначала упал на `%TEMP% PermissionError`. Решение: тестовый temp root переведён на `C:\tmp` / repo `tmp-work/`.
+2. `tools/tests/test_friction.py` сначала упал на `%TEMP% PermissionError`. Решение: тестовый temp root переведён на `C:\tmp` / repo `tmp-work/`.
 3. `tools/friction.py status` выявил текущие dirty/generated файлы как ожидаемый сигнал активной работы.
 4. `tools/friction.py status` выявил unrelated dirty `streams/*`, которые нельзя включать в T-150 commit без отдельного решения.
 5. `tools/friction.py status` выявил F-018: skill ещё не знает про новый `tools/friction.py`.
@@ -223,7 +223,7 @@ python tools\top.py friction
 Повторы пока оцениваются вручную. Когда формат стабилизируется, добавить:
 
 ```powershell
-python tools\friction.py note F-004 --where tools/test_friction.py --result fixed-with-tmp-work
+python tools\friction.py note F-004 --where tools/tests/test_friction.py --result fixed-with-tmp-work
 ```
 
 Это даст точные счётчики и поможет решать, когда playbook превращать в guard.

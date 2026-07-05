@@ -66,7 +66,10 @@ DOC_PAIRS = [
 SKIP_NAMES = {"README.md", "index.md", "example.md"}
 
 _DATE_RE = re.compile(r"-?\d{4}-\d{2}-\d{2}")
-_AGENT_SUFFIX_RE = re.compile(r"-(claude|codex)\b")
+# Ростер — из _canon.AGENTS_ROSTER (C36-a): раньше variants молча знал только claude|codex,
+# и форки mavis/novax не распознавались как агентские. Теперь суффиксы/инференс — по ростеру.
+from _canon import AGENTS_ROSTER, agents_regex_group
+_AGENT_SUFFIX_RE = re.compile(r"-(%s)\b" % agents_regex_group())
 _STATUS_BODY_RE = re.compile(
     r"(?:Статус|status)\s*[:\-]\s*\**\s*"
     r"(proposed|adopted|ready|open|draft|done|closed)",
@@ -100,17 +103,16 @@ def _infer_agent(fm, filename, text):
         if v:
             return v.lower()
     low = filename.lower()
-    if "claude" in low:
-        return "claude"
-    if "codex" in low:
-        return "codex"
+    # Имя файла: первый агент из ростера, чьё имя встречается (порядок ростера = приоритет,
+    # как раньше claude→codex, но теперь для ВСЕХ агентов ростера).
+    for a in AGENTS_ROSTER:
+        if a in low:
+            return a
+    # Тело: агент выводится, только если упомянут РОВНО один агент ростера (без неоднозначности).
     body = (text or "")[:2000].lower()
-    has_claude = "claude" in body
-    has_codex = "codex" in body
-    if has_claude and not has_codex:
-        return "claude"
-    if has_codex and not has_claude:
-        return "codex"
+    present = [a for a in AGENTS_ROSTER if a in body]
+    if len(present) == 1:
+        return present[0]
     return "unknown"
 
 def _infer_status(fm, text):

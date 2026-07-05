@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.seq_merge
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib.
+# ==========================================
 """seq_merge.py — 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib.
 
 Апгрейд для crdt_merge/git_reconcile: вместо «оба тронули тело → весь блок конфликт» — diff3 по СТРОКАМ.

@@ -14,11 +14,11 @@ Stage 4 core-export mechanism was checked as a proposed, non-final L1 export pat
 
 - `core/engine-manifest.md` lists the first candidate file-native agent-coordination engine;
 - `tools/promote.py export --to <dir> --manifest core/engine-manifest.md` copies files, not moves them;
-- `tools/test_promote_export.py` verifies copy semantics, `EXPORT.md`, missing-file reporting and manifest parsing.
+- `tools/tests/test_promote_export.py` verifies copy semantics, `EXPORT.md`, missing-file reporting and manifest parsing.
 
 ## Fix made
 
-`tools/test_promote_export.py` originally used standard `tempfile.mkdtemp()`. In this Windows runtime,
+`tools/tests/test_promote_export.py` originally used standard `tempfile.mkdtemp()`. In this Windows runtime,
 standard `%TEMP%` can create directories that the same Python process cannot write into. The test now uses
 `drivers/test_tmp.py` / repo-local `tmp-work/`, matching the established test convention.
 
@@ -27,8 +27,8 @@ standard `%TEMP%` can create directories that the same Python process cannot wri
 Passed:
 
 ```powershell
-python tools/test_promote_export.py
-python tools/test_promote.py
+python tools/tests/test_promote_export.py
+python tools/tests/test_promote.py
 python tools/promote.py export --to tmp-work/core-export-smoke --manifest core/engine-manifest.md
 python tools/top.py health
 ```

@@ -18,7 +18,7 @@ Merge-gate orchestrator — «безопасно ли вливать эту ра
     (1) validate.py
     (2) generate.py --check
     (3) permissions.py <agent>          # только если передан <agent>
-С флагом --with-tests дополнительно находит tools/test_*.py через glob и запускает их.
+С флагом --with-tests дополнительно находит tools/tests/test_*.py через glob и запускает их.
 По умолчанию тесты ВЫКЛЮЧЕНЫ: in-flight падающий тест соседа (например test_top.py)
 не должен ложно красить гейт.
 
@@ -56,7 +56,7 @@ def gate_stages(agent=None, with_tests=False):
     """Список стадий гейта как (label, script, args).
 
     Команды зеркалят tools/flow.py gate: validate -> generate --check -> permissions <agent>.
-    permissions добавляется только если передан agent. С with_tests — каждый tools/test_*.py."""
+    permissions добавляется только если передан agent. С with_tests — каждый tools/tests/test_*.py (C14)."""
     stages = [
         ("validate", "validate.py", ()),
         ("generate --check", "generate.py", ("--check",)),
@@ -64,9 +64,10 @@ def gate_stages(agent=None, with_tests=False):
     if agent:
         stages.append(("permissions %s" % agent, "permissions.py", (agent,)))
     if with_tests:
-        for path in sorted(glob.glob(os.path.join(ROOT, "tools", "test_*.py"))):
+        # C14: тесты перенесены в tools/tests/ — скрипт стадии задаётся путём относительно tools/
+        for path in sorted(glob.glob(os.path.join(ROOT, "tools", "tests", "test_*.py"))):
             base = os.path.basename(path)
-            stages.append(("test:%s" % base, base, ()))
+            stages.append(("test:%s" % base, os.path.join("tests", base), ()))
     return stages
 
 

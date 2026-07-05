@@ -79,6 +79,8 @@ def rel(path: Path) -> str:
 
 
 def json_dump(path: Path, data: dict) -> None:
+    # direct-write-ok: runtime THREAD.json под topics/*/threads/ — запись атомарна
+    # (tmp+os.replace), сообщения создаются новыми файлами; гвард потери не нужен (C33)
     text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_text(text, encoding="utf-8", newline="\n")

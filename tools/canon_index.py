@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.canon_index
+# TYPE: active-script
+# DOMAIN: core.indexing
+# DEPTH_LEVEL: 1
+# SUMMARY: SQLite/FTS5 индекс канона (workbench-компонент 5: быстрая память/retrieval).
+# ==========================================
 """canon_index.py — SQLite/FTS5 индекс канона (workbench-компонент 5: быстрая память/retrieval).
 
 Этап 1 roadmap offline/headless workbench (topics/offline-headless-workbench-mvp-2026-06-26). Индексирует
@@ -20,7 +28,8 @@ configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 DB = os.path.join(ROOT, "indexes", "canon.db")
-CANON_DIRS = ("tasks", "decisions", "questions", "topics", "docs")
+# Единый реестр каталогов канона — из _canon (P9-a, волна 2); локальная копия запрещена.
+from _canon import CANON_DIRS, require_canon_dirs
 
 
 def build(root=ROOT, db_path=DB, dirs=CANON_DIRS):
@@ -66,6 +75,8 @@ def search(query, db_path=DB, limit=10):
 
 
 def _collect(root, dirs):
+    # Контракт P9: несуществующий канон-каталог → FileNotFoundError, а не тихий пустой индекс.
+    require_canon_dirs(root, dirs)
     out = []
     for d in dirs:
         for p in glob.glob(os.path.join(root, d, "**", "*.md"), recursive=True):

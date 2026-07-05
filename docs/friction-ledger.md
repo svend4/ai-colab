@@ -183,7 +183,7 @@ recipes: exact commands
 ## T-150 — deep retrospective + first detector
 
 Дата: 2026-06-22
-Связано: `docs/friction-retrospective-2026-06-22.md`, `tools/friction.py`, `tools/test_friction.py`, `tools/top.py friction`.
+Связано: `docs/friction-retrospective-2026-06-22.md`, `tools/friction.py`, `tools/tests/test_friction.py`, `tools/top.py friction`.
 
 Что изменилось:
 
@@ -191,7 +191,7 @@ recipes: exact commands
 - F-001..F-020 сохранены как стабильный реестр симптомов и рецептов;
 - добавлен `tools/friction.py status` как read-mostly detector: dirty/stale/volatile/lock/pipeline/drift/streams/temp/sandbox/skill-links;
 - добавлена команда верхнего уровня `python tools/top.py friction`;
-- тест `tools/test_friction.py` специально закрепляет правила F-004: не использовать системный `%TEMP%` в герметичных тестах этой среды.
+- тест `tools/tests/test_friction.py` специально закрепляет правила F-004: не использовать системный `%TEMP%` в герметичных тестах этой среды.
 
 Новая практическая норма: перед повторным ручным workaround сначала запускать:
 
@@ -206,6 +206,6 @@ python tools\friction.py recipe <F-id>
 
 | ID | Симптом | Где встречалось | Оценка повторов | Ручное решение сейчас | Риск | Что автоматизировать |
 |---|---|---|---:|---|---|---|
-| F-021 | `next_id.py` атомарно создаёт placeholder, но последующее заполнение id может столкнуться с другим параллельным потоком | `queues/outbox/2026-06-24-t223-id-collision.md`, `queues/outbox/2026-06-24-t226-id-collision.md`, T-228 dogfood | 2 явных collision за одну сессию | не переписывать чужой task; оставлять collision outbox; использовать `reservation_token`, `next_id.py check`, `next_id.py fill` | потеря/перезапись чужой задачи, ложный done-marker, смешанная история | реализовано в T-228: reservation metadata + check/fill + тест `tools/test_next_id.py` |
+| F-021 | `next_id.py` атомарно создаёт placeholder, но последующее заполнение id может столкнуться с другим параллельным потоком | `queues/outbox/2026-06-24-t223-id-collision.md`, `queues/outbox/2026-06-24-t226-id-collision.md`, T-228 dogfood | 2 явных collision за одну сессию | не переписывать чужой task; оставлять collision outbox; использовать `reservation_token`, `next_id.py check`, `next_id.py fill` | потеря/перезапись чужой задачи, ложный done-marker, смешанная история | реализовано в T-228: reservation metadata + check/fill + тест `tools/tests/test_next_id.py` |
 
 Вывод: прежняя гарантия `O_CREAT|O_EXCL` защищала только момент создания файла, но не защищала фазу “получил id → долго думал → заполнил”. Для большой компании людей и агентов нужен второй fencing-шаг: `reserved_by` + `reservation_token` + атомарный `fill`.

@@ -162,6 +162,14 @@ def iter_python_files(tools_dir, include_tests=False):
         if not include_tests and name.startswith("test_"):
             continue
         yield path
+    # C14 (аудит 2026-07-02): тесты перенесены в tools/tests/ — --include-tests смотрит и туда
+    if include_tests:
+        tests_dir = os.path.join(tools_dir, "tests")
+        if os.path.isdir(tests_dir):
+            for name in sorted(os.listdir(tests_dir)):
+                path = os.path.join(tests_dir, name)
+                if os.path.isfile(path) and name.endswith(".py") and name.startswith("test_"):
+                    yield path
 
 
 def scan_dir(tools_dir=DEFAULT_TOOLS_DIR, include_tests=False):

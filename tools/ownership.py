@@ -28,9 +28,12 @@ ownership (T-153, синтез двух подсистем) — общий кл�
 """
 import os
 import re
+import sys
 import glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _canon import agents_regex_group  # единый ростер агентов (C36-a, волна 2)
 
 GENERATED = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json"}
 VOLATILE = {"LIVE.md", "PIPELINE.md", "logs/heartbeat.json", "logs/pipeline.json"}
@@ -38,7 +41,9 @@ VOLATILE_PREFIXES = ("logs/",)
 VOLATILE_BASENAMES = {"heartbeat.json", "pipeline.json"}
 SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "topics/", "docs/", "streams/")
 _ID_RE = re.compile(r"\b(T-\d+|Q-\d+|D-\d+)\b")
-_AGENT_RE = re.compile(r"\b(claude|codex|mavis|novax)\b")
+# Ростер — из _canon.AGENTS_ROSTER, а не локальный хардкод: пятый агент/переименование
+# видны классификатору автоматически (C36-a).
+_AGENT_RE = re.compile(r"\b(%s)\b" % agents_regex_group())
 
 
 def _norm(path):

@@ -3,7 +3,7 @@ id: knowledge-report-regression-result-2026-06-21
 title: Knowledge report regression — T-119
 status: done
 owner: Codex
-related: tasks/T-119.md, tools/test_knowledge.py, tools/knowledge.py
+related: tasks/T-119.md, tools/tests/test_knowledge.py, tools/knowledge.py
 ---
 
 # Knowledge report regression — T-119
@@ -12,7 +12,7 @@ related: tasks/T-119.md, tools/test_knowledge.py, tools/knowledge.py
 
 ## Что сделано
 
-`tools/test_knowledge.py` расширен проверками для `tools/knowledge.py report --out` и `write_report()`.
+`tools/tests/test_knowledge.py` расширен проверками для `tools/knowledge.py report --out` и `write_report()`.
 
 Новые проверки:
 

@@ -66,7 +66,7 @@ class AuditLogger:
         if stdout or stderr:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             out_file = os.path.join(self.reports_dir, f"output_{timestamp}.log")
-            with open(out_file, "w", encoding="utf-8") as f:
+            with open(out_file, "w", encoding="utf-8", newline="\n") as f:
                 f.write("=== STDOUT ===\n")
                 f.write(stdout)
                 f.write("\n=== STDERR ===\n")
@@ -103,7 +103,7 @@ class AuditLogger:
 
     def _write_audit(self):
         if self.audit_file:
-            with open(self.audit_file, "w", encoding="utf-8") as f:
+            with open(self.audit_file, "w", encoding="utf-8", newline="\n") as f:
                 json.dump(self.audit_data, f, ensure_ascii=False, indent=2)
 
 def wrap_and_execute(base_dir, command):

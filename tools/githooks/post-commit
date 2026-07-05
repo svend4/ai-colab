@@ -3,6 +3,8 @@
 # Запускает блок `reflect` (собственный код через анализаторы «как внешний» + граф + структура),
 # нормализует находки в logs/reflection/ledger.json (reflect_ingest). НИКОГДА не блокирует коммит
 # (post-commit advisory) и НЕ запускает workflow (детерминированно, переживает компактацию).
+# Плюс C55-b (аудит 2026-07-02): пересборка FTS-индекса канона indexes/canon.db (gitignored),
+# чтобы retrieval не протухал — тот же throttle 90с, детач-фон, тихий отказ без Python.
 #
 # Активация (как pre-commit): git config core.hooksPath tools/githooks
 # Свойства: детач-фон (коммит не ждёт), throttle (≤1 прогон/90с — не пилит FS при частых коммитах),
@@ -42,5 +44,10 @@ SHA=$(git rev-parse --short HEAD 2>/dev/null || echo unknown)
 ( "$PY" tools/blocks.py run reflect --json > "logs/reflection/$SHA.json" 2>/dev/null \
     && "$PY" tools/reflect_ingest.py --in "logs/reflection/$SHA.json" --commit "$SHA" >/dev/null 2>&1 ) \
   </dev/null >/dev/null 2>&1 &
+
+# C55-b: пересборка FTS-индекса канона (indexes/canon.db, gitignored runtime-артефакт).
+# Отдельный детач-фон (не сцеплен с reflect: его сбой не должен блокировать индекс);
+# throttle общий — ранний выход по logs/reflection/.last выше уже отсёк частые коммиты.
+( "$PY" tools/canon_index.py build >/dev/null 2>&1 ) </dev/null >/dev/null 2>&1 &
 
 exit 0

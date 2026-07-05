@@ -51,6 +51,7 @@ TOOLS = os.path.join(ROOT, "tools")
 CAPS = os.path.join(ROOT, "system-capabilities.json")
 sys.path.insert(0, TOOLS)
 import ownership as own  # общий классификатор владения dirty-файлами (T-153, синтез подсистем)
+from _canon import AGENTS_ROSTER  # единый ростер агентов (C36-a, волна 2)
 
 # Триггеры Уровня-1 (D-022 / Q-015 B). Source-зоны: правка здесь связывает агентов через индекс/дерево.
 SOURCE_DIRS = ("tasks/", "decisions/", "questions/", "tools/", "drivers/", "topics/", "docs/")
@@ -192,7 +193,8 @@ def plan(n=2, as_json=False):
     ready = _ready_ids()
     claims = {t for t, _ in _active_claims()}
     free = [t for t in ready if t not in claims]
-    agents = ["claude", "codex", "mavis", "novax"][:max(1, n)]
+    # Ростер — из _canon.AGENTS_ROSTER (C36-a): без локального хардкода имён.
+    agents = list(AGENTS_ROSTER)[:max(1, n)]
     assign = {a: [] for a in agents}
     for i, task in enumerate(free):
         assign[agents[i % len(agents)]].append(task)

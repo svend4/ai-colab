@@ -90,5 +90,5 @@ L2 без доменного спора (legal/social откладываем д�
 ## Update 2026-06-21 — core-export mechanism acceptance
 
 Stage 4 механизм core-export проверен: `core/engine-manifest.md` + `tools/promote.py export` +
-`tools/test_promote_export.py`. Это доказывает безопасный copy-export путь для первого L1-кандидата,
+`tools/tests/test_promote_export.py`. Это доказывает безопасный copy-export путь для первого L1-кандидата,
 но не закрывает Q2 окончательно: состав L1 остаётся `proposed` до collective review.

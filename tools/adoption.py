@@ -19,7 +19,7 @@ orphan-доки. Рекурсивное само-улучшение — «при
 CLI:
     python tools/adoption.py            # человекочитаемая сводка
     python tools/adoption.py --json     # машинно
-    python tools/adoption.py --list dormant   # списком: dormant|declarative|orphan
+    python tools/adoption.py --list dormant   # списком: dormant|declarative|orphan|unguarded
     python tools/adoption.py --save-baseline  # зафиксировать снимок метрик (RSI re-measure)
     python tools/adoption.py --delta [--json] # дельта vs baseline: сдвинулась ли игла применения
 """
@@ -151,11 +151,98 @@ def classify_docs(C=None):
     return rows
 
 
+# --- C33: контур safe_write (правило-монитор write-путей) --------------------
+# Правило: пишущий инструмент по РУКОПИСНОМУ канон-пути должен использовать
+# _ioutil.safe_write (гвард потери + атомарность). ЧЕСТНО: статический прокси —
+# «пишет по канон-пути» = в коде (без докстрингов и полных строк-комментариев)
+# есть усекающая запись (open/os.fdopen с mode "w" или .write_text) И строковый
+# литерал с сегментом рукописного канон-каталога. Ложные срабатывания гасятся:
+# (а) маркером `# direct-write-ok: <причина>` в самом инструменте (для генератов
+#     и атомарных runtime-писателей, где гвард потери бессмыслен/вреден);
+# (б) реестром WRITE_ALLOWLIST ниже — для файлов, которые прямо сейчас правят
+#     параллельные пакеты волны 2 (им маркер не вписан, чтобы не конфликтовать
+#     построчно; мигрировать/пометить — по мере касания, Q-W2-8(c)).
+WRITE_OK_MARKER = "direct-write-ok:"
+HANDWRITTEN_DIRS = ("decisions", "questions", "topics", "tasks", "docs")
+HANDWRITTEN_FILES = ("dialog.md", "AGENTS.md", "PROTOCOL.md")
+_TRIPLE_RE = re.compile(r'"""(?:.|\n)*?"""|\'\'\'(?:.|\n)*?\'\'\'')
+_FULLLINE_COMMENT_RE = re.compile(r"(?m)^\s*#.*$")
+# в аргументах open(...) допускаем ОДИН уровень вложенных скобок (os.path.join(...) inline)
+_TRUNC_WRITE_RE = re.compile(
+    r'(?:\bopen|os\.fdopen)\s*\((?:[^()\n]|\([^()\n]*\))*["\']wb?["\']|\.write_text\s*\(')
+_SAFE_WRITE_RE = re.compile(r"\bsafe_write\s*\(|import[^\n]*\bsafe_write\b")
+
+# Инвентаризация 2026-07-05 (C33 шаг 1): у этих писателей канон-строки — чтение,
+# а запись — генераты/runtime-артефакты либо уже атомарные паттерны (O_EXCL,
+# tmp+os.replace). Файлы в работе параллельных пакетов волны 2 — не трогаем.
+WRITE_ALLOWLIST = {
+    "agent_queue.py": "runtime-очередь queues/ (атомарные claim/done); tasks — чтение (пакет C35)",
+    "dcard_indexer.py": "генерат-индекс D-Card; docs — чтение (соседство P8)",
+    "friction.py": "runtime-логи logs/ и tmp-пробы; канон-строки — чтение (соседство C44)",
+    "generate.py": "сам генератор навигации: GEN-файлы переписываются целиком по определению (пакет C17)",
+    "pipeline.py": "runtime-очередь queues/, атомарно (фиксы T-082/T-084; пакет C35)",
+    "portal.py": "создание манифеста НОВОГО портала (портальные каталоги); разводка ролей — пакет P11",
+    "reconcile_state.py": "генерат-отчёты в queues/outbox; tasks — чтение (соседство P3/C51)",
+    "stream.py": "runtime-пакеты streams/: O_EXCL-создание + tmp+os.replace (соседство C41)",
+    "synthesis_helper.py": "скелет синтеза по --out + создание ОТСУТСТВУЮЩИХ stream-файлов (пакет P1)",
+    "top.py": "runtime-манифест; канон-строки — чтение/навигация (соседство C15)",
+}
+
+
+def _canon_write_refs(code):
+    """Строковые литералы кода → сегменты рукописных канон-каталогов (прокси «куда пишет»)."""
+    refs = set()
+    for m in re.finditer(r'["\']([^"\'\n]+)["\']', code):
+        s = m.group(1).replace("\\\\", "/").replace("\\", "/")
+        if s in HANDWRITTEN_FILES:
+            refs.add(s)
+            continue
+        parts = [seg for seg in s.split("/") if seg]
+        for tok in HANDWRITTEN_DIRS:
+            if tok in parts:
+                refs.add(tok)
+    return sorted(refs)
+
+
+def writer_status(src, name=None):
+    """Статус write-контура ОДНОГО инструмента по его исходнику (чистая функция — тестируемо).
+
+    safe-write          — использует _ioutil.safe_write (гвард есть);
+    direct-marked       — прямая запись, но помечен `# direct-write-ok: ...` (генерат/атомарный);
+    direct-allowlisted  — прямая запись, файл в WRITE_ALLOWLIST (пакеты волны 2, по мере касания);
+    direct-canon        — прямая усекающая запись + канон-пути → WARN (правило C33);
+    direct-other        — прямая запись вне канон-путей (вне правила);
+    no-write            — усекающих записей нет.
+    """
+    code = _FULLLINE_COMMENT_RE.sub("", _TRIPLE_RE.sub("", src))
+    if _SAFE_WRITE_RE.search(code):
+        return "safe-write"
+    if WRITE_OK_MARKER in src:                      # маркер — комментарий, ищем в сыром src
+        return "direct-marked"
+    if not _TRUNC_WRITE_RE.search(code):
+        return "no-write"
+    if name and name in WRITE_ALLOWLIST:
+        return "direct-allowlisted"
+    if _canon_write_refs(code):
+        return "direct-canon"
+    return "direct-other"
+
+
+def classify_writers(C=None):
+    C = C or _corpus()
+    rows = []
+    for stem, path in C["stems"]:
+        name = stem + ".py"
+        rows.append({"name": name, "status": writer_status(_read(path), name)})
+    return rows
+
+
 def collect():
     C = _corpus()  # читаем корпус ОДИН раз, делим между всеми classify_*
     tools = classify_tools(C)
     decisions = classify_decisions(C)
     docs = classify_docs(C)
+    writers = classify_writers(C)
 
     def pct(rows, good):
         n = len(rows)
@@ -166,13 +253,15 @@ def collect():
     d_g, d_n, d_p = pct(decisions, ("code-linked",))
     o_g, o_n, o_p = pct(docs, ("cited",))
     return {
-        "tools": tools, "decisions": decisions, "docs": docs,
+        "tools": tools, "decisions": decisions, "docs": docs, "writers": writers,
         "summary": {
             "tools_applied": [t_g, t_n, t_p],
             "tools_dormant": sum(1 for r in tools if r["status"] == "dormant"),
             "decisions_enforced": [d_g, d_n, d_p],
             "docs_cited": [o_g, o_n, o_p],
             "docs_orphan": sum(1 for r in docs if r["status"] == "orphan"),
+            # C33: сколько инструментов пишут по канон-пути БЕЗ safe_write (цель — 0)
+            "writers_unguarded": sum(1 for r in writers if r["status"] == "direct-canon"),
         },
     }
 
@@ -188,12 +277,16 @@ def _flatten(summary):
         "decisions_pct": summary["decisions_enforced"][2],
         "docs_cited_pct": summary["docs_cited"][2],
         "docs_orphan": summary["docs_orphan"],
+        # .get: старые baseline (до C33) без этого ключа — дельта тогда 0, не падение
+        "writers_unguarded": summary.get("writers_unguarded", 0),
     }
 
 
 def save_baseline():
     summary = collect()["summary"]
     os.makedirs(os.path.dirname(BASELINE), exist_ok=True)
+    # direct-write-ok: генерат logs/adoption-baseline.json (runtime-метрика);
+    # канон-строки в этом файле — пути ЧТЕНИЯ корпуса, гвард потери тут не нужен
     with open(BASELINE, "w", encoding="utf-8", newline="\n") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     print("baseline сохранён: logs/adoption-baseline.json")
@@ -236,9 +329,9 @@ def cmd_report(as_json=False, list_kind=None):
     data = collect()
     if list_kind:
         key = {"dormant": ("tools", "dormant"), "declarative": ("decisions", "doc-only"),
-               "orphan": ("docs", "orphan")}.get(list_kind)
+               "orphan": ("docs", "orphan"), "unguarded": ("writers", "direct-canon")}.get(list_kind)
         if not key:
-            print("--list: dormant|declarative|orphan")
+            print("--list: dormant|declarative|orphan|unguarded")
             return 2
         coll, st = key
         for r in data[coll]:
@@ -255,10 +348,16 @@ def cmd_report(as_json=False, list_kind=None):
     print("  Решения code-linked:     %d/%d (%d%%)   doc-only: %d  (прокси; точное enforced=5/23 у FINDER)" % (
         s["decisions_enforced"][0], s["decisions_enforced"][1], s["decisions_enforced"][2],
         s["decisions_enforced"][1] - s["decisions_enforced"][0]))
-    print("  Доки cited:              %d/%d (%d%%)   orphan: %d" % (
-        s["docs_cited"][0], s["docs_cited"][1], s["docs_cited"][2], s["docs_orphan"]))
+    wc = collections.Counter(r["status"] for r in data["writers"])
+    print("  Write-контур (C33):      safe_write=%d · маркер=%d · allowlist=%d · WARN=%d" % (
+        wc.get("safe-write", 0), wc.get("direct-marked", 0),
+        wc.get("direct-allowlisted", 0), s["writers_unguarded"]))
     dormant = [r["name"] for r in data["tools"] if r["status"] == "dormant"]
     orphan = [r["name"] for r in data["docs"] if r["status"] == "orphan"]
+    unguarded = [r["name"] for r in data["writers"] if r["status"] == "direct-canon"]
+    if unguarded:
+        print("\n  WARN C33 — пишут по канон-пути без гварда: мигрировать на _ioutil.safe_write "
+              "или пометить `# direct-write-ok: <причина>` →", ", ".join(unguarded))
     if dormant:
         print("\n  dormant-инструменты (0 вызывателей, 0 doc-ссылок):", ", ".join(dormant))
     if orphan:

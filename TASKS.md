@@ -278,4 +278,12 @@
 | T-262 | Independent-first process guard and self-critique | done | codex | — | Зафиксировать причину нарушения independent-first и добавить проверяемый guard перед repo-search/synthesis. |
 | T-263 | Cross-agent commit coordination and synthesis gate | done | codex | — | Согласовать накопленные изменения, работы агентов и темы перед будущим commit; разделить готовое, спорное и runtime-шум. |
 | T-264 | Thread schema MVP — файловые треды для headless Zed-like workbench | done | pool | — | Реализовать stdlib-only `tools/thread.py init/status/add-message` и тесты |
+| T-265 | Разобрать queues/inbox/2026-06-21-driver-acceptance-output.txt (залежался с 21.06) | todo | pool | — | Проверить, что вывод покрыт T-076/docs, и переместить файл из inbox с пометкой «обработано» |
+| T-266 | Разобрать queues/inbox/2026-06-21-powershell-output-paste.md (пустой paste-буфер с 21.06) | todo | pool | — | Решить судьбу пустого буфера — переместить с пометкой «неактуально» или узаконить как шаблон |
+| T-267 | Триаж queues/inbox/documentoutput.md — 66КБ дамп с чужими GEN-маркерами | todo | pool | — | Триаж дампа; судьбу перемещения решает исполнитель задачи/человек (Q-W2-7) |
+| T-268 | Автогенерируемый полный индекс инструментов в tools/README.md (C3-a) | done | pool | — | — |
+| T-269 | Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком) | todo | stefan | — | Stefan проходит чек-лист закрытия инцидента (см. Scope) и фиксирует закрытие в топике |
+| T-270 | Разбор и ратификация очереди proposed-решений (ратификация — за человеком) | todo | stefan | — | Stefan проходит по списку proposed-решений и по каждому решает accept/reject/доработать |
+| T-271 | Приёмка Q-023 (матрица полномочий) и связанного D-027 (решение — за человеком) | todo | stefan | — | Stefan отвечает на Q-023 и решает судьбу D-027; governance-блок Q-W2-2/9/13/18 удобно закрыть тем же заходом |
+| T-272 | C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания | todo | any | — | при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist |
 <!-- GEN:tasks END -->

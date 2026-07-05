@@ -1,6 +1,6 @@
 # Независимый консенсус: конвейер «вариант → сверка по смыслу» (операционная методичка)
 
-Дата: 2026-06-25 · Статус: **proposed** (kotel-консенсус готов, D-029 предложен Codex). Источник: методичка `variants/independent-first-reconcile-2026-06-25/`, карта консенсуса `kotel/independent-first-reconcile-consensus-2026-06-25.md`.
+Дата: 2026-06-25 · Статус: **proposed** (kotel-консенсус готов; D-029 существует как proposed-решение — `decisions/D-029.md`, создано из outbox-предложения Claude). Источник: методичка `variants/independent-first-reconcile-2026-06-25/`, карта консенсуса `kotel/independent-first-reconcile-consensus-2026-06-25.md`.
 
 Цель — как ПРАКТИЧЕСКИ прогнать цикл, где N агентов/людей сначала вслепую вырабатывают свой полный вариант, и лишь потом сверяются — **по смыслу, не по числу голосов**, сохраняя минор-уникальное.
 
@@ -67,4 +67,4 @@ python tools/independent_pipeline.py --json
 Он последовательно вызывает `ripeness_gate → portals → independence_measure → consensus_by_meaning → divergence_detail → red_team_gate → oracle_quorum` и агрегирует их доски в одну. Это делает аппарат семантического оракула (D-030) запускаемым и видимым как целое (ничего не удалено — добавлена связь). См. `D-032`/`reports/gap-inventory-2026-06-26.md`.
 
 ## Связи
-Карта консенсуса: `kotel/independent-first-reconcile-consensus-2026-06-25.md` (9 ядро-инвариантов). Политика fork-стороны: `D-028`. Предложение merge-стороны: `queues/outbox/2026-06-25-claude-independent-first-merge-side.md` (D-029).
+Карта консенсуса: `kotel/independent-first-reconcile-consensus-2026-06-25.md` (9 ядро-инвариантов). Политика fork-стороны: `D-028`. Merge-сторона: `decisions/D-029.md` (proposed; исходное предложение — `queues/outbox/2026-06-25-claude-independent-first-merge-side.md`).

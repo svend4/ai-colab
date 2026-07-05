@@ -6,7 +6,7 @@ status: proposed
 title: Переносимое ядро — file-native agent-coordination engine
 files: [tools/_canon.py, tools/_ioutil.py, tools/_cli.py, tools/validate.py, tools/generate.py, tools/next_id.py, tools/commit_lock.py, tools/pipeline.py, tools/dispatch.py, tools/merge_gate.py, tools/knowledge.py]
 candidates: [tools/text_extract.py]
-tests: [tools/test_commit_lock.py, tools/test_merge_gate.py]
+tests: [tools/tests/test_commit_lock.py, tools/tests/test_merge_gate.py]
 ---
 
 # Core engine manifest (L1) — proposed
@@ -19,7 +19,7 @@ tests: [tools/test_commit_lock.py, tools/test_merge_gate.py]
 - **CLI/IO helper-базис:** `_ioutil.py` (UTF-8/safe_write), `_cli.py` (help_guard/die) — общий UX-слой для переносимых команд.
 - **Атомарный котёл + лок + гейт:** `next_id.py`, `commit_lock.py`, `pipeline.py`, `dispatch.py`,
   `merge_gate.py`.
-- **Тесты ядра:** `test_commit_lock.py`, `test_merge_gate.py`.
+- **Тесты ядра:** `tests/test_commit_lock.py`, `tests/test_merge_gate.py` (тесты живут в `tools/tests/`, C14).
 
 ## Как материализовать (доказать переносимость)
 

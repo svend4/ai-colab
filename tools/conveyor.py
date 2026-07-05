@@ -76,6 +76,8 @@ def load(path=LEDGER):
 
 def save(d, path=LEDGER):
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    # direct-write-ok: runtime-леджер конвейера, запись уже атомарна (tmp+os.replace);
+    # канон-строки в файле — чтение topics/ (C33)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         json.dump(d, f, ensure_ascii=False, indent=2)

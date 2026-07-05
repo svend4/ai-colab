@@ -24,11 +24,11 @@ The operational corpus remains in `data/portals/example/corpus/`. After D-021/T-
 Passed:
 
 ```powershell
-python tools/test_portal.py
+python tools/tests/test_portal.py
 python tools/promote.py list
 ```
 
-`tools/test_portal.py` confirms the existing operational portal still builds/reports over 2 documents
+`tools/tests/test_portal.py` confirms the existing operational portal still builds/reports over 2 documents
 and 3 topics. `tools/promote.py list` sees `portals/example/*` as L2 artifacts.
 
 ## Follow-up closed by D-021/T-145

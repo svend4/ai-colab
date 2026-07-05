@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.crdt_merge
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: 3-way field-level мёрж канон-файлов (вместо git-строчных конфликтов на хот-файлах).
+# ==========================================
 """crdt_merge.py — 3-way field-level мёрж канон-файлов (вместо git-строчных конфликтов на хот-файлах).
 
 Рациональная переработка CRDT-идеи из `.inf` (inf_crdt.py: LWW-регистры + OR-Set) под НАШ репо и его
@@ -15,9 +23,11 @@
 CLI:
   python tools/crdt_merge.py base.md ours.md theirs.md        # печать слитого + конфликтов
   python tools/crdt_merge.py base.md ours.md theirs.md --out merged.md
+  # --out часто перезаписывает ours/канон-файл → запись через safe_write (C33);
+  # намеренное сильное сжатие подтверждается флагом --force-truncate
 """
 import os
-from _ioutil import configure_output
+from _ioutil import configure_output, safe_write, DataLossGuardException
 from _cli import help_guard
 import sys
 import re
@@ -163,7 +173,15 @@ def main(argv):
         if i + 1 < len(argv):
             op = argv[i + 1]
             op = op if os.path.isabs(op) else os.path.join(ROOT, op)
-            open(op, "w", encoding="utf-8", newline="\n").write(text)
+            # C33: --out часто указывает на ours/канон-файл — safe_write гвардит
+            # случайное усечение; законное сильное сжатие — явным --force-truncate.
+            try:
+                safe_write(op, text, force_truncate="--force-truncate" in argv)
+            except DataLossGuardException as exc:
+                print(str(exc))
+                print("crdt_merge: запись в %s ОТКЛОНЕНА гвардом потери — файл не тронут; "
+                      "перезапустите с --force-truncate, если сжатие намеренно" % op)
+                return 1
             print("→ слито в %s" % op)
     else:
         print(text)

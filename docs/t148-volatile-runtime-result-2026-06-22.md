@@ -22,7 +22,7 @@ These files change during `pipeline.py snapshot` and `pipeline.py heartbeat`. Tr
 
 ## Verification
 
-Added `tools/test_volatile.py`:
+Added `tools/tests/test_volatile.py`:
 
 - verifies volatile files are not tracked by `git ls-files`;
 - verifies `.gitignore` contains the volatile paths;

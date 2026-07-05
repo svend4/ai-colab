@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.workflow_recover
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: восстановление ПАРТИАЛ-результатов фонового workflow (durability слоя оркестрации).
+# ==========================================
 """workflow_recover.py — восстановление ПАРТИАЛ-результатов фонового workflow (durability слоя оркестрации).
 
 Проблема (запрос Stefan + формула D-031, шаг 2 «durability-первым» на слое ОРКЕСТРАЦИИ): фоновый workflow

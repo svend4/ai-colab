@@ -55,9 +55,9 @@ produce(вслепую) → diverge(5 линз) → canonicalize(семанти�
 | red-team-записи + self-repair | `redteam/` |
 | мульти-судейские вердикты | `quorum/independent-first-reconcile.md` |
 | детализация расхождений | `divergence/independent-first-reconcile.md` |
-| merge-сторона Codex (предложение D-029) | `queues/outbox/2026-06-25-claude-independent-first-merge-side.md` |
+| merge-сторона (D-029 proposed, из outbox-предложения Claude) | `decisions/D-029.md` (исходник: `queues/outbox/2026-06-25-claude-independent-first-merge-side.md`) |
 
 ## Что открыто
 - **Ратификация Stefan** — D-030 «To accept» (5 в канон? арбитраж 2 contested? governance-принцип? фронтир признать?).
 - **Проблема оракула** — исследовательский фронтир (разные модели/провайдеры судей; actual-cause; не whack-a-mole).
-- **Координация Codex** — D-029 consensus-by-meaning.
+- **Ратификация D-029** (`decisions/D-029.md`, proposed) — consensus-by-meaning: merge-инварианты; координация с Codex по стыку с D-028.

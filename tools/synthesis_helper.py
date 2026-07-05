@@ -110,12 +110,16 @@ def report(topic, out_path=None, with_streams=False):
     L.append("> консенсус/расхождения/решение заполняет коллектив с двойной перепроверкой. Инструмент")
     L.append("> ничего не решает и не помечает accepted.")
     L.append("")
-    L.append("## 1. Общие пункты (Сверху / Консенсус)")
+    # Заголовки секций — канон скелета D-017/D-018 (сверка P1, аудит 2026-07-02):
+    # секции начинаются с ключевых слов «Консенсус» / «Варианты» / «Расхождения», как в
+    # исходном скелете и T-182-проверке validate.py (check_synthesis_reports);
+    # трёхслойные пометки (Сверху / Середина / Вынесено) — формат D-024 (structured divergences).
+    L.append("## Консенсус — общие пункты (Сверху)")
     L.append("> ЗАПОЛНИТЬ: Выделите сухой остаток, с которым согласны все варианты.")
     L.append("- [ ] ...")
     L.append("")
-    
-    L.append("## 2. Исходные документы (Середина / Золотой голос)")
+
+    L.append("## Варианты (%d) — исходные документы (Середина / Золотой голос)" % len(variants))
     L.append("> Ниже представлены оригинальные варианты от разных агентов.")
     L.append("")
     L.append("| Агент | Статус | Тип | Файл |")
@@ -134,7 +138,7 @@ def report(topic, out_path=None, with_streams=False):
             L.append("- **%s**%s" % (sec["h"], gist))
         L.append("")
         
-    L.append("## 3. Разногласия и Детализация (Вынесено)")
+    L.append("## Расхождения — разногласия и детализация (Вынесено)")
     L.append("> ЗАПОЛНИТЬ: Пункты спора, вынесенные в отдельные документы для глубокой проработки.")
     L.append("- [ ] пункт спора · варианты сторон · доказательная база")
     if with_streams:
@@ -147,14 +151,14 @@ def report(topic, out_path=None, with_streams=False):
             stream_abs = os.path.join(ROOT, "streams", topic, "%s-divergence.md" % a)
             if not os.path.exists(stream_abs):
                 os.makedirs(os.path.dirname(stream_abs), exist_ok=True)
-                with open(stream_abs, "w", encoding="utf-8") as sf:
+                with open(stream_abs, "w", encoding="utf-8", newline="\n") as sf:
                     sf.write("---\ntopic: %s\nagent: %s\ntype: divergence-stream\n---\n\n# Разногласия от %s\n\n- [ ] Детализируйте здесь пункты, по которым вы не согласны с mainline консенсусом.\n" % (topic, a, a))
     L.append("")
     L.append("## Двойная перепроверка (D-018)")
     L.append("- **Техническая:** [ ] корректность · [ ] тесты · [ ] нет новой поверхности риска")
     L.append("- **Гуманитарная:** [ ] польза людям/пользователям · [ ] понятность · [ ] последствия")
     L.append("")
-    L.append("## 4. Предложение синтеза (proposed, не решение)")
+    L.append("## Предложение синтеза (proposed, не решение)")
     L.append("- ...")
     text = "\n".join(L)
 

@@ -52,7 +52,7 @@ BLOCKS = {
             ("assurance.py", [], "advisory"),
             ("reconcile_state.py", ["check"], "advisory"),
             ("drift_check.py", [], "advisory"),
-            ("test_execute_audit.py", [], "gate"),
+            ("tests/test_execute_audit.py", [], "gate"),  # C14: тесты в tools/tests/
         ],
     },
     "adoption": {

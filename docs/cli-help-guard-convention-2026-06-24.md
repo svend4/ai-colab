@@ -42,7 +42,7 @@ related: [kotel-system-critique-2026-06-24, debt-cleanup-recycling-proposal-2026
 - Согласуется с `_ioutil`-паттерном (общий хелпер, не россыпь).
 
 ## 3. Что изменено (этот заход)
-- **Добавлен** `tools/_cli.py` (+ `tools/test_cli.py`).
+- **Добавлен** `tools/_cli.py` (+ `tools/tests/test_cli.py`).
 - **Применён** `help_guard(__doc__, argv)` к моим тулам: `edges.py`, `decay.py`, `maturity.py`,
   `reflect_ingest.py`, `autolink.py` — теперь `--help` rc=0 + печать docstring (проверено).
 - **Раскатка на остальные** sys.argv-тулы — батчами, только НЕ-Codex-hot (см. §4).

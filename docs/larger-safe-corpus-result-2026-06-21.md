@@ -62,7 +62,7 @@ python tools\top.py report-diff reports\knowledge-corpus-report.md reports\large
 - `tools/text_extract.py` теперь удаляет ведущий `--- ... ---` front-matter из Markdown перед нормализацией;
 - `tools/knowledge.py` пишет `показано N совпадений (limit=10, ранжировано, FTS5)`;
 - `tools/report_diff.py` понимает старый и новый формат заголовка отчёта;
-- добавлены/обновлены тесты `tools/test_text_extract.py`, `tools/test_report_diff.py`.
+- добавлены/обновлены тесты `tools/tests/test_text_extract.py`, `tools/tests/test_report_diff.py`.
 
 ## Оценка качества поиска
 

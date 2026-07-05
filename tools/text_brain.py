@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.text_brain
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: proposal-only brain-adapter для textscene-канвы (трилогия scene→mux→BRAIN, спец §5).
+# ==========================================
 """text_brain.py — proposal-only brain-adapter для textscene-канвы (трилогия scene→mux→BRAIN, спец §5).
 
 Завершает textscene (topics/textscene-unified-spec-2026-06-26 §5): модель ПРЕДЛАГАЕТ типизированные ячейки

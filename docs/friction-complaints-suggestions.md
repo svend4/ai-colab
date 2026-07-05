@@ -81,7 +81,7 @@
 
 - F-ID: F-001, F-004, F-006, F-011, F-013, F-018
 - Кто заметил: Codex
-- Где/команда: `apply_patch` при правке `tasks/T-150.md`; первый `tools/test_friction.py`; `python tools/friction.py status`; `python tools/stream.py check`.
+- Где/команда: `apply_patch` при правке `tasks/T-150.md`; первый `tools/tests/test_friction.py`; `python tools/friction.py status`; `python tools/stream.py check`.
 - Повторяемость: F-001/F-004/F-006 уже 4+ раз; F-013/F-018 повторяются как governance/tooling drift.
 - Ручное решение: PowerShell UTF-8 fallback; temp root в `C:\tmp`/`tmp-work`; selective-add; не включать unrelated `streams/*`; обновить skill/docs.
 - Потеря времени/риск: без detector агент снова тратит время на уже известные обходы и может смешать чужие изменения в commit.
@@ -92,7 +92,7 @@
 
 - F-ID: F-016
 - Кто заметил: Codex
-- Где/команда: `tools/pipeline.py`, `tools/top.py`, `tools/test_pipeline_fencing.py`.
+- Где/команда: `tools/pipeline.py`, `tools/top.py`, `tools/tests/test_pipeline_fencing.py`.
 - Повторяемость: один явный wrong-next случай и высокий системный риск.
 - Ручное решение до T-152: не вызывать `next`, если нужна конкретная задача.
 - Реализация: `python tools\pipeline.py claim <agent> <T-id>` и `python tools\top.py take <agent> <T-id>` используют те же ready/placeholder/claim checks, что `next`, но не берут другую задачу при ошибке.

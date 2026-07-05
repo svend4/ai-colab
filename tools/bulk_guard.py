@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.bulk_guard
+# TYPE: active-script
+# DOMAIN: core.validation
+# DEPTH_LEVEL: 1
+# SUMMARY: детектор массового стирания БЕЗ страховки (enforcement D-026).
+# ==========================================
 """bulk_guard.py — детектор массового стирания БЕЗ страховки (enforcement D-026).
 
 Реализует политику bulk-information-safety: ловит «массовую операцию» в git-diff
@@ -8,15 +16,23 @@
 
 Старт как WARN (D-026 proposed); после ратификации может стать pre-commit гейтом.
 
+Режим `--hook` (C44, волна 2, решение Stefan Q-W2-13c) — УСЛОВНАЯ строгость по машинному
+статусу D-026: хук читает `status:` из decisions/D-026.md; при `accepted` нарушение
+(STOP-uninsured) блокирует коммит (exit 1), при любом другом статусе (сейчас proposed) —
+только советник-WARN (exit 0). Ратификация человеком автоматически «включает» гейт,
+без правки хука.
+
 CLI:
   python tools/bulk_guard.py            # рабочее дерево (все изменения vs HEAD)
   python tools/bulk_guard.py --staged   # только staged (для pre-commit)
+  python tools/bulk_guard.py --hook     # режим pre-commit: exit 1 ТОЛЬКО при accepted D-026 + STOP
   python tools/bulk_guard.py --json
 """
 import os
 import sys
 from _ioutil import configure_output
 from _cli import help_guard
+from _canon import parse_front_matter
 import subprocess
 
 configure_output()
@@ -79,11 +95,50 @@ def check(staged=False):
             "verdict": ("ok-not-bulk" if not is_bulk else ("ok-insured" if insured else "STOP-uninsured"))}
 
 
+def d026_status(root=None):
+    """Машинное чтение статуса решения D-026 из decisions/D-026.md ('' при отсутствии файла)."""
+    path = os.path.join(root or ROOT, "decisions", "D-026.md")
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            return (parse_front_matter(f.read()).get("status") or "").strip().lower()
+    except OSError:
+        return ""
+
+
+def hook_rc(verdict, status):
+    """Чистая логика режима --hook (тестируемо): exit-код по вердикту guard'а и статусу D-026.
+
+    Блок (1) ТОЛЬКО когда обе истины: массовое стирание без страховки И D-026 ратифицировано.
+    Всё остальное — советник (0): нератифицированное решение не имеет права блокировать (D-006).
+    """
+    return 1 if (verdict == "STOP-uninsured" and status == "accepted") else 0
+
+
+def hook_mode(staged=True):
+    """Режим pre-commit: печать краткого вердикта + условный exit-код по статусу D-026."""
+    r = check(staged=staged)
+    status = d026_status()
+    rc = hook_rc(r["verdict"], status)
+    if r["verdict"] == "STOP-uninsured":
+        if rc:
+            print("bulk_guard: БЛОК — массовое стирание без страховки (D-026 accepted, П-2).")
+            print("  Сначала: git tag backup-<тема>-<дата> HEAD, затем повтори коммит.")
+        else:
+            print("bulk_guard WARN: массовое стирание без страховки (−%d строк / %d файлов)."
+                  % (r["deletions"], r["bulk_files"]))
+            print("  D-026 пока %s — не блокирует; рекомендация: git tag backup-<тема>-<дата> HEAD."
+                  % (status or "не найдено"))
+    return rc
+
+
 def main(argv):
     help_guard(__doc__, argv)
     import json
     as_json = "--json" in argv
     staged = "--staged" in argv
+    if "--hook" in argv:
+        # В хуке всегда смотрим staged-снимок (коммитится именно он).
+        return hook_mode(staged=True)
     r = check(staged=staged)
     if as_json:
         print(json.dumps(r, ensure_ascii=False, indent=2))

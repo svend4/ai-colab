@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.mutmeta
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: мета-тест ДЕТЕКТОРА: ловит со-дефектные тесты мутацией (контр-инвариант C-III формулы).
+# ==========================================
 """mutmeta.py — мета-тест ДЕТЕКТОРА: ловит со-дефектные тесты мутацией (контр-инвариант C-III формулы).
 
 topics/defect-class-formula-2026-06-26 §C-III: «флаг/тест без проверки самого детектора — это ВЕРА, а не
@@ -70,13 +78,22 @@ def verdict(results):
             "missed": [l for l, c in results if not c]}
 
 
+def _test_path(tools_dir, test):
+    """Путь теста <test>.py: сначала tools_dir/tests/ (канон C14, шардинг tools/),
+    затем плоско tools_dir/ (обратная совместимость: фикстуры тестов, старые копии)."""
+    sharded = os.path.join(tools_dir, "tests", test + ".py")
+    if os.path.exists(sharded):
+        return sharded
+    return os.path.join(tools_dir, test + ".py")
+
+
 def run_meta(module, test, tools_dir=None, cap=12, timeout=60):
     """Прогнать мета-тест: мутировать копию <module>, бежать <test> против каждого мутанта.
 
     Возвращает (verdict, results). Настоящие файлы не трогаются."""
     tools_dir = tools_dir or TOOLS
     src_path = os.path.join(tools_dir, module + ".py")
-    test_path = os.path.join(tools_dir, test + ".py")
+    test_path = _test_path(tools_dir, test)
     if not (os.path.exists(src_path) and os.path.exists(test_path)):
         return {"error": "нет модуля или теста: %s / %s" % (module, test)}, []
     src = open(src_path, encoding="utf-8", errors="replace").read()
@@ -94,7 +111,7 @@ def run_meta(module, test, tools_dir=None, cap=12, timeout=60):
     try:
         dst = os.path.join(tmp, "tools")
         shutil.copytree(tools_dir, dst)
-        dst_mod, dst_test = os.path.join(dst, module + ".py"), os.path.join(dst, test + ".py")
+        dst_mod, dst_test = os.path.join(dst, module + ".py"), _test_path(dst, test)
         results = []
         env = dict(os.environ); env["PYTHONUTF8"] = "1"
         for label, mut in mutants:
@@ -120,11 +137,20 @@ DEFAULT_SWEEP = ["metrics", "assurance", "doc_consensus", "drift_check",
 
 
 def discover_pairs(tools_dir=None, only=None):
-    """[(module, test)] для test_X.py, у которых есть X.py. only — множество имён модулей-фильтр."""
+    """[(module, test)] для test_X.py, у которых есть X.py. only — множество имён модулей-фильтр.
+
+    Тесты ищутся в tools_dir/tests/ (канон C14) и плоско в tools_dir/ (обратная
+    совместимость с фикстурами); дубликат имени схлопывается (tests/ приоритетнее)."""
     tools_dir = tools_dir or TOOLS
     pairs = []
-    for tp in sorted(glob.glob(os.path.join(tools_dir, "test_*.py"))):
+    seen = set()
+    test_files = sorted(glob.glob(os.path.join(tools_dir, "tests", "test_*.py"))) + \
+        sorted(glob.glob(os.path.join(tools_dir, "test_*.py")))
+    for tp in test_files:
         name = os.path.basename(tp)[5:-3]
+        if name in seen:
+            continue
+        seen.add(name)
         if only and name not in only:
             continue
         if os.path.exists(os.path.join(tools_dir, name + ".py")):
@@ -134,7 +160,7 @@ def discover_pairs(tools_dir=None, only=None):
 
 def _run_one_in(dst, module, test, cap, timeout, env):
     """Мета-тест ОДНОГО модуля в УЖЕ скопированном dst (sweep копирует tools/ один раз) → verdict."""
-    dst_mod, dst_test = os.path.join(dst, module + ".py"), os.path.join(dst, test + ".py")
+    dst_mod, dst_test = os.path.join(dst, module + ".py"), _test_path(dst, test)
     if not (os.path.exists(dst_mod) and os.path.exists(dst_test)):
         return {"error": "нет модуля/теста"}
     src = open(dst_mod, encoding="utf-8", errors="replace").read()

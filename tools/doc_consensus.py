@@ -452,6 +452,8 @@ def main():
         if idx != -1:
             ddest = div_out if os.path.isabs(div_out) else os.path.join(ROOT, div_out)
             os.makedirs(os.path.dirname(ddest) or ".", exist_ok=True)
+            # direct-write-ok: генерат-отчёты консенсуса по явным --divergence-out/--out —
+            # законно переписываются целиком при перепрогоне (C33)
             with open(ddest, "w", encoding="utf-8", newline="\n") as f:
                 f.write("---\nstatus: proposed\nkind: divergence\n---\n\n"
                         "# Разногласия (вынесено из consensus, D-017 — детализировать/обосновать)\n\n"

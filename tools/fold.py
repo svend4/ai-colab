@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.fold
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: fold-not-delete для grow-only сторов (контр-инвариант C-II формулы defect-class-formula).
+# ==========================================
 """fold.py — fold-not-delete для grow-only сторов (контр-инвариант C-II формулы defect-class-formula).
 
 §C-II: durability(шаг2)+minority(шаг7) дают МОНОТОННЫЙ рост стора → деградация (как metrics давится на росте).

@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.git_reconcile
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: git merge-driver: при коллизии канон-файла зовёт crdt_merge (field-level 3-way).
+# ==========================================
 """git_reconcile.py — git merge-driver: при коллизии канон-файла зовёт crdt_merge (field-level 3-way).
 
 Закрывает T-263 инструментально: вместо git-СТРОЧНЫХ конфликтов на хот-файлах — слияние на уровне ПОЛЯ.
@@ -13,7 +21,7 @@ Git вызывает драйвер с тремя версиями (%O base, %A 
   python tools/git_reconcile.py <base> <ours> <theirs>     # %O %A %B
 """
 import os
-from _ioutil import configure_output
+from _ioutil import configure_output, safe_write, DataLossGuardException
 from _cli import help_guard
 import sys
 import subprocess
@@ -30,7 +38,18 @@ def reconcile_files(base_path, ours_path, theirs_path):
     ours = cm.parse_item(_read(ours_path))
     theirs = cm.parse_item(_read(theirs_path))
     m = cm.merge3(base, ours, theirs)
-    open(ours_path, "w", encoding="utf-8", newline="\n").write(cm.render_item(m))
+    # C33: ours (%A) переписывается целиком — safe_write ловит аномальное усечение.
+    # У 3-way мёржа сжатие бывает ЗАКОННЫМ (theirs намеренно удалил крупный кусок,
+    # ours не трогал → берём theirs), поэтому гвард не роняет драйвер: пишем с force,
+    # но добавляем конфликт-строку → exit 1, git оставит файл человеку на доразбор.
+    text = cm.render_item(m)
+    try:
+        safe_write(ours_path, text)
+    except DataLossGuardException as exc:
+        safe_write(ours_path, text, force_truncate=True)
+        m["conflicts"].append(
+            "size-guard: слитый результат сильно меньше ours — проверьте, что сжатие намеренно (%s)"
+            % str(exc).splitlines()[0])
     return m["conflicts"]
 
 
@@ -75,7 +94,9 @@ def _apply():
             text = text.rstrip("\n") + "\n%s merge=crdt\n" % g
             added.append(g)
     if added:
-        open(ga, "w", encoding="utf-8", newline="\n").write(text)
+        # C33: .gitattributes — рукописный файл; правка grow-only (только дописываем
+        # строки), так что гвард safe_write молчит на легальном пути и ловит баг-усечение.
+        safe_write(ga, text)
     return done, added
 
 

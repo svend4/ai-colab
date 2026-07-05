@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.view
+# TYPE: active-script
+# DOMAIN: core.retrieval
+# DEPTH_LEVEL: 1
+# SUMMARY: релевантный СРЕЗ канона под задачу (подача контекста агенту), над существующими рёбрами.
+# ==========================================
 """view.py — релевантный СРЕЗ канона под задачу (подача контекста агенту), над существующими рёбрами.
 
 Не новый формат: `view` собирает связный подграф канона обходом НАШИХ рёбер (`related:` front-matter +
@@ -21,11 +29,17 @@ import glob
 configure_output()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
-CANON_DIRS = ("tasks", "decisions", "questions", "topics", "docs")
+# Единый реестр каталогов канона — из _canon (P9-a, волна 2); локальная копия запрещена.
+from _canon import CANON_DIRS, require_canon_dirs
 
 
 def load_canon(root=ROOT, dirs=CANON_DIRS):
-    """id → {id, path, body, links}: канон-файлы с рёбрами (related: + [[ссылки]])."""
+    """id → {id, path, body, links}: канон-файлы с рёбрами (related: + [[ссылки]]).
+
+    Контракт P9: несуществующий канон-каталог → FileNotFoundError (громкий ERROR),
+    а не тихий пустой срез («немой ноль выглядит валидным», симптом (f)).
+    """
+    require_canon_dirs(root, dirs)
     canon = {}
     for d in dirs:
         for p in glob.glob(os.path.join(root, d, "**", "*.md"), recursive=True):

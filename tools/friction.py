@@ -148,9 +148,9 @@ REGISTRY = [
         "recipe": [
             "Read volatile files as live views, but do not stage them in ordinary commits.",
             "Commit source code/docs/tests that change snapshot behavior, not regenerated snapshot output.",
-            "Use tools/test_volatile.py when changing volatile policy.",
+            "Use tools/tests/test_volatile.py when changing volatile policy.",
         ],
-        "docs": ["docs/t148-volatile-runtime-result-2026-06-22.md", "tools/test_volatile.py"],
+        "docs": ["docs/t148-volatile-runtime-result-2026-06-22.md", "tools/tests/test_volatile.py"],
         "aliases": ["volatile", "live", "pipeline-snapshot"],
     },
     {

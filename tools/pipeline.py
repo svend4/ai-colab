@@ -37,6 +37,7 @@ import re
 import sys
 from _ioutil import configure_output, atomic_write
 from _cli import help_guard
+import _claims  # общие claim-примитивы queues/claimed (волна 2, C35-a)
 import hashlib
 import time
 import uuid
@@ -56,7 +57,7 @@ PIPELINE_JSON = os.path.join(LOGS, "pipeline.json")
 LIVE_MD = os.path.join(ROOT, "LIVE.md")
 HEARTBEAT_JSON = os.path.join(LOGS, "heartbeat.json")
 PRANK = {"high": 0, "normal": 1, "low": 2, "": 1}
-DEFAULT_TTL_MIN = 30
+DEFAULT_TTL_MIN = _claims.DEFAULT_TTL_MIN  # единый TTL lease (C35-a)
 SERVICE_TOPIC_PREFIXES = ("docs/", "tools/", "decisions/", "drivers/", "core/", "portals/", "collab/", "sandbox/")
 SERVICE_TITLE_WORDS = ("pipeline", "instruction", "commit", "merge", "gate", "policy", "driver", "governance", "sandbox", "portal", "index", "evidence")
 
@@ -90,41 +91,26 @@ def collect_tasks():
     return out
 
 def claim_path(tid):
-    return os.path.join(CLAIMED, "%s.claim.md" % tid)
+    return _claims.claim_file(CLAIMED, tid)
 
 def claim_is_fresh(tid):
-    p = claim_path(tid)
-    if not os.path.exists(p):
-        return False
-    try:
-        with open(p, encoding="utf-8") as f:
-            fm = parse_fm(f.read())
-        return int(fm.get("lease_epoch", "0")) > int(time.time())
-    except Exception:
-        return False
+    return _claims.claim_is_fresh(claim_path(tid))
 
 def claim_holder(tid):
-    p = claim_path(tid)
-    if not os.path.exists(p):
-        return None
-    try:
-        with open(p, encoding="utf-8") as f:
-            return parse_fm(f.read())
-    except OSError:
-        # Windows may briefly deny access while another worker is replacing the
-        # claim. Treat this as a transient no-holder view; callers retry or fail
-        # safe instead of crashing.
-        return None
+    # OSError → None внутри _claims.read_claim: Windows может кратковременно
+    # запрещать доступ, пока другой воркер подменяет claim через os.replace;
+    # вызывающие повторяют попытку или отказывают безопасно, не падая.
+    return _claims.read_claim(claim_path(tid))
 
 def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
     """Атомарно занять задачу. Возвращает claim_id или None (занято свежим claim'ом).
 
-    Перехват протухшего claim тоже атомарен (T-082, ревью T-078 находка I): гейтится
-    эксклюзивным lock-файлом, имя которого выведено из claim_id ПРОТУХШЕГО claim. Два
-    агента, увидевшие один и тот же протухший claim, вычислят одинаковое имя lock'а, и
-    `O_CREAT|O_EXCL` отдаст победу ровно одному; победитель подменяет claim атомарно через
-    временный файл + `os.replace`. (Замечание: при падении победителя между взятием lock и
-    заменой lock может остаться — разрешается через reconcile_state/ручную чистку.)
+    Механика вынесена в общий модуль `_claims` (волна 2, C35-a) и сохранена
+    1-в-1 с фиксами гонок T-082/T-084: создание — `create_claim`
+    (O_CREAT|O_EXCL); перехват протухшего claim — `takeover_claim`
+    (эксклюзивный lock, имя которого выведено из claim_id ПРОТУХШЕГО claim,
+    перепроверка под lock'ом, атомарная подмена через os.replace).
+    Формат claim-файла не изменился: task/agent/claim_id/lease_epoch.
     """
     os.makedirs(CLAIMED, exist_ok=True)
     p = claim_path(tid)
@@ -133,60 +119,18 @@ def try_claim(tid, agent, ttl_min=DEFAULT_TTL_MIN):
     body = ("---\ntask: %s\nagent: %s\nclaim_id: %s\nlease_epoch: %d\n---\n"
             % (tid, agent, cid, lease))
     try:
-        fd = os.open(p, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        _claims.create_claim(p, body)
+        return cid
     except PermissionError:
         return None
     except FileExistsError:
         old = claim_holder(tid)
         if old is None:
             return None  # claim исчез между проверками — возьмёт следующий проход
-        if int(old.get("lease_epoch", "0")) > int(time.time()):
+        if _claims.is_fresh(old):
             return None  # занято живым агентом
-        # протух — атомарный перехват под эксклюзивным lock'ом по старому claim_id
-        lock = "%s.take.%s" % (p, old.get("claim_id") or "none")
-        try:
-            lfd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError:
-            return None  # другой агент уже перехватывает этот же протухший claim
-        except PermissionError:
-            return None
-        try:
-            os.close(lfd)
-            # повторная проверка ПОД lock'ом: claim всё ещё тот же протухший?
-            # закрывает гонку (T-084-перепроверка), когда другой агент успел
-            # перехватить и СНЯТЬ lock между чтением `old` и взятием lock'а здесь —
-            # иначе поздний агент перезапишет уже свежий claim (двойной захват).
-            cur = claim_holder(tid)
-            if (cur is None
-                    or cur.get("claim_id") != old.get("claim_id")
-                    or int(cur.get("lease_epoch", "0")) > int(time.time())):
-                return None
-            tmp = "%s.tmp.%s" % (p, cid)
-            with open(tmp, "w", encoding="utf-8", newline="\n") as f:
-                f.write(body)
-            # Windows can transiently deny os.replace while another thread/process is
-            # touching the same claim path. Keep the stale-takeover lock and retry a
-            # few times; if it still fails, return no-claim instead of leaking a
-            # background thread exception through tests/agents.
-            for _ in range(5):
-                try:
-                    os.replace(tmp, p)  # атомарная подмена протухшего claim новым
-                    return cid
-                except PermissionError:
-                    time.sleep(0.02)
-            try:
-                os.remove(tmp)
-            except OSError:
-                pass
-            return None
-        finally:
-            try:
-                os.remove(lock)
-            except OSError:
-                pass
-    with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
-        f.write(body)
-    return cid
+        # протух — атомарный перехват (takeover-lock + перепроверка + os.replace)
+        return cid if _claims.takeover_claim(p, body, old) else None
 
 def set_status(path, new):
     with open(path, encoding="utf-8") as f:
@@ -304,9 +248,9 @@ def cmd_claim(agent, tid):
     return 0
 
 def _release(tid):
-    p = claim_path(tid)
-    if os.path.exists(p):
-        os.remove(p)
+    # fencing проверяется выше по стеку (_check_holder в cmd_done/cmd_fail),
+    # поэтому снятие безусловное (C35-a: общий примитив release_claim)
+    _claims.release_claim(claim_path(tid))
 
 def _marker(dirpath, tid, suffix, agent, text, extra=None):
     os.makedirs(dirpath, exist_ok=True)

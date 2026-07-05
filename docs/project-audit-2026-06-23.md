@@ -43,7 +43,7 @@ M TASKS.md
 M docs/top-layer-command-groups.md
 M index.json
 M skills/README.md
-M tools/test_top.py
+M tools/tests/test_top.py
 M tools/top.py
 ?? data/portals/bridge-knowledge/
 ?? data/portals/repo-inventory/
@@ -59,7 +59,7 @@ M tools/top.py
 
 Аудиторская интерпретация:
 
-- изменения `TASKS.md`, `index.json`, `docs/top-layer-command-groups.md`, `skills/README.md`, `tools/top.py`, `tools/test_top.py`, `docs/top-layer-throughput-methodology.md`, `skills/top-layer-orchestrator/`, `tasks/T-168..T-170`, outbox — ожидаемые изменения последних шагов;
+- изменения `TASKS.md`, `index.json`, `docs/top-layer-command-groups.md`, `skills/README.md`, `tools/top.py`, `tools/tests/test_top.py`, `docs/top-layer-throughput-methodology.md`, `skills/top-layer-orchestrator/`, `tasks/T-168..T-170`, outbox — ожидаемые изменения последних шагов;
 - `data/portals/bridge-knowledge/` и `data/portals/repo-inventory/` выглядят как параллельные/чужие артефакты; их нельзя коммитить без отдельной проверки ownership и назначения;
 - friction рекомендует **selective-add / Level 1**, не `git add -A`.
 
@@ -154,9 +154,9 @@ python tools\top.py process-landed --json
 
 ```text
 32 / 35 OK
-FAIL tools/test_core_export.py
-FAIL tools/test_ownership.py
-FAIL tools/test_text_extract_docx.py
+FAIL tools/tests/test_core_export.py
+FAIL tools/tests/test_ownership.py
+FAIL tools/tests/test_text_extract_docx.py
 ```
 
 Все 3 падения одного класса: `PermissionError` при записи в подпапку, созданную Python `tempfile.mkdtemp`.

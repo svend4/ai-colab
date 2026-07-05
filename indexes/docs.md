@@ -60,7 +60,7 @@
 | [glossary.md](../docs/glossary.md) | — | — | Термины проекта в алфавитном порядке. Каждый термин: имя → определение → где встречается.  |
 | [implementation-stage-report-2026-06-20.md](../docs/implementation-stage-report-2026-06-20.md) | — | — | Дата: 2026-06-20 |
 | [independent-consensus-overview.md](../docs/independent-consensus-overview.md) | — | — | Дата: 2026-06-25 · Статус: **обзор** (карта артефактов; решения — `D-028`/`D-030`, evidenc |
-| [independent-first-pipeline.md](../docs/independent-first-pipeline.md) | — | — | Дата: 2026-06-25 · Статус: **proposed** (kotel-консенсус готов, D-029 предложен Codex). Ис |
+| [independent-first-pipeline.md](../docs/independent-first-pipeline.md) | — | — | Дата: 2026-06-25 · Статус: **proposed** (kotel-консенсус готов; D-029 существует как propo |
 | [independent-variant-stream-policy.md](../docs/independent-variant-stream-policy.md) | policy | proposed | **Purpose.** Уточнить политику “дублей”: для содержательных вопросов, архитектуры, методол |
 | [information-refactoring-sanation-standard.md](../docs/information-refactoring-sanation-standard.md) | doc | proposed | Отвечает на открытые мета-вопросы (реестр 4.1/4.2/4.3/4.5/5.1/6): инфо-рефакторинг = оздор |
 | [ingest-acceptance-result-2026-06-21.md](../docs/ingest-acceptance-result-2026-06-21.md) | — | — | Date: 2026-06-21 |

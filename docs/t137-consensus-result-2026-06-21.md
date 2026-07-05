@@ -25,12 +25,12 @@ T-137 доведён до стадии `review`, не `done`: техническ
 
 | Инструмент | Роль | Проверка |
 |---|---|---|
-| `tools/variants.py` | найти все fork-варианты темы | `python tools/test_variants.py` |
-| `tools/stream.py` | создать/list/adopt semi-commit stream | `python tools/test_stream.py` |
-| `tools/promote.py` | check/move gate L4->L3->L2->L1 | `python tools/test_promote.py` |
-| `tools/merge_gate.py` | read-only merge gate | `python tools/test_merge_gate.py` |
-| `tools/sandbox_intake_demo.py` | read-only intake demo без svend4 | `python tools/test_sandbox_intake_demo.py` |
-| `tools/cohort.py` | многоагентная верхняя панель | `python tools/test_cohort.py` |
+| `tools/variants.py` | найти все fork-варианты темы | `python tools/tests/test_variants.py` |
+| `tools/stream.py` | создать/list/adopt semi-commit stream | `python tools/tests/test_stream.py` |
+| `tools/promote.py` | check/move gate L4->L3->L2->L1 | `python tools/tests/test_promote.py` |
+| `tools/merge_gate.py` | read-only merge gate | `python tools/tests/test_merge_gate.py` |
+| `tools/sandbox_intake_demo.py` | read-only intake demo без svend4 | `python tools/tests/test_sandbox_intake_demo.py` |
+| `tools/cohort.py` | многоагентная верхняя панель | `python tools/tests/test_cohort.py` |
 
 ## Runtime correction
 

@@ -62,7 +62,7 @@ date: {datetime.now().strftime("%Y-%m-%d")}
 **Сценарий использования:** 
 (Опишите зачем нужен запуск)
 """
-    with open(approval_file, "w", encoding="utf-8") as f:
+    with open(approval_file, "w", encoding="utf-8", newline="\n") as f:
         f.write(content)
         
     print(f"Generated approval request for {driver_id} at {approval_file}")

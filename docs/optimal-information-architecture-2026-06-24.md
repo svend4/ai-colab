@@ -202,7 +202,7 @@ purpose: ...
 inputs: ...
 outputs: ...
 checks:
-  - python tools/test_x.py  # [planned] плейсхолдер примера, не реальный файл
+  - python tools/tests/test_x.py  # [planned] плейсхолдер примера, не реальный файл
 """
 ```
 
@@ -347,7 +347,7 @@ corpus_ref: data/portals/example/corpus
 workflows:
   - python tools/portal.py report example
 checks:
-  - python tools/test_portal.py
+  - python tools/tests/test_portal.py
 last_verified: 2026-06-24
 ```
 

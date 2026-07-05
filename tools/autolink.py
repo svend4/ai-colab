@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.autolink
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic).
+# ==========================================
 """autolink.py — ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic).
 
 Замыкает петлю с maturity.py: maturity НАХОДИТ недозрелых → autolink ПРЕДЛАГАЕТ как дозреть.

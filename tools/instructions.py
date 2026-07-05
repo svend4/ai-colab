@@ -55,7 +55,10 @@ INSTRUCTIONS = [
         "scope": "all",
         "why": "append-only полилог, D-003 обоснование правок, pipeline, streams, уровни папок",
         "evidence": "указать, где оставлен outbox/topic rationale и почему общие файлы менялись так",
-        "surfaces": ["D-001", "D-002", "D-003", "D-004", "D-008"],
+        # D-001 (Markdown-аксиома) НАМЕРЕННО не в surfaces: по диспозиции
+        # topics/governance-proposals-2026-06-23.md она остаётся «фоном» (background-only),
+        # контракт закреплён в test_instruction_trace.py (P0, аудит 2026-07-02).
+        "surfaces": ["D-002", "D-003", "D-004", "D-008"],
     },
     {
         "id": "human-map",
@@ -430,11 +433,12 @@ def check_report_text(text):
     return missing
 
 KNOWN_REPO_EXTS = (".md", ".markdown", ".py", ".json", ".txt", ".text", ".ps1", ".yaml", ".yml")
+# Канон-каталоги приходят из единого реестра _canon (P9-a); здесь только НЕ-канонические корни.
+from _canon import CANON_DIRS_EXTENDED as _CANON_DIRS_EXTENDED
 KNOWN_REPO_ROOTS = {
     "AGENTS.md", "PROTOCOL.md", "STATUS.md", "TASKS.md", "QUESTIONS.md", "DECISIONS.md",
-    "docs", "tools", "queues", "tasks", "decisions", "questions", "drivers", "core", "portals",
-    "collab", "sandbox", "streams", "reports", "tmp-work", "data", "skills", "topics",
-}
+    "tools", "queues", "collab", "sandbox", "reports", "tmp-work", "data", "skills",
+} | set(_CANON_DIRS_EXTENDED)
 CHECK_RUNNERS = {"python", "python3", "py", "pytest", "pwsh", "powershell", "git", "node", "npm", "bash", "sh"}
 
 def _clean_ref(value):

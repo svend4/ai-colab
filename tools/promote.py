@@ -44,7 +44,7 @@ import datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from _canon import parse_front_matter  # единый парсер front-matter канона
+from _canon import parse_front_matter, PYRAMID_L3_DIRS  # единые источники (парсер + L3-реестр, P9-a)
 
 configure_output()
 
@@ -54,7 +54,8 @@ L1_DIR = "core"
 L2_DIR = "portals"
 L4_DIR = "sandbox"
 # collab логически = эти корневые каталоги (карта L3, без физического переноса).
-L3_DIRS = ["tasks", "decisions", "questions", "streams", "topics", "collab"]
+# Состав — из единого реестра _canon.PYRAMID_L3_DIRS (дубль с layer_check устранён, P9-a).
+L3_DIRS = list(PYRAMID_L3_DIRS)
 
 def _root(root=None):
     return os.path.abspath(root) if root else ROOT
@@ -183,10 +184,15 @@ def _gate_L2_L1(path, fm, root):
             portals |= pids
     decision_override = _has_decision_ref(fm)
     verified = _has_verification(fm)
-    # Для .py-инструментов: наличие test_<tool>.py = "тесты ядра зелёные" (P12)
+    # Для .py-инструментов: наличие test_<tool>.py = "тесты ядра зелёные" (P12).
+    # C14: тесты живут в <dir>/tests/, плоский путь — обратная совместимость.
     if not verified and path.endswith(".py") and not token.startswith("test_"):
-        test_path = os.path.join(os.path.dirname(path), "test_" + token)
-        verified = os.path.exists(test_path)
+        base_dir = os.path.dirname(path)
+        for test_path in (os.path.join(base_dir, "tests", "test_" + token),
+                          os.path.join(base_dir, "test_" + token)):
+            if os.path.exists(test_path):
+                verified = True
+                break
     return [
         ("reuse_across_portals", len(portals) >= 2 or decision_override,
          "повторное применение в >=2 порталах (derive_reuse-скан), либо decision-ref override (D-NNN)"),
@@ -306,6 +312,8 @@ def move(artifact, frm, to, reviewed_by="unspecified", decision_ref="",
     new_text = _stamp_fm(text, stamp)
 
     # 1) write-new (атомарно через tmp + replace)
+    # direct-write-ok: назначение обязано НЕ существовать (FileExistsError выше),
+    # перезапись существующего канон-файла невозможна — гвард потери не нужен (C33)
     os.makedirs(os.path.dirname(new_path), exist_ok=True)
     tmp = new_path + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:

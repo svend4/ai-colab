@@ -70,14 +70,14 @@ governance-правок = signal-not-block; человек промоутит п
    докам (как `:186-198`) разворачиваются в D-017 sub-points; provenance front-matter
    `status: proposed` + source-доки + какой агент гонял семантику + явное «nothing auto-accepted».
 5. **Regression gate** [ratify, mandatory]: добавить fixture «одна идея — разные слова» в
-   `tools/test_doc_consensus.py`, который лексический режим ДОКАЗУЕМО проваливает, а `--semantic`
+   `tools/tests/test_doc_consensus.py`, который лексический режим ДОКАЗУЕМО проваливает, а `--semantic`
    ловит — слепое пятно превращается в regression-тест. Текущие тесты проходят только на verbatim
    общих фразах (`test_doc_consensus.py:34,37,58,60`, consensus `:43,63`).
 6. **Документировать opt-in/scoped природу** [worktree] в `docs/workflow-orchestration-policy.md`
    (Map→Synthesize, sub-агенты возвращают JSON, вывод агента не-canon до extract —
    `:25-27,61-74,120-121`).
 
-**Файлы.** `tools/doc_consensus.py`, `tools/test_doc_consensus.py`,
+**Файлы.** `tools/doc_consensus.py`, `tools/tests/test_doc_consensus.py`,
 `docs/workflow-orchestration-policy.md`.
 
 **Ограничения.** Дефолт — pure-stdlib no-cost; `--semantic` opt-in/scoped из-за стоимости
@@ -122,7 +122,7 @@ LLM-вызова; cost ограничен high-thr pre-cluster + батчами 
   (`portal.md:7`) оставить, но `l1_basis` сделать machine-checkable каналом, парсимым `_list_field`.
 - **Supporting edits** [worktree]: переформулировать `docs/promotion-rules.md:52`, чтобы
   `reuse_across_portals` читался как *derived* (измеряется `derive_reuse`, override разрешён,
-  намеренно недостижим до второго портала); расширить `tools/test_assurance.py` `_build_pyramid`,
+  намеренно недостижим до второго портала); расширить `tools/tests/test_assurance.py` `_build_pyramid`,
   чтобы запинить новые контракты (structural grounding без прозы, stale-basis high finding,
   исключение candidate, flip гейта 1-vs-2 портала).
 - **Portal 1 — `bridge-knowledge`** [inline/worktree, S]: чистый L2-портал над существующим
@@ -199,7 +199,7 @@ Safety: `permissions.py` помечает new-agent governance-правки ка
 
 Всё в `tools/instructions.py`. `check_report_text()` (`tools/instructions.py:369-382`) НЕ ТРОГАТЬ —
 это hard-сигнал на `tools/assurance.py:137`, `:148`, `tools/pipeline.py:343`, а тесты пинят его
-returns (`tools/test_instructions.py:71-77`). Шаги:
+returns (`tools/tests/test_instructions.py:71-77`). Шаги:
 
 1. Добавить `import re` (сейчас :14-18).
 2. NEW advisory `report_reference_findings(text, root=ROOT) -> list[str]`: извлечь backticked +
@@ -213,7 +213,7 @@ returns (`tools/test_instructions.py:71-77`). Шаги:
    добавить `advisories = report_reference_findings(text)`, печатать как `ADVISORY:` блок; rc по-
    прежнему по токену `missing`. Опциональный будущий `--strict` (default off).
 
-Тесты: расширить main в `tools/test_instructions.py` (existing-doc → `[]`; `does-not-exist.md` →
+Тесты: расширить main в `tools/tests/test_instructions.py` (existing-doc → `[]`; `does-not-exist.md` →
 «referenced path not found»; checks-command кейсы; регрессия :71-77 без изменений). Docs:
 `docs/instruction-assurance.md:100` пометить item-2 implemented/advisory;
 `docs/top-layer-command-groups.md:139` отметить advisory findings.
@@ -229,7 +229,7 @@ returns (`tools/test_instructions.py:71-77`). Шаги:
 | 2 | `_semantic_pass(residue)` NEW за `--semantic` (subprocess-агент, JSON-схема, батчи 40-60) | worktree | `tools/doc_consensus.py:202-210`; `synthesis_helper.py:44-52` |
 | 3 | `_merge(mechanical, semantic)` NEW — транзитивное объединение по unit-id | worktree | `q017-semantic-consolidated-2026-06-23.md` |
 | 4 | Расширить `render()` — cross-refs + rationale + provenance `status: proposed` | worktree | `tools/doc_consensus.py:168-199` |
-| 5 | Regression fixture «одна идея — разные слова» (lexical fails, semantic ловит) | ratify | `tools/test_doc_consensus.py:34,37,58,60,43,63` |
+| 5 | Regression fixture «одна идея — разные слова» (lexical fails, semantic ловит) | ratify | `tools/tests/test_doc_consensus.py:34,37,58,60,43,63` |
 | 6 | Документировать opt-in/scoped природу | worktree | `docs/workflow-orchestration-policy.md:25-27,61-74,120-121` |
 | **Pyramid grounding** ||||
 | 7 | Portal 1 `bridge-knowledge` (over `data/knowledge-corpus/`, счётчик 1→2) | inline/worktree (S) | `fleet-designs-2026-06-23.md:37-44`; `tools/portal.py:71,119,123-138` |
@@ -238,7 +238,7 @@ returns (`tools/test_instructions.py:71-77`). Шаги:
 | 10 | Производный `section_coverage` + `high` finding на stale `l1_basis` | worktree | `tools/assurance.py:240-274` |
 | 11 | Split `engine-manifest` `files:` (10→8) + `candidates:` | worktree | `pyramid-grounding-plan-2026-06-23.md:26-30,62-64` |
 | 12 | Структурный `l1_basis` в `portals/example/portal.md` | worktree | `portals/example/portal.md:7` |
-| 13 | Supporting: `promotion-rules.md:52` derived-формулировка + `test_assurance` контракты | worktree | `docs/promotion-rules.md:52`; `tools/test_assurance.py` |
+| 13 | Supporting: `promotion-rules.md:52` derived-формулировка + `test_assurance` контракты | worktree | `docs/promotion-rules.md:52`; `tools/tests/test_assurance.py` |
 | 14 | Portal 2 `repo-inventory` (repo-runner + git-log, счётчик 2→3; git-log без fixture) | worktree (M) | `fleet-designs-2026-06-23.md:47`; `docs/pyramid-candidate-map.md:47-48`; `tasks/T-024.md` |
 | 15 | Portal 3 `app-data` (read-only SQLite, `порталов=3`) | worktree (M, optional) | `fleet-designs-2026-06-23.md:48`; `drivers/index.json:81` |
 | 16 | Честный orphan-L1 (документировать, не код; L1 остаётся `proposed`) | ratify/document | `fleet-designs-2026-06-23.md:50-55`; `decisions/D-018.md` |

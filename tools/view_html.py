@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.view_html
+# TYPE: active-script
+# DOMAIN: core.retrieval
+# DEPTH_LEVEL: 1
+# SUMMARY: компиляция среза канона в самодостаточный <details>-каскад HTML (progressive disclosure).
+# ==========================================
 """view_html.py — компиляция среза канона в самодостаточный <details>-каскад HTML (progressive disclosure).
 
 Реализует исходную тему беседы про .inf (U6–U7: «меню заголовки → клик → детали») и P17 (компиляция в

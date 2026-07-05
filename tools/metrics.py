@@ -33,9 +33,14 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 
-from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
+from _canon import parse_fm, missing_canon_dirs  # единые источники (T-085, находка L; P9-a волна 2)
 
 def load(sub):
+    # Контракт P9 (мягкая форма для read-only репортёра): несуществующий каталог реестра —
+    # ГРОМКИЙ WARN в stderr, а не тихий 0 в счётчиках («немой ноль выглядит валидным», симптом (f)).
+    if missing_canon_dirs(ROOT, (sub,)):
+        print("WARN: metrics: каталог %r не найден под %s — счётчик будет 0 (P9: тихий 0 запрещён)"
+              % (sub, ROOT), file=sys.stderr)
     items = []
     for path in glob.glob(os.path.join(ROOT, sub, "*.md")):
         with open(path, encoding="utf-8") as f:

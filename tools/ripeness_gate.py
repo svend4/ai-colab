@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.ripeness_gate
+# TYPE: active-script
+# DOMAIN: core.validation
+# DEPTH_LEVEL: 1
+# SUMMARY: структурное принуждение политики «независимый вариант → сверка по смыслу».
+# ==========================================
 """ripeness_gate.py — структурное принуждение политики «независимый вариант → сверка по смыслу».
 
 Закрывает два инварианта методички independent-first (variants/independent-first-reconcile-2026-06-25):

@@ -23,8 +23,54 @@ import sys
 import subprocess
 from _ioutil import configure_output
 from _cli import help_guard
+from _canon import parse_front_matter
 
 configure_output()
+
+# Gate 1 (D-014, волна 2 C7-a, решение Stefan Q-W2-2a): у execute-драйвера должно быть
+# машинно-проверяемое поле `execute_decision: D-0XX`, указывающее на ACCEPTED-решение.
+def check_execute_decision(driver_id, root=None):
+    """Gate 1: execute-сценарий требует accepted-решения (D-014, гейт «б»).
+
+    Ищем манифест драйвера по front-matter id (fallback — имя файла), читаем поле
+    `execute_decision` и проверяем, что decisions/<id>.md существует и status: accepted.
+    Возвращает (ok, msg). Для драйверов НЕ в mode: execute гейт неприменим (ok).
+    """
+    base = root or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    drivers_dir = os.path.join(base, "drivers")
+    fm = None
+    cand = os.path.join(drivers_dir, "%s.md" % driver_id)
+    paths = [cand] if os.path.exists(cand) else []
+    if not paths and os.path.isdir(drivers_dir):
+        paths = [os.path.join(drivers_dir, fn) for fn in sorted(os.listdir(drivers_dir))
+                 if fn.endswith(".md") and not fn.startswith("_")]
+    for p in paths:
+        try:
+            with open(p, encoding="utf-8", errors="replace") as f:
+                cur = parse_front_matter(f.read())
+        except OSError:
+            continue
+        if cur.get("type") == "driver" and (cur.get("id") == driver_id or p == cand):
+            fm = cur
+            break
+    if fm is None:
+        return False, "Gate 1: driver manifest for %r not found in drivers/" % driver_id
+    if fm.get("mode") != "execute":
+        return True, "Gate 1: driver %r is not mode: execute — gate not applicable" % driver_id
+    dec = (fm.get("execute_decision") or "").strip()
+    if not dec:
+        return False, ("Gate 1: mode: execute without execute_decision field is forbidden "
+                       "(D-014: accepted decision required per scenario)")
+    dec_path = os.path.join(base, "decisions", "%s.md" % dec)
+    try:
+        with open(dec_path, encoding="utf-8", errors="replace") as f:
+            status = (parse_front_matter(f.read()).get("status") or "").strip().lower()
+    except OSError:
+        return False, "Gate 1: execute_decision %s points to missing decisions/%s.md" % (dec, dec)
+    if status != "accepted":
+        return False, ("Gate 1: execute_decision %s has status %r — accepted required (D-014)"
+                       % (dec, status))
+    return True, "Gate 1: execute_decision %s is accepted" % dec
 
 # Gate 9: anti-fake-sandbox
 def probe_sandbox_backend(sandbox_type):
@@ -302,8 +348,14 @@ def main():
         if not os.path.exists(audit_script):
             print("ERROR: Audit logger not found (Gate 7/8)")
             return 1
-            
-        # 4. P6: Human Gate
+
+        # 4. Gate 1 (D-014, C7-a): execute требует машинной ссылки на accepted-решение
+        ok_dec, msg_dec = check_execute_decision(driver_id)
+        if not ok_dec:
+            print(f"ERROR: {msg_dec}")
+            return 1
+
+        # 5. P6: Human Gate
         import execute_human_gate
         if execute_human_gate.check_approval(driver_id) != 0:
             return 1

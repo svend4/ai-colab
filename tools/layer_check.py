@@ -30,12 +30,13 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 from _ioutil import configure_output
 from _cli import help_guard
-from _canon import parse_front_matter
+from _canon import parse_front_matter, PYRAMID_L3_DIRS
 
 configure_output()
 
 LAYER_BY_DIR = {"core": "L1", "portals": "L2", "sandbox": "L4"}
-L3_DIRS = {"tasks", "decisions", "questions", "streams", "topics", "collab"}
+# Состав L3 — из единого реестра _canon.PYRAMID_L3_DIRS (дубль с promote устранён, P9-a).
+L3_DIRS = set(PYRAMID_L3_DIRS)
 
 
 def layer_of(rel):

@@ -26,7 +26,7 @@ python tools/git_reconcile.py --install --apply
 - exit 0 = чисто слито; exit 1 = остались конфликты, но файл уже field-merged (не строчная каша).
 
 Проверено реальным `git merge`: две ветки добавили в `related` разные элементы (C и D) → результат
-`[A, B, C, D]` (оба выжили). Тест: `tools/test_git_reconcile.py`.
+`[A, B, C, D]` (оба выжили). Тест: `tools/tests/test_git_reconcile.py`.
 
 ## Границы
 - Драйвер — для **front-matter markdown канона** (T-*/D-*/Q-*/темы). Сгенерированные файлы (`index.json`,

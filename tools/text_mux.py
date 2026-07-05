@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.text_mux
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: lanes-view: многоагентный cell-store (text_cell.v1) + консенсус/конфликт + кадры + presence.
+# ==========================================
 """text_mux.py — lanes-view: многоагентный cell-store (text_cell.v1) + консенсус/конфликт + кадры + presence.
 
 Реализует «lanes»-режим единого спека (topics/textscene-unified-spec-2026-06-26): много акторов (люди+агенты)

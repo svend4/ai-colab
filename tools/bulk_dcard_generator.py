@@ -14,6 +14,7 @@
 import os
 import re
 from _cli import help_guard
+from _ioutil import safe_write
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -54,9 +55,11 @@ def process_file(filepath, basename):
     
     lines.insert(insert_idx, dcard_text.strip())
     
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(lines))
-        
+    # C33: рукописный исходник tools/*.py переписывается ЦЕЛИКОМ — safe_write даёт
+    # гвард потери данных (вставка D-Card только ДОБАВЛЯЕТ строки, законного сжатия
+    # тут не бывает — срабатывание гварда означало бы баг) плюс атомарность tmp+replace.
+    safe_write(filepath, '\n'.join(lines))
+
     return True
 
 def main():

@@ -133,6 +133,8 @@ def _dumps(obj):
     return json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True)
 
 def snapshot():
+    # direct-write-ok: генерат system-capabilities.json («не править руками») —
+    # переписывается целиком по определению, гвард потери тут вреден (C33)
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         f.write(_dumps(build()) + "\n")
     print("SNAPSHOT: system-capabilities.json — драйверов %d (ready %d)"

@@ -6,6 +6,11 @@
 #     git config core.hooksPath tools/githooks
 # Разовый пропуск:
 #     git commit --no-verify
+#
+# Состав шагов (волна 2, аудит 2026-07-02 — единый заход C1-b/C15-d/C44/P8-b/P10-b):
+#   БЛОКИРУЮТ: validate ERROR · generate --check (рабочее дерево) · staged_check (staged-снимок, C1-b)
+#              · gap_scan drift · bulk_guard --hook (ТОЛЬКО при ратифицированном D-026, C44)
+#   WARN (не блокируют): gap_scan orphans (C15-d) · gap_scan dcard (P8-b)
 
 # Найти РАБОЧИЙ Python 3.
 # На Windows 'python3' часто — нерабочий App-Execution-Alias (заглушка Microsoft Store):
@@ -39,6 +44,12 @@ fi
 if [ -z "$PY" ]; then
   echo "pre-commit: рабочий Python 3 не найден — валидация пропущена."
   echo "Установите Python 3 или добавьте в PATH. Проверка отключена, но НЕ рекомендуется."
+  # C44-a (решение Stefan Q-W2-13): fail-open остаётся, но факт «тихого» коммита без
+  # валидации фиксируется в logs/friction.jsonl (чистый sh, Python недоступен) — чтобы
+  # такие коммиты были видны постфактум (friction.py log их посчитает).
+  mkdir -p logs 2>/dev/null
+  printf '{"ts": "%s", "fid": "precommit-skip", "agent": "pre-commit", "where": "tools/githooks/pre-commit", "result": "python not found - validation skipped (fail-open)"}\n' \
+    "$(date +%Y-%m-%dT%H:%M:%S)" >> logs/friction.jsonl 2>/dev/null
   exit 0
 fi
 
@@ -56,6 +67,17 @@ fi
   exit 1
 }
 
+# Гейт staged-снимка (C1-b, корень находки C1: частичный стейджинг проходил проверку рабочего
+# дерева). Блокируем ТОЛЬКО на реальной находке (rc=1): канон-источники staged, а регенерированная
+# навигация не застейджена. rc=2 (git недоступен) и прочие rc НЕ блокируют (fail-open).
+"$PY" tools/staged_check.py
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit: staged-снимок несогласован — регенерированная навигация не добавлена в коммит."
+  echo "git add регенераты (см. выше) или 'git commit --no-verify' (исключение D-023 foreign-индекс)."
+  exit 1
+fi
+
 # Гейт «тихого дрейфа деривата» (formula (f), D-032): мёртвый литерал каталога (напр. "темы"→"topics"),
 # из-за которого счётчик/индекс молча читает несуществующий путь и возвращает 0. Блокируем ТОЛЬКО на
 # реальной находке (rc=1); ошибка/отсутствие инструмента (любой иной rc) НЕ блокирует (fail-open).
@@ -65,6 +87,29 @@ if [ "$?" -eq 1 ]; then
   echo "pre-commit: gap_scan нашёл тихий дрейф деривата (мёртвый литерал каталога). Коммит отклонён."
   echo "Почини литерал (см. вывод выше) или 'git commit --no-verify', если уверен."
   exit 1
+fi
+
+# bulk_guard (C44, решение Stefan Q-W2-13c): условная строгость по МАШИННОМУ статусу D-026.
+# Пока D-026 proposed — инструмент сам печатает WARN и возвращает 0 (советник); после ратификации
+# (status: accepted) нарушение «массовое стирание без страховки» блокирует коммит (rc=1).
+"$PY" tools/bulk_guard.py --hook
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit: bulk_guard — массовое стирание без страховки при ратифицированном D-026. Коммит отклонён."
+  echo "Сначала страховка: git tag backup-<тема>-<дата> HEAD (+ внешняя копия), затем повтори."
+  exit 1
+fi
+
+# WARN-шаги (НЕ блокируют): новые сироты (C15-d) и инструменты без [FILE ID CARD] (P8-b).
+# Вывод детекторов скрываем, печатаем только короткое предупреждение — детали по команде.
+"$PY" tools/gap_scan.py orphans --strict >/dev/null 2>&1
+if [ "$?" -eq 1 ]; then
+  echo "pre-commit WARN: появились orphan-инструменты (не блокирует). Детали: python tools/gap_scan.py orphans"
+fi
+
+"$PY" tools/gap_scan.py dcard --strict >/dev/null 2>&1
+if [ "$?" -eq 1 ]; then
+  echo "pre-commit WARN: tools/*.py без [FILE ID CARD] (не блокирует). Детали: python tools/gap_scan.py dcard"
 fi
 
 exit 0

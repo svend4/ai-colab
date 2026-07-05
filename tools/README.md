@@ -2,7 +2,12 @@
 
 Скрипты, которые делают правила папки технически проверяемыми, а не только договорными.
 
-## Состав
+## Ключевые инструменты
+
+> Это НЕ полный список (в `tools/` заметно больше скриптов, чем описано здесь) — только ключевые
+> точки входа. Полный автосписок всех CLI-инструментов с классификацией:
+> `python tools/cli_inventory.py` (машинный вид: `--json`). Автогенерируемый полный индекс в этом
+> README — отдельная задача (см. tasks, C3-a волны 2).
 
 - `validate.py` — валидатор канона. Проверяет инварианты между `DECISIONS.md`, `QUESTIONS.md`, `TASKS.md`, `board.md`, `STATUS.md`, темами и draft schema драйверов из `drivers/SCHEMA.md`. Заменяет ручную «перепроверку».
 - `generate.py` — генератор навигации и машинного индекса: таблицы тем/задач/вопросов/решений собираются из front-matter, `index.json` собирается из того же канона. Режим `--check` для hook/CI.
@@ -22,7 +27,148 @@
 - `independent_first.py` — guard перед repo-search/comparison: проверяет, что stream уже содержит собственные секции 01-03, алгоритм и псевдокод.
 - `report_diff.py` — механическое сравнение двух `knowledge.py report` Markdown-отчётов: документы, типы, hit-count.
 - `text_extract.py` — универсальное read-only извлечение текста для knowledge/portals: `.md`, `.txt`, `.html`, `.docx` на stdlib, с redaction через `files`/canonical redaction. PDF оставлен отдельным dependency decision.
-- `githooks/pre-commit` — перед коммитом запускает `validate.py` и `generate.py --check`.
+- `repo_hygiene.py` — гигиена рабочего git-дерева (комплемент `sanation.py`): классифицирует untracked-cruft (scratch/canon-md/stray-root), staged-риски и hygiene-score; read-only, единственное авто-действие — `--fix-gitignore` (идемпотентно). Точка входа: `python tools/repo_hygiene.py [--json | --fix-gitignore]`.
+- `workflow_recover.py` — восстановление партиал-результатов фонового workflow из `journal.jsonl` (завершённые агенты durable даже в мёртвом workflow). Точка входа: `python tools/workflow_recover.py --latest` или `python tools/workflow_recover.py <journal.jsonl> --dump <out-dir>`.
+- `portal.py` и `portals.py` — РАЗНЫЕ инструменты с похожими именами (не дубль):
+  - `portal.py` — тематические порталы по D-016 (плагин-модель данных: manifest `portals/<name>/portal.md` + корпус `data/portals/<name>/`); команды `list/new/build/report`;
+  - `portals.py` — средний слой охвата независимого конвейера (И-8): кластеризация вариантов по содержанию (Jaccard) в «порталы-кластеры» перед глобальной сверкой; команды `--board/--thr/--json` (см. `docs/independent-first-pipeline.md`).
+- `githooks/pre-commit` — перед коммитом запускает `validate.py`, `generate.py --check`, `staged_check.py` (согласованность staged-снимка), `gap_scan.py drift` и `bulk_guard.py --hook`; плюс WARN-шаги `gap_scan orphans`/`gap_scan dcard`.
+
+## Полный индекс инструментов (генерируется, T-268)
+
+Автогенерируемый полный список всех не-тестовых `tools/*.py` (аудит C3-a: раньше README
+описывал 31 из ~119 инструментов, подаваясь как «описание всех»). Кураторский раздел
+«Ключевые инструменты» выше остаётся ручным; этот индекс — машинный и не может устареть:
+несвежесть ловится `python tools/generate.py --check` (pre-commit hook).
+
+<!-- GEN:tools-index START — генерируется tools/generate.py, не править вручную -->
+Всего не-тестовых инструментов: 122. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
+
+| Инструмент | Назначение |
+|---|---|
+| `_canon.py` | Единые источники канона: parser front-matter, реестр CANON_DIRS, ростер агентов, слои L3. |
+| `_claims.py` | Общие claim-примитивы queues/claimed: read/fresh/atomic-create/atomic-takeover/release-с-fencing. |
+| `_cli.py` | Общий CLI helper для help_guard и stderr error exits. |
+| `_ioutil.py` | Единый helper UTF-8 вывода для CLI-инструментов репозитория. |
+| `action_tracker.py` | Утилита для гранулярного трекинга состояния отчетов (Traceability Matrix). |
+| `adoption.py` | adoption.py — статические метрики ПРИМЕНЕНИЯ (повторяемый блок само-мониторинга). |
+| `advice.py` | Advice activator (TBD) - show existing repo advice that is applicable now. |
+| `agent_queue.py` | Очередь 2.0 — атомарный рабочий цикл задач для многих агентов (Этап D из scaling-design). |
+| `assurance.py` | Read-only апекс-дашборд: evidence, актуальность, coverage и поток инструкций к вершине. |
+| `autolink.py` | ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic). |
+| `autonomy_guard.py` | детектор АВТОНОМНЫХ `accept` без подтверждения человека (B2 / дисциплина D-033 §0). |
+| `backlog_rescan.py` | Workflow backlog rescan tool. |
+| `blocks.py` | blocks.py — сборные БЛОКИ (кластеры проверенных примитивов) вместо россыпи скриптов. |
+| `bulk_dcard_generator.py` | Автоматически добавляет D-Cards во все python-скрипты в tools/, у которых их нет. |
+| `bulk_guard.py` | детектор массового стирания БЕЗ страховки (enforcement D-026). |
+| `butterfly_alchemist.py` | Creates a synthesis prompt from cauldron graph atoms; dry-run by default. |
+| `butterfly_graph_builder.py` | Builds a cauldron atom graph from markdown reports; dry-run by default. |
+| `canon_index.py` | SQLite/FTS5 индекс канона (workbench-компонент 5: быстрая память/retrieval). |
+| `capabilities.py` | Генерирует system-capabilities.json — машинный манифест возможностей верхнего слоя. |
+| `card.py` | card.py — универсальная КАРТОЧКА-визитка: фрактальная единица коммуникации (средний слой). |
+| `cli_inventory.py` | Read-only inventory of tools/*.py CLI help/json safety patterns. |
+| `code_activation.py` | Read-only activation plan for code artifacts; no execute. |
+| `code_pyramid.py` | code_pyramid.py — линт «3 слоёв» внутри .py (ответ на §3.3 вопросника триадности). |
+| `cohort.py` | cohort (вершина пирамиды, форк-вариант Claude по D-017) — «одна кнопка» для ПАРАЛЛЕЛЬНОЙ |
+| `command_index.py` | command_index.py — индекс команд всех инструментов (metadata-indexes lane A; нахождение команд). |
+| `commit_lock.py` | Commit-lock (Уровень 0 политики коммитов, topics/commit-policy-streams-2026-06-21.md). |
+| `commit_queue.py` | справедливая ОЧЕРЕДЬ коммитов + темпоральное предсохранение + богатая обратная связь. |
+| `consensus_by_meaning.py` | консенсус ВЗВЕШЕН ПО СВИДЕТЕЛЯМ, не по счёту (замена doc_consensus-счётчика). |
+| `conveyor.py` | conveyor — НАДЗИРАТЕЛЬ конвейера воркфлоу: следит, чтобы он не осушался, и за активностью оркестратора. |
+| `crdt_merge.py` | 3-way field-level мёрж канон-файлов (вместо git-строчных конфликтов на хот-файлах). |
+| `dcard_indexer.py` | Генератор индексов D-Card. Сканирует файлы проекта, извлекает визитки (D-Cards) и строит карту. |
+| `decay.py` | ось ВРЕМЕНИ: температура атомов по git-возрасту (DIV-06). |
+| `decision_menu.py` | decision_menu.py — рендерер «меню решений» (средний слой пирамиды подачи людям). |
+| `decision_propagation.py` | decision_propagation.py — детектор «решение принято, но не дошло до потребителей». |
+| `decisions_usage_scan.py` | Read-only счётчик использования решений D-XXX по репозиторию (актив/умеренно/мёртвый-груз). |
+| `demo_bridge.py` | Демо «среднего слоя» AI-OS Bridge (T-078 follow-up) — один запуск показывает, что |
+| `dir_health.py` | dir_health.py — health-gate каталога (C-10 консенсус) — пороги структуры как код. |
+| `dispatch.py` | Диспетчер задач по DAG зависимостей (Этап D из scaling-design). |
+| `divergence_detail.py` | «детализация ПЕРЕД консенсусом» как тула (P-3, инвариант 4/5 линз). |
+| `doc_consensus.py` | doc_consensus (Q-017, слияние документации агентов) — находит ОБЩИЕ пункты и РАЗНОГЛАСИЯ между доками. |
+| `doc_synthesis.py` | Document synthesis intake (D-017/D-018 friendly). |
+| `draft_code.py` | No-execute manager for agent draft-code packets in sandbox/drafts. |
+| `drift_check.py` | Проверяет дрейф между документацией, generated-файлами, capabilities, drivers и validate. |
+| `drivers_catalog.py` | Генератор каталога драйверов (T-030). |
+| `edges.py` | типизированный граф связей (DIV-07/08): первоклассные направленные рёбра над атомами. |
+| `enforce_metadata.py` | Проверяет наличие и валидность D-Cards во всех файлах tools/. |
+| `execute_audit.py` | Audit & Rollback Logger для execute-sandbox (Gates 7/8). |
+| `execute_human_gate.py` | Механизм человеко-подтверждения для execute-sandbox (Gate 10). |
+| `execute_preflight.py` | Preflight-чекер для execute-sandbox (Gates 4/5, 6, 9). |
+| `flow.py` | Git-flow для агентов (Этап F из scaling-design): ветка-на-агента + merge через гейт. |
+| `fold.py` | fold-not-delete для grow-only сторов (контр-инвариант C-II формулы defect-class-formula). |
+| `folder_index.py` | folder_index.py — папка-индекс (навигация-через-метаданные, НЕ шардинг). |
+| `friction.py` | Диагностирует повторяющиеся проблемы репозитория и печатает рецепты F-XXX. |
+| `gap_scan.py` | Детектор разрывов «замысел ↔ реальность»: orphan-код, тихий дрейф деривата, висячие ссылки. |
+| `generate.py` | Генерирует STATUS.md, board.md, TASKS.md, QUESTIONS.md, DECISIONS.md и index.json из источников. |
+| `git_reconcile.py` | git merge-driver: при коллизии канон-файла зовёт crdt_merge (field-level 3-way). |
+| `header.py` | header.py — визитка-шапка файла (C-07: консенсус 2+ агентов) — извлечь/линтить/покрытие. |
+| `heading_check.py` | heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация. |
+| `immune.py` | иммунная система канона (negative-selection детектор аномалий). |
+| `independence_measure.py` | несущая стена №2: измерить независимость вариантов, а не объявить. |
+| `independent_first.py` | Checks that an independent-first stream has real own sections before repo-search/comparison. |
+| `independent_pipeline.py` | Оркестратор конвейера независимого консенсуса (D-030) — соединяет 7 тулов оракула в один прогон. |
+| `info_draft.py` | No-canon manager for documentation and information draft packets. |
+| `info_verify.py` | verify-контракт информационного рефакторинга (тело+история инвариантны ∧ верхушка не хуже). |
+| `instructions.py` | Instruction assurance preflight (T-154). |
+| `janitor.py` | Дворник runtime-артефактов: dry-run отчёт ротации (audit/reflection/tmp-work/dialog); удаление только явным --delete. |
+| `knowledge.py` | Knowledge workflow (L6) — ingest → query → report на локальном корпусе. |
+| `layer_check.py` | layer_check.py — контракт пирамиды L1-L4 (lane A layered-pyramid) — folder/layer checks. |
+| `maturity.py` | зрелость атома 0-1000‰ (DIV-21): СИНТЕЗ трёх осей в один балл. |
+| `merge_gate.py` | Merge-gate orchestrator — «безопасно ли вливать эту работу в mainline?» green(0)/red(1). |
+| `metrics.py` | Метрики / наблюдаемость канона (пункт 8 из scaling-design). |
+| `mutmeta.py` | мета-тест ДЕТЕКТОРА: ловит со-дефектные тесты мутацией (контр-инвариант C-III формулы). |
+| `next_id.py` | Атомарно выдаёт Q/T/D id и защищает заполнение placeholder через reservation_token. |
+| `onboard.py` | Onboard (C3, консенсус Claude+Codex) — одна команда входа вместо чтения 10 файлов. |
+| `oracle_quorum.py` | кворум независимых судей вместо ОДНОГО (смягчение проблемы оракула, OQ-1/OQ-2). |
+| `ownership.py` | ownership (T-153, синтез двух подсистем) — общий классификатор «чей dirty-файл». |
+| `permissions.py` | Проверка прав агента на изменённые файлы (роли, Этап E из scaling-design). |
+| `pipeline.py` | Конвейер задач: атомарный claim, done/fail, heartbeat, snapshot и общий котёл агентов. |
+| `portability_check.py` | Acceptance-тест переносимости: materialize git-tracked HEAD и проверить validate/generate без host paths. |
+| `portal.py` | Тематические порталы (D-016) — лёгкая плагин-модель на файлах поверх универсального ядра. |
+| `portals.py` | средний слой охвата (И-8, золотая середина): варианты → кластеры/порталы по ТЕМЕ. |
+| `promote.py` | Promotion gate пирамиды рабочих областей (ответ на open-question 5 |
+| `python_analyzer.py` | Read-only semantic AST analyzer for Python code. |
+| `question_tree.py` | Read-only extractor for numbered question trees: questions, answers, statuses, next-action hints. |
+| `queue.py` | Совместимостный алиас на agent_queue.py (историческое имя queue.py из доков, T-009). |
+| `race_test.py` | Тест атомарности claim под реальной гонкой (предложение Mavis из dogfood-прогона). |
+| `reconcile_state.py` | State reconciliation layer (T-066 → реализация). |
+| `red_team_gate.py` | выходной гейт: консенсус в канон, только если ПЕРЕЖИЛ опровержение (не голоса). |
+| `reflect_ingest.py` | мозг авто-саморефлексии: находки blocks → severity + дедуп-ledger + рецидив. |
+| `repo_hygiene.py` | гигиена РАБОЧЕГО ДЕРЕВА (комплемент sanation.py, что лечит верхушку канона). |
+| `repo_search.py` | repo_search (продукт) — ранжированный полнотекстовый поиск по ДОКУМЕНТАЦИИ репозитория. |
+| `report_diff.py` | Report diff (T-127) — compare two Markdown knowledge reports. |
+| `result_intake.py` | result_intake — read-only classifier for landed/outbox workflow outputs. |
+| `retrieval_bench.py` | бенчмарк retrieval по типам запросов (direct/distant/JOIN): наш ГРАФ vs FTS. |
+| `ripeness_gate.py` | структурное принуждение политики «независимый вариант → сверка по смыслу». |
+| `risk_gate.py` | Риск-гейтинг / многоуровневая автономия (Этап E, пункт 6 из scaling-design). |
+| `safe_write.py` | CLI-обёртка над _ioutil.safe_write — запись файла с предохранителем от массовой потери строк. |
+| `sanation.py` | омоложение ВЕРХУШКИ канона (информационный рефакторинг, не классический). |
+| `sandbox.py` | External-source read-only intake and inventory reporting. |
+| `sandbox_intake_chain.py` | Unified read-only sandbox intake chain result for external sources and agent drafts. |
+| `sandbox_intake_demo.py` | Sandbox intake DEMO — end-to-end S1->S3->S7 over `data/fixtures` (T-020 support). |
+| `sandbox_link_checker.py` | Проверка локальных Markdown ссылок во входящей песочнице (read-only) |
+| `sandbox_runner.py` | Ядро песочницы. Инкапсулирует вызовы docker, применяет лимиты. |
+| `sandbox_schema_validator.py` | Read-only JSON and manifest schema validator for sandbox intake folders. |
+| `seq_merge.py` | 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib. |
+| `staged_check.py` | Проверка staged-снимка для pre-commit: канон-источники staged без регенерированной навигации → блок. |
+| `stream.py` | Stream-пакеты (Уровень 2, *tooling*-слой к T-136) — жизненный цикл форк-пакетов. |
+| `synthesis_helper.py` | Инструмент "Котел". Обобщает форк-варианты документов в единый скелет с выделением консенсуса и стримов. |
+| `text_brain.py` | proposal-only brain-adapter для textscene-канвы (трилогия scene→mux→BRAIN, спец §5). |
+| `text_extract.py` | Generic text extract (T-133) — read-only stdlib extraction for core/portals. |
+| `text_mux.py` | lanes-view: многоагентный cell-store (text_cell.v1) + консенсус/конфликт + кадры + presence. |
+| `text_scene.py` | abstraction-view 2D-карточек канона с прогрессивным раскрытием (textscene MVP, Стадия 2). |
+| `thread.py` | File-native thread objects for the headless workbench. |
+| `thread_runner.py` | terminal-thread runner (workbench этап 2): тред-файл → контекст → модель → append. |
+| `top.py` | Верхняя командная панель для людей и агентов: health, status, cycle, advice, conveyor. |
+| `two_track.py` | two_track.py — двухтрековая классификация работы для котла/конвейера. |
+| `validate.py` | Главный валидатор (T-004/T-070/T-164). Проверяет целостность ссылок, статус файлов, сироты, драйверы. |
+| `variants.py` | Variants (D-018) — READ-ONLY реестр/дискавери параллельных форк-вариантов по всему репо. |
+| `view.py` | релевантный СРЕЗ канона под задачу (подача контекста агенту), над существующими рёбрами. |
+| `view_html.py` | компиляция среза канона в самодостаточный <details>-каскад HTML (progressive disclosure). |
+| `workflow_recover.py` | восстановление ПАРТИАЛ-результатов фонового workflow (durability слоя оркестрации). |
+| `worktree.py` | worktree (Уровень-1 политики коммитов, T-136 — принят Stefan 2026-06-21) — git-worktree на агента. |
+<!-- GEN:tools-index END -->
 
 ## Как запускать
 
@@ -33,6 +179,31 @@ python tools/validate.py
 ```
 
 Коды выхода: `0` — ошибок нет; `1` — есть ERROR. WARN не валит сборку.
+
+## Тестовый контур (`tools/tests/`, двухступенчатый канон)
+
+Все тесты инструментов живут в `tools/tests/` (C14, аудит 2026-07-02: шардинг `tools/`,
+снятие dir_health FAIL 244>200). Канонических прогона **два** (C13-c, решение Q-W2-3):
+
+```bash
+py -3 -m pytest tools/tests/     # 1. быстрый: pytest-collectable подмножество
+python tools/test_all.py         # 2. полный: все самозапускающиеся __main__-скрипты
+                                 #    + агрегация exit-кодов (хотя бы один не-ноль → не-ноль)
+```
+
+«Зелёный pytest» ≠ «весь набор прогнан»: pytest собирает лишь часть файлов (~15%),
+остальные — самозапускающиеся stdlib-скрипты, их гоняет `test_all.py`
+(`--list` — план прогона; `--filter SUB` — подмножество; `--with-pytest` — обе ступени
+одним вызовом; `--json` — машиночитаемый отчёт).
+
+Конвенции тестов `tools/tests/`:
+
+- **standalone-запуск** (`python tools/tests/test_x.py`) работает благодаря бутстрап-блоку
+  в начале файла (`_TOOLS_DIR` → вставка `tools/` в `sys.path` до локальных импортов);
+- **pytest-запуск** покрыт `tools/tests/conftest.py`: sys.path-бутстрап (tools/, drivers/)
+  + fixture `root` (tmp-каталог + модульная `make_drivers`/`make_canon`, C12-a);
+- **новые тесты** писать pytest-collectable (module-level `test_*`, fixtures);
+  старые скрипты мигрируют на pytest органически при касании (C13-c).
 
 ## План (по консенсусу infrastructure-review)
 

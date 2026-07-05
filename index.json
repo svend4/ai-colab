@@ -3472,6 +3472,94 @@
       "depends_on": "[D-017, D-018, D-021, D-022]",
       "topic": "",
       "next": "Реализовать stdlib-only `tools/thread.py init/status/add-message` и тесты"
+    },
+    {
+      "id": "T-265",
+      "title": "Разобрать queues/inbox/2026-06-21-driver-acceptance-output.txt (залежался с 21.06)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Проверить, что вывод покрыт T-076/docs, и переместить файл из inbox с пометкой «обработано»"
+    },
+    {
+      "id": "T-266",
+      "title": "Разобрать queues/inbox/2026-06-21-powershell-output-paste.md (пустой paste-буфер с 21.06)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Решить судьбу пустого буфера — переместить с пометкой «неактуально» или узаконить как шаблон"
+    },
+    {
+      "id": "T-267",
+      "title": "Триаж queues/inbox/documentoutput.md — 66КБ дамп с чужими GEN-маркерами",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Триаж дампа; судьбу перемещения решает исполнитель задачи/человек (Q-W2-7)"
+    },
+    {
+      "id": "T-268",
+      "title": "Автогенерируемый полный индекс инструментов в tools/README.md (C3-a)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "—"
+    },
+    {
+      "id": "T-269",
+      "title": "Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком)",
+      "status": "todo",
+      "owner": "stefan",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Stefan проходит чек-лист закрытия инцидента (см. Scope) и фиксирует закрытие в топике"
+    },
+    {
+      "id": "T-270",
+      "title": "Разбор и ратификация очереди proposed-решений (ратификация — за человеком)",
+      "status": "todo",
+      "owner": "stefan",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Stefan проходит по списку proposed-решений и по каждому решает accept/reject/доработать"
+    },
+    {
+      "id": "T-271",
+      "title": "Приёмка Q-023 (матрица полномочий) и связанного D-027 (решение — за человеком)",
+      "status": "todo",
+      "owner": "stefan",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Stefan отвечает на Q-023 и решает судьбу D-027; governance-блок Q-W2-2/9/13/18 удобно закрыть тем же заходом"
+    },
+    {
+      "id": "T-272",
+      "title": "C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания",
+      "status": "todo",
+      "owner": "any",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist"
     }
   ],
   "questions": [
@@ -3833,6 +3921,13 @@
       "status": "proposed",
       "date": "2026-06-25",
       "file": "decisions/D-028.md"
+    },
+    {
+      "id": "D-029",
+      "title": "Consensus-by-meaning — merge-инварианты сверки вариантов (по смыслу, не по счёту)",
+      "status": "proposed",
+      "date": "2026-07-05",
+      "file": "decisions/D-029.md"
     },
     {
       "id": "D-030",

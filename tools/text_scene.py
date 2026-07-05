@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.text_scene
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: abstraction-view 2D-карточек канона с прогрессивным раскрытием (textscene MVP, Стадия 2).
+# ==========================================
 """text_scene.py — abstraction-view 2D-карточек канона с прогрессивным раскрытием (textscene MVP, Стадия 2).
 
 Реализует «abstraction»-режим единого спека (topics/textscene-unified-spec-2026-06-26): берёт связный срез

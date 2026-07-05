@@ -29,7 +29,7 @@ python tools/friction.py status     # точки трения (заблокир�
 python tools/drift_check.py         # проверка рассинхронизации
 python tools/onboard.py <agent>     # вводная для агента
 python tools/adoption.py check      # проверка внедрения новшеств (если применимо)
-python tools/blocks.py scan         # проверка D-016 (блочные артефакты)
+python tools/blocks.py pyramid      # здоровье пирамиды + инвентарь порталов D-016 (assurance/promote/portal)
 ```
 
 ## Шаг 3. Как взять задачу (для агентов)
@@ -83,4 +83,4 @@ python tools/commit_lock.py release <agent>
 
 - Задайте вопрос в `dialog.md` или `questions/`.
 - Позовите агента: `@Claude`, `@Codex`, `@Mavis`, `@Novax`.
-- Прочтите `tools/README.md` — описание всех инструментов.
+- Прочтите `tools/README.md` — описание ключевых инструментов (полный автосписок: `python tools/cli_inventory.py`).

@@ -22,7 +22,11 @@ from _cli import help_guard
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 
-EXCLUDE_DIRS = ['.git', '__pycache__', 'venv', '.gemini', '.agents', 'queues', 'logs']
+# tmp-work/.claude — gitignored runtime-копии (mutmeta-песочницы, чужие worktrees):
+# их D-Card — дубликаты канона со СТАРЫМИ путями; в каноническом индексе они дают
+# шум (87 висячих ссылок G5 после переноса тестов C14) и раздувают dcard_index.md.
+EXCLUDE_DIRS = ['.git', '__pycache__', 'venv', '.gemini', '.agents', 'queues', 'logs',
+                'tmp-work', '.claude', 'node_modules', '.pytest_cache', '.idea']
 
 DCARD_REGEX = re.compile(r'# \[FILE ID CARD\]\n(.*?)(?:# ==========================================)', re.DOTALL)
 
@@ -93,7 +97,7 @@ def write_markdown_index(cards):
     # Sort by domain or type if available
     cards.sort(key=lambda x: (x.get('domain', ''), x.get('id', '')))
     
-    with open(out_path, 'w', encoding='utf-8') as f:
+    with open(out_path, 'w', encoding='utf-8', newline="\n") as f:
         f.write("# D-Card Global Index (Control Plane)\n\n")
         f.write("> Автосгенерированный реестр файлов с метаданными (D-Cards).\n\n")
         

@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.info_verify
+# TYPE: active-script
+# DOMAIN: core.validation
+# DEPTH_LEVEL: 1
+# SUMMARY: verify-контракт информационного рефакторинга (тело+история инвариантны ∧ верхушка не хуже).
+# ==========================================
 """info_verify.py — verify-контракт информационного рефакторинга (тело+история инвариантны ∧ верхушка не хуже).
 
 Доказывает санацию как ЗЕЛЁНЫЕ ТЕСТЫ доказывают рефакторинг кода: не намерение, а assert (апофатика —
@@ -24,7 +32,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
-CANON_DIRS = ["tasks", "decisions", "questions", "topics", "docs", "drivers", "streams", "portals", "core"]
+# Единый реестр каталогов канона — из _canon (P9-a, волна 2); info_verify исторически
+# обходит РАСШИРЕННЫЙ состав (ядро + drivers/streams/portals/core) — поведение сохранено.
+from _canon import CANON_DIRS_EXTENDED as CANON_DIRS, require_canon_dirs
 
 
 def _body(text):
@@ -38,6 +48,8 @@ def _body(text):
 
 
 def _canon_files():
+    # Контракт P9: несуществующий канон-каталог → FileNotFoundError, а не тихий недосчёт тел.
+    require_canon_dirs(ROOT, CANON_DIRS)
     out = []
     for d in CANON_DIRS:
         out += glob.glob(os.path.join(ROOT, d, "**", "*.md"), recursive=True)

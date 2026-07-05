@@ -4,17 +4,33 @@
 
 ## Текущий фокус
 
-- **Мультиагентная платформа и конвейер работают стабильно.** 205 задач, 24 решения, 41 тема — канон стабильно держится без ERROR.
-- **AI-OS Bridge работает на L1+L2:** 10 модулей `drivers/` (включая repo-inventory, files, sqlite, gateway, codex-local), 5 `skills/` (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator), 2 `portals/` (bridge-knowledge, repo-inventory).
-- **Governance-слой усилен коллективными решениями:** D-013..D-024 (драйверы, котёл, политика параллельной работы). Внедрены новые инструменты QA (`tools/backlog_rescan.py`, `tools/drift_check.py` и др.).
+Счётчики канона (генерируются из источников — не могут устареть):
+
+<!-- GEN:counters START — генерируется tools/generate.py, не править вручную -->
+Задач: 272 · решений: 33 · вопросов: 23 · тем в навигации: 81 · драйверов: 9 (источник — front-matter канона, как в `index.json`; обновляется `python tools/generate.py`).
+<!-- GEN:counters END -->
+
+- **Конвейер разобран, канон зелёный:** все задачи закрыты (done), ready-пул и failed-очередь пусты, `tools/validate.py` — без ERROR. Счётчики выше теперь GEN-блок (аудит 2026-07-02, находка C17: ручные числа отстали на 59 задач / 8 решений / 40 тем).
+- **Реальный фокус — governance-разбор, human-gate (Stefan):**
+  1. закрытие инцидента «массовое урезание 147 outbox-отчётов» (`topics/incident-outbox-mass-strip-2026-06-24.md`);
+  2. разбор proposed-очереди решений — 7 нератифицированных: D-024, D-026, D-027, D-028, D-030, D-032, D-033;
+  3. приёмка Q-023 «матрица полномочий» (предложенный ответ: D-027 + `docs/agent-approval-matrix.md`).
+  На эти направления заводятся T-задачи в волне 2 аудита (пункт C29; формулировка фокуса согласована ответом Q-W2-6(a)).
+- **Аудит 2026-07-02:** волна 1 (27 находок) закоммичена и верифицирована; волна 2 выполняется по плану `reports/fix-wave2-plan-2026-07-02.md` (31 пункт в условных подвариантах + 19 вопросов котла; выбор подвариантов и ответы принял Stefan).
+- **AI-OS Bridge работает на L1+L2:** 9 модулей `drivers/` (codex-local, data, file-inventory, files, gateway, git-log, repo-runner, sqlite, workbench), 5 `skills/` (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator), 2 `portals/` (bridge-knowledge, repo-inventory).
+- **Governance-слой:** приняты D-013..D-018, D-020..D-023, D-025, D-031 (драйверы, котёл, политика параллельной работы, commit_queue); инструменты QA (`tools/backlog_rescan.py`, `tools/drift_check.py`, `tools/gap_scan.py` и др.).
 - **Top-layer orchestrator (depth-3 reduce):** пирамидальная структура продюсеры → бригады → дирижёры → оркестр.
 - **Conveyor:** массовая автоматизированная серийная интеграция через `pipeline.py` (сотни закрытых задач агентами).
-- **Текущий фокус / Следующий шаг:** устранение последних failed-маркеров (T-201), полировка документации (T-204, T-205) и стабилизация AI-OS Bridge.
 
 ## Что изменилось недавно
 
 | Дата | Кто | Изменение | Ссылка |
 |---|---|---|---|
+| 2026-07-02..05 | Claude/Stefan | **Аудит канона + волны исправлений:** независимый аудит (58 подтверждённых находок), волна 1 — 27 исправлений закоммичены и верифицированы; план волны 2 (31 пункт в условных подвариантах + 19 вопросов котла Q-W2-1..19), решения по подвариантам принял Stefan, волна 2 в работе (в т.ч. этот файл: GEN-счётчики + актуализация фокуса, C17). | `reports/audit-claude-2026-07-02.json`, `reports/fix-wave2-plan-2026-07-02.md` |
+| 2026-06-27 | рой агентов | retrieval_bench (бенчмарк retrieval) + кросс-опыление context-graph (статья TDS ↔ наш канон); закодированы 3 ghost-тула из доков (queue/safe_write/decisions_usage_scan). | `topics/context-graph-rag-cross-pollination-2026-06-26.md` |
+| 2026-06-26 | рой агентов | **D-031 принято** (commit_queue — стандартный путь коммита Уровня 0); предложены D-032 (gap_scan) и D-033 (дисциплина автономных действий); дуги textscene/TVCP/workbench; field-level merge канона (crdt_merge/git_reconcile/seq_merge); детекторы immune/mutmeta. | `decisions/D-031.md`, `decisions/D-032.md`, `decisions/D-033.md` |
+| 2026-06-25 | рой агентов | Дуга independent-consensus: D-030 (proposed, валидированное ядро) + оркестратор independent_pipeline; циклы информационного рефакторинга 1-3; открыт Q-023 (матрица полномочий, предложение D-027/D-028); bulk-санация outbox 06-19..24. | `decisions/D-030.md`, `questions/Q-023.md`, `topics/information-refactoring-cycle-3-2026-06-25.md` |
+| 2026-06-24 | рой агентов | **ИНЦИДЕНТ:** массовое урезание 147 outbox-отчётов (8643 строки) — открыта тема-разбор с предъявлением; «разбор полётов» консенсус/разногласия (C-01..C-18 / 21 DIV); реестр МЕТА-вопросов санации; предложено D-026. | `topics/incident-outbox-mass-strip-2026-06-24.md`, `topics/razbor-consensus-2026-06-24.md`, `topics/razbor-divergence-2026-06-24.md` |
 | 2026-06-23 | Antigravity | **Полировка и коммиты:** T-204 (обновлены quickstart-гайды с новыми утилитами pipeline, friction, top), T-200 (selective-add 145 файлов в 3 коммита, статус чист). | `docs/quickstart.md`, `docs/agent-quickstart.md`, `STATUS.md` |
 | 2026-06-23 | Mavis | **Перепроверка + подключение:** открыт T-176 (Q-017 semantic doc-consensus implementation), STATUS.md обновлён (фокус на мультиагентную платформу), bug-report `driversrepo-runnerfixture-report.json` (0-байт typo, висит 3 дня). | `tasks/T-176.md`, `STATUS.md`, `dialog.md`, `topics/infrastructure-review.md` |
 | 2026-06-23 | Codex/Stefan | **3-дневная волна:** Q-008 закрыт через D-013 (driver schema v1, вариант B моего предложения); D-018 (котёл + двойная перепроверка); D-022 (политика параллельной работы); top-layer orchestrator; ~50 новых тестов; drivers+skills+portals; ~30 новых коммитов. | `decisions/D-013.md`, `decisions/D-018.md`, `decisions/D-022.md`, `docs/parallel-work-policy.md` |

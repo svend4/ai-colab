@@ -14,12 +14,17 @@ queues/commit.lock
 LIVE.md
 PIPELINE.md
 logs/heartbeat.json
+# пер-агентные heartbeat volatile по D-022 (аудит C39, Q-W2-10a): каталог целиком
+logs/heartbeat/
 logs/pipeline.json
 logs/conveyor.json
 logs/adoption-baseline.json
 
 # generated artifacts (не коммитить)
 indexes/canon.db
+# смысловой граф котла — генерат butterfly_graph_builder.py (аудит C56, Q-W2-17a);
+# вывод из индекса (git rm --cached) — за оркестратором/человеком
+indexes/cauldron_graph.json
 views/*.html
 views/*.md
 

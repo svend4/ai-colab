@@ -28,7 +28,7 @@ Optional create context:
     --task T-260
     --stream 20260625-1942-codex
     --topic code-variant-draft-manager
-    --target tools/example.py --target tools/test_example.py
+    --target tools/example.py --target tools/tests/test_example.py
     --root tmp-work/drafts-test
 
 Policy:

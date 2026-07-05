@@ -22,6 +22,12 @@
 Маркеры в файлах (между ними всё генерируется):
     <!-- GEN:topics-status START ... -->   ... <!-- GEN:topics-status END -->
     <!-- GEN:topics-board  START ... -->   ... <!-- GEN:topics-board  END -->
+    <!-- GEN:counters      START ... -->   ... <!-- GEN:counters      END -->
+      (счётчики канона в STATUS.md, аудит C17-b; маркер опциональный —
+       корни без него не ломаются, блок аддитивный)
+    <!-- GEN:tools-index   START ... -->   ... <!-- GEN:tools-index   END -->
+      (полный индекс не-тестовых tools/*.py в tools/README.md, T-268 / аудит C3-a;
+       маркер опциональный — песочницы без tools/README.md не ломаются)
 
 Front-matter темы (наш простой парсер: key: value, value — всё после первого двоеточия):
     ---
@@ -47,6 +53,12 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
 )
 
 STATUS_RANK = {"needs-decision": 0, "waiting": 1, "open": 2, "done": 3, "archive": 4}
+
+# Маркеры, отсутствие которых в файле — не ошибка (аддитивные блоки, аудит C17-b):
+# старые песочницы/фикстуры без маркера продолжают работать, генератор лишь предупреждает.
+# tools-index (T-268): опционален по той же причине — тестовые COLLAB_ROOT-корни без
+# tools/README.md не должны ломаться; в реальном репо маркер есть и --check ловит несвежесть.
+OPTIONAL_MARKERS = {"counters", "tools-index"}
 
 
 from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
@@ -241,6 +253,117 @@ def collect_drivers():
     return items
 
 
+def render_counters(tasks, decisions, questions, topics, drivers):
+    """Счётчики канона для GEN-блока STATUS.md (аудит C17-b).
+
+    Числа считаются из тех же источников (front-matter файлов), что и index.json,
+    поэтому не могут устареть отдельно от канона. Пока счётчики были ручными,
+    они отстали на 59 задач / 8 решений / 40 тем (аудит 2026-07-02, находка C17).
+    Строка детерминирована — повторный прогон без изменений канона не даёт диффа.
+    """
+    return (
+        "Задач: %d · решений: %d · вопросов: %d · тем в навигации: %d · драйверов: %d "
+        "(источник — front-matter канона, как в `index.json`; "
+        "обновляется `python tools/generate.py`)."
+        % (len(tasks), len(decisions), len(questions), len(topics), len(drivers))
+    )
+
+
+# Плейсхолдер батч-генератора визиток (bulk_dcard_generator): такое SUMMARY неинформативно,
+# в индексе инструментов вместо него берём первую строку докстринга (T-268 / C3-a).
+DCARD_PLACEHOLDER = "Описание сгенерировано автоматически"
+
+
+def _tools_doc_line(text):
+    """Первая содержательная строка описания модуля (фоллбэк для GEN:tools-index).
+
+    Нюансы репо (все три паттерна встречаются в tools/):
+    - у части инструментов D-Card лежит ВНУТРИ докстринга (первый string-литерал —
+      визитка от bulk_dcard_generator), а человеческое описание — во ВТОРОМ
+      string-литерале модуля; `ast.get_docstring` видит только первый;
+    - у части описание живёт в ведущем присваивании `HELP = \"\"\"...\"\"\"`
+      (conveyor/dispatch/dir_health и др.), а не в докстринге.
+
+    Поэтому идём по ВЕДУЩИМ узлам тела модуля, пока это string-литералы или
+    присваивания string-констант, и берём первую строку, не являющуюся строкой
+    D-Card-блока (не начинается с '#').
+    """
+    import ast
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return ""
+
+    def _str_value(node):
+        if isinstance(node, ast.Expr):
+            node = node.value
+        elif isinstance(node, ast.Assign):
+            node = node.value
+        else:
+            return None
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        return None
+
+    for node in tree.body:
+        value = _str_value(node)
+        if value is None:
+            break  # ведущие докстринги/HELP-константы кончились — дальше код
+        for line in value.splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                return line[:160]
+    return ""
+
+
+def collect_tools_index():
+    """Полный индекс не-тестовых tools/*.py для GEN:tools-index (T-268, аудит C3-a).
+
+    Правило «не-тестовый» — то же, что в cli_inventory.iter_python_files: *.py верхнего
+    уровня tools/, кроме test_*.py (каталог tools/tests/ не сканируется). Описание:
+    D-Card SUMMARY ([FILE ID CARD], канонический парсер dcard_indexer — без локальной
+    копии логики); если SUMMARY нет или это плейсхолдер батч-генератора — первая
+    содержательная строка докстринга (_tools_doc_line). Детерминировано: сортировка
+    по имени файла, контент — только из самих файлов.
+    """
+    import dcard_indexer   # extract_py_dcard — канонический парсер [FILE ID CARD]
+    tools_dir = os.path.join(ROOT, "tools")
+    items = []
+    if not os.path.isdir(tools_dir):
+        return items  # песочница без tools/ — блок пуст (маркер и так опциональный)
+    for name in sorted(os.listdir(tools_dir)):
+        path = os.path.join(tools_dir, name)
+        if not name.endswith(".py") or name.startswith("test_") or not os.path.isfile(path):
+            continue
+        card = dcard_indexer.extract_py_dcard(path) or {}
+        summary = (card.get("summary") or "").strip()
+        if not summary or DCARD_PLACEHOLDER in summary:
+            try:
+                with open(path, encoding="utf-8", errors="replace") as f:
+                    text = f.read()
+            except OSError:
+                text = ""
+            summary = _tools_doc_line(text) or summary or "—"
+        # `|` внутри описания сломал бы markdown-таблицу — экранируем
+        items.append({"name": name, "summary": summary.replace("|", "\\|")})
+    return items
+
+
+def render_tools_index(items):
+    """Markdown-блок GEN:tools-index: счётчик + таблица «имя | однострочное назначение»."""
+    out = [
+        "Всего не-тестовых инструментов: %d. Источник описаний: D-Card SUMMARY "
+        "([FILE ID CARD]) или первая строка докстринга модуля; обновляется "
+        "`python tools/generate.py`, несвежесть ловит `--check` (hook/CI)." % len(items),
+        "",
+        "| Инструмент | Назначение |",
+        "|---|---|",
+    ]
+    for it in items:
+        out.append("| `%s` | %s |" % (it["name"], it["summary"]))
+    return "\n".join(out)
+
+
 def render_decisions_index(items):
     out = ["| ID | Решение | Статус | Дата | Файл |", "|---|---|---|---|---|"]
     for d in items:
@@ -307,18 +430,33 @@ def main():
     help_guard(__doc__)
     check = "--check" in sys.argv
     topics = collect_topics()
+    tasks = collect_tasks()
+    questions = collect_questions()
+    decisions = collect_decisions()
+    drivers = collect_drivers()
     targets = [
+        # counters — до topics-status: оба блока в STATUS.md, файл перечитывается
+        # на каждой итерации, поэтому порядок безопасен; маркер counters опциональный.
+        ("STATUS.md", "counters",
+         render_counters(tasks, decisions, questions, topics, drivers)),
         ("STATUS.md", "topics-status", render_status_table(topics)),
         ("board.md", "topics-board", render_board_table(topics)),
-        ("TASKS.md", "tasks", render_tasks_table(collect_tasks())),
-        ("QUESTIONS.md", "questions", render_questions_table(collect_questions())),
-        ("DECISIONS.md", "decisions", render_decisions_index(collect_decisions())),
+        ("TASKS.md", "tasks", render_tasks_table(tasks)),
+        ("QUESTIONS.md", "questions", render_questions_table(questions)),
+        ("DECISIONS.md", "decisions", render_decisions_index(decisions)),
+        # T-268 (C3-a): полный автоиндекс инструментов; маркер опциональный (см. OPTIONAL_MARKERS)
+        ("tools/README.md", "tools-index", render_tools_index(collect_tools_index())),
     ]
     changed_any = False
     error = False
     for fname, marker, table in targets:
         path = os.path.join(ROOT, fname)
         if not os.path.exists(path):
+            if marker in OPTIONAL_MARKERS:
+                # Аддитивная поверхность (tools/README.md в песочницах-фикстурах может
+                # отсутствовать): нет файла — нет блока, это не ошибка корня.
+                print("WARN: нет файла %s — блок %s пропущен" % (fname, marker))
+                continue
             print("ERROR: нет файла %s" % fname)
             error = True
             continue
@@ -326,6 +464,11 @@ def main():
             text = f.read()
         new = replace_block(text, marker, table)
         if new is None:
+            if marker in OPTIONAL_MARKERS:
+                # Аддитивный блок: корень без маркера (старая песочница/фикстура)
+                # не ломается — только предупреждение, без ERROR/STALE.
+                print("WARN: маркер %s не найден в %s — блок пропущен" % (marker, fname))
+                continue
             print("ERROR: маркер %s не найден в %s" % (marker, fname))
             error = True
             continue

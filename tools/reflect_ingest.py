@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.reflect_ingest
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: мозг авто-саморефлексии: находки blocks → severity + дедуп-ledger + рецидив.
+# ==========================================
 """reflect_ingest.py — мозг авто-саморефлексии: находки blocks → severity + дедуп-ledger + рецидив.
 
 Принимает JSON-результат `blocks.py run <block> --json` (stdin или --in файл), извлекает находки

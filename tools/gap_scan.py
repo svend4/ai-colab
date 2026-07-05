@@ -14,7 +14,7 @@
 + открытая проблема #1 «единый CANON_DIRS») и обобщает архетип commit_queue («механизм построен,
 но не подключён»). Это детектор для класса «построено/решено/описано, но НЕ активно».
 
-Три механических детектора (что можно ловить без человека):
+Четыре механических детектора (что можно ловить без человека):
 
   orphans  — G1: tools/*.py, на который НИЧТО в активной поверхности не ссылается (ни import,
              ни `X.py` в docs/PROTOCOL/AGENTS/skills/хуках/top, ни tools/README). Только сам файл
@@ -25,12 +25,15 @@
   dangling — G5: ссылки на tools/<name>.py в docs/README/PROTOCOL/AGENTS/glossary, где файла нет
              (напр. queue.py → реально agent_queue.py). Строки с маркером [planned] пропускаются:
              это явно помеченный roadmap-план, а не документация несуществующей команды (C40).
+  dcard    — P8-b (волна 2): не-тестовый tools/*.py без блока `[FILE ID CARD]` — метаданные-визитка
+             обязательна для новых инструментов (enforcement регрессии 67→74; из pre-commit — WARN).
 
 CLI:
   python tools/gap_scan.py                  # все детекторы, человекочитаемо
   python tools/gap_scan.py orphans          # только orphan-код
   python tools/gap_scan.py drift            # только дрейф деривата
   python tools/gap_scan.py dangling         # только висячие ссылки
+  python tools/gap_scan.py dcard            # только tools/*.py без [FILE ID CARD]
   python tools/gap_scan.py --json           # машиночитаемо (чистый stdout)
   python tools/gap_scan.py --strict         # exit 1, если найдено хоть что-то (для CI/хука)
 """
@@ -64,6 +67,14 @@ ORPHAN_ALLOWLIST = {
     "pipeline", "top", "validate", "generate", "conveyor", "onboard", "race_test",
     "demo_bridge", "sandbox_runner", "execute_audit", "execute_preflight", "execute_human_gate",
     "gap_scan", "mutmeta",  # сами детекторы формулы (запускаются вручную/из хука)
+    # --- Волна 2, C15-b (решение Stefan по Q-W2-1: «подключить полезные, остальные — в allowlist»).
+    # Осознанно «про запас»: не удаляются, не подключаются к активной поверхности, шуметь не должны.
+    "cli_inventory",    # генератор автосписка CLI-инструментов; точка входа для C3-a (автоиндекс README)
+    "fold",             # свёртка/агрегация текстов — экспериментальный примитив, ждёт потребителя
+    "retrieval_bench",  # бенчмарк retrieval-слоя (canon_index BM25/FTS5) — запускается вручную при замерах
+    "text_brain",       # экспериментальный текст-движок (исследовательский, вне активного пути)
+    "text_scene",       # сценарная сборка текста поверх view.load_canon — исследовательский
+    "thread_runner",    # локальный LLM-раннер (llama-server) — включается только при локальной модели
 }
 
 
@@ -98,6 +109,8 @@ def _active_surface():
     files += glob.glob(os.path.join(TOOLS, "githooks", "*"))
     files.append(os.path.join(TOOLS, "README.md"))
     files += [p for p in glob.glob(os.path.join(TOOLS, "*.py"))]  # импорты/subprocess между тулами
+    # тесты перенесены в tools/tests/ (C14): ссылка из ЧУЖОГО теста — по-прежнему часть поверхности
+    files += [p for p in glob.glob(os.path.join(TOOLS, "tests", "*.py"))]
     return [f for f in files if os.path.isfile(f)]
 
 
@@ -109,7 +122,7 @@ def find_orphans():
         if mod in ORPHAN_ALLOWLIST:
             continue
         own = os.path.join(TOOLS, mod + ".py")
-        own_test = os.path.join(TOOLS, "test_" + mod + ".py")
+        own_test = os.path.join(TOOLS, "tests", "test_" + mod + ".py")  # C14: тесты в tools/tests/
         token = re.compile(r"\b" + re.escape(mod) + r"\b")
         referenced = False
         for f in surface:
@@ -123,7 +136,7 @@ def find_orphans():
             out.append({
                 "kind": "orphan-code", "name": "tools/%s.py" % mod,
                 "evidence": "нет ссылок (import/CLI/доки/хуки/top) вне tools/%s.py%s" % (
-                    mod, " и tools/test_%s.py" % mod if has_test else ""),
+                    mod, " и tools/tests/test_%s.py" % mod if has_test else ""),
                 "has_test": has_test,
                 "why": "механизм построен и протестирован, но не подключён к активному пути (как commit_queue)",
             })
@@ -202,7 +215,31 @@ def find_dangling():
     return out
 
 
-DETECTORS = {"orphans": find_orphans, "drift": find_drift, "dangling": find_dangling}
+DCARD_MARKER = "[FILE ID CARD]"
+
+
+def find_missing_dcards():
+    """Не-тестовые tools/*.py без блока [FILE ID CARD] (P8-b, enforcement регрессии D-Card).
+
+    Смотрим только «модули инструментов» (_tools_modules: без test_* и _хелперов) — батч
+    по тестовым файлам отложен до их переноса (C14), чтобы не заливать WARN-шумом хук.
+    Маркер ищем в голове файла (первые ~3000 байт), как dcard_indexer (первые 30 строк).
+    """
+    out = []
+    for mod in _tools_modules():
+        head = _read(os.path.join(TOOLS, mod + ".py"))[:3000]
+        if DCARD_MARKER not in head:
+            out.append({
+                "kind": "missing-dcard", "name": "tools/%s.py" % mod,
+                "evidence": "нет блока %s в голове файла" % DCARD_MARKER,
+                "why": "инструмент без визитки-метаданных невидим для dcard_indexer/автоиндекса (P8)",
+                "fix": "добавить блок [FILE ID CARD] (ID/TYPE/DOMAIN/DEPTH_LEVEL/SUMMARY) в голову файла",
+            })
+    return out
+
+
+DETECTORS = {"orphans": find_orphans, "drift": find_drift, "dangling": find_dangling,
+             "dcard": find_missing_dcards}
 
 
 def run(which=None):
@@ -217,7 +254,8 @@ def _print_human(res):
     total = 0
     titles = {"orphans": "G1 ORPHAN-КОД (построено, но не подключено)",
               "drift": "(f) ДРЕЙФ ДЕРИВАТА (мёртвый литерал каталога → молчаливый 0)",
-              "dangling": "G5 ВИСЯЧИЕ ССЫЛКИ (доки → несуществующий tools/*.py)"}
+              "dangling": "G5 ВИСЯЧИЕ ССЫЛКИ (доки → несуществующий tools/*.py)",
+              "dcard": "P8 БЕЗ ВИЗИТКИ (tools/*.py без [FILE ID CARD])"}
     print("=== GAP SCAN — разрывы замысел↔реальность ===")
     for name, items in res.items():
         print("\n## %s — %d" % (titles.get(name, name), len(items)))

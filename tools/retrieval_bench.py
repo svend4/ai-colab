@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.retrieval_bench
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: бенчмарк retrieval по типам запросов (direct/distant/JOIN): наш ГРАФ vs FTS.
+# ==========================================
 """retrieval_bench.py — бенчмарк retrieval по типам запросов (direct/distant/JOIN): наш ГРАФ vs FTS.
 
 Метод из статьи «Vector RAG isn't enough — context graph for multi-agent memory» (TDS, 2026), применён к
@@ -41,6 +49,8 @@ QUERIES = [
 
 
 def write_fixture(root):
+    # direct-write-ok: синтетическая фикстура в tmp-каталоге бенча (root — временный),
+    # канонический tasks/ репозитория не трогается (C33)
     d = os.path.join(root, "tasks")
     os.makedirs(d, exist_ok=True)
     for nid, spec in FIXTURE.items():

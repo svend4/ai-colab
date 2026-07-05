@@ -30,9 +30,10 @@
 Гарантии:
 - Атомарность: новый claim создаётся через O_CREAT|O_EXCL (атомарно на одной ФС) —
   два агента не получат claim одновременно.
-- TTL: claim «свежий», пока lease_until в будущем; протухший claim можно перехватить.
-  Перехват тоже атомарен (порт схемы pipeline.try_claim, T-082/T-084): эксклюзивный
-  takeover-lock по claim_id старого claim + перепроверка под lock'ом + os.replace.
+- TTL: claim «свежий», пока lease_epoch в будущем; протухший claim можно перехватить.
+  Перехват тоже атомарен — общие claim-примитивы `_claims.py` (волна 2, C35-a;
+  схема pipeline.try_claim, T-082/T-084): эксклюзивный takeover-lock по claim_id
+  старого claim + перепроверка под lock'ом + os.replace.
 - Fencing: каждый claim получает уникальный claim_id; complete/fail требуют его —
   агент, чей claim перехватили, не сможет завершить задачу и затереть чужую работу.
 """
@@ -49,7 +50,10 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )
 Q = os.path.join(ROOT, "queues")
-DEFAULT_TTL_MIN = 30
+
+import _claims  # общие claim-примитивы queues/claimed (волна 2, C35-a)
+
+DEFAULT_TTL_MIN = _claims.DEFAULT_TTL_MIN  # единый TTL lease (C35-a)
 
 def now_epoch():
     return int(time.time())
@@ -61,7 +65,7 @@ def token():
     return binascii.hexlify(os.urandom(8)).decode()
 
 def claim_path(task):
-    return os.path.join(Q, "claimed", task + ".claim.md")
+    return _claims.claim_file(os.path.join(Q, "claimed"), task)
 
 def inbox_path(task):
     return os.path.join(Q, "inbox", task + ".md")
@@ -69,20 +73,15 @@ def inbox_path(task):
 def task_source_path(task):
     return os.path.join(ROOT, "tasks", task + ".md")
 
-from _canon import parse_fm  # единый парсер front-matter (T-085, находка L)
-
 def read_claim(task):
-    pth = claim_path(task)
-    if not os.path.exists(pth):
-        return None
-    with open(pth, encoding="utf-8") as f:
-        return parse_fm(f.read())
+    # делегат в _claims (C35-a): парсер front-matter тот же (_canon.parse_fm),
+    # плюс поведение pipeline-версии — транзиентный OSError на Windows → None
+    return _claims.read_claim(claim_path(task))
 
 def is_fresh(claim):
-    try:
-        return int(claim.get("lease_epoch", "0")) > now_epoch()
-    except ValueError:
-        return False
+    # делегат в _claims (C35-a): freshness считается ТОЛЬКО по lease_epoch,
+    # как и раньше; мусор/None → False (протух)
+    return _claims.is_fresh(claim)
 
 def claim_text(d):
     return (
@@ -103,59 +102,26 @@ def write_claim(task, d, old_claim=None):
     (FileExistsError пробрасывается наверх, как раньше).
 
     С old_claim (перехват протухшего claim или продление своего) — атомарная
-    подмена по схеме pipeline.try_claim (T-082, ревью T-078 находка I;
-    перепроверка под lock'ом — T-084): эксклюзивный lock-файл, имя которого
-    выведено из claim_id СТАРОГО claim, повторная проверка под lock'ом, запись
-    во временный файл и os.replace. Два агента, увидевшие один и тот же
-    протухший claim, вычислят одно имя lock'а — победит ровно один.
+    подмена через общий примитив `_claims.takeover_claim` (волна 2, C35-a;
+    схема pipeline.try_claim с фиксами T-082/T-084): эксклюзивный lock-файл,
+    имя которого выведено из claim_id СТАРОГО claim, повторная проверка под
+    lock'ом, запись во временный файл и os.replace. Два агента, увидевшие один
+    и тот же протухший claim, вычислят одно имя lock'а — победит ровно один.
+    renew_agent=d["agent"] сохраняет прежнее поведение: свежий СВОЙ claim
+    можно продлить, чужой свежий — нельзя.
     Возвращает True при успехе, False — если claim уже перехвачен/обновлён
     конкурентом (гонка проиграна).
+
+    Формат claim-файла (claim_text: task/agent/claim_id/claimed_at/
+    lease_until/lease_epoch) НЕ изменился — объединён код, не формат.
     """
     pth = claim_path(task)
     os.makedirs(os.path.dirname(pth), exist_ok=True)
     text = claim_text(d)
     if not old_claim:
-        fd = os.open(pth, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as f:
-            f.write(text)
+        _claims.create_claim(pth, text)
         return True
-    lock = "%s.take.%s" % (pth, old_claim.get("claim_id") or "none")
-    try:
-        lfd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-    except (FileExistsError, PermissionError):
-        return False  # другой агент уже перехватывает этот же claim
-    try:
-        os.close(lfd)
-        # повторная проверка ПОД lock'ом: на диске всё ещё тот же claim?
-        # закрывает гонку, когда конкурент успел перехватить и снять lock между
-        # нашим чтением old_claim и взятием lock'а — иначе поздний писатель
-        # молча затёр бы уже СВЕЖИЙ claim победителя (двойной захват).
-        cur = read_claim(task)
-        if (cur is None
-                or cur.get("claim_id") != old_claim.get("claim_id")
-                or (is_fresh(cur) and cur.get("agent") != d["agent"])):
-            return False
-        tmp = "%s.tmp.%s" % (pth, d["claim_id"])
-        with open(tmp, "w", encoding="utf-8", newline="\n") as f:
-            f.write(text)
-        # Windows может кратковременно запрещать os.replace, пока другой
-        # процесс трогает тот же путь — несколько попыток, затем честный отказ.
-        for _ in range(5):
-            try:
-                os.replace(tmp, pth)  # атомарная подмена старого claim новым
-                return True
-            except PermissionError:
-                time.sleep(0.02)
-        try:
-            os.remove(tmp)
-        except OSError:
-            pass
-        return False
-    finally:
-        try:
-            os.remove(lock)
-        except OSError:
-            pass
+    return _claims.takeover_claim(pth, text, old_claim, renew_agent=d["agent"])
 
 def require_holder(task, agent, claim_id):
     c = read_claim(task)
@@ -244,7 +210,11 @@ def cmd_fail(a):
 def cmd_release(a):
     if require_holder(a.task, a.agent, a.claim_id) is None:
         return 1
-    os.remove(claim_path(a.task))
+    # release с fencing (C35-a): require_holder уже напечатал причину отказа,
+    # но повторная проверка держателя при удалении сужает окно read→remove
+    if not _claims.release_claim(claim_path(a.task), agent=a.agent, claim_id=a.claim_id):
+        print("RACE: claim на %s изменился между проверкой и снятием — повтори" % a.task)
+        return 1
     print("OK: claim на %s снят" % a.task)
     return 0
 

@@ -23,6 +23,7 @@ STATUS.md и темами, чтобы заменить ручную «переп
 import os
 import re
 import sys
+import subprocess
 from _ioutil import configure_output
 from _cli import help_guard, die
 import datetime
@@ -30,6 +31,11 @@ import datetime
 # Драйверы: манифест старше этого числа дней — WARN (advisory), пере-сверить с источником.
 # 30 дней — для драйверов (код-backed); решения/политики идут на своём SLA через assurance.py.
 DRIVER_FRESHNESS_DAYS = 30
+
+# C29-b (волна 2, решение Stefan Q-W2-6a): open-тема / proposed-решение старше этого числа
+# дней БЕЗ открытой связанной задачи → WARN (инвариант «всё незакрытое имеет задачу»).
+# Порог по аналогии с inbox/failed TTL (3-5 дней), взят консервативный верх.
+STALE_NO_TASK_DAYS = 5
 
 def driver_freshness_warning(date_str, today=None, max_days=DRIVER_FRESHNESS_DAYS):
     """Текст WARN, если source_last_verified старше max_days; иначе None.
@@ -118,6 +124,7 @@ def table_rows(text, id_prefix):
     return rows
 
 from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
+from _canon import AGENTS_ROSTER, observed_agents  # ростер + наблюдение агентов (C36-a, Q-W2-9b)
 
 # ---------- DECISIONS ----------
 def parse_decisions():
@@ -502,17 +509,19 @@ def check_pipeline_d011():
            "команды next/status/mine/done/fail/snapshot определены")
 
 def check_execute_d014():
-    """Инвариант D-014 (запрет mode: execute до реализации всех 10 гейтов).
-    
-    Все 10 гейтов из docs/execute-sandbox-runner-design-2026-06-23.md построены.
-    Теперь mode: execute разрешен, но драйверы должны исполняться через sandbox_runner.py.
+    """Инвариант D-014 — восстановленная жёсткость (C7-a, решение Stefan Q-W2-2a).
+
+    Гейт «б» D-014 (accepted-решение на каждый execute-сценарий) теперь МАШИННЫЙ:
+    манифест с mode: execute обязан нести поле `execute_decision: D-0XX`, а указанное
+    решение — существовать в decisions/ со status: accepted. Иначе ERROR (не WARN).
+    Плюс прежний инвариант: sandbox_runner.py обязан существовать при активных execute.
     """
     drivers_dir = os.path.join(ROOT, "drivers")
     if not os.path.isdir(drivers_dir):
         return
-        
+
     has_execute = False
-    for fn in os.listdir(drivers_dir):
+    for fn in sorted(os.listdir(drivers_dir)):
         if not fn.endswith(".md") or fn in {"README.md", "SCHEMA.md"} or fn.startswith("_"):
             continue
         rel = "drivers/%s" % fn
@@ -520,15 +529,30 @@ def check_execute_d014():
         if text is None:
             continue
         fm = parse_front_matter(text)
-        if fm.get("mode") == "execute":
-            has_execute = True
-            
+        if fm.get("mode") != "execute":
+            continue
+        has_execute = True
+        # Gate 1 (D-014 «б»): машинная ссылка на accepted-решение обязательна.
+        dec = (fm.get("execute_decision") or "").strip()
+        if not dec:
+            err("D-014: %s имеет mode: execute без поля execute_decision "
+                "(нужна машинная ссылка на accepted-решение сценария)" % rel)
+            continue
+        dec_text = read("decisions/%s.md" % dec)
+        if dec_text is None:
+            err("D-014: %s → execute_decision %s, но decisions/%s.md не существует" % (rel, dec, dec))
+            continue
+        dec_status = (parse_front_matter(dec_text).get("status") or "").strip().lower()
+        if dec_status != "accepted":
+            err("D-014: %s → execute_decision %s имеет status «%s» — требуется accepted"
+                % (rel, dec, dec_status))
+
     runner_exists = os.path.exists(os.path.join(ROOT, "tools", "sandbox_runner.py"))
-    
+
     if has_execute and not runner_exists:
         err("D-014: mode: execute найден, но sandbox_runner.py отсутствует!")
     elif has_execute and runner_exists:
-        ok("D-014: execute-сценарии активны (защищены через sandbox_runner.py)")
+        ok("D-014: execute-сценарии активны (sandbox_runner.py + машинная проверка execute_decision)")
     else:
         ok("D-014: execute-сценариев пока нет (sandbox_runner.py готов)")
 
@@ -579,6 +603,225 @@ def check_synthesis_reports():
     if checked > 0:
         ok("synthesis: %d отчетов проверено на структуру консенсуса/разногласий" % checked)
 
+# ---------- docs → D-/Q-/T-id ссылки (C19-c, волна 2) ----------
+def check_docs_id_refs():
+    """Упоминание D-/Q-/T-id в docs/ должно указывать на существующий файл реестра.
+
+    Класс находки C19: docs ссылались на D-029, которого не существовало. Уровень — WARN
+    (в docs легитимны примеры/гипотетические id); код-фенсы вырезаются, «нулевые»
+    id-плейсхолдеры (D-000/Q-000/T-000) пропускаются. Один WARN на пропавший id.
+    """
+    dirmap = {"D": "decisions", "Q": "questions", "T": "tasks"}
+    docs_dir = os.path.join(ROOT, "docs")
+    if not os.path.isdir(docs_dir):
+        return
+    pat = re.compile(r"\b([DQT])-(\d{3,})\b")
+    missing = {}
+    # Автогенерируемые реестры в docs/ (не проза): содержат фикстурные/чужие id из всего репо.
+    generated_docs = {"dcard_index.md"}
+    for dirpath, _dirs, files in os.walk(docs_dir):
+        for fn in sorted(files):
+            if not fn.endswith(".md") or fn in generated_docs:
+                continue
+            rel = os.path.relpath(os.path.join(dirpath, fn), ROOT).replace("\\", "/")
+            text = read(rel)
+            if text is None:
+                continue
+            for m in pat.finditer(strip_code_fences(text)):
+                if set(m.group(2)) == {"0"}:
+                    continue  # D-000/Q-000/T-000 — конвенциональный плейсхолдер, не ссылка
+                fid = "%s-%s" % (m.group(1), m.group(2))
+                if not os.path.exists(os.path.join(ROOT, dirmap[m.group(1)], fid + ".md")):
+                    missing.setdefault(fid, []).append(rel)
+    for fid in sorted(missing):
+        warn("docs: ссылка на несуществующий %s (%s)" % (fid, ", ".join(sorted(set(missing[fid]))[:3])))
+    if not missing:
+        ok("docs: все упоминания D-/Q-/T-id указывают на существующие файлы")
+
+# ---------- незакрытое без задачи (C29-b, волна 2) ----------
+def _file_age_days(rel, fm):
+    """Возраст источника в днях: front-matter date/created (YYYY-MM-DD), иначе mtime файла."""
+    for field in ("date", "created"):
+        v = (fm.get(field) or "").strip()
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", v):
+            try:
+                return (datetime.date.today() - datetime.date.fromisoformat(v)).days
+            except ValueError:
+                pass
+    try:
+        mtime = os.path.getmtime(os.path.join(ROOT, rel))
+        return (datetime.datetime.now() - datetime.datetime.fromtimestamp(mtime)).days
+    except OSError:
+        return 0
+
+def _open_tasks_text():
+    """Конкатенация текстов НЕзакрытых задач (status != done) — для поиска связей id→задача."""
+    chunks = []
+    d = os.path.join(ROOT, "tasks")
+    if not os.path.isdir(d):
+        return ""
+    for fn in sorted(os.listdir(d)):
+        if not fn.endswith(".md") or fn == "README.md":
+            continue
+        text = read("tasks/%s" % fn) or ""
+        if (parse_front_matter(text).get("status") or "").strip() != "done":
+            chunks.append(text)
+    return "\n".join(chunks)
+
+def check_untasked_governance():
+    """Инвариант «всё незакрытое имеет задачу» (C29-b, advisory).
+
+    proposed-решение / open-тема старше STALE_NO_TASK_DAYS дней без упоминания в какой-либо
+    ОТКРЫТОЙ задаче (status != done) → WARN. Не блокирует: конвертация в задачи и закрытие —
+    за человеком (Q-W2-6); проверка лишь не даёт бэклогу дрейфовать молча.
+    """
+    open_text = _open_tasks_text()
+    flagged = 0
+    d = os.path.join(ROOT, "decisions")
+    if os.path.isdir(d):
+        for fn in sorted(os.listdir(d)):
+            if not fn.endswith(".md") or fn == "README.md":
+                continue
+            rel = "decisions/%s" % fn
+            text = read(rel)
+            if text is None:
+                continue
+            fm = parse_front_matter(text)
+            if (fm.get("status") or "").strip() != "proposed":
+                continue
+            fid = fm.get("id") or fn[:-3]
+            age = _file_age_days(rel, fm)
+            if age > STALE_NO_TASK_DAYS and fid not in open_text:
+                flagged += 1
+                warn("%s: proposed уже %d дн. без открытой задачи на ратификацию "
+                     "(C29: незакрытое должно иметь задачу)" % (rel, age))
+    t = os.path.join(ROOT, "topics")
+    if os.path.isdir(t):
+        for fn in sorted(os.listdir(t)):
+            if not fn.endswith(".md") or not os.path.isfile(os.path.join(t, fn)):
+                continue
+            rel = "topics/%s" % fn
+            text = read(rel)
+            if text is None:
+                continue
+            fm = parse_front_matter(text)
+            if (fm.get("status") or "").strip() != "open":
+                continue
+            age = _file_age_days(rel, fm)
+            fid = fm.get("id") or fn[:-3]
+            linked = (rel in open_text) or (fn in open_text) or (fid and fid in open_text)
+            if age > STALE_NO_TASK_DAYS and not linked:
+                flagged += 1
+                warn("%s: open уже %d дн. без открытой задачи (C29: незакрытое должно иметь задачу)"
+                     % (rel, age))
+    if not flagged:
+        ok("C29: всё незакрытое (proposed/open старше %d дн.) имеет открытую задачу" % STALE_NO_TASK_DAYS)
+
+# ---------- D-015: driver-ready требует верификации ≥2 агентами (P10-b, WARN) ----------
+def check_driver_ready_verification():
+    """D-015 (accepted): status: ready требует перепроверки ≥2 агентами.
+
+    Машинный след — front-matter `verified_by: [agent1, agent2, ...]`. Отсутствие поля
+    или <2 агентов → WARN (advisory-обкатка по решению Stefan Q-W2-18b; перевод в ERROR —
+    отдельное будущее решение человека).
+    """
+    drivers_dir = os.path.join(ROOT, "drivers")
+    if not os.path.isdir(drivers_dir):
+        return
+    checked = 0
+    for fn in sorted(os.listdir(drivers_dir)):
+        if not fn.endswith(".md") or fn in {"README.md", "SCHEMA.md"} or fn.startswith("_"):
+            continue
+        rel = "drivers/%s" % fn
+        text = read(rel)
+        if text is None:
+            continue
+        fm = parse_front_matter(text)
+        if fm.get("type") != "driver" or (fm.get("status") or "").strip() != "ready":
+            continue
+        checked += 1
+        agents = _parse_inline_list(fm.get("verified_by", ""))
+        if len(agents) < 2:
+            warn("%s: status ready, но verified_by содержит %d агентов (<2) — D-015 требует "
+                 "многоагентную перепроверку (advisory)" % (rel, len(agents)))
+    if checked:
+        ok("D-015: %d ready-драйверов проверены на след многоагентной верификации" % checked)
+
+# ---------- D-023: ownership генерируемых индексов (P10-b, WARN) ----------
+_D023_SOURCE_PREFIXES = ("tasks/", "questions/", "decisions/", "topics/")
+_D023_GENERATED = {"TASKS.md", "QUESTIONS.md", "DECISIONS.md", "board.md", "STATUS.md", "index.json"}
+
+def d023_findings(dirty_paths):
+    """Чистая логика D-023 (тестируемо без git): находки по списку dirty-путей.
+
+    1) source-правки без dirty-индекса → владелец не регенерировал («commit-your-own»);
+    2) dirty-индекс без source-правок → индекс менялся в обход generate.py/владельца.
+    """
+    paths = [str(p).replace("\\", "/").lstrip("./") for p in dirty_paths]
+    sources = [p for p in paths if p.startswith(_D023_SOURCE_PREFIXES) and p.endswith(".md")]
+    gen = [p for p in paths if p in _D023_GENERATED]
+    out = []
+    if sources and not gen:
+        out.append("D-023: изменены source (%s), но генерируемые индексы не тронуты — владелец "
+                   "source отвечает за regenerate+commit индексов (advisory)" % ", ".join(sources[:5]))
+    if gen and not sources:
+        out.append("D-023: изменены индексы (%s) без правок source — индексы правит только "
+                   "generate.py, коммитит владелец source/интегратор (advisory)" % ", ".join(gen[:5]))
+    return out
+
+def check_index_ownership_d023():
+    """D-023 (accepted) — advisory-проверка ownership индексов по git-status (best-effort).
+
+    git недоступен / не git-репозиторий → тихий пропуск (эта проверка про рабочий процесс,
+    а не про целостность файлов; отсутствие git не должно ломать validate на снапшотах).
+    """
+    try:
+        p = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True,
+                           text=True, encoding="utf-8", errors="replace", timeout=20)
+    except (OSError, subprocess.SubprocessError):
+        return
+    if p.returncode != 0:
+        return
+    dirty = []
+    for raw in (p.stdout or "").splitlines():
+        if len(raw) < 4:
+            continue
+        path = raw[3:].strip().strip('"')
+        if " -> " in path:
+            path = path.split(" -> ", 1)[1]
+        dirty.append(path)
+    findings = d023_findings(dirty)
+    for f in findings:
+        warn(f)
+    if not findings:
+        ok("D-023: dirty-срез согласован (source ↔ генерируемые индексы)")
+
+# ---------- Q-W2-9(b): агенты в рабочих артефактах ↔ AGENTS_ROSTER (advisory) ----------
+def check_agents_roster():
+    """Динамическая сверка ростера: агент из claim/heartbeat/stream вне AGENTS_ROSTER → WARN.
+
+    Именно WARN, НЕ ERROR: состав ростера ратифицируется человеком (C32/Q-W2-9) —
+    валидатор не решает, «легален» ли агент, он лишь делает расхождение видимым
+    (до C36-a пятый агент становился невидимым МОЛЧА). Наблюдение — _canon.observed_agents
+    (queues/claimed front-matter, logs/heartbeat имена файлов, streams манифесты);
+    best-effort: сбой наблюдения не валит валидатор.
+    """
+    try:
+        observed = observed_agents(ROOT)
+    except Exception as e:  # рабочие слои могут быть частично битыми — advisory не падает
+        warn("agents: сверка ростера не удалась (%s)" % e)
+        return
+    roster = {a.lower() for a in AGENTS_ROSTER}
+    unknown = [a for a in sorted(observed) if a not in roster]
+    for agent in unknown:
+        places = observed[agent]
+        more = "" if len(places) <= 3 else " (+%d ещё)" % (len(places) - 3)
+        warn("агент «%s» замечен в %s%s, но отсутствует в AGENTS_ROSTER (_canon.py) — "
+             "состав ростера ратифицируется человеком (C32/Q-W2-9)"
+             % (agent, ", ".join(places[:3]), more))
+    if not unknown:
+        ok("agents: все наблюдаемые агенты (%d) есть в AGENTS_ROSTER" % len(observed))
+
 def main():
     help_guard(__doc__)
     decisions = parse_decisions()
@@ -593,6 +836,11 @@ def main():
     check_topics()
     check_naming()
     check_synthesis_reports()
+    check_docs_id_refs()
+    check_untasked_governance()
+    check_driver_ready_verification()
+    check_index_ownership_d023()
+    check_agents_roster()
 
     for m in OKS:
         print("OK:   " + m)

@@ -210,6 +210,8 @@ def cmd_fill(pos):
         if new_fm.get("id") != fm.get("id"):
             print("ОШИБКА: id в --from (%s) не совпадает с резервом (%s)" % (new_fm.get("id"), fm.get("id")))
             return 1
+        # direct-write-ok: fill идёт под reservation_token (check выше) и атомарно
+        # через tmp+os.replace; заглушки создаются O_EXCL — гвард потери не нужен (C33)
         tmp = path + ".tmp." + flag("--token")
         with open(tmp, "w", encoding="utf-8", newline="\n") as f:
             f.write(new_text)

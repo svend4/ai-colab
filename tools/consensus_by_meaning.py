@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.consensus_by_meaning
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: консенсус ВЗВЕШЕН ПО СВИДЕТЕЛЯМ, не по счёту (замена doc_consensus-счётчика).
+# ==========================================
 """consensus_by_meaning.py — консенсус ВЗВЕШЕН ПО СВИДЕТЕЛЯМ, не по счёту (замена doc_consensus-счётчика).
 
 doc_consensus.py: консенсус = claim в >=2 ДОКУМЕНТАХ (счёт). Котёл-сверка потребовала отбор ПО СМЫСЛУ.

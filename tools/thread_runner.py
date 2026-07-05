@@ -1,3 +1,11 @@
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.thread_runner
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: terminal-thread runner (workbench этап 2): тред-файл → контекст → модель → append.
+# ==========================================
 """thread_runner.py — terminal-thread runner (workbench этап 2): тред-файл → контекст → модель → append.
 
 Компонент 2+4 offline/headless workbench (topics/offline-headless-workbench-mvp-2026-06-26). Headless

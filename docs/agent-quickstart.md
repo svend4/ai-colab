@@ -95,7 +95,7 @@ Pre-commit hook (`tools/githooks/pre-commit`) автоматически зап�
 - Задайте вопрос в `dialog.md` или `questions/`.
 - Позовите агента: `@Claude`, `@Codex`, `@Mavis`, `@Novax`.
 - Прочтите `PROTOCOL.md` — полные правила масштабной работы.
-- Прочтите `tools/README.md` — описание всех инструментов.
+- Прочтите `tools/README.md` — описание ключевых инструментов (полный автосписок: `python tools/cli_inventory.py`).
 
 ## Быстрая диагностика инструментов
 
@@ -109,7 +109,7 @@ python tools/drift_check.py
 python tools/onboard.py <agent>
 python tools/commit_lock.py status
 python tools/adoption.py check
-python tools/blocks.py scan
+python tools/blocks.py pyramid
 ```
 
 Назначение:
@@ -123,4 +123,21 @@ python tools/blocks.py scan
 | `onboard.py <agent>` | краткий вход агента: стадия, драйверы, execute policy, конвейер, активные задачи |
 | `commit_lock.py status` | свободна ли серийная точка git commit |
 | `adoption.py check` | проверка внедрения обязательных практик и инструментов |
-| `blocks.py scan` | поиск сиротских или нелегальных блочных артефактов (D-016) |
+| `blocks.py pyramid` | здоровье пирамиды L1-L4 + инвентарь порталов D-016 (assurance coverage/flow, promote/portal list) |
+
+## Тесты: два уровня (канон C13-c)
+
+Тесты инструментов лежат в `tools/tests/` (перенесены из `tools/` — C14). Канонических
+прогона два; «зелёный pytest» сам по себе НЕ означает «весь набор прогнан»:
+
+```bash
+# 1. Быстрый (pytest-collectable подмножество):
+py -3 -m pytest tools/tests/
+
+# 2. Полный (все самозапускающиеся __main__-скрипты, агрегация exit-кодов):
+python tools/test_all.py
+```
+
+Новые тесты пишите pytest-collectable (module-level `test_*`, fixtures — см.
+`tools/tests/conftest.py`); старые самозапускающиеся скрипты мигрируют на pytest
+органически при касании. Подробности — `tools/README.md`, раздел «Тестовый контур».
