@@ -11,11 +11,8 @@
 <!-- GEN:counters END -->
 
 - **Конвейер разобран, канон зелёный:** все задачи закрыты (done), ready-пул и failed-очередь пусты, `tools/validate.py` — без ERROR. Счётчики выше теперь GEN-блок (аудит 2026-07-02, находка C17: ручные числа отстали на 59 задач / 8 решений / 40 тем).
-- **Реальный фокус — governance-разбор, human-gate (Stefan):**
-  1. закрытие инцидента «массовое урезание 147 outbox-отчётов» (`topics/incident-outbox-mass-strip-2026-06-24.md`);
-  2. разбор proposed-очереди решений — 7 нератифицированных: D-024, D-026, D-027, D-028, D-030, D-032, D-033;
-  3. приёмка Q-023 «матрица полномочий» (предложенный ответ: D-027 + `docs/agent-approval-matrix.md`).
-  На эти направления заводятся T-задачи в волне 2 аудита (пункт C29; формулировка фокуса согласована ответом Q-W2-6(a)).
+- **Governance-очередь ратифицирована (котёл-день 2026-07-06):** практически весь корпус решений переведён в accepted (см. `decisions/`); в работе остаётся один черновик D-033 (одно из двух подтверждений получено, направление доработки задано). Вопрос о матрице полномочий закрыт. Инцидент `topics/incident-outbox-mass-strip-2026-06-24.md` — открыт с дедлайном 2026-07-13 (ответственный Stefan; antigravity вне ростера до объяснения).
+- **Текущий фокус — оркестраторный цикл (D-036) и безопасность коммита:** package/agenda-слой, обязательная эстафета (zone_overlap перед захватом); `tools/commit.py` + CI `bulk-guard.yml` (enforcement D-026, анти-`--no-verify`). Beta-0 checklist принят гейтом этапа — до перехода остаются tripwire параллельности и оценка портала (детали — `docs/beta0-acceptance-checklist-2026-07-06.md`).
 - **Аудит 2026-07-02:** волна 1 (27 находок) закоммичена и верифицирована; волна 2 выполняется по плану `reports/fix-wave2-plan-2026-07-02.md` (31 пункт в условных подвариантах + 19 вопросов котла; выбор подвариантов и ответы принял Stefan).
 - **AI-OS Bridge работает на L1+L2:** 9 модулей `drivers/` (codex-local, data, file-inventory, files, gateway, git-log, repo-runner, sqlite, workbench), 5 `skills/` (driver-acceptance, pipeline-operator, repo-friction-playbook, repo-review, top-layer-orchestrator), 2 `portals/` (bridge-knowledge, repo-inventory).
 - **Governance-слой:** приняты D-013..D-018, D-020..D-023, D-025, D-031 (драйверы, котёл, политика параллельной работы, commit_queue); инструменты QA (`tools/backlog_rescan.py`, `tools/drift_check.py`, `tools/gap_scan.py` и др.).

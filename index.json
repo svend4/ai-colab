@@ -3541,7 +3541,7 @@
     {
       "id": "T-269",
       "title": "Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком)",
-      "status": "todo",
+      "status": "doing",
       "owner": "stefan",
       "priority": "high",
       "risk": "medium",
@@ -3706,7 +3706,7 @@
     {
       "id": "T-286",
       "title": "Доработка драйвера data по замечаниям верификации D-015",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",

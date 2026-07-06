@@ -275,7 +275,7 @@
 | [T-266.md](../tasks/T-266.md) | task | done | **Источник:** аудит 2026-07-02, находка C30 (inbox залежался 9-11 дней); волна 2, подвариа |
 | [T-267.md](../tasks/T-267.md) | task | done | **Источник:** аудит 2026-07-02, находка C30; волна 2, подвариант C30-c, human-gate снят от |
 | [T-268.md](../tasks/T-268.md) | task | done | Аудит 2026-07-02, находка C3 (HIGH): `tools/README.md` описывал 31 из 119 не-тестовых |
-| [T-269.md](../tasks/T-269.md) | task | todo | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
+| [T-269.md](../tasks/T-269.md) | task | doing | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
 | [T-270.md](../tasks/T-270.md) | task | done | Аудит 2026-07-02, находка C29: 7 нератифицированных решений висят без задачи — конвейер |
 | [T-271.md](../tasks/T-271.md) | task | done | Аудит 2026-07-02, находка C29: открытый вопрос Q-023 (матрица полномочий агентов) и |
 | [T-272.md](../tasks/T-272.md) | task | done | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
@@ -290,7 +290,7 @@
 | [T-281.md](../tasks/T-281.md) | task | done | Recovered task source for documentation references. The related topic closeout notes are p |
 | [T-282.md](../tasks/T-282.md) | task | done | Recovered task source for documentation references. The cleanup result is represented by ` |
 | [T-285.md](../tasks/T-285.md) | task | doing | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-286.md](../tasks/T-286.md) | task | todo | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-286.md](../tasks/T-286.md) | task | doing | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
