@@ -90,7 +90,7 @@
 | [nested-orchestration-3to1.md](../docs/nested-orchestration-3to1.md) | doc | proposed | Это слой НАД `docs/orchestration-architecture-2026-06-23.md` (бригада = `{3 продюсера + 1  |
 | [next-stage-action-plan-2026-07-06.md](../docs/next-stage-action-plan-2026-07-06.md) | doc | proposed | type: inbox-output |
 | [non-svend4-development-plan-2026-06-21.md](../docs/non-svend4-development-plan-2026-06-21.md) | — | — | Date: 2026-06-21 |
-| [nondestructive-reconciliation-2026-07-06.md](../docs/nondestructive-reconciliation-2026-07-06.md) | methodology | proposed | **Выбранное имя: `reconcile` / «сверка-примирение» (неразрушающая сверка).** |
+| [nondestructive-reconciliation-2026-07-06.md](../docs/nondestructive-reconciliation-2026-07-06.md) | doc | proposed | *Документ следует собственному принципу: три независимых варианта не стёрты, а |
 | [onboarding-opinions-comparison-2026-06-21.md](../docs/onboarding-opinions-comparison-2026-06-21.md) | — | — | Дата: 2026-06-21 |
 | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) | architecture-synthesis | proposed | id: DOC-000 |
 | [orchestration-architecture-2026-06-23.md](../docs/orchestration-architecture-2026-06-23.md) | doc | proposed | Конвейерный слой живёт НАД `docs/workflow-orchestration-policy.md` (один воркфлоу) и держи |

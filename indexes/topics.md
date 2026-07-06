@@ -62,7 +62,7 @@
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
 | [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
 | [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | done | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
-| [orchestration-workflow-design-2026-07-06.md](../topics/orchestration-workflow-design-2026-07-06.md) | — | proposed | Выстраиваю трёхуровневую пирамидальную систему оркестрации: |
+| [orchestration-workflow-design-2026-07-06.md](../topics/orchestration-workflow-design-2026-07-06.md) | — | recovered | This file restores a missing topic path referenced by `tasks/T-275.md`, `tasks/T-276.md`,  |
 | [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
 | [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | topic | — | Каждый механизм — что это, где задокументировано, статус. Статусы: ПРИНЯТО (governance acc |
 | [parallel-work-divergences-2026-06-22.md](../topics/parallel-work-divergences-2026-06-22.md) | topic | proposed | — |
@@ -77,15 +77,15 @@
 | [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | topic | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
 | [razbor-divergence-status-2026-06-24.md](../topics/razbor-divergence-status-2026-06-24.md) | topic | proposed | Из 21 разногласия ~9 разрешены этой сессией (мигрируют в консенсус), ~4 tracked/partial, ~ |
 | [repo-as-collaborative-dev-service-2026-06-26.md](../topics/repo-as-collaborative-dev-service-2026-06-26.md) | topic | proposed | доски; провалы — merge-конфликты + изолированные окна, не видящие правок друг друга. Никто |
-| [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | done | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
+| [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
 | [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | done | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
 | [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
 | [session-backlog-2026-06-26.md](../topics/session-backlog-2026-06-26.md) | topic | proposed | спец §5 «brain-adapter позже». Генерит `text_cell.v1` ПРЕДЛОЖЕНИЯ (status:proposed, owner: |
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
 | [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
-| [smart_synthesis_20260706_125626.md](../topics/smart_synthesis_20260706_125626.md) | topic | proposed | Machine-generated TF-IDF synthesis prompt over cauldron_graph atoms; proposed material for |
-| [smart_synthesis_bm25_20260706_132603.md](../topics/smart_synthesis_bm25_20260706_132603.md) | topic | proposed | Machine-generated BM25/N-grams synthesis prompt over cauldron_graph atoms; proposed materi |
+| [smart_synthesis_20260706_125626.md](../topics/smart_synthesis_20260706_125626.md) | — | recovered | This file restores a missing topic path that was still referenced from generated navigatio |
+| [smart_synthesis_bm25_20260706_132603.md](../topics/smart_synthesis_bm25_20260706_132603.md) | — | recovered | This file restores a missing topic path that was still referenced from generated navigatio |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [svend4-infon-assessment-2026-06-26.md](../topics/svend4-infon-assessment-2026-06-26.md) | topic | proposed | For this repository, the correct adaptation is not terminal video. The correct adaptation  |
 | [text-diffusion-canvas-from-infon-2026-06-26.md](../topics/text-diffusion-canvas-from-infon-2026-06-26.md) | topic | proposed | turn a terminal into a multi-layer communication surface |

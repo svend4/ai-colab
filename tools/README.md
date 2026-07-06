@@ -42,7 +42,7 @@
 несвежесть ловится `python tools/generate.py --check` (pre-commit hook).
 
 <!-- GEN:tools-index START — генерируется tools/generate.py, не править вручную -->
-Всего не-тестовых инструментов: 122. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
+Всего не-тестовых инструментов: 129. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
 
 | Инструмент | Назначение |
 |---|---|
@@ -53,6 +53,7 @@
 | `action_tracker.py` | Утилита для гранулярного трекинга состояния отчетов (Traceability Matrix). |
 | `adoption.py` | adoption.py — статические метрики ПРИМЕНЕНИЯ (повторяемый блок само-мониторинга). |
 | `advice.py` | Advice activator (TBD) - show existing repo advice that is applicable now. |
+| `agenda_gen.py` | Материализатор повестки котла (M2/T-276): GEN-блок kotel/agenda из front-matter пакетов kotel/packages/PKG-*.md. |
 | `agent_queue.py` | Очередь 2.0 — атомарный рабочий цикл задач для многих агентов (Этап D из scaling-design). |
 | `assurance.py` | Read-only апекс-дашборд: evidence, актуальность, coverage и поток инструкций к вершине. |
 | `autolink.py` | ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic). |
@@ -66,6 +67,7 @@
 | `canon_index.py` | SQLite/FTS5 индекс канона (workbench-компонент 5: быстрая память/retrieval). |
 | `capabilities.py` | Генерирует system-capabilities.json — машинный манифест возможностей верхнего слоя. |
 | `card.py` | card.py — универсальная КАРТОЧКА-визитка: фрактальная единица коммуникации (средний слой). |
+| `cauldron_task_materializer.py` | Cauldron Task Materializer (T-276) |
 | `cli_inventory.py` | Read-only inventory of tools/*.py CLI help/json safety patterns. |
 | `code_activation.py` | Read-only activation plan for code artifacts; no execute. |
 | `code_pyramid.py` | code_pyramid.py — линт «3 слоёв» внутри .py (ответ на §3.3 вопросника триадности). |
@@ -113,6 +115,7 @@
 | `instructions.py` | Instruction assurance preflight (T-154). |
 | `janitor.py` | Дворник runtime-артефактов: dry-run отчёт ротации (audit/reflection/tmp-work/dialog); удаление только явным --delete. |
 | `knowledge.py` | Knowledge workflow (L6) — ingest → query → report на локальном корпусе. |
+| `l2_inventory.py` | Read-only L2-inventory сиблинг-источника → SQLite/FTS5 (пилот T-273, замкнутый контур). |
 | `layer_check.py` | layer_check.py — контракт пирамиды L1-L4 (lane A layered-pyramid) — folder/layer checks. |
 | `maturity.py` | зрелость атома 0-1000‰ (DIV-21): СИНТЕЗ трёх осей в один балл. |
 | `merge_gate.py` | Merge-gate orchestrator — «безопасно ли вливать эту работу в mainline?» green(0)/red(1). |
@@ -122,6 +125,7 @@
 | `onboard.py` | Onboard (C3, консенсус Claude+Codex) — одна команда входа вместо чтения 10 файлов. |
 | `oracle_quorum.py` | кворум независимых судей вместо ОДНОГО (смягчение проблемы оракула, OQ-1/OQ-2). |
 | `ownership.py` | ownership (T-153, синтез двух подсистем) — общий классификатор «чей dirty-файл». |
+| `package_gate.py` | Гейт согласования пакетов kotel/packages/PKG-*.md по риску (proposed, не enforced). |
 | `permissions.py` | Проверка прав агента на изменённые файлы (роли, Этап E из scaling-design). |
 | `pipeline.py` | Конвейер задач: атомарный claim, done/fail, heartbeat, snapshot и общий котёл агентов. |
 | `portability_check.py` | Acceptance-тест переносимости: materialize git-tracked HEAD и проверить validate/generate без host paths. |
@@ -152,6 +156,7 @@
 | `sandbox_schema_validator.py` | Read-only JSON and manifest schema validator for sandbox intake folders. |
 | `seq_merge.py` | 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib. |
 | `staged_check.py` | Проверка staged-снимка для pre-commit: канон-источники staged без регенерированной навигации → блок. |
+| `status_drift.py` | Advisory-детектор рассинхрона ручных утверждений STATUS.md с машинной реальностью канона (C17). |
 | `stream.py` | Stream-пакеты (Уровень 2, *tooling*-слой к T-136) — жизненный цикл форк-пакетов. |
 | `synthesis_helper.py` | Инструмент "Котел". Обобщает форк-варианты документов в единый скелет с выделением консенсуса и стримов. |
 | `text_brain.py` | proposal-only brain-adapter для textscene-канвы (трилогия scene→mux→BRAIN, спец §5). |
@@ -161,6 +166,7 @@
 | `thread.py` | File-native thread objects for the headless workbench. |
 | `thread_runner.py` | terminal-thread runner (workbench этап 2): тред-файл → контекст → модель → append. |
 | `top.py` | Верхняя командная панель для людей и агентов: health, status, cycle, advice, conveyor. |
+| `topic_sanitation.py` | advisory-детектор залежавшихся proposed/open-тем (болото идей, диагноз mavis FM-1). |
 | `two_track.py` | two_track.py — двухтрековая классификация работы для котла/конвейера. |
 | `validate.py` | Главный валидатор (T-004/T-070/T-164). Проверяет целостность ссылок, статус файлов, сироты, драйверы. |
 | `variants.py` | Variants (D-018) — READ-ONLY реестр/дискавери параллельных форк-вариантов по всему репо. |
@@ -168,6 +174,7 @@
 | `view_html.py` | компиляция среза канона в самодостаточный <details>-каскад HTML (progressive disclosure). |
 | `workflow_recover.py` | восстановление ПАРТИАЛ-результатов фонового workflow (durability слоя оркестрации). |
 | `worktree.py` | worktree (Уровень-1 политики коммитов, T-136 — принят Stefan 2026-06-21) — git-worktree на агента. |
+| `zone_overlap.py` | Zone-overlap advisory (M3, Codex §4.4) — пересечения зон активных пакетов котла (proposed, не enforced). |
 <!-- GEN:tools-index END -->
 
 ## Как запускать
@@ -612,3 +619,9 @@ python tools/top.py synthesize-docs <topic> --ready-only --json
 ```
 
 Явно переданные файлы не фильтруются: explicit corpus остаётся ответственностью вызывающего агента.
+ 
+ # #   G a p   S c a n   G a t e   ( D - 0 3 2 ) 
+ 
+   \  a l i d a t e . p y \   2=54@5=  <5E0=87<  * * G a p   S c a n * * .   =  ?@>25@O5B  @07@K2K  <564C  B5<,   GB>  035=B  704C<0;  ( s t a g e d )   8  B5<,   GB>  D0:B8G5A:8  70D8:A8@>20=>  2  :0=>=5.   ><<8B  =5  ?@>E>48B,   5A;8  =0945=K  u n t r a c k e d   \ c a n o n - m d \   D09;K,   :>B>@K5  4>;6=K  ?@8=04;560BL  >?@545;5==><C  035=BC.   A?>;L7C9B5  \ p y t h o n   t o o l s / v a l i d a t e . p y \   4;O  ?@>25@:8  ?5@54  :064K<  :><<8B><. 
+ 
+ 

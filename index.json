@@ -57,6 +57,13 @@
       "next": ""
     },
     {
+      "id": "repo-review-2026-06-21",
+      "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
+      "file": "topics/repo-review-2026-06-21.md",
+      "status": "open",
+      "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
+    },
+    {
       "id": "d003-scope",
       "title": "Границы D-003 (Q-005)",
       "file": "topics/d003-scope.md",
@@ -104,13 +111,6 @@
       "file": "topics/q006-agent-onboarding.md",
       "status": "done",
       "next": "Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия"
-    },
-    {
-      "id": "repo-review-2026-06-21",
-      "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
-      "file": "topics/repo-review-2026-06-21.md",
-      "status": "done",
-      "next": "Closed by T-281; historical review is preserved, follow-ups were split into concrete tasks and later audits."
     },
     {
       "id": "sandbox-and-forks-2026-06-21",
@@ -484,20 +484,6 @@
       "next": ""
     },
     {
-      "id": "smart-synthesis-20260706-125626",
-      "title": "Умный семантический синтез TF-IDF",
-      "file": "topics/smart_synthesis_20260706_125626.md",
-      "status": "proposed",
-      "next": ""
-    },
-    {
-      "id": "smart-synthesis-bm25-20260706-132603",
-      "title": "Умный семантический синтез BM25 + N-Grams",
-      "file": "topics/smart_synthesis_bm25_20260706_132603.md",
-      "status": "proposed",
-      "next": ""
-    },
-    {
       "id": "solver-report-2026-06-23",
       "title": "SOLVER report — 2026-06-23",
       "file": "topics/solver-report-2026-06-23.md",
@@ -548,9 +534,23 @@
     },
     {
       "id": "topics/orchestration-workflow-design-2026-07-06.md",
-      "title": "Orchestration Workflow — архитектура мультиагентного конвейера",
+      "title": "Orchestration workflow design — recovered topic stub",
       "file": "topics/orchestration-workflow-design-2026-07-06.md",
-      "status": "proposed",
+      "status": "recovered",
+      "next": ""
+    },
+    {
+      "id": "topics/smart_synthesis_20260706_125626.md",
+      "title": "Smart synthesis 20260706 125626 — recovered topic stub",
+      "file": "topics/smart_synthesis_20260706_125626.md",
+      "status": "recovered",
+      "next": ""
+    },
+    {
+      "id": "topics/smart_synthesis_bm25_20260706_132603.md",
+      "title": "Smart synthesis BM25 20260706 132603 — recovered topic stub",
+      "file": "topics/smart_synthesis_bm25_20260706_132603.md",
+      "status": "recovered",
       "next": ""
     },
     {
@@ -3541,7 +3541,7 @@
     {
       "id": "T-269",
       "title": "Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком)",
-      "status": "blocked",
+      "status": "todo",
       "owner": "stefan",
       "priority": "high",
       "risk": "medium",
@@ -3574,13 +3574,13 @@
     {
       "id": "T-272",
       "title": "C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания",
-      "status": "todo",
-      "owner": "any",
+      "status": "done",
+      "owner": "Novax",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist"
+      "next": "C33 контур чистый: safe_write=8, маркер=11, allowlist=10, WARN=0. agenda_gen.py помечен direct-write-ok (kotel/ — generated, не handwritten). Оставшиеся allowlist-файлы мигрируются по мере касания (волна 2)."
     },
     {
       "id": "T-273",
@@ -3596,7 +3596,7 @@
     {
       "id": "T-274",
       "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
-      "status": "done",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3606,118 +3606,96 @@
     },
     {
       "id": "T-275",
-      "title": "\"Оркестрация: governance-батч — ратификация 7 proposed + котёл-вопросы\"",
+      "title": "Вплетение свежепринятых решений (D-026/027/029/032/034/035) в инструкционную поверхность",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "по каждому из 6 accepted-решений 2026-07-06 определить точку проявления (AGENTS.md / PROTOCOL.md / README.md / top.py / validator-gate / skill) и вплести; проверить instructions.py surface"
+    },
+    {
+      "id": "T-276",
+      "title": "Cauldron task materializer — dry-run создание кандидатных задач из synthesis/котла",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "спроектировать и реализовать read-only/dry-run инструмент, который читает synthesis/cauldron report и предлагает tasks/T-*.md candidates без auto-accepted решений; запись только явным apply через next_id.py"
+    },
+    {
+      "id": "T-277",
+      "title": "Governance-батч: verifier — проверка конфликтов proposed-решений",
+      "status": "done",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "Recovered metadata source; task was referenced as completed by governance-batch reports."
+    },
+    {
+      "id": "T-278",
+      "title": "Governance-батч: writer — итоговый пакет результатов",
       "status": "done",
       "owner": "mavis",
       "priority": "high",
       "risk": "medium",
-      "depends_on": "[T-276, T-277, T-278]",
-      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
-      "next": "\"Этап 1: спавн 3 workers (researcher + verifier + writer) для параллельной работы. Этап 2: координация и синтез. Этап 3: презентация человеку.\""
-    },
-    {
-      "id": "T-276",
-      "title": "\"Governance-батч: researcher — сводка 7 proposed-решений (D-024, D-026, D-027, D-028, D-030, D-032, D-033)\"",
-      "status": "done",
-      "owner": "pool",
-      "priority": "high",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
-      "next": "\"Прочитать decisions/D-XXX.md для каждого из 7, написать сводку: суть, аргументы за, аргументы против, рекомендация mavis.\""
-    },
-    {
-      "id": "T-277",
-      "title": "\"Governance-батч: verifier — проверка конфликтов между 7 proposed + связь с accepted\"",
-      "status": "done",
-      "owner": "pool",
-      "priority": "high",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
-      "next": "\"Проверить: (1) конфликты между D-024/026/027/028/030/032/033; (2) поглощение одного другим; (3) противоречие accepted-решениям. Результат = таблица конфликтов или \\\"чисто\\\".\""
-    },
-    {
-      "id": "T-278",
-      "title": "\"Governance-батч: writer — документ батч-ратификации 7 proposed-решений\"",
-      "status": "done",
-      "owner": "pool",
-      "priority": "high",
-      "risk": "low",
       "depends_on": "[T-276, T-277]",
       "topic": "topics/orchestration-workflow-design-2026-07-06.md",
-      "next": "\"По результатам T-276 + T-277: единый документ батч-ратификации для Stefan. Формат: 1 блок = 1 решение, рекомендация, что нужно от человека.\""
+      "next": "Recovered metadata source; detailed result is in reports/governance-batch-results-2026-07-06.md."
     },
     {
       "id": "T-279",
       "title": "Retired placeholder — no task assigned",
       "status": "done",
-      "owner": "mavis",
-      "priority": "normal",
+      "owner": "codex",
+      "priority": "low",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "",
-      "next": "closed as retired placeholder by T-282; for new work use a fresh task id with real scope"
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "Retired placeholder; no further work."
     },
     {
       "id": "T-280",
-      "title": "D-033 ratification — создать задачу на ратификацию proposed-решения",
+      "title": "D-033 ratification brief — human decision gate",
       "status": "blocked",
-      "owner": "Novax",
+      "owner": "human",
       "priority": "normal",
-      "risk": "low",
+      "risk": "medium",
       "depends_on": "[]",
-      "topic": "",
-      "next": "D-033 ready for 2nd confirmation — summary delivered to Stefan. Needs human: confirm §0 discipline + requires_confirmations:2 (or propose alternative)."
+      "topic": "reports/d033-ratification-brief-2026-07-06.md",
+      "next": "Waiting for Stefan/human ratification decision for D-033."
     },
     {
       "id": "T-281",
-      "title": "Обработать 3 open-темы без связанных задач (C29 compliance)",
+      "title": "C29 open topics cleanup",
       "status": "done",
-      "owner": "pool",
+      "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "",
-      "next": "Для каждой open-темы: либо создать задачу, либо закрыть (answered/closed), либо перевести в blocked с причиной."
+      "topic": "topics/repo-review-2026-06-21.md",
+      "next": "Done; historical topics were routed or closed with trace."
     },
     {
       "id": "T-282",
-      "title": "Cleanup T-279 placeholder — удалить или заполнить пустую зарезервированную задачу",
+      "title": "Cleanup retired placeholder T-279",
       "status": "done",
-      "owner": "pool",
+      "owner": "codex",
       "priority": "normal",
       "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "Либо заполнить T-279 содержательным описанием (если Mavis планировал работу), либо удалить как пустой placeholder."
-    },
-    {
-      "id": "T-283",
-      "title": "Retired placeholder — no task assigned",
-      "status": "done",
-      "owner": "unknown",
-      "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "closed as retired placeholder; for new work use a fresh task id with real scope"
-    },
-    {
-      "id": "T-284",
-      "title": "Human decision — resolve meta-sanation and triadic topic statuses",
-      "status": "blocked",
-      "owner": "Stefan",
-      "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "reports/topics-review-2026-07-06.md",
-      "next": "Stefan selects options for meta-sanation and triadic questionnaire; agents then implement selected follow-up."
+      "depends_on": "[T-279]",
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "Done; T-279 is kept as retired placeholder metadata."
     },
     {
       "id": "T-285",
       "title": "Доработка драйвера codex-local по замечаниям верификации D-015",
-      "status": "done",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3728,7 +3706,7 @@
     {
       "id": "T-286",
       "title": "Доработка драйвера data по замечаниям верификации D-015",
-      "status": "done",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3750,24 +3728,13 @@
     {
       "id": "T-288",
       "title": "Доработка драйвера repo-runner по замечаниям верификации D-015",
-      "status": "doing",
-      "owner": "pool",
-      "priority": "normal",
-      "risk": "low",
-      "depends_on": "[]",
-      "topic": "",
-      "next": "доработать драйвер repo-runner по замечаниям верификации 2026-07-06, затем повторная верификация по D-038"
-    },
-    {
-      "id": "T-289",
-      "title": "D-015 driver hardening — fix small actionable verification findings",
       "status": "done",
       "owner": "codex",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "drivers/index.json",
-      "next": "Fix low-risk actionable D-015 findings without marking drivers verified_by; run focused tests and validate."
+      "topic": "",
+      "next": "Done by Codex 2026-07-06; repo-runner limits hardened, tests passed, D-015 verified_by still requires independent reviewer."
     },
     {
       "id": "T-290",

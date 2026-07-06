@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 290 файлов
+# Индекс папки `tasks/` — 287 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -275,25 +275,22 @@
 | [T-266.md](../tasks/T-266.md) | task | done | **Источник:** аудит 2026-07-02, находка C30 (inbox залежался 9-11 дней); волна 2, подвариа |
 | [T-267.md](../tasks/T-267.md) | task | done | **Источник:** аудит 2026-07-02, находка C30; волна 2, подвариант C30-c, human-gate снят от |
 | [T-268.md](../tasks/T-268.md) | task | done | Аудит 2026-07-02, находка C3 (HIGH): `tools/README.md` описывал 31 из 119 не-тестовых |
-| [T-269.md](../tasks/T-269.md) | task | blocked | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
+| [T-269.md](../tasks/T-269.md) | task | todo | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
 | [T-270.md](../tasks/T-270.md) | task | done | Аудит 2026-07-02, находка C29: 7 нератифицированных решений висят без задачи — конвейер |
 | [T-271.md](../tasks/T-271.md) | task | done | Аудит 2026-07-02, находка C29: открытый вопрос Q-023 (матрица полномочий агентов) и |
-| [T-272.md](../tasks/T-272.md) | task | todo | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
+| [T-272.md](../tasks/T-272.md) | task | done | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
 | [T-273.md](../tasks/T-273.md) | task | done | Конвейер пуст (272/272 задач закрыто) — весь предыдущий груз был инфраструктурным. |
-| [T-274.md](../tasks/T-274.md) | task | done | D-012 сделал heartbeat добровольным и оставил tripwire пересмотра: «если в |
-| [T-275.md](../tasks/T-275.md) | — | done | — |
-| [T-276.md](../tasks/T-276.md) | — | done | — |
-| [T-277.md](../tasks/T-277.md) | — | done | — |
-| [T-278.md](../tasks/T-278.md) | — | done | — |
-| [T-279.md](../tasks/T-279.md) | task | done | This id was reserved by Mavis via `tools/next_id.py`, but no real title, scope, next actio |
-| [T-280.md](../tasks/T-280.md) | task | blocked | **D-033 готов к 2-му подтверждению.** |
-| [T-281.md](../tasks/T-281.md) | task | done | 1. `topics/meta-sanation-questions-2026-06-24.md` — open 12 дней |
-| [T-282.md](../tasks/T-282.md) | task | done | — |
-| [T-283.md](../tasks/T-283.md) | task | done | This id was reserved through `tools/next_id.py`, but no concrete task title, scope, owner  |
-| [T-284.md](../tasks/T-284.md) | task | blocked | T-281 reviewed three old `open` topics that were causing C29 drift. One topic (`repo-revie |
-| [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-286.md](../tasks/T-286.md) | task | done | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-274.md](../tasks/T-274.md) | task | todo | D-012 сделал heartbeat добровольным и оставил tripwire пересмотра: «если в |
+| [T-275.md](../tasks/T-275.md) | task | done | 2026-07-06 котёл-днём приняты 9 решений (D-024, D-026, D-027, D-028, D-029, D-030, |
+| [T-276.md](../tasks/T-276.md) | task | done | Сейчас верхний слой уже умеет запускать субагентные handoff, держать conveyor, делать synt |
+| [T-277.md](../tasks/T-277.md) | task | done | Recovered task source for a previously referenced governance-batch verifier task. It is ke |
+| [T-278.md](../tasks/T-278.md) | task | done | Recovered task source for the governance-batch writer. It is kept as `done` because `repor |
+| [T-279.md](../tasks/T-279.md) | task | done | Recovered task source for a placeholder cleanup mentioned by later docs. This is not activ |
+| [T-280.md](../tasks/T-280.md) | task | blocked | Recovered task source for the D-033 human decision gate. It remains `blocked` because acce |
+| [T-281.md](../tasks/T-281.md) | task | done | Recovered task source for documentation references. The related topic closeout notes are p |
+| [T-282.md](../tasks/T-282.md) | task | done | Recovered task source for documentation references. The cleanup result is represented by ` |
+| [T-285.md](../tasks/T-285.md) | task | doing | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-286.md](../tasks/T-286.md) | task | todo | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-288.md](../tasks/T-288.md) | task | doing | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-289.md](../tasks/T-289.md) | task | done | Small autonomous fixes extracted from the D-015 advisory notes in driver manifests: |
+| [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
