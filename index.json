@@ -3593,6 +3593,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "по каждому из 6 accepted-решений 2026-07-06 определить точку проявления (AGENTS.md / PROTOCOL.md / README.md / top.py / validator-gate / skill) и вплести; проверить instructions.py surface"
+    },
+    {
+      "id": "T-276",
+      "title": "Cauldron task materializer — dry-run создание кандидатных задач из synthesis/котла",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "спроектировать и реализовать read-only/dry-run инструмент, который читает synthesis/cauldron report и предлагает tasks/T-*.md candidates без auto-accepted решений; запись только явным apply через next_id.py"
     }
   ],
   "questions": [

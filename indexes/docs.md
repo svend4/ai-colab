@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 129 файлов
+# Индекс папки `docs/` — 130 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -25,6 +25,7 @@
 | [card-standard.md](../docs/card-standard.md) | doc | proposed | Одна форма на всех уровнях (фрактал): |
 | [cauldron-two-lane-board-2026-06-24.md](../docs/cauldron-two-lane-board-2026-06-24.md) | cauldron-board | proposed | **Purpose.** Сделать видимыми две большие категории информации, которые попадают в котёл:  |
 | [cli-help-guard-convention-2026-06-24.md](../docs/cli-help-guard-convention-2026-06-24.md) | doc | proposed | Пропорциональный ответ на котёл-критику «hostile sys.argv»: общий _cli.help_guard(__doc__) |
+| [closed-loop-agent-cauldron-conveyor.md](../docs/closed-loop-agent-cauldron-conveyor.md) | doc | proposed | 1.1. Нужен не просто котёл задач и не просто запуск субагентов, а замкнутый управляемый ци |
 | [commit-stream-policy.md](../docs/commit-stream-policy.md) | — | — | Дата: 2026-06-21 |
 | [concept-map.md](../docs/concept-map.md) | doc | proposed | Карта read-only и описательная: она **не** дублирует содержание доков, а связывает их. Кан |
 | [core-export-acceptance-result-2026-06-21.md](../docs/core-export-acceptance-result-2026-06-21.md) | report | done | Stage 4 core-export mechanism was checked as a proposed, non-final L1 export path: |
