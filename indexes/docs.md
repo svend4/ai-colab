@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 139 файлов
+# Индекс папки `docs/` — 140 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -30,6 +30,7 @@
 | [cauldron-two-lane-board-2026-06-24.md](../docs/cauldron-two-lane-board-2026-06-24.md) | cauldron-board | proposed | **Purpose.** Сделать видимыми две большие категории информации, которые попадают в котёл:  |
 | [cli-help-guard-convention-2026-06-24.md](../docs/cli-help-guard-convention-2026-06-24.md) | doc | proposed | Пропорциональный ответ на котёл-критику «hostile sys.argv»: общий _cli.help_guard(__doc__) |
 | [closed-loop-agent-cauldron-conveyor.md](../docs/closed-loop-agent-cauldron-conveyor.md) | doc | proposed | 1.1. Нужен не просто котёл задач и не просто запуск субагентов, а замкнутый управляемый ци |
+| [commit-safety-standard.md](../docs/commit-safety-standard.md) | doc | proposed | Ответ на near-miss массового удаления ~11 000 строк (2026-07-06): агент собирался |
 | [commit-stream-policy.md](../docs/commit-stream-policy.md) | — | — | Дата: 2026-06-21 |
 | [concept-map.md](../docs/concept-map.md) | doc | proposed | Карта read-only и описательная: она **не** дублирует содержание доков, а связывает их. Кан |
 | [core-export-acceptance-result-2026-06-21.md](../docs/core-export-acceptance-result-2026-06-21.md) | report | done | Stage 4 core-export mechanism was checked as a proposed, non-final L1 export path: |
@@ -66,7 +67,7 @@
 | [glossary.md](../docs/glossary.md) | — | — | Термины проекта в алфавитном порядке. Каждый термин: имя → определение → где встречается.  |
 | [implementation-stage-report-2026-06-20.md](../docs/implementation-stage-report-2026-06-20.md) | — | — | Дата: 2026-06-20 |
 | [independent-consensus-overview.md](../docs/independent-consensus-overview.md) | — | — | Дата: 2026-06-25 · Статус: **обзор** (карта артефактов; решения — `D-028`/`D-030`, evidenc |
-| [independent-first-pipeline.md](../docs/independent-first-pipeline.md) | — | — | Дата: 2026-06-25 · Статус: **proposed** (kotel-консенсус готов; D-029 существует как propo |
+| [independent-first-pipeline.md](../docs/independent-first-pipeline.md) | — | — | Дата: 2026-06-25 · Статус: **accepted** (D-029 accepted Stefan 2026-07-06). Синхронизирова |
 | [independent-variant-stream-policy.md](../docs/independent-variant-stream-policy.md) | policy | proposed | **Purpose.** Уточнить политику “дублей”: для содержательных вопросов, архитектуры, методол |
 | [information-refactoring-sanation-standard.md](../docs/information-refactoring-sanation-standard.md) | doc | proposed | Отвечает на открытые мета-вопросы (реестр 4.1/4.2/4.3/4.5/5.1/6): инфо-рефакторинг = оздор |
 | [ingest-acceptance-result-2026-06-21.md](../docs/ingest-acceptance-result-2026-06-21.md) | — | — | Date: 2026-06-21 |

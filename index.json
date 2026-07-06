@@ -3596,7 +3596,7 @@
     {
       "id": "T-274",
       "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3746,6 +3746,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "доработать черновик D-033 по 5 пунктам секции «Направление доработки (Stefan, котёл-день 2026-07-06)», затем повторный заход на подтверждение"
+    },
+    {
+      "id": "T-291",
+      "title": "Вплести стандарт безопасного коммита в PROTOCOL.md (ссылка на tools/commit.py)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "когда PROTOCOL.md свободен (не M у другого агента) — усилить правило коммита ссылкой на docs/commit-safety-standard.md и tools/commit.py"
     }
   ],
   "questions": [
