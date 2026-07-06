@@ -302,4 +302,5 @@
 | T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | done | codex | — | Done by Codex 2026-07-06; repo-runner limits hardened, tests passed, D-015 verified_by still requires independent reviewer. |
 | T-290 | Доработка D-033 по направлению котёл-дня | done | pool | — | доработать черновик D-033 по 5 пунктам секции «Направление доработки (Stefan, котёл-день 2026-07-06)», затем повторный заход на подтверждение |
 | T-291 | Вплести стандарт безопасного коммита в PROTOCOL.md (ссылка на tools/commit.py) | done | pool | — | когда PROTOCOL.md свободен (не M у другого агента) — усилить правило коммита ссылкой на docs/commit-safety-standard.md и tools/commit.py |
+| T-292 | Beta-0 acceptance — полный цикл агента через pipeline (test) | done | pool | — | Прогнать полный цикл: claim → worktree → изменение → validate → commit → done. Замерить время на каждом этапе. |
 <!-- GEN:tasks END -->

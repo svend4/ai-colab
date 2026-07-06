@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 140 файлов
+# Индекс папки `docs/` — 141 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -20,6 +20,7 @@
 | [architecture-core-documents-synthesis-2026-06-24.md](../docs/architecture-core-documents-synthesis-2026-06-24.md) | document-synthesis | proposed | Пропорция работы выбирается агентом/человеком: 50/50 для балансировки, 70/30 если нужно бы |
 | [architecture-docs-recheck-2026-06-21.md](../docs/architecture-docs-recheck-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [audit-variants-and-development-2026-07-06.md](../docs/audit-variants-and-development-2026-07-06.md) | doc | proposed | 1. Идентифицированы пять ключевых операционных проблем: отсутствие воспроизводимого runtim |
+| [beta-0-acceptance.md](../docs/beta-0-acceptance.md) | — | — | ✅ **pipeline.py next/claim/done/fail** — без ошибок |
 | [beta0-acceptance-checklist-2026-07-06.md](../docs/beta0-acceptance-checklist-2026-07-06.md) | doc | accepted | Единый измеримый гейт «Alpha-3 → Beta-0». Сводит критерии из трёх источников |
 | [blocks-layer.md](../docs/blocks-layer.md) | doc | proposed | Блок = именованный кластер проверенных tools, запускаемых **параллельно** (`threading.Thre |
 | [bridge-usage-review-result-2026-06-21.md](../docs/bridge-usage-review-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |

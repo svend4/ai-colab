@@ -3757,6 +3757,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "когда PROTOCOL.md свободен (не M у другого агента) — усилить правило коммита ссылкой на docs/commit-safety-standard.md и tools/commit.py"
+    },
+    {
+      "id": "T-292",
+      "title": "Beta-0 acceptance — полный цикл агента через pipeline (test)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "low",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Прогнать полный цикл: claim → worktree → изменение → validate → commit → done. Замерить время на каждом этапе."
     }
   ],
   "questions": [

@@ -1,16 +1,18 @@
 ---
 id: data
 type: driver
-title: Data driver — таблицы, JSON, SQLite и индексы
+title: Data driver — CSV/TSV таблицы и табличные summary
 status: ready
-level: L1
+level: L2
 mode: read-only
 owner: Codex
 risk: medium
 activation: manual
-interfaces: [inspect, query, classify, export-summary]
+interfaces: [concept:inspect, concept:query, concept:classify, concept:export-summary]
+implemented: [mcp:list_tables, mcp:columns, mcp:head, mcp:summarize]
+planned: [concept:inspect, concept:query, concept:classify, concept:export-summary]
 tools: [list_tables, columns, head, summarize]
-inputs: [csv, json, sqlite, index-json]
+inputs: [csv, tsv]
 outputs: [schema, rows, aggregates, summary]
 sandbox: required-before-write-or-code-exec
 secrets: forbidden-in-repo
@@ -19,42 +21,69 @@ timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
 related: topics/ai-os-bridge.md
+known_issues: [timeout-not-enforced]
 ---
 
 # Driver: data
 
 ## Назначение
 
-Слой для больших объёмов структурированной информации: таблицы, JSON, SQLite, будущие embedding-индексы. На первом этапе драйвер только читает и строит summary/schema.
+Слой для read-only работы с табличными файлами CSV/TSV: обнаружение таблиц, чтение колонок, безопасный `head()` и краткий summary. JSON, SQLite и индексы не реализованы этим драйвером; для них нужны отдельные драйверы или новое расширение контракта.
 
-## Контракт
+## Уровень реализации
 
-- `inspect(source)` — определить формат, поля, размер, качество.
-- `query(source, request)` — выполнить безопасный read-only запрос.
-- `classify(source, taxonomy)` — предложить классификацию.
-- `export-summary(source)` — создать краткий отчёт для агента.
+- **L2 runtime:** есть рабочий MCP-сервер (`mcp_server.py`) и движок (`data_driver.py`) с реальными инструментами `list_tables/columns/head/summarize`.
+- **Conceptual contract:** `inspect/query/classify/export-summary` остаётся будущим интерфейсом и не является текущим MCP API.
+- **Inputs:** текущий L2 читает только `.csv` и `.tsv`.
+
+## Реализованные MCP tools
+
+- `list_tables(directory, max_bytes=1048576)` — список CSV/TSV-таблиц в директории.
+- `columns(path, max_bytes=1048576)` — список колонок таблицы.
+- `head(path, n=10, max_bytes=1048576)` — первые N строк с redaction значений.
+- `summarize(path, max_rows=1000, max_bytes=1048576)` — краткий отчёт: путь, число строк, колонки, заполненность.
+
+## Будущий conceptual contract
+
+- `inspect(source)` — определить формат, поля, размер, качество. [planned]
+- `query(source, request)` — выполнить безопасный read-only запрос. [planned]
+- `classify(source, taxonomy)` — предложить классификацию. [planned]
+- `export-summary(source)` — создать краткий отчёт для агента. [planned]
 
 ## Безопасность
 
-Запись в БД, миграции, удаление строк и выполнение произвольного SQL вне read-only режима требуют отдельного решения и проверки.
+Запись в БД, миграции, удаление строк и выполнение произвольного SQL вне read-only режима требуют отдельного решения и проверки. `max_output_bytes` ограничивает крупные ответы драйвера; `timeout_seconds` пока остаётся декларацией для внешнего runner/MCP host.
+
+## Known Issues
+
+| Issue | Severity | Status |
+|---|---|---|
+| `timeout_seconds: 30` не форсируется внутри `data_driver.py`/`mcp_server.py` | low | Не исправлено; нужен внешний call-wrapper или L3 runner |
+
+## Исправлено 2026-07-06
+
+| Issue | Status |
+|---|---|
+| UTF-8 BOM в именах колонок | Исправлено: чтение CSV/TSV использует `encoding="utf-8-sig"`; regression-тест покрывает `columns/head/summarize`. |
+| `max_output_bytes` для больших payload | Исправлено: `list_tables/columns/head/summarize` применяют `max_bytes`-лимит; `summarize` помечает усечённый ответ полем `truncated`. |
 
 ## Путь развития
 
 - L1: описание форматов и ограничений.
-- L2: локальный MCP-драйвер поверх SQLite/CSV/JSON.
+- L2: локальный MCP-драйвер поверх CSV/TSV. ✅ реализовано
+- L2+: JSON/SQLite/индексы — отдельные драйверы или будущие расширения после нового решения.
 - L3: серверный индекс для больших архивов.
 
-## Верификация 2026-07-06 — НЕ пройдена (расхождение проходов)
+## Верификация 2026-07-06 — статус
 
-Батч C3a (D-015, отмашка Stefan 2026-07-06). Два независимых прохода **разошлись** (`passed = [true, false]`), поэтому `verified_by` во front-matter НЕ проставлен и advisory-WARN D-015 сохраняется намеренно. Вердикты восстановлены из транскриптов после бага интерполяции в исходном писаре.
+**Первая проверка (C3a):** расхождение проходов → `verified_by` не проставлен, WARN D-015 сохраняется.
 
-Замечания прохода, вернувшего `passed=false` (actionable-долг, файл:строка):
+**Доработка 2026-07-06:** замечания от `passed=false` учтены в пределах T-286:
+1. ✅ `level: L1` → `L2` (код есть)
+2. ✅ `inputs` уточнены до `csv, tsv`; JSON/SQLite вынесены из текущего runtime-контракта
+3. ✅ `tools/implemented` описывают реальные MCP tools; `interfaces/planned` описывают будущий conceptual contract
+4. ✅ UTF-8 BOM исправлен кодом и regression-тестом
+5. ✅ `max_output_bytes` добавлен для больших ответов `list_tables/columns/summarize`
+6. ⚠️ `timeout_seconds` остаётся Known Issue
 
-- `drivers/data.md:13` — `inputs: [csv, json, sqlite, index-json]` завышены: код поддерживает только `.csv/.tsv` (`drivers/data/data_driver.py:31` `TABLE_EXT = {".csv", ".tsv"}`); `json/sqlite/index-json` в этом драйвере не реализованы (sqlite — отдельный драйвер), а поддержанный `tsv` в `inputs` не заявлен.
-- `drivers/data.md:6` — `level: L1` занижен: фактически существует L2-реализация (`data_driver.py:4` докстринг «data driver (L2, read-only)»; `mcp_server.py` — FastMCP-сервер); тело манифеста (строки 43-45) называет L2 «путём развития», хотя L2 уже написан и проходит приёмку.
-- `drivers/data.md:32-35` — секция «Контракт» (`inspect/query/classify/export-summary`) не реализована под этими именами; фактические инструменты — `list_tables/columns/head/summarize` (`mcp_server.py:25-50`); поле `tools` с кодом сходится, но контрактный текст и `interfaces` (строка 11) дрейфуют.
-- `drivers/data.md:18` — `timeout_seconds: 30` нигде не форсируется (ни в `data_driver.py`, ни в `mcp_server.py` нет механизма таймаута), хотя драйвер уже L2/MCP.
-- `drivers/data/data_driver.py:77,86,107` — `open(..., encoding="utf-8")` вместо `utf-8-sig`: UTF-8 BOM просачивается в имя первой колонки (воспроизведено smoke: колонка «﻿name»); типовой случай для Windows/Excel CSV, ломает адресацию колонок по имени.
-- `drivers/data/data_driver.py:81-99` — `max_output_bytes` форсируется только в `head()`; `columns()/list_tables()/summarize()` байтового лимита не имеют (низкая серьёзность).
-- `docs/driver-safety-policy.md:11` vs `drivers/audit.py:23,30-31` — политика требует журнал «per-agent/per-task, не в общий горячий файл», а `audit.py` пишет все драйверы в один общий `logs/driver-audit.jsonl` (осознанное решение ревью T-078/E, но текст политики не обновлён) — низкая серьёзность.
-- (repo-wide, не дефект драйвера) `tools/generate.py --check` — exit 1, STALE `STATUS.md/board.md/TASKS.md/QUESTIONS.md/DECISIONS.md/index.json`; §3 чек-листа не выполнен на момент проверки, но состояние repo-wide, не специфично для драйвера data.
+**Ожидает:** повторная верификация D-038 для снятия WARN D-015.

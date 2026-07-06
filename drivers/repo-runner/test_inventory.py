@@ -18,7 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DRIVERS_ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 sys.path.insert(0, DRIVERS_ROOT)
-from inventory import PathAccessError, scan_repo
+from inventory import DEFAULT_MAX_FILES, PathAccessError, clamp_max_files, limit_output, scan_repo
 from test_tmp import temp_dir
 
 
@@ -100,10 +100,33 @@ def test_max_files_and_allowed_root():
         print('PASS: max files and allowed root')
 
 
+def test_limit_helpers():
+    assert clamp_max_files(DEFAULT_MAX_FILES + 5000) == DEFAULT_MAX_FILES
+    assert clamp_max_files(0) == 1
+    assert clamp_max_files('not-int') == DEFAULT_MAX_FILES
+
+    with temp_dir('repo_runner_') as tmp:
+        root = Path(tmp)
+        (root / 'a.py').write_text('print(1)\n', encoding='utf-8')
+        report = scan_repo('.', max_files=DEFAULT_MAX_FILES + 5000, base_dir=tmp)
+        assert report['max_files'] == DEFAULT_MAX_FILES
+        assert report['summary']['max_files'] == DEFAULT_MAX_FILES
+
+    payload = {
+        'structure': ['x' * 200 for _ in range(100)],
+        'python_analysis': [{'body': 'y' * 200} for _ in range(100)],
+    }
+    limited = limit_output(payload, max_output_bytes=512)
+    assert limited['output_truncated'] is True
+    assert 'output_truncated_fields' in limited
+    assert len(str(limited)) < len(str(payload))
+    print('PASS: limit helpers')
+
 if __name__ == '__main__':
     test_scan_empty_repo()
     test_scan_python_repo()
     test_scan_risk_patterns()
     test_nonexistent_path()
     test_max_files_and_allowed_root()
+    test_limit_helpers()
     print('\nAll tests passed!')

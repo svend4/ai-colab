@@ -23,6 +23,7 @@ related:
 
 | Package | Orchestrator | Status | Risk | Зоны | Связь T/Q/D |
 |---|---|---|---|---|---|
+| `PKG-20260706-codex-delegation-refill` | codex | agreed | low | in: AGENTS.md, PROTOCOL.md, docs/, reports/, tools/; out: reports/delegation-gap-review-2026-07-06.md, queues/outbox/2026-07-06-delegation-refill-codex.md, kotel/packages/PKG-20260706-codex-delegation-refill.md | D-017, D-018, D-022, D-035 |
 | `PKG-20260706-pilot-t273` | pool | draft | medium | in: docs/, drivers/, tasks/T-273.md, reports/closed-loop-synthesis-claude-2026-07-06.md, reports/orchestrator-cycle-proposal-review-codex-2026-07-06.md; out: kotel/packages/PKG-20260706-pilot-t273.md, reports/, tmp-work/ | T-273, T-276, D-015, D-018, D-035 |
 
 ### Демонстрации

@@ -34,18 +34,23 @@ mcp = FastMCP("repo-runner")
 BASE_DIR = os.environ.get("REPO_RUNNER_BASE") or os.getcwd()
 
 
+def _scan(repo_path: str, max_files: int) -> dict:
+    max_files = inventory.clamp_max_files(max_files)
+    return inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
+
+
 @mcp.tool()
 def inspect_repo(repo_path: str, max_files: int = 1000) -> dict:
     """Полный read-only inventory репозитория: структура, языки, package-файлы, тесты, риски. Код не запускается."""
     audit("repo-runner", "inspect_repo", repo_path, max_files=max_files)
-    return inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
+    return inventory.limit_output(_scan(repo_path, max_files))
 
 
 @mcp.tool()
 def repo_summary(repo_path: str, max_files: int = 1000) -> dict:
     """Краткая сводка: число файлов, размер, языки, наличие тестов, число рисков."""
     audit("repo-runner", "repo_summary", repo_path, max_files=max_files)
-    report = inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
+    report = _scan(repo_path, max_files)
     return report.get("summary", report)
 
 
@@ -53,8 +58,8 @@ def repo_summary(repo_path: str, max_files: int = 1000) -> dict:
 def repo_risks(repo_path: str, max_files: int = 1000) -> list:
     """Список потенциально опасных файлов/паттернов (shell, eval/exec, сеть) — только пометка, без запуска."""
     audit("repo-runner", "repo_risks", repo_path, max_files=max_files)
-    report = inventory.scan_repo(repo_path, max_files=max_files, base_dir=BASE_DIR)
-    return report.get("risks", [])
+    report = _scan(repo_path, max_files)
+    return inventory.limit_output(report.get("risks", []))
 
 
 if __name__ == "__main__":

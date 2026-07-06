@@ -13,7 +13,7 @@
     },
     {
       "id": "data",
-      "title": "Data driver — таблицы, JSON, SQLite и индексы",
+      "title": "Data driver — CSV/TSV таблицы и табличные summary",
       "level": "L2",
       "mode": "read-only",
       "risk": "medium",

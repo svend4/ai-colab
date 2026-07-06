@@ -28,6 +28,7 @@ related:
 | Package | Status | Risk | Task | Orchestrator | Lead | Zones | Next |
 |---|---|---|---|---|---|---|---|
 | `PKG-20260706-pilot-t273` | **demonstrated** | medium | T-273 | pool | claude (build/run/report) + codex (safety/package) | inputs: `docs/`, `drivers/`; outputs: `reports/`, `tmp-work/` | решение котла: принять package/agenda-слой (Q1 a/b) или отложить; при принятии — оформить `l2_inventory` в CATALOG |
+| `PKG-20260706-codex-delegation-refill` | **agreed** | low | package-only | codex | codex + future `subagent-worker` roles | inputs: `AGENTS.md`, `PROTOCOL.md`, `docs/`, `reports/`, `tools/`; outputs: `reports/`, `queues/outbox/`, `kotel/packages/` | готово к внешнему запуску ролей `governance-scout`, `tooling-scout`, `process-scout`; Codex уже сделал первый integration review |
 
 ## 2. Questions For Kotel-Day
 

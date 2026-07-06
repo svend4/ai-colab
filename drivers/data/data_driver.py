@@ -62,20 +62,81 @@ def _delim(path):
     return "\t" if str(path).lower().endswith(".tsv") else ","
 
 
-def list_tables(directory, base_dir=None):
+def _json_bytes(value):
+    return len(json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+
+
+def _coerce_max_bytes(max_bytes):
+    if max_bytes is None:
+        return None
+    return max(0, int(max_bytes))
+
+
+def _bounded_list(values, max_bytes=MAX_OUTPUT_BYTES):
+    limit = _coerce_max_bytes(max_bytes)
+    if limit is None:
+        return list(values), False
+    out = []
+    used = 2  # JSON array brackets.
+    truncated = False
+    for value in values:
+        size = _json_bytes(value)
+        next_used = used + size + (1 if out else 0)
+        if next_used > limit:
+            truncated = True
+            break
+        out.append(value)
+        used = next_used
+    return out, truncated
+
+
+def _read_columns(path):
+    with path.open(encoding="utf-8-sig", newline="") as f:
+        return next(csv.reader(f, delimiter=_delim(path)), [])
+
+
+def _bounded_summary(summary, max_bytes=MAX_OUTPUT_BYTES):
+    limit = _coerce_max_bytes(max_bytes)
+    if limit is None or _json_bytes(summary) <= limit:
+        return summary
+    limited = {
+        "path": summary["path"],
+        "rows": summary["rows"],
+        "columns": [],
+        "non_empty": {},
+        "truncated": True,
+        "total_columns": len(summary["columns"]),
+    }
+    for column in summary["columns"]:
+        next_non_empty = dict(limited["non_empty"])
+        next_non_empty[column] = summary["non_empty"].get(column, 0)
+        candidate = {
+            "path": limited["path"],
+            "rows": limited["rows"],
+            "columns": limited["columns"] + [column],
+            "non_empty": next_non_empty,
+            "truncated": True,
+            "total_columns": limited["total_columns"],
+        }
+        if _json_bytes(candidate) > limit:
+            break
+        limited = candidate
+    return limited
+
+
+def list_tables(directory, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
     root = _resolve(directory, base_dir)
     out = []
     for dp, _dirs, fns in os.walk(root):
         for fn in fns:
             if os.path.splitext(fn)[1].lower() in TABLE_EXT:
                 out.append((Path(dp) / fn).relative_to(root).as_posix())
-    return sorted(out)
+    return _bounded_list(sorted(out), max_bytes=max_bytes)[0]
 
 
-def columns(path, base_dir=None):
+def columns(path, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
     p = _resolve(path, base_dir)
-    with p.open(encoding="utf-8", newline="") as f:
-        return next(csv.reader(f, delimiter=_delim(p)), [])
+    return _bounded_list(_read_columns(p), max_bytes=max_bytes)[0]
 
 
 def head(path, n=10, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
@@ -83,7 +144,8 @@ def head(path, n=10, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
     n = max(0, min(int(n), DEFAULT_MAX_ROWS))
     rows = []
     used = 0
-    with p.open(encoding="utf-8", newline="") as f:
+    limit = _coerce_max_bytes(max_bytes)
+    with p.open(encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f, delimiter=_delim(p))
         for i, row in enumerate(reader):
             if i >= n:
@@ -92,19 +154,19 @@ def head(path, n=10, base_dir=None, max_bytes=MAX_OUTPUT_BYTES):
             # (CSV — типичный носитель PII/секретов; safety-policy, ревью T-078 находка F)
             red = {k: redact(v) for k, v in row.items()}
             size = sum(len(str(k)) + len(str(v)) for k, v in red.items())
-            if rows and used + size > max_bytes:
+            if limit is not None and rows and used + size > limit:
                 break
             rows.append(red)
             used += size
     return rows
 
 
-def summarize(path, base_dir=None, max_rows=DEFAULT_MAX_ROWS):
+def summarize(path, base_dir=None, max_rows=DEFAULT_MAX_ROWS, max_bytes=MAX_OUTPUT_BYTES):
     p = _resolve(path, base_dir)
-    cols = columns(p, base_dir=base_dir)
+    cols = _read_columns(p)
     nrows = 0
     non_empty = {c: 0 for c in cols}
-    with p.open(encoding="utf-8", newline="") as f:
+    with p.open(encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f, delimiter=_delim(p))
         for row in reader:
             if nrows >= max_rows:
@@ -113,7 +175,10 @@ def summarize(path, base_dir=None, max_rows=DEFAULT_MAX_ROWS):
             for c in cols:
                 if (row.get(c) or "").strip():
                     non_empty[c] += 1
-    return {"path": str(p), "rows": nrows, "columns": cols, "non_empty": non_empty}
+    return _bounded_summary(
+        {"path": str(p), "rows": nrows, "columns": cols, "non_empty": non_empty},
+        max_bytes=max_bytes,
+    )
 
 
 def main():

@@ -64,3 +64,13 @@ related: topics/ai-os-bridge.md
 - (repo-wide, не дефект драйвера) `docs/driver-schema-acceptance-checklist.md:42` — пункт «`generate.py --check` не показывает устаревшие индексы» НЕ выполняется: `tools/generate.py --check` завершается exit 1, STALE `STATUS.md, board.md, TASKS.md, DECISIONS.md, index.json`. Устарела репозиторная навигация после недавних коммитов, не логика files; лечится запуском `python tools/generate.py`.
 - `drivers/files/mcp_server.py:41-43` (ADVISORY) — MCP-инструмент `read_file` принимает `max_bytes` от клиента без верхнего клампа к манифестному `max_output_bytes=1048576` (`drivers/files.md:19`): клиент может передать `max_bytes` сколь угодно большим, и `files_driver.read_file` (`files_driver.py:116-126`) прочитает столько в память. Дефолт `1_000_000` ниже лимита (безопасное направление), нарушение только в отсутствии принудительной отсечки. Аналогично `max_files/max_hits`. Низкая серьёзность: локальный доверенный клиент, read-only.
 - `drivers/files.md:18` (ADVISORY) — `timeout_seconds: 30` нигде не форсируется в L2-коде (`files_driver.py`, `mcp_server.py`). По `drivers/SCHEMA.md:35` поле декларируется «для будущего L2/L3 вызова», так что для текущего уровня допустимо; наблюдение зафиксировано, чтобы при L2-acceptance (T-048) лимит был реализован на стороне вызова.
+
+## Hardening 2026-07-06 — T-287
+
+Codex addressed the concrete `files` finding from the 2026-07-06 D-015 verification notes:
+
+- `drivers/files/mcp_server.py` now clamps MCP client-supplied `max_bytes`, `max_files`, and `max_hits` to the engine/manifest limits before calling the read-only engine.
+- `python drivers\files\test_files.py` passes.
+- `python -m py_compile drivers\files\mcp_server.py` passes.
+
+`verified_by` is intentionally still absent. D-015/D-038 require a follow-up multi-agent reverification; this change only removes the low-risk limit-clamping finding. The `timeout_seconds` observation remains advisory and belongs to a broader call-wrapper/runner timeout policy, not to this narrow `files` engine patch.

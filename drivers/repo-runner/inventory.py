@@ -11,6 +11,7 @@ import importlib.util
 from pathlib import Path
 
 DEFAULT_MAX_FILES = 1000
+DEFAULT_MAX_OUTPUT_BYTES = 1048576
 RISK_READ_MAX_BYTES = 50000
 SKIP_DIRS = {
     ".git",
@@ -103,6 +104,74 @@ class PathAccessError(ValueError):
     pass
 
 
+def clamp_max_files(value, default=DEFAULT_MAX_FILES, upper=DEFAULT_MAX_FILES) -> int:
+    """Clamp caller-provided file count to the manifest safety ceiling."""
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        value = default
+    return max(1, min(value, upper))
+
+
+def _json_size_bytes(value) -> int:
+    return len(json.dumps(value, ensure_ascii=False).encode("utf-8"))
+
+
+def limit_output(value, max_output_bytes=DEFAULT_MAX_OUTPUT_BYTES):
+    """Return a best-effort bounded payload for MCP responses."""
+    try:
+        max_output_bytes = int(max_output_bytes)
+    except (TypeError, ValueError):
+        max_output_bytes = DEFAULT_MAX_OUTPUT_BYTES
+    max_output_bytes = max(256, min(max_output_bytes, DEFAULT_MAX_OUTPUT_BYTES))
+    if _json_size_bytes(value) <= max_output_bytes:
+        return value
+
+    if isinstance(value, list):
+        out = []
+        omitted = 0
+        for item in value:
+            candidate = out + [item]
+            marker = {"output_truncated": True, "omitted_items": omitted}
+            if _json_size_bytes(candidate + [marker]) > max_output_bytes:
+                omitted += 1
+            else:
+                out = candidate
+        out.append({"output_truncated": True, "omitted_items": omitted})
+        return out
+
+    if not isinstance(value, dict):
+        return {
+            "output_truncated": True,
+            "summary": str(value)[: max_output_bytes // 4],
+        }
+
+    limited = dict(value)
+    truncated_fields = []
+    for key in ("python_analysis", "structure", "risks", "tests", "package_files"):
+        items = limited.get(key)
+        if isinstance(items, list) and len(items) > 50:
+            limited[key] = items[:50]
+            limited[f"{key}_omitted"] = len(items) - 50
+            truncated_fields.append(key)
+            if _json_size_bytes(limited) <= max_output_bytes:
+                break
+
+    if _json_size_bytes(limited) > max_output_bytes:
+        for key in ("python_analysis", "structure", "risks", "tests", "package_files"):
+            items = limited.get(key)
+            if isinstance(items, list):
+                limited[f"{key}_omitted"] = len(items)
+                limited[key] = []
+                if key not in truncated_fields:
+                    truncated_fields.append(key)
+            if _json_size_bytes(limited) <= max_output_bytes:
+                break
+
+    limited["output_truncated"] = True
+    limited["output_truncated_fields"] = truncated_fields
+    return limited
+
 # Load only the repo-local analyzer module; scanned target code is never imported.
 def _load_python_analyzer():
     analyzer_path = Path(__file__).resolve().parents[2] / 'tools' / 'python_analyzer.py'
@@ -140,6 +209,7 @@ def _resolve_repo_path(repo_path: str, base_dir: str = None) -> Path:
 
 def scan_repo(repo_path: str, max_files: int = DEFAULT_MAX_FILES, base_dir: str = None) -> dict:
     """Scan a repository and return inventory report."""
+    max_files = clamp_max_files(max_files)
     repo = _resolve_repo_path(repo_path, base_dir)
     if not repo.exists():
         return {"error": f"Path not found: {repo_path}"}
