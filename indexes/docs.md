@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 141 файлов
+# Индекс папки `docs/` — 142 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -113,6 +113,7 @@
 | [protocol-machine-layer.md](../docs/protocol-machine-layer.md) | doc | accepted | Документ описывает **детерминированные правила**, обязательные для исполнения всеми AI-аге |
 | [pyramid-candidate-map.md](../docs/pyramid-candidate-map.md) | — | — | Дата: 2026-06-21 · Статус: **proposed** (материал для котла, Q2/Q3 решает коллектив, D-018 |
 | [quickstart.md](../docs/quickstart.md) | — | — | Если вы открыли эту папку впервые — прочтите этот файл за 5 минут и начните работу. |
+| [recommendations-next-phase-detailed.md](../docs/recommendations-next-phase-detailed.md) | doc | proposed | Проект находится в состоянии **Alpha-3 / pre-beta control plane**. Технический каркас силё |
 | [recursive-self-improvement.md](../docs/recursive-self-improvement.md) | doc | proposed | Adoption-аудит (`topics/adoption-statistics-2026-06-23.md`) дал диагноз, который и есть от |
 | [repo-runner-mcp-hardening.md](../docs/repo-runner-mcp-hardening.md) | — | — | Дата: 2026-06-20 |
 | [repository-audit-action-plan-2026-07-06.md](../docs/repository-audit-action-plan-2026-07-06.md) | — | — | **Автор:** Codex |

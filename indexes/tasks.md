@@ -296,4 +296,4 @@
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
 | [T-291.md](../tasks/T-291.md) | task | done | Стандарт безопасного коммита оформлен (docs/commit-safety-standard.md, |
 | [T-292.md](../tasks/T-292.md) | task | done | Проверить, что весь pipeline работает от начала до конца без ручного вмешательства. |
-| [T-293.md](../tasks/T-293.md) | task | doing | 1. `drivers/codex-local.md` |
+| [T-293.md](../tasks/T-293.md) | task | done | 1. `drivers/codex-local.md` |

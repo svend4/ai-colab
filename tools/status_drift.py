@@ -258,6 +258,12 @@ def check_decision_status(lines, statuses):
         m = _UNRATIFIED_RE.search(text)
         if not m:
             continue
+        # Ложное срабатывание: строка ОПИСЫВАЕТ принятие решений («приняты N (D-…→accepted)»),
+        # а не заявляет их нератифицированными. Слово «proposed» тут — прилагательное к «решений».
+        # Guard из ОДНОЗНАЧНЫХ позитивных фраз: не «ратифицир» (оно есть в «не-ратифицир-ованных»!)
+        # и не «принят» (есть в «непринятых»), а «приняты/принято/→ accepted/уже accepted».
+        if re.search(r"приняты|принято|→\s*accepted|уже\s+accepted", text, re.IGNORECASE):
+            continue
         claimed_n = int(m.group(1))
         ids = _DEC_RE.findall(text)
         if not ids:
@@ -310,6 +316,11 @@ def check_focus_tasks(lines, statuses):
             if tid in seen:
                 continue
             seen.add(tid)
+            # Явная пометка «(done)»/«(закрыт)»/«(готов)» рядом с id — осознанная ссылка
+            # на завершённую работу как контекст, а не претензия «живой фокус». Не дрейф.
+            if re.search(re.escape(tid) + r"\s*\((?:done|закрыт\w*|готов\w*|выполнен\w*)\)",
+                         text, re.IGNORECASE):
+                continue
             if statuses.get(tid) == "done":
                 findings.append({
                     "kind": "focus-task-done",

@@ -3772,7 +3772,7 @@
     {
       "id": "T-293",
       "title": "D-015 driver verification — cross-agent review для 4 ready-драйверов",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -4269,7 +4269,7 @@
       "title": "Files driver — безопасное чтение и инвентаризация файлов",
       "file": "drivers/files.md",
       "status": "ready",
-      "level": "L1",
+      "level": "L2",
       "mode": "read-only",
       "owner": "Codex",
       "risk": "low",

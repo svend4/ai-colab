@@ -166,6 +166,41 @@ def test_clean_status_no_findings():
         shutil.rmtree(root, ignore_errors=True)
 
 
+def test_no_false_positive_on_ratification_and_done_marker():
+    """Регрессия: НЕ флажить строку, описывающую ПРИНЯТИЕ решений, и T-id с пометкой «(done)».
+
+    Два ложных срабатывания (найдены при фиксе STATUS 2026-07-06):
+    (b) «приняты 6 (D-024, D-026 → accepted)» — слово «proposed»/список D-id рядом, но текст
+        УТВЕРЖДАЕТ принятие, а не претензию «нератифицировано» → находки быть НЕ должно;
+    (c) «T-050 (done)» в фокусе — явная пометка завершённости как контекст → не дрейф.
+    """
+    root = tempfile.mkdtemp(prefix="status_drift_fp_")
+    saved = sd.ROOT
+    try:
+        _decision(root, "D-024", "accepted")
+        _decision(root, "D-026", "accepted")
+        _decision(root, "D-033", "proposed")
+        _task(root, "T-050", "done")
+        _task(root, "T-060", "open")
+        _w(os.path.join(root, "index.json"),
+           '{"tasks":[1,2],"decisions":[1,2,3],"questions":[],"topics":[],"drivers":[]}')
+        _w(os.path.join(root, "STATUS.md"),
+           "# Статус\n\n## Текущий фокус\n\n"
+           "- governance: из 7 proposed-решений приняты 6 (D-024, D-026 → accepted); остаётся D-033.\n"
+           "- фокус: T-050 (done) — контекст; активна T-060.\n")
+        sd.ROOT = root
+        by = _findings_by_kind(sd.run(root))
+        assert "decision-status" not in by, \
+            "(b) строка о принятии решений НЕ должна давать decision-status: %s" % by.get("decision-status")
+        assert "decision-count" not in by, \
+            "(b) строка о принятии не должна давать decision-count: %s" % by.get("decision-count")
+        ftd = {f["task"] for f in by.get("focus-task-done", [])}
+        assert "T-050" not in ftd, "(c) T-050 (done) с явной пометкой не должна флажиться: %s" % ftd
+    finally:
+        sd.ROOT = saved
+        shutil.rmtree(root, ignore_errors=True)
+
+
 def test_strip_gen_blocks_excludes_generated():
     """Содержимое GEN-блока не считается ручной прозой (сравниваем только ручной текст)."""
     text = ("ручная строка A\n"
@@ -184,6 +219,7 @@ def run():
     ok = True
     for fn in (test_detects_c17_and_scopes_out_noise,
                test_clean_status_no_findings,
+               test_no_false_positive_on_ratification_and_done_marker,
                test_strip_gen_blocks_excludes_generated):
         try:
             fn()

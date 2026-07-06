@@ -36,7 +36,7 @@
     {
       "id": "files",
       "title": "Files driver — безопасное чтение и инвентаризация файлов",
-      "level": "L1",
+      "level": "L2",
       "mode": "read-only",
       "risk": "low",
       "status": "ready",
