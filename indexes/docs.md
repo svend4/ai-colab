@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 130 файлов
+# Индекс папки `docs/` — 131 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -17,6 +17,7 @@
 | [ai_middle_layer_architecture_ru.md](../docs/ai_middle_layer_architecture_ru.md) | — | — | Дата: 2026-06-19 |
 | [architecture-core-documents-synthesis-2026-06-24.md](../docs/architecture-core-documents-synthesis-2026-06-24.md) | document-synthesis | proposed | Пропорция работы выбирается агентом/человеком: 50/50 для балансировки, 70/30 если нужно бы |
 | [architecture-docs-recheck-2026-06-21.md](../docs/architecture-docs-recheck-2026-06-21.md) | — | done | Дата: 2026-06-21. |
+| [beta0-acceptance-checklist-2026-07-06.md](../docs/beta0-acceptance-checklist-2026-07-06.md) | doc | proposed | Единый измеримый гейт «Alpha-3 → Beta-0». Сводит критерии из трёх источников |
 | [blocks-layer.md](../docs/blocks-layer.md) | doc | proposed | Блок = именованный кластер проверенных tools, запускаемых **параллельно** (`threading.Thre |
 | [bridge-usage-review-result-2026-06-21.md](../docs/bridge-usage-review-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [bridge-usage.md](../docs/bridge-usage.md) | — | — | Операционный гайд: как **запустить** и **подключить** уже построенный «средний слой» |
