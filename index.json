@@ -3768,6 +3768,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Прогнать полный цикл: claim → worktree → изменение → validate → commit → done. Замерить время на каждом этапе."
+    },
+    {
+      "id": "T-293",
+      "title": "D-015 driver verification — cross-agent review для 4 ready-драйверов",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Провести многоагентную верификацию для codex-local, data, files, repo-runner. Либо собрать 2+ агентов для review, либо понизить статус до draft."
     }
   ],
   "questions": [

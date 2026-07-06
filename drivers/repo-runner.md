@@ -14,6 +14,8 @@ inputs: [repo-path, repo-url]
 outputs: [repo-map, test-plan, risk-report, summary]
 sandbox: required-before-run-or-test
 secrets: forbidden-in-repo
+verified_by: [Novax]
+verified_date: 2026-07-06
 source_last_verified: 2026-06-21
 timeout_seconds: 30
 max_output_bytes: 1048576
