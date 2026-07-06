@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_git_reconcile
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_git_reconcile.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест git_reconcile.py — merge-driver интерфейс (base/ours/theirs → field-merge в ours, exit-код)."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

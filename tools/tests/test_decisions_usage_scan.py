@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_decisions_usage_scan
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_decisions_usage_scan.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест decisions_usage_scan.py — счётчик использования D-XXX (read-only).
 
 In-process, точные утверждения (mutation-sensitive); пороги понижены для компактной фикстуры.

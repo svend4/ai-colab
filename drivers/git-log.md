@@ -15,6 +15,8 @@ outputs: [commit-list, author-stats, file-history, summary]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
 source_last_verified: 2026-06-21
+verified_by: [claude-w3a (2026-07-06), claude-w3b (2026-07-06)]
+last_verified: 2026-07-06
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
@@ -54,6 +56,18 @@ Read-only доступ к **истории git** репозитория — чт
 
 Рантайм-нюанс устранён: при работе как MCP-сервер `git`-вызовы шли с `stdin=DEVNULL`, иначе на
 Windows возникал дедлок overlapped I/O (git наследовал stdin-пайп asyncio-сервера) — `tools/call` виснул.
+
+## Верификация 2026-07-06
+
+Батч C3a (D-015, отмашка Stefan 2026-07-06). Оба независимых прохода вернули `passed=true`; во front-matter проставлены `verified_by` (две записи) и `last_verified: 2026-07-06`.
+
+**Честная оговорка:** `claude-w3a` и `claude-w3b` — два независимых инстанса **одной модели (Claude)**, не разные модели и не разные люди. Полноценная мультимодельная верификация требует разных моделей/ревьюеров (открытый вопрос к Stefan). Вердикты восстановлены из транскриптов после бага интерполяции в исходном писаре; сами верификаторы отработали штатно.
+
+Замечания к доработке (не блокирующие, из обоих проходов):
+
+- `drivers/git-log/git_log.py:8` — доковый дрейф: docstring движка заявляет whitelist «git log/rev-list/branch», фактически используется `log/rev-list/rev-parse` (`git_log.py:120-121`); манифест (строка 41) при этом корректен. Поправить строку docstring.
+- `drivers/git-log.md:19` — `max_output_bytes: 1048576` побайтово не форсируется в коде; вывод ограничен лишь косвенно (`n ≤ 1000`, `max_commits=5000` в `author_stats`). По SCHEMA.md поле — бюджет будущего runtime, но для L2-драйвера enforcement отсутствует.
+- `drivers/git-log.md:18` — `timeout_seconds: 30` vs `TIMEOUT=15с` на каждый git-вызов: `repo_summary` делает 4 последовательных вызова (`git_log.py:118-123`), теоретический worst case ~60с > заявленных 30с (на практике укладывается в доли секунды).
 
 ## Реализация
 

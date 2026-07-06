@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `decisions/` — 33 файлов
+# Индекс папки `decisions/` — 35 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -30,13 +30,15 @@
 | [D-021.md](../decisions/D-021.md) | decision | accepted | базе. Техническая основа — синтез Codex `D-020` (`proposed`) и независимая перепроверка |
 | [D-022.md](../decisions/D-022.md) | decision | accepted | детальная политика с 50 под-случаями и матрицей «ситуация → механизм» — в |
 | [D-023.md](../decisions/D-023.md) | decision | accepted | найденное гибрид-слиянием двух политик коммитов (`docs/parallel-work-consensus-2026-06-22. |
-| [D-024.md](../decisions/D-024.md) | decision | proposed | **Контекст:** В соответствии с `D-017` (fork-and-synthesize), когда над одной темой работа |
+| [D-024.md](../decisions/D-024.md) | decision | accepted | **Контекст:** В соответствии с `D-017` (fork-and-synthesize), когда над одной темой работа |
 | [D-025.md](../decisions/D-025.md) | — | accepted | Это **рекомендуемый по умолчанию** вариант. Если асинхронный MCP через stdio падает, агент |
-| [D-026.md](../decisions/D-026.md) | decision | proposed | 2026-06-24 произошёл инцидент: массовый авто-стрип **147 outbox-отчётов (8643 строки)** в  |
-| [D-027.md](../decisions/D-027.md) | decision | proposed | Q-023 зафиксировал открытый governance-вопрос: что может решать человек, главный агент, in |
-| [D-028.md](../decisions/D-028.md) | decision | proposed | D-017 уже принял принцип `fork-and-synthesize`: содержательные варианты полезны и не должн |
-| [D-029.md](../decisions/D-029.md) | decision | proposed | D-028 (Codex) закрывает **fork-сторону** независимого конвейера (как варианты расходятся). |
-| [D-030.md](../decisions/D-030.md) | decision | proposed | Методичка «независимый вариант → сверка по смыслу» (D-028 fork-сторона + merge-сторона) бы |
+| [D-026.md](../decisions/D-026.md) | decision | accepted | 2026-06-24 произошёл инцидент: массовый авто-стрип **147 outbox-отчётов (8643 строки)** в  |
+| [D-027.md](../decisions/D-027.md) | decision | accepted | Q-023 зафиксировал открытый governance-вопрос: что может решать человек, главный агент, in |
+| [D-028.md](../decisions/D-028.md) | decision | accepted | D-017 уже принял принцип `fork-and-synthesize`: содержательные варианты полезны и не должн |
+| [D-029.md](../decisions/D-029.md) | decision | accepted | D-028 (Codex) закрывает **fork-сторону** независимого конвейера (как варианты расходятся). |
+| [D-030.md](../decisions/D-030.md) | decision | accepted | Методичка «независимый вариант → сверка по смыслу» (D-028 fork-сторона + merge-сторона) бы |
 | [D-031.md](../decisions/D-031.md) | decision | accepted | (Уровень 0 = selective-add + commit_lock) и D-022 (триггеры Level-1); не противоречит им — |
-| [D-032.md](../decisions/D-032.md) | decision | proposed | детально»). Формальный флип в `accepted` оставляю человеку/интегратору — чтобы не плодить  |
+| [D-032.md](../decisions/D-032.md) | decision | accepted | формализация ранее сказанного: Stefan авторизовал внедрение в сессии 2026-06-26 («Да внедр |
 | [D-033.md](../decisions/D-033.md) | decision | proposed | ТЕРМИНАЛЬНОЕ действие = `accept` / `merge` / `commit` / `delete` / `publish` — то, что тру |
+| [D-034.md](../decisions/D-034.md) | decision | accepted | вариант (b) — решение принято Stefan напрямую). |
+| [D-035.md](../decisions/D-035.md) | decision | accepted | решение принято Stefan напрямую). |

@@ -15,18 +15,29 @@
 - Захват задачи — `python tools/pipeline.py next <agent>` (или `claim <agent> <T-id>`); `queues/claimed/` — legacy-история, отметки в нём руками не создавать (см. `PROTOCOL.md`, раздел «Очереди для агентов»).
 - Коммит в общее дерево — через очередь коммитов `tools/commit_queue.py` (`enqueue <agent> --save` → `turn` → `git commit` → `done`, D-031); при триггерах параллельной работы (`python tools/cohort.py guard`) — уход в worktree Уровня-1 (D-022). Подробно: `PROTOCOL.md`, раздел «Commits, streams и полу-коммиты».
 
+## Ростер и зоны записи
+
+Единый источник ростера — `tools/_canon.py`, зоны записи — `tools/permissions.json` (проверка: `python tools/permissions.py <agent>`).
+
+- **Ростер** (`AGENTS_ROSTER`, ратифицирован: Stefan, 2026-07-06): claude, codex, mavis, novax.
+- **Служебные** (`SERVICE_AGENTS`): subagent-worker — служебные исполнители роёв (workflow-подагенты); их следы в рабочих артефактах — норма, `validate.py` не даёт WARN (решение Stefan 2026-07-06).
+- **Исключённые** (`EXCLUDED_AGENTS`): antigravity — вне ростера до объяснения по инциденту outbox-mass-strip (решение Stefan 2026-07-06); `validate.py` напоминает WARN'ом с этой причиной.
+- **Критические пути** (deny-список `"_deny_agents"` в `tools/permissions.json`, проверяется ПЕРВЫМ для любого агента, включая зону `**`): `tools/permissions.json`, `tools/githooks/**`, `sandbox/approvals/**` — правит только человек (решение Stefan 2026-07-06, закрывает gate-10/C31).
+- claude/codex — широкая зона записи (`**`) за вычетом критических путей выше.
+
 ## Реестр
 
 | ID | Тип | Роль | Может писать | Ограничения |
 |---|---|---|---|---|
-| codex | AI assistant | главный помощник по чтению, правкам, коду и структуре | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | не удалять чужие сообщения; решения утверждать только при явном назначении человеком |
-| claude | AI assistant | помощник по чтению, правкам, коду, структуре и проверке нестыковок | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | не удалять чужие сообщения; решения утверждать только при явном назначении человеком |
+| codex | AI assistant | главный помощник по чтению, правкам, коду и структуре | широкая зона (`**`) минус критические пути: `tools/permissions.json`, `tools/githooks/**`, `sandbox/approvals/**` | не удалять чужие сообщения; решения утверждать только при явном назначении человеком |
+| claude | AI assistant | помощник по чтению, правкам, коду, структуре и проверке нестыковок | широкая зона (`**`) минус критические пути: `tools/permissions.json`, `tools/githooks/**`, `sandbox/approvals/**` | не удалять чужие сообщения; решения утверждать только при явном назначении человеком |
 | summarizer | AI/script | сборщик кратких итогов | `topics/<topic>/summary.md`, `queues/outbox/` | не принимает решения сам |
 | reviewer | AI/script | проверка рисков и противоречий | `queues/outbox/`, `topics/` | не меняет код без задачи |
 | researcher | AI/script | сбор фактов и материалов | `docs/`, `queues/outbox/` | должен указывать источники, если использует внешние данные |
 | Mavis | AI assistant | третий агент: чтение, реагирование, генерация, проверка нестыковок; помощь с `tools/` и регламентом | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | не удалять чужие сообщения; решения предлагать (`proposed`), не утверждать (`accepted`) без человека; правки служебных файлов — с обоснованием по D-003 |
 | novax | AI assistant | 4-й агент: чтение, реагирование, анализ, генерация, проверка нестыковок; помощь с `tools/` и регламентом | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | не удалять чужие сообщения; решения предлагать (`proposed`), не утверждать (`accepted`) без человека; правки служебных файлов — с обоснованием по D-003 |
-| antigravity | AI assistant | 5-й агент: глубокий анализ, проектирование архитектуры, планирование и реализация комплексных задач | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | не удалять чужие сообщения; решения предлагать (`proposed`), не утверждать (`accepted`) без человека; правки служебных файлов — с обоснованием по D-003 |
+| antigravity | AI assistant | 5-й агент: глубокий анализ, проектирование архитектуры, планирование и реализация комплексных задач | `docs/`, `code/`, `TASKS.md`, `QUESTIONS.md`, `DECISIONS.md`, `topics/`, `queues/` | ИСКЛЮЧЁН из ростера (`EXCLUDED_AGENTS` в `tools/_canon.py`): вне ростера до объяснения по инциденту outbox-mass-strip (решение Stefan 2026-07-06); не удалять чужие сообщения; решения предлагать (`proposed`), не утверждать (`accepted`) без человека; правки служебных файлов — с обоснованием по D-003 |
+| subagent-worker | AI/script | служебный исполнитель роёв (workflow-подагент), `SERVICE_AGENTS` в `tools/_canon.py` (решение Stefan 2026-07-06) | рабочие артефакты роя: `queues/`, `logs/`, `streams/` | действует только в рамках задачи роя; не принимает решения сам |
 
 ## Шаблон нового агента
 

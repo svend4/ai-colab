@@ -12,6 +12,7 @@ HELP = """dir_health.py — health-gate каталога (C-10 консенсу�
 
 Из architecture-fundamentals §3.2 + razbor-consensus C-10: организация каталога проверяется ЧИСЛАМИ,
 как код (не на глаз). Пороги (консенсус 2+ агентов): файлов в папке >200 FAIL / >100 WARN (цель 7-50);
+архивные каталоги (ARCHIVE_DIRS, D-034: архив растёт по определению) >500 FAIL / >400 WARN;
 файл >50КБ WARN; index.json >200КБ WARN; корневых папок >15 WARN; глубина вложенности >3 WARN;
 элементы queues/inbox/ старше 5д WARN (C30-b аудита 2026-07-02, по аналогии с T-201 для failed;
 README.md не считается). Gitignored runtime-артефакты (напр. indexes/canon.db) исключены из порога
@@ -41,6 +42,11 @@ configure_output()
 
 FILES_FAIL = 200       # жёсткий потолок файлов в одной папке
 FILES_WARN = 100       # мягкий потолок (цель 7-50)
+# D-034: архивные каталоги растут по определению — отдельные пороги; при достижении WARN (400)
+# включается шардирование (done/<YYYY-MM>/) или ротация janitor, а не поднятие порога.
+ARCHIVE_DIRS = {"queues/done"}
+ARCHIVE_FILES_FAIL = 500
+ARCHIVE_FILES_WARN = 400
 FILE_KB_WARN = 50      # размер одного файла
 INDEX_KB_WARN = 200    # центральный index.json
 ROOT_DIRS_WARN = 15    # число корневых папок
@@ -98,17 +104,21 @@ def scan(root=None):
         real = [f for f in files if not f.startswith(".")]
         n = len(real)
         relshow = "." if rel == "." else rel.replace("\\", "/")
-        if n > FILES_FAIL:
+        # D-034: архивные каталоги (растут по определению) живут по своим порогам 500/400
+        is_archive = relshow in ARCHIVE_DIRS
+        n_fail = ARCHIVE_FILES_FAIL if is_archive else FILES_FAIL
+        n_warn = ARCHIVE_FILES_WARN if is_archive else FILES_WARN
+        if n > n_fail:
             # navigation-vs-sharding: при наличии папка-индекса (indexes/<name>.md) это не FAIL —
             # навигация решена метаданными, шардинг не требуется (решение 2026-06-24).
             has_index = "/" not in relshow and os.path.isfile(
                 os.path.join(base, "indexes", relshow + ".md"))
             findings.append({"kind": "files-per-dir", "level": "WARN" if has_index else "FAIL",
                              "where": relshow + (" (есть папка-индекс)" if has_index else ""),
-                             "value": n, "limit": FILES_FAIL})
-        elif n > FILES_WARN:
+                             "value": n, "limit": n_fail})
+        elif n > n_warn:
             findings.append({"kind": "files-per-dir", "level": "WARN", "where": relshow,
-                             "value": n, "limit": FILES_WARN})
+                             "value": n, "limit": n_warn})
         # 2) большие файлы (кандидаты; gitignored runtime-артефакты исключаются ниже, C55-c)
         for f in real:
             kb = os.path.getsize(os.path.join(dirpath, f)) // 1024
@@ -190,8 +200,9 @@ def main(argv):
                          ensure_ascii=False, indent=2))
         return 1 if fails else 0
     print("=== HEALTH-GATE КАТАЛОГА (C-10: структура как код) ===")
-    print("  FAIL: %d   WARN: %d   (пороги: файлов/папка >%d FAIL >%d WARN, файл >%dКБ (gitignored искл.), корней >%d, глубина >%d, inbox >%dд)"
-          % (len(fails), len(warns), FILES_FAIL, FILES_WARN, FILE_KB_WARN, ROOT_DIRS_WARN, DEPTH_WARN, INBOX_TTL_WARN_DAYS))
+    print("  FAIL: %d   WARN: %d   (пороги: файлов/папка >%d FAIL >%d WARN (архивные D-034: >%d/>%d), файл >%dКБ (gitignored искл.), корней >%d, глубина >%d, inbox >%dд)"
+          % (len(fails), len(warns), FILES_FAIL, FILES_WARN, ARCHIVE_FILES_FAIL, ARCHIVE_FILES_WARN,
+             FILE_KB_WARN, ROOT_DIRS_WARN, DEPTH_WARN, INBOX_TTL_WARN_DAYS))
     for x in fails + warns:
         print("  [%-4s] %-16s %-34s %d (порог %d)" % (x["level"], x["kind"], x["where"], x["value"], x["limit"]))
     if not f:

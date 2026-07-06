@@ -15,6 +15,8 @@ outputs: [listing, content, search-hits, repo-summary, memory-hits]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
 source_last_verified: 2026-06-23
+verified_by: [claude-w3a (2026-07-06), claude-w3b (2026-07-06)]
+last_verified: 2026-07-06
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
@@ -73,6 +75,19 @@ python drivers\mcp_async_stdio_monitor.py gateway --force-acceptance --out repor
 Короткая формула для других агентов: `ready` — манифест, tools-list контракт и sync `call_tool` acceptance пройдены. Официальным регулярным gate для Windows является sync (synchronous RPC); async stdio остаётся отдельным T-174 runtime-gap/blocker до изменения Python/Windows/`mcp` или отдельного explicit wontfix-решения.
 
 Дополнительная регрессия T-094: `drivers/gateway/test_gateway.py` проверяет gateway in-process без MCP stdio: composition, redaction, allowed-root confinement и audit — усиливает доверие к логике композиции независимо от транспорта.
+
+## Верификация 2026-07-06
+
+Батч C3a (D-015, отмашка Stefan 2026-07-06). Два независимых прохода вернули `passed=true`, поэтому во front-matter проставлен `verified_by` с двумя записями и `last_verified: 2026-07-06`.
+
+**Честная оговорка:** оба прохода (`claude-w3a`, `claude-w3b`) — это два независимых инстанса **одной и той же модели (Claude)**, а не две разные модели и не два человека. Это не полноценная мультимодельная/межлюдская верификация; для неё нужны разные модели или ревьюеры — открытый вопрос к Stefan. Вердикты обоих проходов восстановлены из транскриптов (баг интерполяции в исходном писаре потерял записи; сами верификаторы отработали штатно).
+
+Замечания к доработке (не блокирующие, зафиксированы обоими проходами):
+
+- `drivers/gateway.md:48` заявляет «gateway не пишет ни в файлы, ни в БД (`memory_query` только читает)», но `drivers/gateway/mcp_server.py:96` вызывает `wb.init()` → `drivers/workbench/workbench.py:109-113` выполняет `executescript(CREATE TABLE IF NOT EXISTS...)` + `commit`: при отсутствии БД создаётся файл и схема (идемпотентная DDL внутри allowed-root, данные не пишутся). Уточнить формулировку манифеста либо заменить `init()` на read-only `connect()` + проверку существования.
+- Рассинхрон даты: тело манифеста (строка 54) говорит «Источник последний раз проверен: 2026-06-21», а front-matter `source_last_verified: 2026-06-23`.
+- Минор: `inputs` (строка 13) не упоминают параметр `db` инструмента `memory_query` (`mcp_server.py:92`).
+- Advisory: `max_output_bytes`/`timeout_seconds` не форсируются на границе вызова (клиентский `max_bytes` пробрасывается в `files_driver` без clamp к манифестному пределу) — согласуется с трактовкой SCHEMA.md как «контракт будущего L2/L3 вызова», но при выносе на L3 потребует реального enforcement.
 
 ## Путь развития
 

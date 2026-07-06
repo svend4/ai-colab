@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_text_brain
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_text_brain.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест text_brain.py — proposal-only · детерминизм offline · kind-фолбэк · write+load · llama-graceful."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

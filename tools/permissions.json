@@ -1,4 +1,6 @@
 {
+  "_comment": "критические пути — только человек; решение Stefan 2026-07-06, закрывает и gate-10 (C31)",
+  "_deny_agents": ["tools/permissions.json", "tools/githooks/**", "sandbox/approvals/**"],
   "claude": ["**"],
   "codex": ["**"],
   "mavis": [

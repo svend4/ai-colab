@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 127 файлов
+# Индекс папки `docs/` — 128 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -82,6 +82,7 @@
 | [middle-layer-guide.md](../docs/middle-layer-guide.md) | — | — | **Версия:** 1.0 · Июнь 2026 · Подготовлено для Max |
 | [mvp-roadmap.md](../docs/mvp-roadmap.md) | — | — | Дата: 2026-06-20 |
 | [nested-orchestration-3to1.md](../docs/nested-orchestration-3to1.md) | doc | proposed | Это слой НАД `docs/orchestration-architecture-2026-06-23.md` (бригада = `{3 продюсера + 1  |
+| [next-stage-action-plan-2026-07-06.md](../docs/next-stage-action-plan-2026-07-06.md) | doc | proposed | 1.1. Этот документ фиксирует письменный план дальнейших действий после перепроверки состоя |
 | [non-svend4-development-plan-2026-06-21.md](../docs/non-svend4-development-plan-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [onboarding-opinions-comparison-2026-06-21.md](../docs/onboarding-opinions-comparison-2026-06-21.md) | — | — | Дата: 2026-06-21 |
 | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) | architecture-synthesis | proposed | id: DOC-000 |

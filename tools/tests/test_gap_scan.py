@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.tests.test_gap_scan
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_gap_scan.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест gap_scan.py — детектор разрывов замысел↔реальность (orphan / drift / dangling).
 
 Гермётичен: строит ИЗОЛИРОВАННЫЙ temp-репозиторий (уникальный tempfile.mkdtemp — урок B-03:

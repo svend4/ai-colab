@@ -1,3 +1,38 @@
+---
+source: queues/inbox/documentoutput.md
+status: historical
+task: T-267
+agent: claude
+covered_by: [T-067, T-068, T-077]
+date_processed: 2026-07-06
+---
+
+# Historical-дамп: documentoutput.md (обработано по T-267)
+
+> **Статус: historical.** Триаж по T-267 (отмашка Stefan D3, 2026-07-06), паттерн
+> fold-not-delete: дамп перемещён в `queues/done/` ЦЕЛИКОМ (ничего не удалено),
+> обёрнут этой шапкой.
+>
+> **Происхождение:** 66912 байт вставленного пользователем PowerShell-сеанса
+> (~21.06.2026) с TASKS.md-подобным содержимым; mtime 23.06 — артефакт
+> sweep-коммита d604daa (T-213, миграция путей), не новое содержимое.
+> Прежний путь: `queues/inbox/documentoutput.md`; ссылки на старый путь в
+> `queues/done/T-067.done.md` и `queues/outbox/2026-06-21-pipeline-guards-result.md`
+> оставлены как исторические записи — актуальный путь указан здесь.
+>
+> **ВНИМАНИЕ, GEN-маркеры внутри — чужие, НЕ активные:** блоки вида
+> `GEN:tasks START/END` ниже — часть вставленного дампа (скопированы вместе с
+> содержимым TASKS.md на момент сеанса), это НЕ генерируемые маркеры этого файла;
+> генераторы репо этот файл не обновляют. Не путать с настоящими индексами.
+>
+> **Покрытие:** содержимое конвертировано в T-067/T-068/T-077 (все done);
+> результат — `docs/pipeline-guards-result-2026-06-21.md`, done-отчёты —
+> `queues/done/T-067.done.md`, `queues/done/T-068.done.md`, outbox —
+> `queues/outbox/2026-06-21-pipeline-guards-result.md`. Необработанных кусков
+> при триаже не найдено.
+
+---
+
 Windows PowerShell
 Copyright (C) Microsoft Corporation. All rights reserved.
 

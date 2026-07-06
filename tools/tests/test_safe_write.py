@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_safe_write
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_safe_write.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест safe_write.py — CLI-обёртка предохранителя записи (_ioutil.safe_write) + атомарность (аудит C11/C49)."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

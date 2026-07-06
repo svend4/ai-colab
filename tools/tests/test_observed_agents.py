@@ -19,6 +19,9 @@
   2. `validate.check_agents_roster` — advisory: агент вне AGENTS_ROSTER даёт WARN
      (НЕ ERROR: состав ростера ратифицируется человеком, C32/Q-W2-9); агенты из
      ростера не флажатся.
+  3. Градация вне ростера (решение Stefan 2026-07-06, A4-1): SERVICE_AGENTS
+     (служебные исполнители роёв) — тихо, без WARN; EXCLUDED_AGENTS — WARN
+     с текстом причины из словаря (провенанс решения).
 
 Пишется pytest-collectable (конвенция tools/tests/ по Q-W2-3/C13-c).
 """
@@ -33,7 +36,7 @@ if _TOOLS_DIR not in _sys.path:
 import os
 import sys
 
-from _canon import AGENTS_ROSTER, observed_agents
+from _canon import AGENTS_ROSTER, SERVICE_AGENTS, EXCLUDED_AGENTS, observed_agents
 import validate
 
 
@@ -125,13 +128,56 @@ def test_validate_ok_when_all_known(tmp_path):
         _reset_validate()
 
 
+def test_validate_service_agent_silent(tmp_path):
+    # SERVICE_AGENTS: служебные исполнители роёв — это норма, тихо (решение Stefan 2026-07-06)
+    root = str(tmp_path)
+    assert "subagent-worker" in SERVICE_AGENTS  # состав по решению A4-1
+    _write(root, "logs/heartbeat/subagent-worker.json", "{}\n")
+    _write(root, "queues/claimed/T-200.claim.md",
+           "---\ntask: T-200\nagent: subagent-worker\nclaim_id: s1\nlease_epoch: 7\n---\n")
+    old_root = validate.ROOT
+    try:
+        validate.ROOT = root
+        _reset_validate()
+        validate.check_agents_roster()
+        assert validate.WARNS == [], "service-агент не должен давать WARN: %r" % validate.WARNS
+        assert validate.ERRORS == [], validate.ERRORS
+        assert any("AGENTS_ROSTER" in m for m in validate.OKS), validate.OKS
+    finally:
+        validate.ROOT = old_root
+        _reset_validate()
+
+
+def test_validate_excluded_agent_warn_reason(tmp_path):
+    # EXCLUDED_AGENTS: WARN с текстом причины из словаря (провенанс решения Stefan 2026-07-06)
+    root = str(tmp_path)
+    assert "antigravity" in EXCLUDED_AGENTS  # состав по решению A4-1
+    _write(root, "logs/heartbeat/antigravity.json", "{}\n")
+    old_root = validate.ROOT
+    try:
+        validate.ROOT = root
+        _reset_validate()
+        validate.check_agents_roster()
+        joined = "\n".join(validate.WARNS)
+        assert "«antigravity»" in joined, joined
+        assert "logs/heartbeat/antigravity.json" in joined, joined
+        # причина берётся ИЗ словаря EXCLUDED_AGENTS, а не хардкодится в validate
+        assert EXCLUDED_AGENTS["antigravity"] in joined, joined
+        assert "outbox-mass-strip" in joined, joined
+        assert validate.ERRORS == [], "advisory-проверка не должна давать ERROR: %r" % validate.ERRORS
+    finally:
+        validate.ROOT = old_root
+        _reset_validate()
+
+
 if __name__ == "__main__":
     # standalone-запуск (двухступенчатый канон: файл гоняет и test_all.py)
     import tempfile
     import shutil
     failed = 0
     for fn in (test_observed_agents_sources, test_observed_agents_empty_root,
-               test_validate_warns_unknown_agent, test_validate_ok_when_all_known):
+               test_validate_warns_unknown_agent, test_validate_ok_when_all_known,
+               test_validate_service_agent_silent, test_validate_excluded_agent_warn_reason):
         tmp = tempfile.mkdtemp(prefix="observed_agents_")
         try:
             fn(tmp)
@@ -144,5 +190,5 @@ if __name__ == "__main__":
         sys.exit(1)
     print("TESTS OK observed_agents: claim(agent/claimed_by)+heartbeat+streams источники, "
           "lower-case нормализация, пустой корень → {}, validate WARN для чужих / OK для ростера "
-          "(advisory, без ERROR)")
+          "(advisory, без ERROR) + service тихо / excluded WARN с причиной (A4-1)")
     sys.exit(0)

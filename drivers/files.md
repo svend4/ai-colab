@@ -54,3 +54,13 @@ related: topics/ai-os-bridge.md
 - `drivers/files/test_files.py` и `drivers/files/test_inventory.py` — тесты.
 
 После `T-089` `files_driver.py` использует общий `drivers/redaction.py`, а manifest содержит `tools:` для статической сверки с `drivers/files/mcp_server.py`. Unit tests зелёные. `T-048` остаётся отдельной MCP acceptance-задачей не из-за логики files driver, а из-за известного Windows/asyncio stdio runtime blocker.
+
+## Верификация 2026-07-06 — НЕ пройдена (расхождение проходов)
+
+Батч C3a (D-015, отмашка Stefan 2026-07-06). Два независимых прохода **разошлись** (`passed = [true, false]`), поэтому `verified_by` во front-matter НЕ проставлен и advisory-WARN D-015 сохраняется намеренно. Вердикты восстановлены из транскриптов после бага интерполяции в исходном писаре.
+
+Замечания прохода, вернувшего `passed=false` (actionable-долг, файл:строка):
+
+- (repo-wide, не дефект драйвера) `docs/driver-schema-acceptance-checklist.md:42` — пункт «`generate.py --check` не показывает устаревшие индексы» НЕ выполняется: `tools/generate.py --check` завершается exit 1, STALE `STATUS.md, board.md, TASKS.md, DECISIONS.md, index.json`. Устарела репозиторная навигация после недавних коммитов, не логика files; лечится запуском `python tools/generate.py`.
+- `drivers/files/mcp_server.py:41-43` (ADVISORY) — MCP-инструмент `read_file` принимает `max_bytes` от клиента без верхнего клампа к манифестному `max_output_bytes=1048576` (`drivers/files.md:19`): клиент может передать `max_bytes` сколь угодно большим, и `files_driver.read_file` (`files_driver.py:116-126`) прочитает столько в память. Дефолт `1_000_000` ниже лимита (безопасное направление), нарушение только в отсутствии принудительной отсечки. Аналогично `max_files/max_hits`. Низкая серьёзность: локальный доверенный клиент, read-only.
+- `drivers/files.md:18` (ADVISORY) — `timeout_seconds: 30` нигде не форсируется в L2-коде (`files_driver.py`, `mcp_server.py`). По `drivers/SCHEMA.md:35` поле декларируется «для будущего L2/L3 вызова», так что для текущего уровня допустимо; наблюдение зафиксировано, чтобы при L2-acceptance (T-048) лимит был реализован на стороне вызова.

@@ -51,7 +51,7 @@
 | [information-refactoring-cycle-2-2026-06-25.md](../topics/information-refactoring-cycle-2-2026-06-25.md) | topic | proposed | Команда верхнего слоя: |
 | [information-refactoring-cycle-3-2026-06-25.md](../topics/information-refactoring-cycle-3-2026-06-25.md) | topic | proposed | Добавлен режим action-plan: |
 | [information-refactoring-question-tree-2026-06-25.md](../topics/information-refactoring-question-tree-2026-06-25.md) | topic | proposed | Этот документ превращает исходную мысль пользователя в пронумерованную систему вопросов. Е |
-| [infrastructure-review.md](../topics/infrastructure-review.md) | — | open | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
+| [infrastructure-review.md](../topics/infrastructure-review.md) | — | done | Обзор Codex сильный и точный — соглашаюсь с ядром: Markdown как формат, разделение слоёв,  |
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
 | [kotel-system-critique-2026-06-24-action-plan.md](../topics/kotel-system-critique-2026-06-24-action-plan.md) | topic-plan | proposed | Критика в `topics/kotel-system-critique-2026-06-24.md` верная по направлению: система уже  |
 | [kotel-system-critique-2026-06-24.md](../topics/kotel-system-critique-2026-06-24.md) | doc | proposed | *Статус: Консенсус достигнут. Ожидается подтверждение Человека на перевод в `accepted`.* |
@@ -61,7 +61,7 @@
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
 | [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
-| [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | open | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
+| [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | done | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
 | [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
 | [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | topic | — | Каждый механизм — что это, где задокументировано, статус. Статусы: ПРИНЯТО (governance acc |
 | [parallel-work-divergences-2026-06-22.md](../topics/parallel-work-divergences-2026-06-22.md) | topic | proposed | — |
@@ -78,7 +78,7 @@
 | [repo-as-collaborative-dev-service-2026-06-26.md](../topics/repo-as-collaborative-dev-service-2026-06-26.md) | topic | proposed | доски; провалы — merge-конфликты + изолированные окна, не видящие правок друг друга. Никто |
 | [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
-| [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | open | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
+| [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | done | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
 | [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
 | [session-backlog-2026-06-26.md](../topics/session-backlog-2026-06-26.md) | topic | proposed | спец §5 «brain-adapter позже». Генерит `text_cell.v1` ПРЕДЛОЖЕНИЯ (status:proposed, owner: |
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |

@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_fold
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_fold.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест fold.py — plan_fold(чистая) · cq_should_fold(failed+старый) · apply(json↓, .patch сохранён, queued цел)."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

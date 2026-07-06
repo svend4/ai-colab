@@ -30,14 +30,16 @@
 | D-021 | Ратификация котёл-пакета — Уровень-1 принят, core-export/apex/D3 по рекомендациям, svend4 BLOCKED | accepted | 2026-06-21 | `decisions/D-021.md` |
 | D-022 | Детальная политика параллельной работы — триггеры Level-1, STALE-индекс, волатильные файлы, same-file | accepted | 2026-06-22 | `decisions/D-022.md` |
 | D-023 | Ответственность за коммит генерируемых индексов — ownership-aware (commit-your-own / integrator-for-foreign) | accepted | 2026-06-23 | `decisions/D-023.md` |
-| D-024 | Формат синтеза с выносом разногласий (Structured Divergences) | proposed | 2026-06-23 | `decisions/D-024.md` |
+| D-024 | Формат синтеза с выносом разногласий (Structured Divergences) | accepted | 2026-06-23 | `decisions/D-024.md` |
 | D-025 | Стратегии обхода WinError 5 (Async MCP stdio) | accepted |  | `decisions/D-025.md` |
-| D-026 | Безопасность массовой информации — запрет несанкционированного bulk-стирания + обязательная страховка | proposed | 2026-06-24 | `decisions/D-026.md` |
-| D-027 | Матрица полномочий для людей, AI-агентов, observer/integrator ролей и скриптов | proposed | 2026-06-25 | `decisions/D-027.md` |
-| D-028 | Independent-first variants — содержательные дубли раскрываются до синтеза | proposed | 2026-06-25 | `decisions/D-028.md` |
-| D-029 | Consensus-by-meaning — merge-инварианты сверки вариантов (по смыслу, не по счёту) | proposed | 2026-07-05 | `decisions/D-029.md` |
-| D-030 | Independent-consensus — валидированное ядро после полного адверсариального прогона | proposed | 2026-06-25 | `decisions/D-030.md` |
+| D-026 | Безопасность массовой информации — запрет несанкционированного bulk-стирания + обязательная страховка | accepted | 2026-06-24 | `decisions/D-026.md` |
+| D-027 | Матрица полномочий для людей, AI-агентов, observer/integrator ролей и скриптов | accepted | 2026-06-25 | `decisions/D-027.md` |
+| D-028 | Independent-first variants — содержательные дубли раскрываются до синтеза | accepted | 2026-06-25 | `decisions/D-028.md` |
+| D-029 | Consensus-by-meaning — merge-инварианты сверки вариантов (по смыслу, не по счёту) | accepted | 2026-07-05 | `decisions/D-029.md` |
+| D-030 | Independent-consensus — валидированное ядро после полного адверсариального прогона | accepted | 2026-06-25 | `decisions/D-030.md` |
 | D-031 | commit_queue как стандартный путь коммита внутри Уровня 0 (очередь + обратная связь + предсохранение) | accepted | 2026-06-26 | `decisions/D-031.md` |
-| D-032 | gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula | proposed | 2026-06-26 | `decisions/D-032.md` |
+| D-032 | gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula | accepted | 2026-06-26 | `decisions/D-032.md` |
 | D-033 | ЧЕРНОВИК — дисциплина автономных действий (помечать/комментировать/×N-подтверждать/корректировать) + C5 commit_queue-стандарт + B2 accept-гейт | proposed | 2026-06-26 | `decisions/D-033.md` |
+| D-034 | Отдельные пороги dir_health для архивных каталогов (queues/done — FAIL 500 / WARN 400) | accepted | 2026-07-06 | `decisions/D-034.md` |
+| D-035 | Батчевая ратификация — «котёл-день» как норма (вопросы копятся, разбираются батчем раз в 3-5 дней) | accepted | 2026-07-06 | `decisions/D-035.md` |
 <!-- GEN:decisions END -->

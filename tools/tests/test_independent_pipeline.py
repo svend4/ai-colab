@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_independent_pipeline
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_independent_pipeline.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест independent_pipeline.py — оркестратор конвейера D-030 (grow-only connector).
 
 Логику оркестрации тестируем IN-PROCESS с подменённым _run (быстро, детерминированно, mutation-sensitive:

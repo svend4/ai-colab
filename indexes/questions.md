@@ -29,4 +29,4 @@
 | [Q-020.md](../questions/Q-020.md) | question | answered | **Ответ (свод §3):** организация каталога проверяется **числами как код** — **`tools/dir_h |
 | [Q-021.md](../questions/Q-021.md) | question | answered | **Ответ (свод §4):** длинный файл — **дерево** (метаданные/ToC → тело → хвост, общее→частн |
 | [Q-022.md](../questions/Q-022.md) | question | answered | **Ответ (доказано; был ~45% — единственный фунд <50%, теперь закрыт):** |
-| [Q-023.md](../questions/Q-023.md) | question | open | В `topics/information-refactoring-question-tree-2026-06-25.md` вопрос 11.3.1 переведён в ` |
+| [Q-023.md](../questions/Q-023.md) | question | answered | В `topics/information-refactoring-question-tree-2026-06-25.md` вопрос 11.3.1 переведён в ` |

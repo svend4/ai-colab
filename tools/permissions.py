@@ -20,6 +20,12 @@
 Политика: `tools/permissions.json` — {agent: [glob, ...]}.
 Глоб: "**" = всё; "dir/**" = всё внутри dir/; "*.md" = любой .md; иначе точный путь.
 
+Служебные ключи политики (начинаются с "_", агентами не являются):
+- "_deny_agents": [glob, ...] — критические пути, закрытые для ЛЮБОГО агента
+  (в т.ч. с зоной "**"); проверяются ПЕРВЫМИ, совпадение → ВНЕ ЗОНЫ / exit 1.
+  Только человек правит эти пути (решение Stefan 2026-07-06, закрывает gate-10/C31).
+- "_comment" — пояснение для людей, игнорируется.
+
 Запуск:
     python tools/permissions.py <agent>                  # проверить git-изменения (vs HEAD + новые)
     python tools/permissions.py <agent> file1 file2 ...  # проверить переданные пути (тест/CI)
@@ -57,6 +63,13 @@ def match(path, pattern):
         return path.endswith(pattern[1:])  # "*.md" → ".md"
     return path == pattern
 
+def denied(path, deny_globs):
+    """Критические пути из "_deny_agents": закрыты для любого агента, только человек.
+
+    Переиспользует match() — та же семантика глобов, что и у зон агентов
+    (решение Stefan 2026-07-06, закрывает gate-10/C31)."""
+    return any(match(path, g) for g in deny_globs)
+
 def git_changes():
     files = set()
     for cmd in (
@@ -81,10 +94,13 @@ def main():
     policy = load_policy()
     if policy is None:
         return 1
-    if agent not in policy:
-        print("ERROR: агент «%s» не в политике (%s)" % (agent, ", ".join(sorted(policy))))
+    # Служебные ключи ("_deny_agents", "_comment") — не агенты
+    deny = policy.get("_deny_agents") or []
+    agents = {k: v for k, v in policy.items() if not k.startswith("_")}
+    if agent not in agents:
+        print("ERROR: агент «%s» не в политике (%s)" % (agent, ", ".join(sorted(agents))))
         return 1
-    globs = policy[agent]
+    globs = agents[agent]
     if not files:
         files = git_changes()
         if files is None:
@@ -92,9 +108,15 @@ def main():
     if not files:
         print("OK: нет изменений для проверки")
         return 0
-    violations = [f for f in files if not any(match(f, g) for g in globs)]
+    # deny-список — ПЕРВЫМ и для ЛЮБОГО агента (в т.ч. с зоной "**"): критические
+    # пути правит только человек (решение Stefan 2026-07-06, gate-10/C31)
+    denied_files = {f for f in files if denied(f, deny)}
+    violations = [f for f in files
+                  if f in denied_files or not any(match(f, g) for g in globs)]
     for f in files:
-        print("  [%s] %s" % ("ВНЕ ЗОНЫ" if f in violations else "ok", f))
+        mark = "ok" if f not in violations else (
+            "ВНЕ ЗОНЫ (deny: только человек)" if f in denied_files else "ВНЕ ЗОНЫ")
+        print("  [%s] %s" % (mark, f))
     if violations:
         print("ERROR: %s пишет вне своих путей: %s" % (agent, ", ".join(violations)))
         return 1

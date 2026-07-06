@@ -1,9 +1,9 @@
 ---
 id: opinion-synthesis-2026-06-21
 title: Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ
-status: open
-wait: Stefan
-next: Реализовать консенсус-очередь (C1-C3 готовы к взятию); по расхождениям D1-D4 — доказательное обсуждение до консенсуса
+status: done
+wait: —
+next: Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): C1-C9 и D1-D4 реализованы или разрешены решениями D-016/D-020/D-021; осознанные отложения — worktree-streams (D-020 §3) и PDF-extract
 ---
 
 # Синтез мнений: Claude ↔ Codex — что общее, что спорно, что делать дальше
@@ -101,3 +101,35 @@ router/backlog/topic-summarize отложить до доказанной пот
 Открытые пункты D3/T-020/fork-format/text-extract сведены в `decisions/D-020.md` со статусом `proposed` и отчёт `docs/t137-consensus-result-2026-06-21.md`.
 
 Моё мнение: консенсусный путь сейчас — развивать “середину пирамиды” малыми проверяемыми командами, а не строить тяжёлый автономный слой заранее. `cohort.py`, `variants.py`, `stream.py`, `merge_gate.py`, `promote.py`, `sandbox_intake_demo.py` покрывают реальные боли: много агентов, варианты вместо дублей, безопасное вливание, продвижение L4→L3→L2→L1, read-only вход внешнего источника. Worktree-streams, execute и PDF-зависимость должны остаться на explicit review.
+
+## Закрытие темы — Claude, 2026-07-06
+
+Закрыто по решению Stefan D2 (план `reports/human-actions-plan-2026-07-06.md`, блок D2:
+«opinion-synthesis — закрыть») + перепроверка реализации по каждому пункту.
+
+**Консенсус-очередь C1-C9 — реализована:**
+
+- **C1** capability manifest: `tools/capabilities.py` → `system-capabilities.json` (генерируется, есть в корне);
+- **C2** drift detector: `tools/drift_check.py` (+ тест `tools/test_drift_check.py`);
+- **C3** onboarding-команда: `tools/onboard.py`;
+- **C4** корпус + diff: `tools/report_diff.py`; прогоны на `data/knowledge-corpus` и большем безопасном корпусе `docs/` (69 md-файлов, T-127, `docs/larger-safe-corpus-result-2026-06-21.md`) — нашли и исправили реальные дефекты качества; внешний корпус 50-200 файлов остаётся по мере поступления данных Stefan;
+- **C5** svend4/T-020: закрыт (T-020 `done`); переформулирован в generic external-source intake — D-020 §4, `tools/sandbox_intake_demo.py`, `tools/sandbox_intake_chain.py`;
+- **C6** песочница отдельно от repo-runner: `tools/sandbox.py`, `tools/sandbox_runner.py`, `tools/execute_preflight.py`, `tools/execute_human_gate.py`, `docs/external-code-sandbox.md`, `docs/execute-sandbox-preflight.md`;
+- **C7** дисциплина current/history: действует как постоянное правило, поддерживается `drift_check`/`janitor.py`/`repo_hygiene.py`;
+- **C8** отложить L5 plugin/vector-RAG/async-MCP: выполнено — закрыто дёшево портал-моделью D-016 (`tools/portal.py`), тяжёлые варианты осознанно не строились;
+- **C9** изоляция параллельных агентов: `tools/worktree.py` (Уровень-1, T-136), `tools/stream.py`, `tools/commit_lock.py`, `tools/commit_queue.py`.
+
+**Расхождения D1-D4 — разрешены:**
+
+- **D1** text-extract: `tools/text_extract.py` (.md/.txt/.html/.htm/.docx; DOCX через stdlib zipfile без зависимости, `docs/docx-text-extract-result-2026-06-21.md`);
+- **D2** домен vs generic: разрешён Stefan → **D-016 accepted** (универсальное ядро + тематические порталы, `tools/portal.py`);
+- **D3** объём инфра-автоматизации: разрешён → **D-020 accepted** (ратифицирован 2026-06-23, D-021) — thin automation малыми проверяемыми командами;
+- **D4** два онбординг-дока: оба живы (`docs/agent-onboarding.md` + `docs/top-agent-operating-manual.md`), дрейф контролируется C2.
+
+**Осознанно НЕ реализовано (по собственным решениям, не долг темы):**
+worktree-streams (D-020 §3 — explicitly deferred до явного approve Stefan; Уровень-0/1 действует);
+PDF-extract (отложен до выбора зависимости и тестового корпуса); тяжёлый L5-plugin/vector-RAG/async-MCP
+(deferred по C8/D-016). Эти отложения — зафиксированная позиция решений, продолжения в этой теме не требуют.
+
+Итог: все существенные обещания темы воплощены или разрешены принятыми решениями; тема выполнила
+свою роль (синтез → консенсус → реализация) и закрывается.

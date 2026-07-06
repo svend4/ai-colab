@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_queue
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_queue.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест queue.py — совместимостный алиас на agent_queue.py (делегирование).
 
 Subprocess-smoke (избегаем теневого импорта stdlib `queue`): `queue.py check` должен дать rc=0 и

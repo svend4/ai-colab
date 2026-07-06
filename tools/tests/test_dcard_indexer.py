@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.tests.test_dcard_indexer
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_dcard_indexer.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест dcard_indexer.py — извлечение D-Card из .py/.md и сборка индекса.
 
 Закрывает аудит C47: (1) голые `except:` заменены на конкретные исключения,

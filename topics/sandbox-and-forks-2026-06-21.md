@@ -1,9 +1,9 @@
 ---
 id: sandbox-and-forks-2026-06-21
 title: Старые долги — генерик-песочница и методология форков (параллельные варианты)
-status: open
-wait: Stefan
-next: D-017 (fork-and-synthesize) принят; sandbox-контур = контракт Codex + intake-автоматизация Claude (синтез); T-020 переформулирован как первый external-source
+status: done
+wait: —
+next: Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): оба долга реализованы — sandbox-контур (docs + sandbox/ + tools/sandbox*.py) и D-017 accepted; T-020 done
 ---
 
 # Старые долги: генерик-песочница + методология форков
@@ -82,3 +82,40 @@ svend4 — НЕ особая дыра в правилах, а **первый ext
 - @Stefan: ок ли принять **D-017 (fork-and-synthesize)** и снять **T-020** с orphan, переоформив как
   первый sandbox intake (когда дашь источник — или возьмём тестовый репозиторий)?
 - @Codex: предлагаю синтез песочницы — твой контракт + мой `tools/sandbox.py`; не дублируем, дополняем.
+
+## Закрытие 2026-07-06 — Claude (по решению Stefan D2 + перепроверка)
+
+Перепроверка реализации подтвердила: оба долга темы воплощены; вопросы «К Stefan» получили ответы.
+
+**Долг 1 (генерик-песочница) — реализован полностью, синтез состоялся:**
+
+- контракт/структура (Codex): `docs/external-code-sandbox.md` (стадии S0-S7) +
+  `docs/execute-sandbox-preflight.md` (10 gates) + папка `sandbox/`
+  (inbox/sources/workspaces/runs/reports/templates) — на месте;
+- исполняемый слой (Claude): `tools/sandbox.py` (intake S1 + read-only inventory S3 + отчёт S7,
+  тест `tools/tests/test_sandbox.py`) — на месте; синтез перерос предложение темы:
+  добавились `sandbox_intake_demo.py`, `sandbox_intake_chain.py`, `sandbox_runner.py`,
+  `sandbox_schema_validator.py`, `sandbox_link_checker.py` (все с тестами в `tools/tests/`);
+- контур реально используется: `sandbox/reports/demo-fixtures-inventory.md` (демо-прогон intake),
+  `sandbox/inbox/self_reflection_global/` (intake-зона self-reflection);
+- execute по-прежнему закрыт гейтами: D-014 (execute OFF + preflight), D-021 (driver-safety),
+  `tools/execute_preflight.py` + `tools/execute_human_gate.py`.
+
+**Решение по T-020 — принято и исполнено:** D-020 §4 (accepted, ратифицирован 2026-06-23) —
+svend4 = generic external-source, не special-case; `tasks/T-020.md` переоформлена и закрыта
+(status: done). Первый intake реального внешнего источника произойдёт, когда источник будет
+передан — механизм готов и проверен на фикстурах.
+
+**Долг 2 (форки) — принят и живёт:** **D-017 accepted** (`decisions/D-017.md`, Stefan 2026-06-21,
+last_verified 2026-06-23). Методология применяется на практике: форк-варианты как отдельные файлы
+(`docs/<x>-<agent>.md`), полу-формат `streams/` + `tools/stream.py`, синтез-шаги
+(`topics/opinion-synthesis-2026-06-21.md`, `topics/parallel-forks-history-2026-06-22.md` —
+хроника применения D-017); норма закреплена в `docs/parallel-work-policy.md`.
+
+**Осознанно не реализовано (не долг темы):** буквальная папочная конвенция
+`topics/<topic>/forks/` не прижилась — на практике её роль выполняют `docs/<x>-<agent>.md` и
+`streams/` (допустимая альтернатива прямо из текста D-017); execute внешнего кода не открыт —
+это зафиксированная позиция D-014/D-021, а не недоделка.
+
+Итог: тема выполнила роль (сравнение вариантов → синтез → D-017/D-020 → инструменты) и
+закрывается. Провенанс: закрыто по решению Stefan D2 + перепроверка, 2026-07-06.

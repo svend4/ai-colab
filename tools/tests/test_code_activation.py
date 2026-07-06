@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_code_activation
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_code_activation.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Tests for tools/code_activation.py read-only activation planning."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

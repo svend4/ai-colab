@@ -15,6 +15,8 @@ outputs: [table-list, schema, rows]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
 source_last_verified: 2026-06-21
+verified_by: [claude-w3a (2026-07-06), claude-w3b (2026-07-06)]
+last_verified: 2026-07-06
 timeout_seconds: 30
 max_output_bytes: 1048576
 audit: true
@@ -58,6 +60,19 @@ allowed-root: список таблиц/представлений, схема, 
 
 Acceptance использует временную fixture-БД в `tmp-work/mcp-sync-sqlite/`, не версионирует runtime-файл
 и проверяет реальные MCP `tools/call`: `list_tables`, `table_schema`, `table_head`, `query`.
+
+## Верификация 2026-07-06
+
+Батч C3a (D-015, отмашка Stefan 2026-07-06). Оба независимых прохода вернули `passed=true`; во front-matter проставлены `verified_by` (две записи) и `last_verified: 2026-07-06`.
+
+**Честная оговорка:** `claude-w3a` и `claude-w3b` — два независимых инстанса **одной модели (Claude)**, не две разные модели и не два человека. Для настоящей мультимодельной верификации нужны разные модели/ревьюеры (открытый вопрос к Stefan). Вердикты восстановлены из транскриптов после бага интерполяции в исходном писаре; верификаторы отработали штатно.
+
+Замечания к доработке (не блокирующие, из обоих проходов):
+
+- `drivers/sqlite.md:19` — `max_output_bytes=1048576` не форсируется в коде: ограничение только построчное (`MAX_ROWS=1000`, `sqlite_driver.py:35-36`); 1000 строк с крупными TEXT/BLOB-ячейками могут превысить 1 МБ. Пиры (`files`, `data`) форсируют байтовый лимит — рекомендуется выровнять.
+- `drivers/sqlite.md:18` — `timeout_seconds=30` не форсируется: в коде только `CONNECT_TIMEOUT=5.0` (busy-timeout соединения), wall-clock лимита на выполнение SELECT нет — патологический рекурсивный CTE может работать неограниченно.
+- Формулировка «не-SELECT → `QueryNotAllowed`» (строки 44-45) неточна: WITH-префиксный write (`WITH ... DELETE/INSERT`) проходит regex-guard (`sqlite_driver.py:133`) и блокируется уровнем ниже — `mode=ro` → `OperationalError`, а не `QueryNotAllowed`. Защита в глубину работает (запись невозможна, БД не изменяется), ошибка лишь в типе исключения из описания; можно ужесточить guard (запрет DML-ключевых слов после WITH).
+- Минор: BLOB-ячейки (`bytes`) обходят redaction (`_redact_row` маскирует только `str`, `sqlite_driver.py:119`); краевой случай, явных заявлений манифеста не нарушает.
 
 ## Реализация
 

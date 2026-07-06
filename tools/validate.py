@@ -124,7 +124,7 @@ def table_rows(text, id_prefix):
     return rows
 
 from _canon import parse_front_matter  # единый парсер front-matter (T-085, находка L)
-from _canon import AGENTS_ROSTER, observed_agents  # ростер + наблюдение агентов (C36-a, Q-W2-9b)
+from _canon import AGENTS_ROSTER, SERVICE_AGENTS, EXCLUDED_AGENTS, observed_agents  # ростер + служебные/исключённые + наблюдение (C36-a, Q-W2-9b, A4-1)
 
 # ---------- DECISIONS ----------
 def parse_decisions():
@@ -805,6 +805,11 @@ def check_agents_roster():
     (до C36-a пятый агент становился невидимым МОЛЧА). Наблюдение — _canon.observed_agents
     (queues/claimed front-matter, logs/heartbeat имена файлов, streams манифесты);
     best-effort: сбой наблюдения не валит валидатор.
+
+    Градация вне ростера (решение Stefan 2026-07-06, A4-1):
+    - SERVICE_AGENTS (служебные исполнители роёв) — норма, тихо, без WARN;
+    - EXCLUDED_AGENTS — WARN с причиной из словаря (напоминание с провенансом решения);
+    - прочие неизвестные — WARN как раньше (ратификация человеком).
     """
     try:
         observed = observed_agents(ROOT)
@@ -812,15 +817,24 @@ def check_agents_roster():
         warn("agents: сверка ростера не удалась (%s)" % e)
         return
     roster = {a.lower() for a in AGENTS_ROSTER}
-    unknown = [a for a in sorted(observed) if a not in roster]
-    for agent in unknown:
+    service = {a.lower() for a in SERVICE_AGENTS}
+    excluded = {a.lower(): reason for a, reason in EXCLUDED_AGENTS.items()}
+    flagged = 0
+    for agent in sorted(observed):
+        if agent in roster or agent in service:  # ростер и служебные — тихо
+            continue
         places = observed[agent]
         more = "" if len(places) <= 3 else " (+%d ещё)" % (len(places) - 3)
-        warn("агент «%s» замечен в %s%s, но отсутствует в AGENTS_ROSTER (_canon.py) — "
-             "состав ростера ратифицируется человеком (C32/Q-W2-9)"
-             % (agent, ", ".join(places[:3]), more))
-    if not unknown:
-        ok("agents: все наблюдаемые агенты (%d) есть в AGENTS_ROSTER" % len(observed))
+        if agent in excluded:
+            warn("агент «%s» замечен в %s%s — %s"
+                 % (agent, ", ".join(places[:3]), more, excluded[agent]))
+        else:
+            warn("агент «%s» замечен в %s%s, но отсутствует в AGENTS_ROSTER (_canon.py) — "
+                 "состав ростера ратифицируется человеком (C32/Q-W2-9)"
+                 % (agent, ", ".join(places[:3]), more))
+        flagged += 1
+    if not flagged:
+        ok("agents: все наблюдаемые агенты (%d) есть в AGENTS_ROSTER (или служебные)" % len(observed))
 
 def main():
     help_guard(__doc__)

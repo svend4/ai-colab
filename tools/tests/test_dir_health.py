@@ -125,6 +125,36 @@ def main():
     finally:
         shutil.rmtree(root, ignore_errors=True)
 
+    # --- архивные пороги (D-034): queues/done живёт по своим порогам (500/400, тут понижены) ---
+    root = make_temp_dir("dir_health_archive_")
+    orig = (dh.ROOT, dh.FILES_FAIL, dh.FILES_WARN,
+            dh.ARCHIVE_FILES_FAIL, dh.ARCHIVE_FILES_WARN)
+    try:
+        dh.ROOT = root
+        dh.FILES_FAIL = 5
+        dh.FILES_WARN = 3
+        dh.ARCHIVE_FILES_FAIL = 10
+        dh.ARCHIVE_FILES_WARN = 8
+        if "queues/done" not in dh.ARCHIVE_DIRS:
+            fails.append("archive: queues/done не в ARCHIVE_DIRS (D-034)")
+        done_dir = os.path.join("queues", "done")
+        _mkfiles(root, done_dir, 6)   # >5 (обычный FAIL), но <=8 (архивный WARN) → тишина
+        levels = {(x["kind"], x["where"]): x["level"] for x in dh.scan()}
+        if ("files-per-dir", "queues/done") in levels:
+            fails.append("archive: queues/done (6 файлов) ложно флагнут — общий порог вместо D-034")
+        _mkfiles(root, done_dir, 9)   # >8 → архивный WARN
+        levels = {(x["kind"], x["where"]): x["level"] for x in dh.scan()}
+        if levels.get(("files-per-dir", "queues/done")) != "WARN":
+            fails.append("archive: queues/done (9 файлов) не WARN при архивном пороге")
+        _mkfiles(root, done_dir, 11)  # >10 → архивный FAIL
+        levels = {(x["kind"], x["where"]): x["level"] for x in dh.scan()}
+        if levels.get(("files-per-dir", "queues/done")) != "FAIL":
+            fails.append("archive: queues/done (11 файлов) не FAIL при архивном пороге")
+    finally:
+        (dh.ROOT, dh.FILES_FAIL, dh.FILES_WARN,
+         dh.ARCHIVE_FILES_FAIL, dh.ARCHIVE_FILES_WARN) = orig
+        shutil.rmtree(root, ignore_errors=True)
+
     # --- file-size + gitignore (C55-c): gitignored сверх порога — тишина, tracked — WARN ---
     if shutil.which("git"):
         root = make_temp_dir("dir_health_gitignore_")
@@ -155,7 +185,7 @@ def main():
         for x in fails:
             print("  -", x)
         sys.exit(1)
-    print("OK test_dir_health: files-per-dir FAIL/WARN + file-size + root-dirs + CLI root + inbox-ttl + gitignore-искл.")
+    print("OK test_dir_health: files-per-dir FAIL/WARN + file-size + root-dirs + CLI root + inbox-ttl + archive-пороги (D-034) + gitignore-искл.")
 
 
 if __name__ == "__main__":

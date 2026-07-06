@@ -55,5 +55,23 @@ class TestPermissionsMatch(unittest.TestCase):
         self.assertTrue(permissions.match("dir\\subdir\\file.txt", "dir/**"))
         self.assertTrue(permissions.match("docs\\readme.md", "*.md"))
 
+
+class TestPermissionsDenied(unittest.TestCase):
+    # deny-список "_deny_agents" (A4-2, решение Stefan 2026-07-06): та же семантика глобов
+    DENY = ["tools/permissions.json", "tools/githooks/**", "sandbox/approvals/**"]
+
+    def test_denied_critical_paths(self):
+        self.assertTrue(permissions.denied("tools/permissions.json", self.DENY))
+        self.assertTrue(permissions.denied("tools/githooks/pre-commit", self.DENY))
+        self.assertTrue(permissions.denied("sandbox/approvals/req.md", self.DENY))
+
+    def test_denied_windows_paths(self):
+        self.assertTrue(permissions.denied("tools\\githooks\\pre-commit", self.DENY))
+
+    def test_not_denied_ordinary_paths(self):
+        self.assertFalse(permissions.denied("docs/readme.md", self.DENY))
+        self.assertFalse(permissions.denied("tools/validate.py", self.DENY))
+        self.assertFalse(permissions.denied("anything", []))
+
 if __name__ == "__main__":
     unittest.main()

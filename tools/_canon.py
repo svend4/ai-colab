@@ -19,6 +19,8 @@
   (блок между первым `---` и следующим `\n---`, строки `key: value` через `split(':', 1)`);
 - `CANON_DIRS` / `CANON_DIRS_EXTENDED` — реестр каталогов канона (P9-a);
 - `AGENTS_ROSTER` — ростер агентов для ownership/cohort/variants (C36-a);
+- `SERVICE_AGENTS` / `EXCLUDED_AGENTS` — служебные исполнители роёв (не WARN) и
+  исключённые из ростера с причиной для WARN (решение Stefan 2026-07-06, A4-1);
 - `observed_agents` — имена агентов, реально встречающиеся в рабочих артефактах
   (claim/heartbeat/streams) для advisory-сверки с ростером (Q-W2-9b);
 - `PYRAMID_L3_DIRS` — рабочие каталоги слоя L3 пирамиды (promote/layer_check);
@@ -32,17 +34,28 @@ import os
 # info_verify.py, и копии УЖЕ разошлись: view/canon_index знали ядро из 5 каталогов,
 # info_verify — расширенный список из 9. Консолидация СОХРАНЯЕТ фактическое поведение
 # каждого потребителя (ядро — для среза/retrieval, расширенный — для verify-инварианта).
-# Какой состав канонический «на самом деле» — вопрос человеку (эскалация P9/Q-W2);
-# до ответа оба уровня живут здесь как единый источник, локальные копии запрещены.
+# Составы ратифицированы: Stefan, 2026-07-06 — CANON_DIRS (5, strict) и
+# CANON_DIRS_EXTENDED (9); оба уровня живут здесь как единый источник, локальные копии запрещены.
 CANON_DIRS = ("tasks", "decisions", "questions", "topics", "docs")
 CANON_DIRS_EXTENDED = CANON_DIRS + ("drivers", "streams", "portals", "core")
 
 # --- Ростер агентов (C36-a, аудит 2026-07-02) --------------------------------------------
 # Единый источник вместо трёх независимых хардкодов (ownership.py / cohort.py / variants.py,
 # причём variants знал только claude|codex — пятый агент становился невидим МОЛЧА).
-# ВНИМАНИЕ: канонический СОСТАВ ростера (summarizer/reviewer/researcher/antigravity?)
-# будет ратифицирован человеком по C32/Q-W2-9; до этого здесь текущие 4 «как есть».
+# Состав ратифицирован: Stefan, 2026-07-06 (A4-1) — claude/codex/mavis/novax;
+# служебные и исключённые участники — отдельными реестрами ниже.
 AGENTS_ROSTER = ("claude", "codex", "mavis", "novax")
+
+# Служебные исполнители роёв (workflow-подагенты): их следы в рабочих артефактах —
+# норма, validate НЕ даёт WARN (решение Stefan 2026-07-06).
+SERVICE_AGENTS = ("subagent-worker",)
+
+# Агенты, явно исключённые из ростера: validate даёт WARN с причиной из словаря —
+# напоминание остаётся, но с провенансом решения (решение Stefan 2026-07-06).
+EXCLUDED_AGENTS = {
+    "antigravity": "вне ростера до объяснения по инциденту outbox-mass-strip "
+                   "(решение Stefan 2026-07-06)",
+}
 
 
 def agents_regex_group():

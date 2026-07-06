@@ -3,7 +3,7 @@ id: ai-os-bridge
 title: AI-OS Bridge — прослойка между ОС и AI-агентами
 status: open
 wait: все
-next: D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024
+next: живая (решение Stefan D2, 2026-07-06): следующий шаг — T-273 (живой L2-кейс end-to-end на реальных данных)
 ---
 
 # Тема: AI-OS Bridge — прослойка между операционной системой и AI-агентами
@@ -1241,3 +1241,25 @@ sandbox/   -> L4, хаотичный вход, внешние источники
 Практический результат: corpus-прогон нашёл два дефекта качества — front-matter попадал в summary, а hit-count отчёта выглядел как полный total. Исправлено в `tools/text_extract.py`, `tools/knowledge.py`, `tools/report_diff.py`; добавлены тесты. Подробно: `docs/larger-safe-corpus-result-2026-06-21.md`.
 
 Моё мнение: это правильный тип саморазвития системы. Мы не добавили тяжёлый RAG/vector слой, а заставили уже готовый read-only workflow работать на большем корпусе и по фактам улучшили качество отчётов.
+
+### 2026-07-06 - Claude (перепроверка по решению Stefan D2 — топик живой, следующий шаг = T-273)
+
+Провенанс: решение Stefan D2 от 2026-07-06 («по каждому открытому топику — перепроверить реализацию и действовать по плану») + независимая перепроверка репозитория.
+
+**Сверка обещаний топика с реальностью (2026-07-06):**
+
+Реализовано и подтверждено артефактами:
+
+- **L1-каталог** (D-010): `drivers/` — 9 манифестов в `drivers/CATALOG.md` (8 ready / 1 draft), `SCHEMA.md`, `_template.md`, генератор `tools/drivers_catalog.py`;
+- **Driver schema v1** (Q-008 → D-013 accepted): обязательные поля risk/sandbox/secrets/mode/activation + `source_last_verified`/`timeout_seconds`/`max_output_bytes`/`audit`, проверка в `tools/validate.py`;
+- **L2 read-only контур**: MCP-серверы `files`, `data`, `repo-runner`, `codex-local`, `gateway`, `git-log`, `sqlite` + `workbench` (safe-write); sync `tools/call` acceptance **27/27** (`drivers/mcp_sync_acceptance.py`), handshake- и функциональная приёмка 19/19 пройдены ранее; hardening-паттерн `engine -> MCP wrapper -> safety gate` (allowed-root, лимиты, redaction через общий `drivers/redaction.py`, audit) применён сквозь весь срез, включая ingest-pipeline;
+- **Гейт статусов** (D-015 accepted): draft→ready по верификации ≥2 агентами, не по подписи;
+- **L6 память**: `drivers/workbench/` (SQLite documents+audit_log), `tools/knowledge.py` (ingest → query → report, FTS5, `report --out` в `reports/`, regression-тесты), корпуса `data/fixtures/` и `data/knowledge-corpus/`, прогон на большем корпусе `docs/` (T-127);
+- **Safety-границы execute**: `docs/execute-sandbox-preflight.md` + `sandbox/` workspace contract (inbox → quarantine → read-only inventory → report → decision) — запуск чужого кода осознанно закрыт до отдельного решения;
+- **Карты и входы**: `docs/layers-coverage.md` (канон L0–L7), `docs/bridge-usage.md`, `docs/top-agent-operating-manual.md`, `docs/agent-onboarding.md`.
+
+Осознанно НЕ реализовано (по D-010 «не строить вперёд спроса»): запуск svend4/внешнего кода (за safety gate), серверная платформа L3/L4 (FastAPI/Docker), vector/RAG поверх FTS5, L5 plugin-packaging, MCP-метаданные в схеме (отложены D-013).
+
+**Вывод:** топик — рабочая ветка среднего слоя, существенное содержимое реализовано (~85%); нереализованное — либо за осознанным safety gate, либо отложено right-size. Топик остаётся **живым**: инфраструктура зелёная, но по-настоящему живого продуктового груза (реальные данные Stefan / внешний репозиторий) через контур ещё не прошло.
+
+**Следующий шаг — задача `T-273` «AI-OS Bridge L2 — первый живой продуктовый груз конвейера»** (создана по решению Stefan E2 от 2026-07-06): выбрать живой L2-кейс (files/sqlite на реальном каталоге Stefan или svend4 read-only) и прогнать один end-to-end сценарий через `drivers/` на реальных данных. Дублирующую задачу не завожу — T-273 покрывает следующий шаг этого топика; `next` во front-matter обновлён на неё.

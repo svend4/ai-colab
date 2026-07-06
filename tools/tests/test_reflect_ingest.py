@@ -1,3 +1,13 @@
+"""
+# ==========================================
+# [FILE ID CARD]
+# ID: tools.test_reflect_ingest
+# TYPE: active-script
+# DOMAIN: core
+# DEPTH_LEVEL: 1
+# SUMMARY: Скрипт test_reflect_ingest.py. Описание сгенерировано автоматически.
+# ==========================================
+"""
 """Тест reflect_ingest.py — нормализация находок + severity + дедуп-ledger + рецидив + resolve."""
 # --- бутстрап путей (C14, аудит 2026-07-02): тест живёт в tools/tests/, инструменты — в tools/.
 # Вставка ДО локальных импортов, чтобы standalone-запуск работал из нового места.

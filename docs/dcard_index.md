@@ -20,6 +20,7 @@
 | `tools.backlog_rescan` | active-script | 1 | [backlog_rescan.py](../tools/backlog_rescan.py) | Скрипт backlog_rescan.py. Описание сгенерировано автоматически. |
 | `tools.blocks` | active-script | 1 | [blocks.py](../tools/blocks.py) | Скрипт blocks.py. Описание сгенерировано автоматически. |
 | `tools.card` | active-script | 1 | [card.py](../tools/card.py) | Скрипт card.py. Описание сгенерировано автоматически. |
+| `tools.code_pyramid` | active-script | 1 | [code_pyramid.py](../tools/code_pyramid.py) | Скрипт code_pyramid.py. Описание сгенерировано автоматически. |
 | `tools.cohort` | active-script | 1 | [cohort.py](../tools/cohort.py) | Скрипт cohort.py. Описание сгенерировано автоматически. |
 | `tools.command_index` | active-script | 1 | [command_index.py](../tools/command_index.py) | Скрипт command_index.py. Описание сгенерировано автоматически. |
 | `tools.commit_lock` | active-script | 1 | [commit_lock.py](../tools/commit_lock.py) | Скрипт commit_lock.py. Описание сгенерировано автоматически. |
@@ -86,6 +87,46 @@
 | `tools.sandbox_schema_validator` | active-script | 1 | [sandbox_schema_validator.py](../tools/sandbox_schema_validator.py) | Read-only JSON and manifest schema validator for sandbox intake folders. |
 | `tools.seq_merge` | active-script | 1 | [seq_merge.py](../tools/seq_merge.py) | 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib. |
 | `tools.stream` | active-script | 1 | [stream.py](../tools/stream.py) | Скрипт stream.py. Описание сгенерировано автоматически. |
+| `tools.test_autolink` | active-script | 1 | [test_autolink.py](../tools/tests/test_autolink.py) | Скрипт test_autolink.py. Описание сгенерировано автоматически. |
+| `tools.test_autonomy_guard` | active-script | 1 | [test_autonomy_guard.py](../tools/tests/test_autonomy_guard.py) | Скрипт test_autonomy_guard.py. Описание сгенерировано автоматически. |
+| `tools.test_bulk_guard` | active-script | 1 | [test_bulk_guard.py](../tools/tests/test_bulk_guard.py) | Скрипт test_bulk_guard.py. Описание сгенерировано автоматически. |
+| `tools.test_canon_index` | active-script | 1 | [test_canon_index.py](../tools/tests/test_canon_index.py) | Скрипт test_canon_index.py. Описание сгенерировано автоматически. |
+| `tools.test_cli` | active-script | 1 | [test_cli.py](../tools/tests/test_cli.py) | Скрипт test_cli.py. Описание сгенерировано автоматически. |
+| `tools.test_code_activation` | active-script | 1 | [test_code_activation.py](../tools/tests/test_code_activation.py) | Скрипт test_code_activation.py. Описание сгенерировано автоматически. |
+| `tools.test_commit_queue` | active-script | 1 | [test_commit_queue.py](../tools/tests/test_commit_queue.py) | Скрипт test_commit_queue.py. Описание сгенерировано автоматически. |
+| `tools.test_consensus_by_meaning` | active-script | 1 | [test_consensus_by_meaning.py](../tools/tests/test_consensus_by_meaning.py) | Скрипт test_consensus_by_meaning.py. Описание сгенерировано автоматически. |
+| `tools.test_crdt_merge` | active-script | 1 | [test_crdt_merge.py](../tools/tests/test_crdt_merge.py) | Скрипт test_crdt_merge.py. Описание сгенерировано автоматически. |
+| `tools.test_decay` | active-script | 1 | [test_decay.py](../tools/tests/test_decay.py) | Скрипт test_decay.py. Описание сгенерировано автоматически. |
+| `tools.test_decisions_usage_scan` | active-script | 1 | [test_decisions_usage_scan.py](../tools/tests/test_decisions_usage_scan.py) | Скрипт test_decisions_usage_scan.py. Описание сгенерировано автоматически. |
+| `tools.test_divergence_detail` | active-script | 1 | [test_divergence_detail.py](../tools/tests/test_divergence_detail.py) | Скрипт test_divergence_detail.py. Описание сгенерировано автоматически. |
+| `tools.test_edges` | active-script | 1 | [test_edges.py](../tools/tests/test_edges.py) | Скрипт test_edges.py. Описание сгенерировано автоматически. |
+| `tools.test_fold` | active-script | 1 | [test_fold.py](../tools/tests/test_fold.py) | Скрипт test_fold.py. Описание сгенерировано автоматически. |
+| `tools.test_git_reconcile` | active-script | 1 | [test_git_reconcile.py](../tools/tests/test_git_reconcile.py) | Скрипт test_git_reconcile.py. Описание сгенерировано автоматически. |
+| `tools.test_immune` | active-script | 1 | [test_immune.py](../tools/tests/test_immune.py) | Скрипт test_immune.py. Описание сгенерировано автоматически. |
+| `tools.test_independence_measure` | active-script | 1 | [test_independence_measure.py](../tools/tests/test_independence_measure.py) | Скрипт test_independence_measure.py. Описание сгенерировано автоматически. |
+| `tools.test_independent_pipeline` | active-script | 1 | [test_independent_pipeline.py](../tools/tests/test_independent_pipeline.py) | Скрипт test_independent_pipeline.py. Описание сгенерировано автоматически. |
+| `tools.test_info_verify` | active-script | 1 | [test_info_verify.py](../tools/tests/test_info_verify.py) | Скрипт test_info_verify.py. Описание сгенерировано автоматически. |
+| `tools.test_maturity` | active-script | 1 | [test_maturity.py](../tools/tests/test_maturity.py) | Скрипт test_maturity.py. Описание сгенерировано автоматически. |
+| `tools.test_mutmeta` | active-script | 1 | [test_mutmeta.py](../tools/tests/test_mutmeta.py) | Скрипт test_mutmeta.py. Описание сгенерировано автоматически. |
+| `tools.test_oracle_quorum` | active-script | 1 | [test_oracle_quorum.py](../tools/tests/test_oracle_quorum.py) | Скрипт test_oracle_quorum.py. Описание сгенерировано автоматически. |
+| `tools.test_portals` | active-script | 1 | [test_portals.py](../tools/tests/test_portals.py) | Скрипт test_portals.py. Описание сгенерировано автоматически. |
+| `tools.test_provenance` | active-script | 1 | [test_provenance.py](../tools/tests/test_provenance.py) | Скрипт test_provenance.py. Описание сгенерировано автоматически. |
+| `tools.test_queue` | active-script | 1 | [test_queue.py](../tools/tests/test_queue.py) | Скрипт test_queue.py. Описание сгенерировано автоматически. |
+| `tools.test_red_team_gate` | active-script | 1 | [test_red_team_gate.py](../tools/tests/test_red_team_gate.py) | Скрипт test_red_team_gate.py. Описание сгенерировано автоматически. |
+| `tools.test_reflect_ingest` | active-script | 1 | [test_reflect_ingest.py](../tools/tests/test_reflect_ingest.py) | Скрипт test_reflect_ingest.py. Описание сгенерировано автоматически. |
+| `tools.test_repo_hygiene` | active-script | 1 | [test_repo_hygiene.py](../tools/tests/test_repo_hygiene.py) | Скрипт test_repo_hygiene.py. Описание сгенерировано автоматически. |
+| `tools.test_retrieval_bench` | active-script | 1 | [test_retrieval_bench.py](../tools/tests/test_retrieval_bench.py) | Скрипт test_retrieval_bench.py. Описание сгенерировано автоматически. |
+| `tools.test_ripeness_gate` | active-script | 1 | [test_ripeness_gate.py](../tools/tests/test_ripeness_gate.py) | Скрипт test_ripeness_gate.py. Описание сгенерировано автоматически. |
+| `tools.test_safe_write` | active-script | 1 | [test_safe_write.py](../tools/tests/test_safe_write.py) | Скрипт test_safe_write.py. Описание сгенерировано автоматически. |
+| `tools.test_seal_verify` | active-script | 1 | [test_seal_verify.py](../tools/tests/test_seal_verify.py) | Скрипт test_seal_verify.py. Описание сгенерировано автоматически. |
+| `tools.test_seq_merge` | active-script | 1 | [test_seq_merge.py](../tools/tests/test_seq_merge.py) | Скрипт test_seq_merge.py. Описание сгенерировано автоматически. |
+| `tools.test_text_brain` | active-script | 1 | [test_text_brain.py](../tools/tests/test_text_brain.py) | Скрипт test_text_brain.py. Описание сгенерировано автоматически. |
+| `tools.test_text_mux` | active-script | 1 | [test_text_mux.py](../tools/tests/test_text_mux.py) | Скрипт test_text_mux.py. Описание сгенерировано автоматически. |
+| `tools.test_text_scene` | active-script | 1 | [test_text_scene.py](../tools/tests/test_text_scene.py) | Скрипт test_text_scene.py. Описание сгенерировано автоматически. |
+| `tools.test_thread_runner` | active-script | 1 | [test_thread_runner.py](../tools/tests/test_thread_runner.py) | Скрипт test_thread_runner.py. Описание сгенерировано автоматически. |
+| `tools.test_view` | active-script | 1 | [test_view.py](../tools/tests/test_view.py) | Скрипт test_view.py. Описание сгенерировано автоматически. |
+| `tools.test_view_html` | active-script | 1 | [test_view_html.py](../tools/tests/test_view_html.py) | Скрипт test_view_html.py. Описание сгенерировано автоматически. |
+| `tools.test_workflow_recover` | active-script | 1 | [test_workflow_recover.py](../tools/tests/test_workflow_recover.py) | Скрипт test_workflow_recover.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_action_tracker` | active-script | 1 | [test_action_tracker.py](../tools/tests/test_action_tracker.py) | Тест action_tracker.py — канонический parse_fm из _canon (аудит C34) + dump_fm/replace_fm + status. |
 | `tools.tests.test_adoption` | active-script | 1 | [test_adoption.py](../tools/tests/test_adoption.py) | Скрипт test_adoption.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_advice` | active-script | 1 | [test_advice.py](../tools/tests/test_advice.py) | Скрипт test_advice.py. Описание сгенерировано автоматически. |
@@ -94,11 +135,13 @@
 | `tools.tests.test_blocks` | active-script | 1 | [test_blocks.py](../tools/tests/test_blocks.py) | Скрипт test_blocks.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_capabilities` | active-script | 1 | [test_capabilities.py](../tools/tests/test_capabilities.py) | Скрипт test_capabilities.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_card` | active-script | 1 | [test_card.py](../tools/tests/test_card.py) | Скрипт test_card.py. Описание сгенерировано автоматически. |
+| `tools.tests.test_code_pyramid` | active-script | 1 | [test_code_pyramid.py](../tools/tests/test_code_pyramid.py) | Скрипт test_code_pyramid.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_cohort` | active-script | 1 | [test_cohort.py](../tools/tests/test_cohort.py) | Скрипт test_cohort.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_command_index` | active-script | 1 | [test_command_index.py](../tools/tests/test_command_index.py) | Скрипт test_command_index.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_commit_lock` | active-script | 1 | [test_commit_lock.py](../tools/tests/test_commit_lock.py) | Скрипт test_commit_lock.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_conveyor` | active-script | 1 | [test_conveyor.py](../tools/tests/test_conveyor.py) | Скрипт test_conveyor.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_core_export` | active-script | 1 | [test_core_export.py](../tools/tests/test_core_export.py) | Скрипт test_core_export.py. Описание сгенерировано автоматически. |
+| `tools.tests.test_dcard_indexer` | active-script | 1 | [test_dcard_indexer.py](../tools/tests/test_dcard_indexer.py) | Скрипт test_dcard_indexer.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_decision_menu` | active-script | 1 | [test_decision_menu.py](../tools/tests/test_decision_menu.py) | Скрипт test_decision_menu.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_decision_propagation` | active-script | 1 | [test_decision_propagation.py](../tools/tests/test_decision_propagation.py) | Скрипт test_decision_propagation.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_demo_bridge` | active-script | 1 | [test_demo_bridge.py](../tools/tests/test_demo_bridge.py) | Скрипт test_demo_bridge.py. Описание сгенерировано автоматически. |
@@ -115,6 +158,7 @@
 | `tools.tests.test_flow` | active-script | 1 | [test_flow.py](../tools/tests/test_flow.py) | Скрипт test_flow.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_folder_index` | active-script | 1 | [test_folder_index.py](../tools/tests/test_folder_index.py) | Скрипт test_folder_index.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_friction_f020` | active-script | 1 | [test_friction_f020.py](../tools/tests/test_friction_f020.py) | Скрипт test_friction_f020.py. Описание сгенерировано автоматически. |
+| `tools.tests.test_gap_scan` | active-script | 1 | [test_gap_scan.py](../tools/tests/test_gap_scan.py) | Скрипт test_gap_scan.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_generate` | active-script | 1 | [test_generate.py](../tools/tests/test_generate.py) | Скрипт test_generate.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_header` | active-script | 1 | [test_header.py](../tools/tests/test_header.py) | Скрипт test_header.py. Описание сгенерировано автоматически. |
 | `tools.tests.test_heading_check` | active-script | 1 | [test_heading_check.py](../tools/tests/test_heading_check.py) | Скрипт test_heading_check.py. Описание сгенерировано автоматически. |
@@ -380,9 +424,9 @@
 | `unknown` | stream-index | - | [README.generated.md](../streams/architecture-core/README.generated.md) |  |
 | `unknown` | stream-index | - | [README.md](../streams/architecture-core/README.md) |  |
 | `unknown` | divergence-stream | - | [codex-divergence.md](../streams/commit-policy/codex-divergence.md) |  |
-| `unknown` | divergence-stream | - | [unknown-divergence.md](../streams/driver-acceptance-batch/unknown-divergence.md) |  |
+| `unknown` | divergence-stream | - | [unknown-divergence.md](../streams/driver-acceptance-batch/archive/unknown-divergence.md) |  |
 | `unknown` | divergence-stream | - | [claude-divergence.md](../streams/repo-review/claude-divergence.md) |  |
-| `unknown` | divergence-stream | - | [unknown-divergence.md](../streams/repo-review/unknown-divergence.md) |  |
+| `unknown` | divergence-stream | - | [unknown-divergence.md](../streams/repo-review/archive/unknown-divergence.md) |  |
 | `unknown` | - | - | [finder-doc-vs-reality-2026-06-23.md](../topics/finder-doc-vs-reality-2026-06-23.md) | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" |
 | `2026-06-21-codex-streams-policy` | - | - | [STREAM.md](../streams/commit-policy/2026-06-21-codex-streams-policy/STREAM.md) |  |
 | `2026-06-21-codex-t136-synthesis` | - | - | [STREAM.md](../streams/commit-policy/2026-06-21-codex-t136-synthesis/STREAM.md) |  |
@@ -436,6 +480,8 @@
 | `D-031` | decision | - | [D-031.md](../decisions/D-031.md) | commit_queue как стандартный путь коммита внутри Уровня 0 (очередь + обратная связь + предсохранение) |
 | `D-032` | decision | - | [D-032.md](../decisions/D-032.md) | gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula |
 | `D-033` | decision | - | [D-033.md](../decisions/D-033.md) | ЧЕРНОВИК — дисциплина автономных действий (помечать/комментировать/×N-подтверждать/корректировать) + C5 commit_queue-стандарт + B2 accept-гейт |
+| `D-034` | decision | - | [D-034.md](../decisions/D-034.md) | Отдельные пороги dir_health для архивных каталогов (queues/done — FAIL 500 / WARN 400) |
+| `D-035` | decision | - | [D-035.md](../decisions/D-035.md) | Батчевая ратификация — «котёл-день» как норма (вопросы копятся, разбираются батчем раз в 3-5 дней) |
 | `DVG-006-scale-vs-upper-layer-2026-06-24` | divergence-detail | - | [DVG-006-scale-vs-upper-layer.md](../streams/architecture-core/DVG-006-scale-vs-upper-layer.md) |  |
 | `OIA-2026-06-24` | architecture-synthesis | - | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) |  |
 | `Q-001` | question | - | [Q-001.md](../questions/Q-001.md) | Какие имена файлов использовать: русские или ASCII? |
@@ -733,6 +779,8 @@
 | `T-270` | task | - | [T-270.md](../tasks/T-270.md) | Разбор и ратификация очереди proposed-решений (ратификация — за человеком) |
 | `T-271` | task | - | [T-271.md](../tasks/T-271.md) | Приёмка Q-023 (матрица полномочий) и связанного D-027 (решение — за человеком) |
 | `T-272` | task | - | [T-272.md](../tasks/T-272.md) | C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания |
+| `T-273` | task | - | [T-273.md](../tasks/T-273.md) | AI-OS Bridge L2 — первый живой продуктовый груз конвейера |
+| `T-274` | task | - | [T-274.md](../tasks/T-274.md) | Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat) |
 | `T-FUND-001` | topic | - | [architecture-fundamentals-2026-06-24.md](../topics/architecture-fundamentals-2026-06-24.md) | Архитектурные основы — канонический свод |
 | `adoption-statistics-2026-06-23` | topic | - | [adoption-statistics-2026-06-23.md](../topics/adoption-statistics-2026-06-23.md) | Adoption Statistics — 2026-06-23 |
 | `agent-approval-matrix` | doc | - | [agent-approval-matrix.md](../docs/agent-approval-matrix.md) | Матрица полномочий людей, AI-агентов, субагентов и скриптов |

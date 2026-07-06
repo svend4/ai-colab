@@ -1,4 +1,19 @@
+---
+source: queues/inbox/2026-06-21-powershell-output-paste.md
+status: closed-unused
+task: T-266
+agent: claude
+date_processed: 2026-07-06
+---
+
 # PowerShell output paste buffer
+
+> Обработано по T-266 (отмашка Stefan D3, 2026-07-06): буфер так и не был заполнен
+> (блок «Вывод PowerShell» пуст — подтверждено), с 21.06 лежал в inbox и создавал
+> TTL-шум. Решение по варианту (a) задачи: **не использовался, неактуально** — файл
+> перемещён из `queues/inbox/` в `queues/done/` (НЕ удалён, шаблон сохранён ниже целиком).
+> Если механизм paste-буфера снова понадобится — узаконить копию вне inbox
+> (templates/ или docs/), см. `topics/repo-review-2026-06-21.md`.
 
 Дата: 2026-06-21
 

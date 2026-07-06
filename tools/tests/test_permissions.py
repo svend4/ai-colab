@@ -51,6 +51,8 @@ def run():
     try:
         os.makedirs(os.path.join(base, "tools"), exist_ok=True)
         policy = {
+            "_comment": "критические пути — только человек (решение Stefan 2026-07-06)",
+            "_deny_agents": ["tools/permissions.json", "tools/githooks/**", "sandbox/approvals/**"],
             "claude": ["**"],
             "mavis": ["tasks/**", "docs/**", "*.md", "index.json"],
         }
@@ -79,6 +81,15 @@ def run():
         # нормализация backslash → forward slash (Windows-пути)
         assert m("tasks\\T-1.md", "tasks/**") is True, "backslash должен нормализоваться"
 
+        # denied(): deny-список переиспользует семантику match() (A4-2, Stefan 2026-07-06)
+        deny = policy["_deny_agents"]
+        assert p.denied("tools/permissions.json", deny) is True
+        assert p.denied("tools/githooks/pre-commit", deny) is True
+        assert p.denied("sandbox/approvals/a.md", deny) is True
+        assert p.denied("tools\\permissions.json", deny) is True, "backslash и в deny нормализуется"
+        assert p.denied("docs/x.md", deny) is False
+        assert p.denied("tools/validate.py", deny) is False
+
         # load_policy читает наш файл
         loaded = p.load_policy()
         assert loaded == policy, loaded
@@ -92,23 +103,37 @@ def run():
             finally:
                 sys.argv = saved
 
-        # mavis пишет в разрешённую зону → rc 0
+        # mavis пишет в разрешённую зону → rc 0 (deny-список mavis не трогает: без изменений)
         rc = call("mavis", "tasks/T-1.md", "docs/a.md", "README.md", "index.json")
         assert rc == 0, "разрешённые пути → rc 0"
         # mavis пишет вне зоны (tools/x.py не покрыт) → rc 1
         rc = call("mavis", "tools/secret.py")
         assert rc == 1, "путь вне зоны → rc 1"
-        # claude с "**" — всё разрешено
+        # claude с "**" — всё разрешено (кроме deny)
         rc = call("claude", "tools/secret.py", "whatever/x")
         assert rc == 0, "claude (**) → rc 0"
+        rc = call("claude", "docs/x.md")
+        assert rc == 0, "claude + docs/x.md → rc 0"
+        # deny-список ПЕРВЫМ даже при зоне "**" → rc 1 (решение Stefan 2026-07-06)
+        rc = call("claude", "tools/permissions.json")
+        assert rc == 1, "claude + tools/permissions.json (deny) → rc 1"
+        rc = call("claude", "tools/githooks/pre-commit")
+        assert rc == 1, "claude + tools/githooks/** (deny) → rc 1"
+        rc = call("claude", "sandbox/approvals/a.md")
+        assert rc == 1, "claude + sandbox/approvals/** (deny) → rc 1"
         # неизвестный агент → rc 1
         rc = call("ghost", "x.md")
         assert rc == 1, "агент не в политике → rc 1"
+        # служебные ключи политики — не агенты
+        rc = call("_deny_agents", "x.md")
+        assert rc == 1, "служебный ключ не должен работать как агент → rc 1"
         # нет аргументов → usage rc 2
         rc = call()
         assert rc == 2, "пустые args → rc 2"
 
-        print("TESTS OK permissions: match(** / dir/** / *.ext / exact + backslash-норм) + main rc(0 в зоне / 1 вне зоны / 1 неизв.агент / 2 usage)")
+        print("TESTS OK permissions: match(** / dir/** / *.ext / exact + backslash-норм) + "
+              "deny-список первым (permissions.json/githooks/approvals → rc 1 даже при **) + "
+              "main rc(0 в зоне / 1 вне зоны / 1 неизв.агент/служебный ключ / 2 usage)")
     except AssertionError as e:
         ok = False
         print("TEST FAIL:", e)

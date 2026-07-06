@@ -19,14 +19,14 @@
       "title": "Динамический конвейер агентов — управляемая разработка",
       "file": "topics/agent-pipeline.md",
       "status": "open",
-      "next": "D-011 принят, T-027 первая версия готова; обсудить heartbeat/live-room и правила использования pipeline.py"
+      "next": "конвейер реализован (D-011/D-012, T-027..T-042 done); следующий шаг — T-274: авто-детект одновременности агентов (tripwire пересмотра D-012)"
     },
     {
       "id": "ai-os-bridge",
       "title": "AI-OS Bridge — прослойка между ОС и AI-агентами",
       "file": "topics/ai-os-bridge.md",
       "status": "open",
-      "next": "D-010 принят: стартовать с L1-каталога drivers/ и готовить один read-only L2 PoC; следующие задачи T-022..T-024"
+      "next": "живая (решение Stefan D2, 2026-07-06): следующий шаг — T-273 (живой L2-кейс end-to-end на реальных данных)"
     },
     {
       "id": "incident-outbox-mass-strip-2026-06-24",
@@ -36,25 +36,11 @@
       "next": ""
     },
     {
-      "id": "infrastructure-review",
-      "title": "Технический обзор инфраструктуры",
-      "file": "topics/infrastructure-review.md",
-      "status": "open",
-      "next": "Обсудить предложения; выбрать следующий инженерный шаг"
-    },
-    {
       "id": "meta-sanation-questions-2026-06-24",
       "title": "Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету",
       "file": "topics/meta-sanation-questions-2026-06-24.md",
       "status": "open",
       "next": ""
-    },
-    {
-      "id": "opinion-synthesis-2026-06-21",
-      "title": "Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ",
-      "file": "topics/opinion-synthesis-2026-06-21.md",
-      "status": "open",
-      "next": "Реализовать консенсус-очередь (C1-C3 готовы к взятию); по расхождениям D1-D4 — доказательное обсуждение до консенсуса"
     },
     {
       "id": "parallel-forks-history-2026-06-22",
@@ -69,13 +55,6 @@
       "file": "topics/repo-review-2026-06-21.md",
       "status": "open",
       "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
-    },
-    {
-      "id": "sandbox-and-forks-2026-06-21",
-      "title": "Старые долги — генерик-песочница и методология форков (параллельные варианты)",
-      "file": "topics/sandbox-and-forks-2026-06-21.md",
-      "status": "open",
-      "next": "D-017 (fork-and-synthesize) принят; sandbox-контур = контракт Codex + intake-автоматизация Claude (синтез); T-020 переформулирован как первый external-source"
     },
     {
       "id": "triadic-golden-mean-questionnaire-2026-06-25",
@@ -99,11 +78,25 @@
       "next": "T-001 закрыт: формат полилога подтверждён"
     },
     {
+      "id": "infrastructure-review",
+      "title": "Технический обзор инфраструктуры",
+      "file": "topics/infrastructure-review.md",
+      "status": "done",
+      "next": "Тема закрыта: рекомендации обзора реализованы (валидатор, генератор, front-matter, git, очереди, индекс). Новые инфраструктурные обсуждения — отдельной темой."
+    },
+    {
       "id": "migrate-file-names",
       "title": "Миграция имён файлов к ASCII (Q-004)",
       "file": "topics/migrate-file-names.md",
       "status": "done",
       "next": "Решено C (D-007): переименовывать при правках, ход — T-005"
+    },
+    {
+      "id": "opinion-synthesis-2026-06-21",
+      "title": "Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ",
+      "file": "topics/opinion-synthesis-2026-06-21.md",
+      "status": "done",
+      "next": "Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): C1-C9 и D1-D4 реализованы или разрешены решениями D-016/D-020/D-021; осознанные отложения — worktree-streams (D-020 §3) и PDF-extract"
     },
     {
       "id": "organization",
@@ -118,6 +111,13 @@
       "file": "topics/q006-agent-onboarding.md",
       "status": "done",
       "next": "Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия"
+    },
+    {
+      "id": "sandbox-and-forks-2026-06-21",
+      "title": "Старые долги — генерик-песочница и методология форков (параллельные варианты)",
+      "file": "topics/sandbox-and-forks-2026-06-21.md",
+      "status": "done",
+      "next": "Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): оба долга реализованы — sandbox-контур (docs + sandbox/ + tools/sandbox*.py) и D-017 accepted; T-020 done"
     },
     {
       "id": "scaling-design",
@@ -3476,7 +3476,7 @@
     {
       "id": "T-265",
       "title": "Разобрать queues/inbox/2026-06-21-driver-acceptance-output.txt (залежался с 21.06)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3487,7 +3487,7 @@
     {
       "id": "T-266",
       "title": "Разобрать queues/inbox/2026-06-21-powershell-output-paste.md (пустой paste-буфер с 21.06)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3498,7 +3498,7 @@
     {
       "id": "T-267",
       "title": "Триаж queues/inbox/documentoutput.md — 66КБ дамп с чужими GEN-маркерами",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "medium",
@@ -3526,29 +3526,29 @@
       "risk": "medium",
       "depends_on": "[]",
       "topic": "",
-      "next": "Stefan проходит чек-лист закрытия инцидента (см. Scope) и фиксирует закрытие в топике"
+      "next": "до 2026-07-13 (ответственный Stefan) — получить объяснение antigravity либо закрыть инцидент с оргвыводом; выбор A2(b) зафиксирован 2026-07-06"
     },
     {
       "id": "T-270",
       "title": "Разбор и ратификация очереди proposed-решений (ратификация — за человеком)",
-      "status": "todo",
+      "status": "done",
       "owner": "stefan",
       "priority": "high",
       "risk": "medium",
       "depends_on": "[]",
       "topic": "",
-      "next": "Stefan проходит по списку proposed-решений и по каждому решает accept/reject/доработать"
+      "next": "закрыто — Stefan дал вердикты по всем 8 решениям котёл-ответом 2026-07-06 (см. «Итог»)"
     },
     {
       "id": "T-271",
       "title": "Приёмка Q-023 (матрица полномочий) и связанного D-027 (решение — за человеком)",
-      "status": "todo",
+      "status": "done",
       "owner": "stefan",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "Stefan отвечает на Q-023 и решает судьбу D-027; governance-блок Q-W2-2/9/13/18 удобно закрыть тем же заходом"
+      "next": "закрыто — D-027 accepted, Q-023 answered (котёл-ответ Stefan 2026-07-06, см. «Итог»)"
     },
     {
       "id": "T-272",
@@ -3560,6 +3560,28 @@
       "depends_on": "[]",
       "topic": "",
       "next": "при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist"
+    },
+    {
+      "id": "T-273",
+      "title": "AI-OS Bridge L2 — первый живой продуктовый груз конвейера",
+      "status": "todo",
+      "owner": "stefan+any",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "выбрать живой L2-кейс (files/sqlite драйвер на реальном каталоге Stefan или внешний репозиторий svend4) и прогнать один end-to-end сценарий через drivers/"
+    },
+    {
+      "id": "T-274",
+      "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "topics/agent-pipeline.md",
+      "next": "добавить в pipeline.py snapshot/status подсчёт одновременных активных агентов (свежие claim'ы + свежие heartbeat'ы) и advisory-строку tripwire D-012 при >=3"
     }
   ],
   "questions": [
@@ -3720,9 +3742,9 @@
     {
       "id": "Q-023",
       "title": "Какая матрица полномочий нужна для людей и AI-агентов?",
-      "status": "open",
+      "status": "answered",
       "where": "topics/information-refactoring-cycle-3-2026-06-25.md",
-      "outcome": "proposed answer in D-027 and docs/agent-approval-matrix.md; awaiting human/appointed integrator acceptance"
+      "outcome": "answered by D-027 (accepted 2026-07-06) + docs/agent-approval-matrix.md; roster fixed per A4 (antigravity out until incident explanation; subagent-worker = service agent)"
     }
   ],
   "decisions": [
@@ -3890,7 +3912,7 @@
     {
       "id": "D-024",
       "title": "Формат синтеза с выносом разногласий (Structured Divergences)",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-23",
       "file": "decisions/D-024.md"
     },
@@ -3904,35 +3926,35 @@
     {
       "id": "D-026",
       "title": "Безопасность массовой информации — запрет несанкционированного bulk-стирания + обязательная страховка",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-24",
       "file": "decisions/D-026.md"
     },
     {
       "id": "D-027",
       "title": "Матрица полномочий для людей, AI-агентов, observer/integrator ролей и скриптов",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-25",
       "file": "decisions/D-027.md"
     },
     {
       "id": "D-028",
       "title": "Independent-first variants — содержательные дубли раскрываются до синтеза",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-25",
       "file": "decisions/D-028.md"
     },
     {
       "id": "D-029",
       "title": "Consensus-by-meaning — merge-инварианты сверки вариантов (по смыслу, не по счёту)",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-07-05",
       "file": "decisions/D-029.md"
     },
     {
       "id": "D-030",
       "title": "Independent-consensus — валидированное ядро после полного адверсариального прогона",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-25",
       "file": "decisions/D-030.md"
     },
@@ -3946,7 +3968,7 @@
     {
       "id": "D-032",
       "title": "gap_scan.py + гейт тихого дрейфа деривата — исполняемая рука defect-class-formula",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-06-26",
       "file": "decisions/D-032.md"
     },
@@ -3956,6 +3978,20 @@
       "status": "proposed",
       "date": "2026-06-26",
       "file": "decisions/D-033.md"
+    },
+    {
+      "id": "D-034",
+      "title": "Отдельные пороги dir_health для архивных каталогов (queues/done — FAIL 500 / WARN 400)",
+      "status": "accepted",
+      "date": "2026-07-06",
+      "file": "decisions/D-034.md"
+    },
+    {
+      "id": "D-035",
+      "title": "Батчевая ратификация — «котёл-день» как норма (вопросы копятся, разбираются батчем раз в 3-5 дней)",
+      "status": "accepted",
+      "date": "2026-07-06",
+      "file": "decisions/D-035.md"
     }
   ],
   "drivers": [
