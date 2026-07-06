@@ -57,6 +57,13 @@
       "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
     },
     {
+      "id": "topics/orchestration-workflow-design-2026-07-06.md",
+      "title": "Orchestration Workflow — архитектура мультиагентного конвейера",
+      "file": "topics/orchestration-workflow-design-2026-07-06.md",
+      "status": "open",
+      "next": ""
+    },
+    {
       "id": "triadic-golden-mean-questionnaire-2026-06-25",
       "title": "Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации",
       "file": "topics/triadic-golden-mean-questionnaire-2026-06-25.md",
@@ -2936,14 +2943,14 @@
     },
     {
       "id": "T-216",
-      "title": "Execute-Sandbox: Human Gate (P6) & Preflight Probe (P11)",
+      "title": "Техническая перепроверка текущей стадии реализации — отчёт в репозиторий",
       "status": "done",
-      "owner": "antigravity",
+      "owner": "Novax",
       "priority": "normal",
-      "risk": "medium",
-      "depends_on": "[T-214]",
+      "risk": "low",
+      "depends_on": "[]",
       "topic": "",
-      "next": "Реализовать tools/execute_human_gate.py и check-all"
+      "next": "Создать docs/technical-audit-2026-07-06.md на основе данных validate + friction + decision_propagation + pipeline"
     },
     {
       "id": "T-217",
@@ -3564,18 +3571,18 @@
     {
       "id": "T-273",
       "title": "AI-OS Bridge L2 — первый живой продуктовый груз конвейера",
-      "status": "todo",
+      "status": "review",
       "owner": "stefan+any",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "выбрать живой L2-кейс (files/sqlite драйвер на реальном каталоге Stefan или внешний репозиторий svend4) и прогнать один end-to-end сценарий через drivers/"
+      "next": "финальное done — за человеком/котлом (принять package/agenda-слой по kotel/agenda.md, при желании завести кандидаты задач из payload §7)"
     },
     {
       "id": "T-274",
       "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
-      "status": "todo",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3585,25 +3592,58 @@
     },
     {
       "id": "T-275",
-      "title": "Вплетение свежепринятых решений (D-026/027/029/032/034/035) в инструкционную поверхность",
+      "title": "\"Оркестрация: governance-батч — ратификация 7 proposed + котёл-вопросы\"",
       "status": "todo",
+      "owner": "mavis",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[T-276, T-277, T-278]",
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "\"Этап 1: спавн 3 workers (researcher + verifier + writer) для параллельной работы. Этап 2: координация и синтез. Этап 3: презентация человеку.\""
+    },
+    {
+      "id": "T-276",
+      "title": "\"Governance-батч: researcher — сводка 7 proposed-решений (D-024, D-026, D-027, D-028, D-030, D-032, D-033)\"",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
       "depends_on": "[]",
-      "topic": "",
-      "next": "по каждому из 6 accepted-решений 2026-07-06 определить точку проявления (AGENTS.md / PROTOCOL.md / README.md / top.py / validator-gate / skill) и вплести; проверить instructions.py surface"
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "\"Прочитать decisions/D-XXX.md для каждого из 7, написать сводку: суть, аргументы за, аргументы против, рекомендация mavis.\""
     },
     {
-      "id": "T-276",
-      "title": "Cauldron task materializer — dry-run создание кандидатных задач из synthesis/котла",
-      "status": "todo",
+      "id": "T-277",
+      "title": "\"Governance-батч: verifier — проверка конфликтов между 7 proposed + связь с accepted\"",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
-      "risk": "medium",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "\"Проверить: (1) конфликты между D-024/026/027/028/030/032/033; (2) поглощение одного другим; (3) противоречие accepted-решениям. Результат = таблица конфликтов или \\\"чисто\\\".\""
+    },
+    {
+      "id": "T-278",
+      "title": "\"Governance-батч: writer — документ батч-ратификации 7 proposed-решений\"",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[T-276, T-277]",
+      "topic": "topics/orchestration-workflow-design-2026-07-06.md",
+      "next": "\"По результатам T-276 + T-277: единый документ батч-ратификации для Stefan. Формат: 1 блок = 1 решение, рекомендация, что нужно от человека.\""
+    },
+    {
+      "id": "T-279",
+      "title": "(зарезервировано — заполните)",
+      "status": "todo",
+      "owner": "mavis",
+      "priority": "normal",
+      "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "спроектировать и реализовать read-only/dry-run инструмент, который читает synthesis/cauldron report и предлагает tasks/T-*.md candidates без auto-accepted решений; запись только явным apply через next_id.py"
+      "next": "зарезервировано через tools/next_id.py — заполните"
     }
   ],
   "questions": [

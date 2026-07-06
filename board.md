@@ -23,6 +23,7 @@
 | Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету | `topics/meta-sanation-questions-2026-06-24.md` | open | — |  |
 | Параллельная многоагентная работа без блокировки: «ручейки/streams», форк-варианты, worktree и merge-back | `topics/parallel-forks-history-2026-06-22.md` | open | — |  |
 | Перепроверка и независимое ревью репозитория (Claude, 2026-06-21) | `topics/repo-review-2026-06-21.md` | open | Stefan | P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security |
+| Orchestration Workflow — архитектура мультиагентного конвейера | `topics/orchestration-workflow-design-2026-07-06.md` | open | — |  |
 | Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации | `topics/triadic-golden-mean-questionnaire-2026-06-25.md` | open | — |  |
 | Границы D-003 (Q-005) | `topics/d003-scope.md` | done | — | Решено A (D-008): обоснование только для значимых правок |
 | Пример обсуждения | `topics/example.md` | done | — | T-001 закрыт: формат полилога подтверждён |
