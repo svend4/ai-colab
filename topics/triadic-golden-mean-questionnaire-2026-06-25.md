@@ -3,7 +3,8 @@ id: triadic-golden-mean-questionnaire-2026-06-25
 type: topic
 title: Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации
 gist: Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: каждый элемент = 3 варианта (частный/малый · средний/гибридный/золотая-середина · глобальный/большой), фрактально (Серпинский) везде — между типами (скиллы/плагины/тулы/скрипты/файлы/метаданные/классы) И внутри них. Включает глубокий вопрос: почему 3-уровневая пирамида есть у markdown, но не у кодовых файлов.
-status: open
+status: needs-decision
+next: Human decision via T-284; see reports/topics-review-2026-07-06.md and docs/HUMAN-DECISIONS-OPEN.md Q8.
 owner: stefan
 date: 2026-06-25
 related: [meta-sanation-questions-2026-06-24, architecture-fundamentals-2026-06-24, card-standard, navigation-vs-sharding-2026-06-24, information-refactoring-sanation-standard]
@@ -290,3 +291,25 @@ related: [meta-sanation-questions-2026-06-24, architecture-fundamentals-2026-06-
 справочник — вопросник закрыть (done) с формулировкой «выполнил роль генератора инструментов»,
 3 requires-decision вопроса (7.1–7.3) перенести в decision-очередь только если появится потребитель
 triad-полей; отдельное направление triad_lint без потребителя не развивать.
+
+## Decision routing — T-281 (Codex, 2026-07-06)
+
+This topic is no longer a silent `open` item. Its useful outputs already landed in working mechanisms (`code_pyramid`, portals, `question_tree`, methodology docs), while the remaining triad-lint/triad-fields direction needs an explicit consumer or a human decision. That choice is routed to `T-284` / `docs/HUMAN-DECISIONS-OPEN.md` Q8.
+
+## Реплика — заморозка (Stefan, котёл-день 2026-07-06)
+
+> Провенанс: Stefan, котёл-день 2026-07-06 (Q8, эстафета Q11). Применена рекомендация
+> из реплики-характеристики выше. Статус НЕ меняется (`needs-decision`); варианты/divergence
+> не стираются (D-017) — ниже только пометка.
+
+**Заморожено до Beta-0 (Stefan котёл-день 2026-07-06).** Причина: рекомендация характеристики
+неоднозначна — дословно «ЗАМОРОЗИТЬ как справочник» И одновременно «вопросник закрыть (done)»;
+freeze и close — противоречивые вердикты в одной формулировке. По правилу эстафеты Q8 (при
+неоднозначности — выбирать консервативно) и запрету «спорные топики не закрывать» выбран **freeze**,
+а не close. Основания заморозки: главные плоды вопросника уже извлечены и живут отдельно
+(`code_pyramid`, `portals`, `question_tree`, `docs/triadic-fractal-methodology.md`), приняты D-030
+независимо от судьбы вопросника; остаток — таксономическая надстройка (triad_lint, triad fields
+object/scale/artifact_type) без конкретного потребителя (риск «онтологии ради онтологии»). До Beta-0
+не развивать `triad_lint` без потребителя; 3 requires-decision вопроса (7.1-7.3) держать вне
+decision-очереди до появления потребителя triad-полей. Окончательный вердикт (freeze-as-reference
+против close-as-done) — за Stefan через Q8/T-284. Разблокировка — по решению Stefan (T-284, Q8).

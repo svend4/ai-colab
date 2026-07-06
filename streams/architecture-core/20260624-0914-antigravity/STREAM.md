@@ -2,9 +2,19 @@
 id: 20260624-0914-antigravity
 topic: architecture-core
 agent: antigravity
-status: proposed
+status: adopted
+adopted_commit: 0a4d061
+related: [T-225, DVG-001, DVG-004]
 created: 2026-06-24T09:14:00+02:00
 ---
+
+> **Провенанс adoption (Stefan, котёл-день 2026-07-06).** Поток переведён `proposed → adopted` по
+> рекомендации отчёта `reports/stale-streams-2026-07-05.md` (поток №4, находка C41, аудит 2026-07-02):
+> «adopt после ратификации вердиктов». Оба предложенных вердикта ратифицированы Stefan в котёл-день
+> 2026-07-06: **DVG-001 → logical-collab** (не переносить L3 физически в `collab/`) и **DVG-004 →
+> shared-tools-only** (только общий `tools/`). Deliverable закрытой T-225 (`status: done`);
+> `adopted_commit` = `0a4d061` (коммит, в котором T-225 закрыта и этот поток приземлён). Точка
+> принятия решения зафиксирована здесь; ничего не стёрто (D-017).
 
 # Резолюция архитектурных разногласий DVG-001 и DVG-004
 

@@ -2,11 +2,21 @@
 id: 20260624-0857-antigravity
 topic: agent-onboarding
 agent: antigravity
-status: proposed
+status: archived
+archived_reason: "Как stream (вариант к adoption) несостоятелен: секция «Вариант» — пустой placeholder, patch/evidence нет, follow-up не породил. Текст эссе сохранён целиком ниже (D-017)."
 created: 2026-06-24T06:57:38+00:00
 reason: "Эссе о природе Ядра ОС"
 adopted_commit: ""
 ---
+
+> **Провенанс архивации (Stefan, котёл-день 2026-07-06).** Поток переведён `proposed → archived` по
+> рекомендации отчёта `reports/stale-streams-2026-07-05.md` (поток №3, находка C41, аудит 2026-07-02):
+> «archive (перед этим при желании спасти тезис)». Как stream пакет несостоятелен (секция «Вариант» —
+> незаполненный шаблон, нет patch/evidence, follow-up-работ не породил). Тезис «LLM-OS вместо папки со
+> скриптами» **сохранён целиком** в теле эссе ниже — ничего не стёрто (D-017); перенос сути в топик
+> agent-onboarding/docs (`docs/agent-quickstart.md`) оставлен человеку (вне зоны этой правки).
+> Пакет перемещён в `streams/agent-onboarding/archive/` по конвенции (образец
+> `streams/driver-acceptance-batch/archive/`).
 
 # Эссе: Является ли "Ядро" (core) полноценной ОС или набором скриптов?
 

@@ -2,13 +2,22 @@
 id: 2026-06-21-codex-t136-synthesis
 topic: commit-policy
 agent: codex
-status: ready-for-review
+status: adopted
+adopted_commit: c677777
 created: 2026-06-21
 author: codex
-related: [T-136, D-017, D-018, D-019]
+related: [T-136, D-017, D-018, D-019, D-021, D-022]
 adoption: proposed-in-D-019
 variant_of: commit-stream-policy
 ---
+
+> **Провенанс adoption (Stefan, котёл-день 2026-07-06).** Поток переведён `ready-for-review → adopted`
+> задним числом по рекомендации отчёта `reports/stale-streams-2026-07-05.md` (поток №1, находка C41,
+> аудит 2026-07-02). Содержание уже принято мейнлайном: T-136 закрыта (`status: done`, «Закрыто
+> D-021/T-143 — Уровень 0 остаётся дефолтом, Уровень 1 worktree-streams принят как явный режим
+> --worktree»); D-019 (`proposed-in-D-019`) имеет `status: superseded → D-021, D-022`. `adopted_commit`
+> = `c677777` (ратификация котёл-пакета D-021, Stefan). Review по существу состоялся через котёл
+> (D-021/D-022), отдельный ревьюер не назначался. Ничего не стёрто (D-017).
 
 # Codex synthesis for T-136
 

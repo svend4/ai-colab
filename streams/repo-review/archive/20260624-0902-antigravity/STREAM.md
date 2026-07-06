@@ -2,11 +2,21 @@
 id: 20260624-0902-antigravity
 topic: repo-review
 agent: antigravity
-status: proposed
+status: archived
+archived_reason: "Этап 1 (fencing: строгая проверка claim_id в pipeline.py done/fail) реализован (_check_holder, «claim_id не совпадает (перехвачен/протух)»). Этап 2 (зачистка фантомных блокеров) → TTL-семейство волны 2 (C29-b/C30-b). Текст сохранён (D-017)."
 created: 2026-06-24T07:02:40+00:00
 reason: "Очередность: Fencing или Фантомные Блокеры"
 adopted_commit: ""
 ---
+
+> **Провенанс архивации (Stefan, котёл-день 2026-07-06).** Поток переведён `proposed → archived` по
+> рекомендации отчёта `reports/stale-streams-2026-07-05.md` (поток №5, находка C41, аудит 2026-07-02):
+> «archive с пометкой ‹Этап 1 реализован›». Этап 1 (строгая проверка `claim_id` в `tools/pipeline.py`
+> done/fail) **уже реализован** — fencing-token проверяется в `_check_holder` (`tools/pipeline.py`,
+> «claim_id не совпадает (перехвачен/протух)…»). Этап 2 (зачистка фантомных блокеров / audit
+> устаревших задач) частично покрывается TTL-семейством волны 2 (C29-b/C30-b — WARN на залежавшиеся
+> объекты); отдельная T-задача на зачистку — по решению человека. Текст сохранён целиком (D-017).
+> Пакет перемещён в `streams/repo-review/archive/` (папка уже существует по конвенции).
 
 # 20260624-0902-antigravity (repo-review)
 

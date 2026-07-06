@@ -2,11 +2,19 @@
 id: 20260622-0555-codex
 topic: commit-policy
 agent: codex
-status: proposed
+status: adopted
+adopted_commit: 2897378
 created: 2026-06-22
-related: [T-146, Q-015, D-017, D-019, D-021, T-135, T-136, T-144]
+related: [T-146, Q-015, D-017, D-019, D-021, D-022, T-135, T-136, T-144]
 adoption: none
 ---
+
+> **Провенанс adoption (Stefan, котёл-день 2026-07-06).** Поток переведён `proposed → adopted` задним
+> числом по рекомендации отчёта `reports/stale-streams-2026-07-05.md` (поток №2, находка C41, аудит
+> 2026-07-02). Предложение «Level 1 worktree обязателен по триггерам» принято практически дословно:
+> связанный `Q-015` имеет `status: answered`, outcome «Принят D-022 — вариант B; Level 1 worktree
+> обязателен по триггерам…». `adopted_commit` = `2897378` (D-022 detailed parallel-work policy,
+> закрывает Q-015). Ничего не стёрто (D-017).
 
 # Stream: Level 1 trigger policy after waiting/generated-index conflicts
 
