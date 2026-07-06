@@ -286,13 +286,13 @@
 | [T-277.md](../tasks/T-277.md) | — | done | — |
 | [T-278.md](../tasks/T-278.md) | — | done | — |
 | [T-279.md](../tasks/T-279.md) | task | done | This id was reserved by Mavis via `tools/next_id.py`, but no real title, scope, next actio |
-| [T-280.md](../tasks/T-280.md) | task | blocked | — |
+| [T-280.md](../tasks/T-280.md) | task | blocked | **D-033 готов к 2-му подтверждению.** |
 | [T-281.md](../tasks/T-281.md) | task | done | 1. `topics/meta-sanation-questions-2026-06-24.md` — open 12 дней |
 | [T-282.md](../tasks/T-282.md) | task | done | — |
 | [T-283.md](../tasks/T-283.md) | task | done | This id was reserved through `tools/next_id.py`, but no concrete task title, scope, owner  |
 | [T-284.md](../tasks/T-284.md) | task | blocked | T-281 reviewed three old `open` topics that were causing C29 drift. One topic (`repo-revie |
 | [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-286.md](../tasks/T-286.md) | task | todo | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-286.md](../tasks/T-286.md) | task | done | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | doing | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-289.md](../tasks/T-289.md) | task | done | Small autonomous fixes extracted from the D-015 advisory notes in driver manifests: |

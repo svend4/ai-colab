@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 138 файлов
+# Индекс папки `docs/` — 139 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -7,7 +7,7 @@
 
 | файл | type | status | суть |
 |---|---|---|---|
-| [HUMAN-DECISIONS-OPEN.md](../docs/HUMAN-DECISIONS-OPEN.md) | doc | living | Механизмы M1–M3 (package_gate, agenda_gen, zone_overlap) построены и |
+| [HUMAN-DECISIONS-OPEN.md](../docs/HUMAN-DECISIONS-OPEN.md) | doc | living | Stefan батч-ратифицировал блоки A (Q1–8), A2 (Q9–11), Д (Q12–17) + B3 + C1(b). |
 | [agent-approval-matrix.md](../docs/agent-approval-matrix.md) | doc | proposed | Большое число агентов ускоряет только сбор и первичную обработку информации. Окончательное |
 | [agent-capacity-methodology.md](../docs/agent-capacity-methodology.md) | doc | proposed | Канон (`docs/agent-capacity-methodology.md:20-26`) фиксирует ровно четыре зашитых потолка  |
 | [agent-development-track-2026-07-06.md](../docs/agent-development-track-2026-07-06.md) | doc | proposed | *Все предложения — на согласование Codex/mavis и решение Stefan (ближайший |
@@ -90,6 +90,7 @@
 | [nested-orchestration-3to1.md](../docs/nested-orchestration-3to1.md) | doc | proposed | Это слой НАД `docs/orchestration-architecture-2026-06-23.md` (бригада = `{3 продюсера + 1  |
 | [next-stage-action-plan-2026-07-06.md](../docs/next-stage-action-plan-2026-07-06.md) | doc | proposed | type: inbox-output |
 | [non-svend4-development-plan-2026-06-21.md](../docs/non-svend4-development-plan-2026-06-21.md) | — | — | Date: 2026-06-21 |
+| [nondestructive-reconciliation-2026-07-06.md](../docs/nondestructive-reconciliation-2026-07-06.md) | methodology | proposed | **Выбранное имя: `reconcile` / «сверка-примирение» (неразрушающая сверка).** |
 | [onboarding-opinions-comparison-2026-06-21.md](../docs/onboarding-opinions-comparison-2026-06-21.md) | — | — | Дата: 2026-06-21 |
 | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) | architecture-synthesis | proposed | id: DOC-000 |
 | [orchestration-architecture-2026-06-23.md](../docs/orchestration-architecture-2026-06-23.md) | doc | proposed | Конвейерный слой живёт НАД `docs/workflow-orchestration-policy.md` (один воркфлоу) и держи |

@@ -3663,12 +3663,12 @@
       "id": "T-280",
       "title": "D-033 ratification — создать задачу на ратификацию proposed-решения",
       "status": "blocked",
-      "owner": "pool",
+      "owner": "Novax",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "Решить: принять D-033 (accepted), отклонить (rejected), или объединить с другим решением. Создать батч-ратификацию если нужно."
+      "next": "D-033 ready for 2nd confirmation — summary delivered to Stefan. Needs human: confirm §0 discipline + requires_confirmations:2 (or propose alternative)."
     },
     {
       "id": "T-281",
@@ -3728,7 +3728,7 @@
     {
       "id": "T-286",
       "title": "Доработка драйвера data по замечаниям верификации D-015",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
