@@ -288,4 +288,5 @@
 | T-272 | C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания | todo | any | — | при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist |
 | T-273 | AI-OS Bridge L2 — первый живой продуктовый груз конвейера | todo | stefan+any | — | выбрать живой L2-кейс (files/sqlite драйвер на реальном каталоге Stefan или внешний репозиторий svend4) и прогнать один end-to-end сценарий через drivers/ |
 | T-274 | Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat) | todo | pool | `topics/agent-pipeline.md` | добавить в pipeline.py snapshot/status подсчёт одновременных активных агентов (свежие claim'ы + свежие heartbeat'ы) и advisory-строку tripwire D-012 при >=3 |
+| T-275 | Вплетение свежепринятых решений (D-026/027/029/032/034/035) в инструкционную поверхность | todo | pool | — | по каждому из 6 accepted-решений 2026-07-06 определить точку проявления (AGENTS.md / PROTOCOL.md / README.md / top.py / validator-gate / skill) и вплести; проверить instructions.py surface |
 <!-- GEN:tasks END -->

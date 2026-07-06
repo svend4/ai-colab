@@ -3582,6 +3582,17 @@
       "depends_on": "[]",
       "topic": "topics/agent-pipeline.md",
       "next": "добавить в pipeline.py snapshot/status подсчёт одновременных активных агентов (свежие claim'ы + свежие heartbeat'ы) и advisory-строку tripwire D-012 при >=3"
+    },
+    {
+      "id": "T-275",
+      "title": "Вплетение свежепринятых решений (D-026/027/029/032/034/035) в инструкционную поверхность",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "по каждому из 6 accepted-решений 2026-07-06 определить точку проявления (AGENTS.md / PROTOCOL.md / README.md / top.py / validator-gate / skill) и вплести; проверить instructions.py surface"
     }
   ],
   "questions": [
