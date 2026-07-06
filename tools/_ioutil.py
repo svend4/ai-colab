@@ -31,14 +31,69 @@ stdout/stderr переключаются на utf-8 с errors="replace" толь
 import os
 import sys
 import uuid
+import shutil
+import pathlib
 
+
+_runtime_guard_installed = False
+
+def install_runtime_guard():
+    global _runtime_guard_installed
+    if _runtime_guard_installed:
+        return
+    _runtime_guard_installed = True
+
+    original_os_remove = os.remove
+    original_os_unlink = os.unlink
+    original_shutil_rmtree = shutil.rmtree
+    original_shutil_move = shutil.move
+
+    def is_protected(path):
+        try:
+            p_str = str(pathlib.Path(path).resolve()).replace("\\", "/")
+            if not p_str.endswith(".md"): return False
+            if ".tmp." in p_str: return False
+            if p_str.endswith(".claim.md"): return False
+            
+            if "/topics/" in p_str or "/docs/" in p_str or "/tasks/" in p_str:
+                return True
+        except Exception:
+            pass
+        return False
+
+    def guard_remove(path, *args, **kwargs):
+        if is_protected(path):
+            raise PermissionError("AI Deletion Guard: Deletion of %s is strictly forbidden. 'Ничего не удалять'." % path)
+        return original_os_remove(path, *args, **kwargs)
+
+    def guard_unlink(path, *args, **kwargs):
+        if is_protected(path):
+            raise PermissionError("AI Deletion Guard: Deletion of %s is strictly forbidden. 'Ничего не удалять'." % path)
+        return original_os_unlink(path, *args, **kwargs)
+
+    def guard_rmtree(path, *args, **kwargs):
+        if is_protected(path):
+            raise PermissionError("AI Deletion Guard: Deletion of %s is strictly forbidden. 'Ничего не удалять'." % path)
+        return original_shutil_rmtree(path, *args, **kwargs)
+
+    def guard_move(src, dst, *args, **kwargs):
+        if is_protected(src):
+            raise PermissionError("AI Deletion Guard: Moving %s is forbidden. Use append/modify." % src)
+        return original_shutil_move(src, dst, *args, **kwargs)
+
+    os.remove = guard_remove
+    os.unlink = guard_unlink
+    shutil.rmtree = guard_rmtree
+    shutil.move = guard_move
 
 def configure_output():
     """Включить UTF-8 для PYTHONUTF8 и stdout/stderr (идемпотентно, без падений).
 
     setdefault не трогает уже выставленный PYTHONUTF8; reconfigure вызывается
     только при наличии метода и непустого потока, как в прежних копиях.
+    А также устанавливается Runtime Guard для защиты файлов от удаления.
     """
+    install_runtime_guard()
     os.environ.setdefault("PYTHONUTF8", "1")
     for name in ("stdout", "stderr"):
         stream = getattr(sys, name, None)
