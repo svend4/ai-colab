@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `decisions/` — 35 файлов
+# Индекс папки `decisions/` — 38 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -39,6 +39,9 @@
 | [D-030.md](../decisions/D-030.md) | decision | accepted | Методичка «независимый вариант → сверка по смыслу» (D-028 fork-сторона + merge-сторона) бы |
 | [D-031.md](../decisions/D-031.md) | decision | accepted | (Уровень 0 = selective-add + commit_lock) и D-022 (триггеры Level-1); не противоречит им — |
 | [D-032.md](../decisions/D-032.md) | decision | accepted | формализация ранее сказанного: Stefan авторизовал внедрение в сессии 2026-06-26 («Да внедр |
-| [D-033.md](../decisions/D-033.md) | decision | proposed | ТЕРМИНАЛЬНОЕ действие = `accept` / `merge` / `commit` / `delete` / `publish` — то, что тру |
+| [D-033.md](../decisions/D-033.md) | decision | proposed | **ТЕРМИНАЛЬНОЕ действие** = `accept` / `merge` / `commit` / `delete` / `publish` — то, что |
 | [D-034.md](../decisions/D-034.md) | decision | accepted | вариант (b) — решение принято Stefan напрямую). |
 | [D-035.md](../decisions/D-035.md) | decision | accepted | решение принято Stefan напрямую). |
+| [D-036.md](../decisions/D-036.md) | decision | accepted | батч-ратификация рекомендаций блоков A/A2/Д. Консолидирует ратифицированные ответы по |
+| [D-037.md](../decisions/D-037.md) | decision | accepted | ответ по Q5, вариант «мягкий / advisory» (E1). Формализует смещение фокуса с |
+| [D-038.md](../decisions/D-038.md) | decision | accepted | ответ по Q3, вариант **(c) по риску**. Дополняет D-015 (гейт статуса драйверов по |

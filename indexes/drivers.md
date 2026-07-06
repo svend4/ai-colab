@@ -23,7 +23,7 @@
 | [CATALOG.md](../drivers/CATALOG.md) | — | — | Генерируется `tools/drivers_catalog.py` из `drivers/*.md` — не править вручную. |
 | [SCHEMA.md](../drivers/SCHEMA.md) | schema | draft | Статус: **draft**. Это рабочее предложение по Q-008, а не финально принятое решение. |
 | [_template.md](../drivers/_template.md) | driver | draft | Что драйвер делает и какой источник/программу/данные оборачивает. |
-| [codex-local.md](../drivers/codex-local.md) | driver | ready | Описать мост к локальной рабочей среде Codex на Windows: проверка статуса, запуск безопасн |
+| [codex-local.md](../drivers/codex-local.md) | driver | ready | Мост к локальной рабочей среде Codex на Windows. Проверка статуса, запуск безопасных прове |
 | [data.md](../drivers/data.md) | driver | ready | Слой для больших объёмов структурированной информации: таблицы, JSON, SQLite, будущие embe |
 | [file-inventory.md](../drivers/file-inventory.md) | driver | draft | Read-only карта файлов проекта или указанной папки: путь, размер, mtime, тип, MIME, risk f |
 | [files.md](../drivers/files.md) | driver | ready | Дать агентам стандартный способ описывать работу с файлами: список, чтение, поиск, краткое |

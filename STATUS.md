@@ -7,7 +7,7 @@
 Счётчики канона (генерируются из источников — не могут устареть):
 
 <!-- GEN:counters START — генерируется tools/generate.py, не править вручную -->
-Задач: 279 · решений: 35 · вопросов: 23 · тем в навигации: 82 · драйверов: 9 (источник — front-matter канона, как в `index.json`; обновляется `python tools/generate.py`).
+Задач: 290 · решений: 38 · вопросов: 23 · тем в навигации: 84 · драйверов: 9 (источник — front-matter канона, как в `index.json`; обновляется `python tools/generate.py`).
 <!-- GEN:counters END -->
 
 - **Конвейер разобран, канон зелёный:** все задачи закрыты (done), ready-пул и failed-очередь пусты, `tools/validate.py` — без ERROR. Счётчики выше теперь GEN-блок (аудит 2026-07-02, находка C17: ручные числа отстали на 59 задач / 8 решений / 40 тем).
@@ -83,15 +83,13 @@
 | Тема | Где | Статус | Следующее действие |
 |---|---|---|---|
 | Котёл-пакет для коллективного решения — 7 открытых пунктов | `topics/kotel-decision-material-2026-06-21.md` | needs-decision | Использовать как независимую перепроверку D-020/T-137; решения переносить только через accepted decision |
+| Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету | `topics/meta-sanation-questions-2026-06-24.md` | needs-decision | Human decision via T-284; see reports/topics-review-2026-07-06.md and docs/HUMAN-DECISIONS-OPEN.md Q8. |
+| Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации | `topics/triadic-golden-mean-questionnaire-2026-06-25.md` | needs-decision | Human decision via T-284; see reports/topics-review-2026-07-06.md and docs/HUMAN-DECISIONS-OPEN.md Q8. |
 | Первый реальный прогон системы (dogfood) | `topics/dogfood-run.md` | waiting | Проверить docs/glossary.md, docs/quickstart.md и docs/agent-quickstart.md; решить, нужны ли правки |
 | Динамический конвейер агентов — управляемая разработка | `topics/agent-pipeline.md` | open | конвейер реализован (D-011/D-012, T-027..T-042 done); следующий шаг — T-274: авто-детект одновременности агентов (tripwire пересмотра D-012) |
 | AI-OS Bridge — прослойка между ОС и AI-агентами | `topics/ai-os-bridge.md` | open | живая (решение Stefan D2, 2026-07-06): следующий шаг — T-273 (живой L2-кейс end-to-end на реальных данных) |
 | ИНЦИДЕНТ — массовое урезание 147 outbox-отчётов (8643 строки), предъявление antigravity | `topics/incident-outbox-mass-strip-2026-06-24.md` | open |  |
-| Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету | `topics/meta-sanation-questions-2026-06-24.md` | open |  |
 | Параллельная многоагентная работа без блокировки: «ручейки/streams», форк-варианты, worktree и merge-back | `topics/parallel-forks-history-2026-06-22.md` | open |  |
-| Перепроверка и независимое ревью репозитория (Claude, 2026-06-21) | `topics/repo-review-2026-06-21.md` | open | P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security |
-| Orchestration Workflow — архитектура мультиагентного конвейера | `topics/orchestration-workflow-design-2026-07-06.md` | open |  |
-| Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации | `topics/triadic-golden-mean-questionnaire-2026-06-25.md` | open |  |
 | Границы D-003 (Q-005) | `topics/d003-scope.md` | done | Решено A (D-008): обоснование только для значимых правок |
 | Пример обсуждения | `topics/example.md` | done | T-001 закрыт: формат полилога подтверждён |
 | Технический обзор инфраструктуры | `topics/infrastructure-review.md` | done | Тема закрыта: рекомендации обзора реализованы (валидатор, генератор, front-matter, git, очереди, индекс). Новые инфраструктурные обсуждения — отдельной темой. |
@@ -99,6 +97,7 @@
 | Синтез мнений (Claude ↔ Codex) — консенсус, расхождения, карта работ | `topics/opinion-synthesis-2026-06-21.md` | done | Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): C1-C9 и D1-D4 реализованы или разрешены решениями D-016/D-020/D-021; осознанные отложения — worktree-streams (D-020 §3) и PDF-extract |
 | Организация папки и обоснование правок | `topics/organization.md` | done | Тема закрыта: все оргвопросы решены (D-002..D-008), система стабильна. Новые обоснования — в dialog.md или новых темах. |
 | Онбординг агентов (Q-006) | `topics/q006-agent-onboarding.md` | done | Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия |
+| Перепроверка и независимое ревью репозитория (Claude, 2026-06-21) | `topics/repo-review-2026-06-21.md` | done | Closed by T-281; historical review is preserved, follow-ups were split into concrete tasks and later audits. |
 | Старые долги — генерик-песочница и методология форков (параллельные варианты) | `topics/sandbox-and-forks-2026-06-21.md` | done | Закрыто 2026-07-06 (решение Stefan D2 + перепроверка): оба долга реализованы — sandbox-контур (docs + sandbox/ + tools/sandbox*.py) и D-017 accepted; T-020 done |
 | Масштабирование (много агентов/людей/задач) | `topics/scaling-design.md` | done | Тема закрыта: все задачи T-008..T-016 выполнены, roadmap реализован полностью. При необходимости масштабирования — создавать новую тему. |
 | Слой драйверов (Treiber) — СЛИТО в ai-os-bridge | `topics/drivers-layer.md` | archive | Обсуждение объединено с темой ai-os-bridge (Q-007); технический разбор — docs/agent-layer-design.md |
@@ -152,6 +151,8 @@
 | Backlog доделывания — заявленные пункты сессии (simple→complex, кто владелец) | `topics/session-backlog-2026-06-26.md` | proposed |  |
 | Authoritative session state (2026-06-23) — shipped tools, open backlog, orchestration architecture | `topics/session-state-2026-06-23.md` | proposed |  |
 | Промежуточный статус-доклад проекта (фундамент для дальнейшего развития, не финал) | `topics/session-status-2026-06-24.md` | proposed |  |
+| Умный семантический синтез TF-IDF | `topics/smart_synthesis_20260706_125626.md` | proposed |  |
+| Умный семантический синтез BM25 + N-Grams | `topics/smart_synthesis_bm25_20260706_132603.md` | proposed |  |
 | SOLVER report — 2026-06-23 | `topics/solver-report-2026-06-23.md` | proposed |  |
 | svend4/infon assessment for multi-agent repo work | `topics/svend4-infon-assessment-2026-06-26.md` | proposed |  |
 | Text diffusion canvas from svend4/infon for multi-agent work | `topics/text-diffusion-canvas-from-infon-2026-06-26.md` | proposed |  |
@@ -159,6 +160,7 @@
 | Единый спек 2D-текст-workbench — консолидация 3 независимо сошедшихся дизайнов | `topics/textscene-unified-spec-2026-06-26.md` | proposed |  |
 | Ось ВРЕМЕНИ (decay/температура) — третья ось проекта, реализация DIV-06 | `topics/time-axis-decay-2026-06-24.md` | proposed |  |
 | "FINDER — doc-vs-reality синтез (26 подтверждённых находок)" | `topics/finder-doc-vs-reality-2026-06-23.md` | proposed |  |
+| Orchestration Workflow — архитектура мультиагентного конвейера | `topics/orchestration-workflow-design-2026-07-06.md` | proposed |  |
 | Живой svend4/infon = TVCP (не .inf) — независимая оценка по фактическому репо, для мульти-агентной работы | `topics/tvcp-live-repo-eval-2026-06-26.md` | proposed |  |
 | Патч-совет svend4/infon (TVCP) — конкретные правки по прочитанному коду + текст-канва как новый режим | `topics/tvcp-patch-advice-2026-06-26.md` | proposed |  |
 | "textscene — 2D полу-диффузионная многоагентная текстовая модель (мощь TVCP-видеосвязи → текст)" | `topics/tvcp-text-diffusion-hybrid-2026-06-26.md` | proposed |  |
