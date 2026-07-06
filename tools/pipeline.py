@@ -432,15 +432,50 @@ def build_pipeline_state():
                     "priority": t["priority"],
                     "owner": t["owner"],
                 })
+                
+    active_agents = set()
+    for t in tasks.values():
+        if claim_is_fresh(t["id"]):
+            h = claim_holder(t["id"])
+            if h and h.get("agent"):
+                active_agents.add(h["agent"])
+    for h in collect_heartbeats():
+        if h.get("fresh") and h.get("agent"):
+            active_agents.add(h["agent"])
+            
+    current_concurrency = len(active_agents)
+    max_concurrency = current_concurrency
+    try:
+        if os.path.exists(PIPELINE_JSON):
+            with open(PIPELINE_JSON, encoding="utf-8") as f:
+                prev_state = json.load(f)
+                prev_max = prev_state.get("concurrency", {}).get("max", 0)
+                max_concurrency = max(max_concurrency, prev_max)
+    except Exception:
+        pass
+        
     return {
         "epoch": int(time.time()),
         "doing": doing,
         "ready": ready,
         "blocked": blocked,
+        "concurrency": {
+            "current": current_concurrency,
+            "max": max_concurrency,
+            "agents": sorted(list(active_agents))
+        }
     }
 
 def render_status_text(state):
     lines = ["=== КОНВЕЙЕР ==="]
+    conc = state.get("concurrency", {})
+    if conc:
+        lines.append("АКТИВНЫЕ АГЕНТЫ (%d, max %d): %s" % (
+            conc.get("current", 0), conc.get("max", 0), ", ".join(conc.get("agents", [])) or "—"
+        ))
+        if conc.get("current", 0) >= 3:
+            lines.append("  [!] tripwire D-012: >=3 одновременных агентов — открыть вопрос об обязательном heartbeat (вариант C), пере-сверить D-012")
+            
     lines.append("\nВ РАБОТЕ (%d):" % len(state["doing"]))
     for item in state["doing"]:
         lines.append("  %s [%s] %s" % (item["id"], item["agent"], item["title"]))
@@ -458,6 +493,19 @@ def render_pipeline_md(state):
         "",
         "Автоматический снимок конвейера. Генерируется командой `python tools/pipeline.py snapshot`.",
         "",
+    ]
+    conc = state.get("concurrency", {})
+    if conc:
+        lines.append("## Активные агенты")
+        lines.append("")
+        lines.append("- **Сейчас**: %d (%s)" % (conc.get("current", 0), ", ".join(conc.get("agents", [])) or "—"))
+        lines.append("- **Исторический максимум**: %d" % conc.get("max", 0))
+        lines.append("")
+        if conc.get("current", 0) >= 3:
+            lines.append("> **ВНИМАНИЕ**: tripwire D-012: >=3 одновременных агентов — открыть вопрос об обязательном heartbeat (вариант C), пере-сверить D-012")
+            lines.append("")
+            
+    lines += [
         "## В работе",
         "",
         "| Задача | Агент | Claim | Lease epoch | Название |",
@@ -566,6 +614,34 @@ def collect_heartbeats():
         items.append(item)
     items.sort(key=lambda x: x.get("agent", ""))
     return items
+
+def get_active_agents():
+    active = set()
+    now = int(time.time())
+    
+    # Check fresh claims
+    if os.path.isdir(CLAIMED):
+        for fn in os.listdir(CLAIMED):
+            if not fn.endswith(".claim.md"): continue
+            h = _claims.read_claim(os.path.join(CLAIMED, fn))
+            if h and _claims.is_fresh(h):
+                if h.get("agent"):
+                    active.add(h["agent"])
+                    
+    # Check fresh heartbeats (within 15 minutes = 900s)
+    if os.path.isdir(HEARTBEAT_DIR):
+        for fn in os.listdir(HEARTBEAT_DIR):
+            if not fn.endswith(".json"): continue
+            try:
+                with open(os.path.join(HEARTBEAT_DIR, fn), "r", encoding="utf-8") as f:
+                    item = json.load(f)
+                age = now - int(item.get("epoch", 0))
+                if age <= 900 and item.get("agent"):
+                    active.add(item["agent"])
+            except Exception:
+                pass
+                
+    return active
 
 def render_live_md(items):
     lines = [

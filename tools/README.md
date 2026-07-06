@@ -42,7 +42,7 @@
 несвежесть ловится `python tools/generate.py --check` (pre-commit hook).
 
 <!-- GEN:tools-index START — генерируется tools/generate.py, не править вручную -->
-Всего не-тестовых инструментов: 129. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
+Всего не-тестовых инструментов: 138. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
 
 | Инструмент | Назначение |
 |---|---|
@@ -56,6 +56,7 @@
 | `agenda_gen.py` | Материализатор повестки котла (M2/T-276): GEN-блок kotel/agenda из front-matter пакетов kotel/packages/PKG-*.md. |
 | `agent_queue.py` | Очередь 2.0 — атомарный рабочий цикл задач для многих агентов (Этап D из scaling-design). |
 | `assurance.py` | Read-only апекс-дашборд: evidence, актуальность, coverage и поток инструкций к вершине. |
+| `ast_healer.py` | — |
 | `autolink.py` | ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic). |
 | `autonomy_guard.py` | детектор АВТОНОМНЫХ `accept` без подтверждения человека (B2 / дисциплина D-033 §0). |
 | `backlog_rescan.py` | Workflow backlog rescan tool. |
@@ -63,7 +64,9 @@
 | `bulk_dcard_generator.py` | Автоматически добавляет D-Cards во все python-скрипты в tools/, у которых их нет. |
 | `bulk_guard.py` | детектор массового стирания БЕЗ страховки (enforcement D-026). |
 | `butterfly_alchemist.py` | Creates a synthesis prompt from cauldron graph atoms; dry-run by default. |
+| `butterfly_cron.py` | — |
 | `butterfly_graph_builder.py` | Builds a cauldron atom graph from markdown reports; dry-run by default. |
+| `butterfly_sleep.py` | — |
 | `canon_index.py` | SQLite/FTS5 индекс канона (workbench-компонент 5: быстрая память/retrieval). |
 | `capabilities.py` | Генерирует system-capabilities.json — машинный манифест возможностей верхнего слоя. |
 | `card.py` | card.py — универсальная КАРТОЧКА-визитка: фрактальная единица коммуникации (средний слой). |
@@ -73,6 +76,7 @@
 | `code_pyramid.py` | code_pyramid.py — линт «3 слоёв» внутри .py (ответ на §3.3 вопросника триадности). |
 | `cohort.py` | cohort (вершина пирамиды, форк-вариант Claude по D-017) — «одна кнопка» для ПАРАЛЛЕЛЬНОЙ |
 | `command_index.py` | command_index.py — индекс команд всех инструментов (metadata-indexes lane A; нахождение команд). |
+| `commit.py` | commit.py — безопасная обёртка коммита (D-026, анти-`--no-verify`). |
 | `commit_lock.py` | Commit-lock (Уровень 0 политики коммитов, topics/commit-policy-streams-2026-06-21.md). |
 | `commit_queue.py` | справедливая ОЧЕРЕДЬ коммитов + темпоральное предсохранение + богатая обратная связь. |
 | `consensus_by_meaning.py` | консенсус ВЗВЕШЕН ПО СВИДЕТЕЛЯМ, не по счёту (замена doc_consensus-счётчика). |
@@ -101,8 +105,10 @@
 | `fold.py` | fold-not-delete для grow-only сторов (контр-инвариант C-II формулы defect-class-formula). |
 | `folder_index.py` | folder_index.py — папка-индекс (навигация-через-метаданные, НЕ шардинг). |
 | `friction.py` | Диагностирует повторяющиеся проблемы репозитория и печатает рецепты F-XXX. |
+| `friction_advisor.py` | — |
 | `gap_scan.py` | Детектор разрывов «замысел ↔ реальность»: orphan-код, тихий дрейф деривата, висячие ссылки. |
 | `generate.py` | Генерирует STATUS.md, board.md, TASKS.md, QUESTIONS.md, DECISIONS.md и index.json из источников. |
+| `genetic_router.py` | — |
 | `git_reconcile.py` | git merge-driver: при коллизии канон-файла зовёт crdt_merge (field-level 3-way). |
 | `header.py` | header.py — визитка-шапка файла (C-07: консенсус 2+ агентов) — извлечь/линтить/покрытие. |
 | `heading_check.py` | heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация. |
@@ -118,6 +124,7 @@
 | `l2_inventory.py` | Read-only L2-inventory сиблинг-источника → SQLite/FTS5 (пилот T-273, замкнутый контур). |
 | `layer_check.py` | layer_check.py — контракт пирамиды L1-L4 (lane A layered-pyramid) — folder/layer checks. |
 | `maturity.py` | зрелость атома 0-1000‰ (DIV-21): СИНТЕЗ трёх осей в один балл. |
+| `memoize.py` | — |
 | `merge_gate.py` | Merge-gate orchestrator — «безопасно ли вливать эту работу в mainline?» green(0)/red(1). |
 | `metrics.py` | Метрики / наблюдаемость канона (пункт 8 из scaling-design). |
 | `mutmeta.py` | мета-тест ДЕТЕКТОРА: ловит со-дефектные тесты мутацией (контр-инвариант C-III формулы). |
@@ -136,6 +143,7 @@
 | `question_tree.py` | Read-only extractor for numbered question trees: questions, answers, statuses, next-action hints. |
 | `queue.py` | Совместимостный алиас на agent_queue.py (историческое имя queue.py из доков, T-009). |
 | `race_test.py` | Тест атомарности claim под реальной гонкой (предложение Mavis из dogfood-прогона). |
+| `reconcile.py` | Детектор КОЛЛИЗИЙ по принципу reconcile (дубль/переполнение/дивергенция) + план неразрушающего исхода; advisory + dry-run, БЕЗ удаления. |
 | `reconcile_state.py` | State reconciliation layer (T-066 → реализация). |
 | `red_team_gate.py` | выходной гейт: консенсус в канон, только если ПЕРЕЖИЛ опровержение (не голоса). |
 | `reflect_ingest.py` | мозг авто-саморефлексии: находки blocks → severity + дедуп-ledger + рецидив. |
@@ -154,6 +162,7 @@
 | `sandbox_link_checker.py` | Проверка локальных Markdown ссылок во входящей песочнице (read-only) |
 | `sandbox_runner.py` | Ядро песочницы. Инкапсулирует вызовы docker, применяет лимиты. |
 | `sandbox_schema_validator.py` | Read-only JSON and manifest schema validator for sandbox intake folders. |
+| `semantic_engine.py` | — |
 | `seq_merge.py` | 3-way ПОСТРОЧНЫЙ мёрж тела (diff3) поверх stdlib difflib. |
 | `staged_check.py` | Проверка staged-снимка для pre-commit: канон-источники staged без регенерированной навигации → блок. |
 | `status_drift.py` | Advisory-детектор рассинхрона ручных утверждений STATUS.md с машинной реальностью канона (C17). |

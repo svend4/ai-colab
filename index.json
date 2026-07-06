@@ -3596,7 +3596,7 @@
     {
       "id": "T-274",
       "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3706,7 +3706,7 @@
     {
       "id": "T-286",
       "title": "Доработка драйвера data по замечаниям верификации D-015",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -4210,7 +4210,7 @@
     },
     {
       "id": "data",
-      "title": "Data driver — таблицы, JSON, SQLite и индексы",
+      "title": "Data driver — CSV/TSV таблицы и табличные summary",
       "file": "drivers/data.md",
       "status": "ready",
       "level": "L2",
@@ -4218,7 +4218,7 @@
       "owner": "Codex",
       "risk": "medium",
       "activation": "manual",
-      "interfaces": "[inspect, query, classify, export-summary]",
+      "interfaces": "[concept:inspect, concept:query, concept:classify, concept:export-summary]",
       "inputs": "[csv, tsv]",
       "outputs": "[schema, rows, aggregates, summary]",
       "sandbox": "required-before-write-or-code-exec",

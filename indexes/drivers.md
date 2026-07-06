@@ -24,7 +24,7 @@
 | [SCHEMA.md](../drivers/SCHEMA.md) | schema | draft | Статус: **draft**. Это рабочее предложение по Q-008, а не финально принятое решение. |
 | [_template.md](../drivers/_template.md) | driver | draft | Что драйвер делает и какой источник/программу/данные оборачивает. |
 | [codex-local.md](../drivers/codex-local.md) | driver | ready | Мост к локальной рабочей среде Codex на Windows. Проверка статуса, запуск безопасных прове |
-| [data.md](../drivers/data.md) | driver | ready | Слой для больших объёмов структурированной информации: таблицы, JSON, SQLite, будущие embe |
+| [data.md](../drivers/data.md) | driver | ready | Слой для read-only работы с табличными файлами CSV/TSV: обнаружение таблиц, чтение колонок |
 | [file-inventory.md](../drivers/file-inventory.md) | driver | draft | Read-only карта файлов проекта или указанной папки: путь, размер, mtime, тип, MIME, risk f |
 | [files.md](../drivers/files.md) | driver | ready | Дать агентам стандартный способ описывать работу с файлами: список, чтение, поиск, краткое |
 | [gateway.md](../drivers/gateway.md) | driver | ready | Цель — дать агенту одну точку входа в «средний слой» (файлы + репозитории + память), не по |
