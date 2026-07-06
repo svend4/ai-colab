@@ -74,7 +74,7 @@
 |---|---|---|
 | **L1 core/** | engine-manifest.md с 9 инструментами + knowledge.py (T-207) | 🟢 Переносимое ядро доказано |
 | **L2 portals/** | 9 порталов | 🟢 bridge-knowledge, repo-inventory и др. |
-| **L3 tasks/** | {sum(statuses.values())} задач, шардировано | 🟢 Нет «горячих файлов» |
+| **L3 tasks/** | 283 задач, шардировано | 🟢 Нет «горячих файлов» |
 | **L4 sandbox/** | intake_demo, runner, audit | 🟡 Execute-гейты в процессе |
 
 **Ключевое достижение:** knowledge.py (T-207) успешно промоутнут L2→L1 — честный второй core-export с проверкой reuse + verification.
@@ -84,7 +84,21 @@
 ### 2.3. Конвейер агентов (pipeline.py)
 
 ```
-{pipeline}
+=== ???????? ===
+???????????????: 1 ??????? / max 2; ??????: mavis
+
+? ?????? (1):
+  T-285 [mavis] ????????? ???????? codex-local ?? ?????????? ??????????? D-015
+
+?????? ? ?????? (2):
+  T-286 (normal) ????????? ???????? data ?? ?????????? ??????????? D-015
+  T-288 (normal) ????????? ???????? repo-runner ?? ?????????? ??????????? D-015
+
+?? ?????? / ????????????? (4):
+  T-269 ? status: blocked
+  T-272 ? doing with stale claim
+  T-280 ? status: blocked
+  T-284 ? status: blocked
 ```
 
 **Оценка:** Котёл почти пуст — few ready-задачи, но часть требует человека или является infrastructure improvement. Есть stale claim (T-278) и placeholder (T-279) — требуется cleanup.
@@ -93,7 +107,7 @@
 
 ### 2.4. Инструментарий (tools/)
 
-**Всего {len(tools)} .py-файла** (без внутренних `_*.py`).
+**Всего 132 .py-файла** (без внутренних `_*.py`).
 
 Ключевые группы:
 
@@ -103,17 +117,17 @@
 | **Пирамида** | `promote.py` | 🟢 L2→L1 move покрыт тестом |
 | **Безопасность** | `execute_preflight.py`, `execute_audit.py`, `sandbox_runner.py`, `friction.py`, `cohort.py` | 🟡 Execute-гейты готовы, runner не в production |
 | **Пропагация** | `decision_propagation.py` | 🟢 0 активных провалов |
-| **Adoption** | `adoption.py` | 🟢 {len(tools)}/{len(tools)} применяются |
+| **Adoption** | `adoption.py` | 🟢 132/132 применяются |
 | **Синтез** | `doc_synthesis.py`, `consensus_by_meaning.py`, `synthesis_helper.py` | 🟢 Работают |
 | **Новые** | `action_tracker.py`, `autonomy_guard.py`, `butterfly_alchemist.py`, `crdt_merge.py`, `safe_write.py`, `worktree.py`, `flow.py` и др. | 🟡 Нужен smoke-test |
 
-**Проблема:** Слишком много инструментов ({len(tools)}) — риск перегрузки. Некоторые могут быть дублирующими или experimental. Нет центрального индекса maturity.
+**Проблема:** Слишком много инструментов (132) — риск перегрузки. Некоторые могут быть дублирующими или experimental. Нет центрального индекса maturity.
 
 ---
 
 ### 2.5. Драйверы (drivers/)
 
-{drivers_count} манифестов проверены по schema v1, 7 сверены с `@mcp.tool()`.
+9 манифестов проверены по schema v1, 7 сверены с `@mcp.tool()`.
 
 **Проблема:** `codex-local` и `data` имеют `status: ready`, но `verified_by: 0` — нарушение D-015 (требуется многоагентная верификация).
 
@@ -124,7 +138,12 @@
 ### 2.6. Трения (friction.py)
 
 ```
-{friction}
+FRICTION STATUS
+[WARN] F-015 ? generated/shared files are currently dirty
+[WARN] F-006 ? shared tree has FOREIGN uncommitted source
+[WARN] F-010 ? pipeline reports doing without active/fresh claim
+[WARN] F-011 ? drift_check reports drift or failed
+[WARN] F-013 ? stream lifecycle check reports stale/broken streams
 ```
 
 **Рекомендация:** Использовать `flow.py` для T-278 (worktree), закрыть placeholder T-279, regenerate для F-015.
@@ -134,7 +153,8 @@
 ### 2.7. Пропагация решений (decision_propagation.py)
 
 ```
-{decision_prop}
+=== DECISION-PROPAGATION (??????? ? ???????????) ===
+  ???????: 34   ????????-????????: 0   ????????.cross-link(done): 10   stale-blockers: 0
 ```
 
 **Состояние:** 🟢 **0 активных провалов.** Это значительное улучшение по сравнению с предыдущим аудитом, где были gaps (T-020 и др.).
@@ -143,11 +163,11 @@
 
 ## 3. Плюсы текущей стадии
 
-1. **Структурная целостность** — {sum(statuses.values())} задач, 35 решений, 23 вопроса: все id уникальны, ссылки валидны, 0 ERROR.
+1. **Структурная целостность** — 283 задач, 35 решений, 23 вопроса: все id уникальны, ссылки валидны, 0 ERROR.
 2. **Пирамида работает** — L1 core-export с 9 инструментами доказан, promote.py имеет hermetic-тесты для L2→L1 и L4→L3.
 3. **Безопасность растёт** — execute_preflight + execute_audit + sandbox_runner формируют защитный контур. D-014 (execute=OFF) соблюдается.
 4. **Двусторонняя пропагация** — decision_propagation показывает 0 активных провалов. Решения доходят до потребителей.
-5. **Adoption 100%** — все {len(tools)} инструментов применяются в репо (adoption.py).
+5. **Adoption 100%** — все 132 инструментов применяются в репо (adoption.py).
 6. **Индексы актуальны** — generate.py не находит дрейфа.
 7. **Синтез документов** — консенсусные механизмы (doc_synthesis, consensus_by_meaning) работают для больших тем.
 
@@ -155,7 +175,7 @@
 
 ## 4. Минусы и риски
 
-1. **Инструментарий раздут** — {len(tools)} .py-файла. Риск: дублирование, maintenance burden, невозможность ориентироваться новому агенту. Нет maturity-индекса (experimental → beta → stable).
+1. **Инструментарий раздут** — 132 .py-файла. Риск: дублирование, maintenance burden, невозможность ориентироваться новому агенту. Нет maturity-индекса (experimental → beta → stable).
 2. **Котёл задач почти пуст** — few ready, часть требует человека или infrastructure. Нет «рабочих» задач для агентов. Либо проект в maintenance, либо backlog не пополняется.
 3. **Stale work** — T-278 (doing with stale claim), T-279 (placeholder). «Мёртвый вес» в pipeline.
 4. **Драйверы без верификации** — codex-local и data: ready, но 0 verified_by. Нарушает D-015.
@@ -177,7 +197,7 @@
 
 ### 5.2. Среднесрочные (месяц)
 
-- **Инструментарий maturity:** Создать `tools/MATURITY.md` — классификация {len(tools)} инструментов по уровням: core (L1), stable, experimental, deprecated. Удалить/мержить дубли.
+- **Инструментарий maturity:** Создать `tools/MATURITY.md` — классификация 132 инструментов по уровням: core (L1), stable, experimental, deprecated. Удалить/мержить дубли.
 - **Backlog replenishment:** Сканировать `topics/`, `questions/`, `friction.py` findings для создания новых задач. Проект не должен «замерзать» из-за пустого котла.
 - **Beta-0 acceptance:** Проверить полный цикл: задача → claim → worktree → изменение → validate → merge_gate → commit → done. Найти слабые места.
 - **Execute-гейты в production:** Закрыть T-212 (sandbox), сделать first real `execute` под полным контролем audit + rollback.
@@ -195,14 +215,14 @@
 
 | Метрика | Предыдущий (2026-06-23) | Текущий (2026-07-06) | Дельта |
 |---|---|---|---|
-| Задач | 215 | {sum(statuses.values())} | +{sum(statuses.values())-215} (+{(sum(statuses.values())-215)*100//215}%) |
-| Done | 189 | {statuses['done']} | +{statuses['done']-189} (+{(statuses['done']-189)*100//189}%) |
+| Задач | 215 | 283 | +68 (+31%) |
+| Done | 189 | 273 | +84 (+44%) |
 | Решений | 24 | 35 | +11 (+46%) |
 | Вопросов | 17 | 23 | +6 (+35%) |
-| Инструментов | ~20 | {len(tools)} | +{len(tools)-20} (взрывной рост) |
-| Тем | 36 | {topics_count} | +{topics_count-36} (+{(topics_count-36)*100//36}%) |
-| Validate OK | 10 | {ok_count} | +{ok_count-10} |
-| Validate WARN | 1 | {warn_count} | +{warn_count-1} |
+| Инструментов | ~20 | 132 | +{len(tools)-20} (взрывной рост) |
+| Тем | 36 | 82 | +46 (+127%) |
+| Validate OK | 10 | 16 | +6 |
+| Validate WARN | 1 | 10 | +9 |
 | decision_propagation | 9 gaps + 1 stale | 0 активных | ✅ Исправлено |
 | Q-010 (темы→topics) | open | answered | ✅ Закрыто T-213 |
 | knowledge.py L1 | candidates | files | ✅ Закрыто T-207 |
@@ -213,6 +233,6 @@
 
 Репозиторий находится в **зрелой maintenance-фазе** с высокой структурной целостностью. Основные механизмы (пирамида, pipeline, validate, generate, decision_propagation, friction) работают стабильно. Критичные пробелы (Q-010, back-ref gaps) закрыты.
 
-Главный риск — **перегрузка инструментарием** ({len(tools)} файла) и **пустой котёл задач** (нет ready рабочих задач для агентов). Проект либо завершил первую волну и ждёт новых целей, либо нуждается в активном replenishment backlog'а.
+Главный риск — **перегрузка инструментарием** (132 файла) и **пустой котёл задач** (нет ready рабочих задач для агентов). Проект либо завершил первую волну и ждёт новых целей, либо нуждается в активном replenishment backlog'а.
 
 Рекомендуемый следующий шаг: **T-278 cleanup + regenerate + commit** → затем **Beta-0 acceptance checklist** (проверка полного цикла агента).

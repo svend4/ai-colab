@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 131 файлов
+# Индекс папки `docs/` — 138 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -7,8 +7,10 @@
 
 | файл | type | status | суть |
 |---|---|---|---|
+| [HUMAN-DECISIONS-OPEN.md](../docs/HUMAN-DECISIONS-OPEN.md) | doc | living | Механизмы M1–M3 (package_gate, agenda_gen, zone_overlap) построены и |
 | [agent-approval-matrix.md](../docs/agent-approval-matrix.md) | doc | proposed | Большое число агентов ускоряет только сбор и первичную обработку информации. Окончательное |
 | [agent-capacity-methodology.md](../docs/agent-capacity-methodology.md) | doc | proposed | Канон (`docs/agent-capacity-methodology.md:20-26`) фиксирует ровно четыре зашитых потолка  |
+| [agent-development-track-2026-07-06.md](../docs/agent-development-track-2026-07-06.md) | doc | proposed | *Все предложения — на согласование Codex/mavis и решение Stefan (ближайший |
 | [agent-launch-workflow.md](../docs/agent-launch-workflow.md) | — | accepted | Дата: 2026-06-23. |
 | [agent-layer-design.md](../docs/agent-layer-design.md) | — | — | Есть две крайности: |
 | [agent-onboarding.md](../docs/agent-onboarding.md) | — | — | Слой даёт безопасный read-only доступ к файлам, репозиториям, таблицам, БД, истории git и |
@@ -17,7 +19,8 @@
 | [ai_middle_layer_architecture_ru.md](../docs/ai_middle_layer_architecture_ru.md) | — | — | Дата: 2026-06-19 |
 | [architecture-core-documents-synthesis-2026-06-24.md](../docs/architecture-core-documents-synthesis-2026-06-24.md) | document-synthesis | proposed | Пропорция работы выбирается агентом/человеком: 50/50 для балансировки, 70/30 если нужно бы |
 | [architecture-docs-recheck-2026-06-21.md](../docs/architecture-docs-recheck-2026-06-21.md) | — | done | Дата: 2026-06-21. |
-| [beta0-acceptance-checklist-2026-07-06.md](../docs/beta0-acceptance-checklist-2026-07-06.md) | doc | proposed | Единый измеримый гейт «Alpha-3 → Beta-0». Сводит критерии из трёх источников |
+| [audit-variants-and-development-2026-07-06.md](../docs/audit-variants-and-development-2026-07-06.md) | doc | proposed | 1. Идентифицированы пять ключевых операционных проблем: отсутствие воспроизводимого runtim |
+| [beta0-acceptance-checklist-2026-07-06.md](../docs/beta0-acceptance-checklist-2026-07-06.md) | doc | accepted | Единый измеримый гейт «Alpha-3 → Beta-0». Сводит критерии из трёх источников |
 | [blocks-layer.md](../docs/blocks-layer.md) | doc | proposed | Блок = именованный кластер проверенных tools, запускаемых **параллельно** (`threading.Thre |
 | [bridge-usage-review-result-2026-06-21.md](../docs/bridge-usage-review-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [bridge-usage.md](../docs/bridge-usage.md) | — | — | Операционный гайд: как **запустить** и **подключить** уже построенный «средний слой» |
@@ -35,6 +38,7 @@
 | [dcard_index.md](../docs/dcard_index.md) | — | — | — |
 | [decision-menu-standard.md](../docs/decision-menu-standard.md) | doc | proposed | ВЕРХУШКА (catalog / оглавление)   ← одна строка на вариант: суть + теги. Понять «о чём реч |
 | [decisions-usage.md](../docs/decisions-usage.md) | — | — | *Сканировано: 2026-06-23. Проверены все .md и .py файлы на наличие ссылок D-XXX.* |
+| [dev-setup.md](../docs/dev-setup.md) | — | — | * Python 3.11+ |
 | [doc-consensus-agent-runtime.md](../docs/doc-consensus-agent-runtime.md) | doc | done | Дата: 2026-06-23. |
 | [document-synthesis-mechanism-2026-06-24.md](../docs/document-synthesis-mechanism-2026-06-24.md) | methodology | proposed | **Purpose.** Описать, какой механизм уже есть для сравнения нескольких вариантов документо |
 | [docx-text-extract-result-2026-06-21.md](../docs/docx-text-extract-result-2026-06-21.md) | — | — | Task: `T-142` |
@@ -89,7 +93,7 @@
 | [onboarding-opinions-comparison-2026-06-21.md](../docs/onboarding-opinions-comparison-2026-06-21.md) | — | — | Дата: 2026-06-21 |
 | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) | architecture-synthesis | proposed | id: DOC-000 |
 | [orchestration-architecture-2026-06-23.md](../docs/orchestration-architecture-2026-06-23.md) | doc | proposed | Конвейерный слой живёт НАД `docs/workflow-orchestration-policy.md` (один воркфлоу) и держи |
-| [orchestrator-cycle-proposal-2026-07-06.md](../docs/orchestrator-cycle-proposal-2026-07-06.md) | doc | proposed | *Предложение по собственным правилам (§4: методология = medium/high) уходит на |
+| [orchestrator-cycle-proposal-2026-07-06.md](../docs/orchestrator-cycle-proposal-2026-07-06.md) | doc | accepted | *Предложение по собственным правилам (§4: методология = medium/high) уходит на |
 | [parallel-streams-problems-review-2026-06-22.md](../docs/parallel-streams-problems-review-2026-06-22.md) | — | — | Task: `T-146` |
 | [parallel-work-consensus-2026-06-22.md](../docs/parallel-work-consensus-2026-06-22.md) | doc | proposed | Пункты 1–8 подтверждены **обоими** независимыми проходами (PASS1 и PASS2) с совпадающими c |
 | [parallel-work-policy.md](../docs/parallel-work-policy.md) | — | — | Дата: 2026-06-22 · Статус: **accepted** (ратифицировано `D-022`, Stefan по D-006). Источни |
@@ -108,6 +112,8 @@
 | [quickstart.md](../docs/quickstart.md) | — | — | Если вы открыли эту папку впервые — прочтите этот файл за 5 минут и начните работу. |
 | [recursive-self-improvement.md](../docs/recursive-self-improvement.md) | doc | proposed | Adoption-аудит (`topics/adoption-statistics-2026-06-23.md`) дал диагноз, который и есть от |
 | [repo-runner-mcp-hardening.md](../docs/repo-runner-mcp-hardening.md) | — | — | Дата: 2026-06-20 |
+| [repository-audit-action-plan-2026-07-06.md](../docs/repository-audit-action-plan-2026-07-06.md) | — | — | **Автор:** Codex |
+| [roadmap-next-steps.md](../docs/roadmap-next-steps.md) | — | proposed | **Цель:** убрать «мёртвый вес» из pipeline, устранить F-009/F-010 friction. |
 | [roadmap-reconciliation-result-2026-06-21.md](../docs/roadmap-reconciliation-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [roadmap-usage-refresh-result-2026-06-21.md](../docs/roadmap-usage-refresh-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [runtime-diagnostics.md](../docs/runtime-diagnostics.md) | — | — | Дата: 2026-06-20 |
@@ -126,6 +132,7 @@
 | [subagent-3to1-sandbox-policy.md](../docs/subagent-3to1-sandbox-policy.md) | doc | accepted | Данный документ описывает фундаментальную политику управления системными субагентами (LLM  |
 | [t137-consensus-result-2026-06-21.md](../docs/t137-consensus-result-2026-06-21.md) | report | review | T-137 доведён до стадии `review`, не `done`: технический пакет проверен, но D-018 требует  |
 | [t148-volatile-runtime-result-2026-06-22.md](../docs/t148-volatile-runtime-result-2026-06-22.md) | — | — | Task: `T-148` |
+| [technical-audit-2026-07-06.md](../docs/technical-audit-2026-07-06.md) | — | — | **Пройдено (16 проверок):** |
 | [test-corpus-plan.md](../docs/test-corpus-plan.md) | — | — | Маленький, безопасный, детерминированный набор fixture-файлов для проверки драйверов (`fil |
 | [top-agent-operating-manual.md](../docs/top-agent-operating-manual.md) | — | accepted | Дата: 2026-06-21. |
 | [top-layer-command-groups.md](../docs/top-layer-command-groups.md) | — | — | Дата: 2026-06-21. |

@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 276 файлов
+# Индекс папки `tasks/` — 290 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -222,7 +222,7 @@
 | [T-213.md](../tasks/T-213.md) | task | done | Q-010 открыт. Все задачи в котле выполнены или заблокированы — идеальное «окно без активно |
 | [T-214.md](../tasks/T-214.md) | task | done | Этап 4 трека execute-sandbox (вариант B). |
 | [T-215.md](../tasks/T-215.md) | task | done | — |
-| [T-216.md](../tasks/T-216.md) | task | done | Этапы 5 и 6 трека execute-sandbox (вариант B). |
+| [T-216.md](../tasks/T-216.md) | task | done | Пользователь запросил отдельный документ с результатами перепроверки: плюсы, минусы, дальн |
 | [T-217.md](../tasks/T-217.md) | task | done | Этапы 7 и 8 трека execute-sandbox. |
 | [T-218.md](../tasks/T-218.md) | task | done | Контекст: `tools/doc_synthesis.py` добавлен как первый read-only scanner для произвольных  |
 | [T-219.md](../tasks/T-219.md) | — | done | Батч-тесты показали 19/19 успешных запусков, но замечена уязвимость: маскировка (`redactio |
@@ -275,11 +275,25 @@
 | [T-266.md](../tasks/T-266.md) | task | done | **Источник:** аудит 2026-07-02, находка C30 (inbox залежался 9-11 дней); волна 2, подвариа |
 | [T-267.md](../tasks/T-267.md) | task | done | **Источник:** аудит 2026-07-02, находка C30; волна 2, подвариант C30-c, human-gate снят от |
 | [T-268.md](../tasks/T-268.md) | task | done | Аудит 2026-07-02, находка C3 (HIGH): `tools/README.md` описывал 31 из 119 не-тестовых |
-| [T-269.md](../tasks/T-269.md) | task | todo | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
+| [T-269.md](../tasks/T-269.md) | task | blocked | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
 | [T-270.md](../tasks/T-270.md) | task | done | Аудит 2026-07-02, находка C29: 7 нератифицированных решений висят без задачи — конвейер |
 | [T-271.md](../tasks/T-271.md) | task | done | Аудит 2026-07-02, находка C29: открытый вопрос Q-023 (матрица полномочий агентов) и |
-| [T-272.md](../tasks/T-272.md) | task | todo | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
-| [T-273.md](../tasks/T-273.md) | task | todo | Конвейер пуст (272/272 задач закрыто) — весь предыдущий груз был инфраструктурным. |
-| [T-274.md](../tasks/T-274.md) | task | todo | D-012 сделал heartbeat добровольным и оставил tripwire пересмотра: «если в |
-| [T-275.md](../tasks/T-275.md) | task | todo | 2026-07-06 котёл-днём приняты 9 решений (D-024, D-026, D-027, D-028, D-029, D-030, |
-| [T-276.md](../tasks/T-276.md) | task | todo | Сейчас верхний слой уже умеет запускать субагентные handoff, держать conveyor, делать synt |
+| [T-272.md](../tasks/T-272.md) | task | doing | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
+| [T-273.md](../tasks/T-273.md) | task | done | Конвейер пуст (272/272 задач закрыто) — весь предыдущий груз был инфраструктурным. |
+| [T-274.md](../tasks/T-274.md) | task | done | D-012 сделал heartbeat добровольным и оставил tripwire пересмотра: «если в |
+| [T-275.md](../tasks/T-275.md) | — | done | — |
+| [T-276.md](../tasks/T-276.md) | — | done | — |
+| [T-277.md](../tasks/T-277.md) | — | done | — |
+| [T-278.md](../tasks/T-278.md) | — | done | — |
+| [T-279.md](../tasks/T-279.md) | task | done | This id was reserved by Mavis via `tools/next_id.py`, but no real title, scope, next actio |
+| [T-280.md](../tasks/T-280.md) | task | blocked | — |
+| [T-281.md](../tasks/T-281.md) | task | done | 1. `topics/meta-sanation-questions-2026-06-24.md` — open 12 дней |
+| [T-282.md](../tasks/T-282.md) | task | done | — |
+| [T-283.md](../tasks/T-283.md) | task | done | This id was reserved through `tools/next_id.py`, but no concrete task title, scope, owner  |
+| [T-284.md](../tasks/T-284.md) | task | blocked | T-281 reviewed three old `open` topics that were causing C29 drift. One topic (`repo-revie |
+| [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-286.md](../tasks/T-286.md) | task | doing | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-288.md](../tasks/T-288.md) | task | todo | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-289.md](../tasks/T-289.md) | task | done | Small autonomous fixes extracted from the D-015 advisory notes in driver manifests: |
+| [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |

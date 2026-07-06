@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 81 файлов, 4 подпапок
+# Индекс папки `topics/` — 84 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -55,13 +55,14 @@
 | [kotel-decision-material-2026-06-21.md](../topics/kotel-decision-material-2026-06-21.md) | — | needs-decision | **Что решить:** принять ли «движок координации агентов поверх файлов» (10 файлов: canon+ге |
 | [kotel-system-critique-2026-06-24-action-plan.md](../topics/kotel-system-critique-2026-06-24-action-plan.md) | topic-plan | proposed | Критика в `topics/kotel-system-critique-2026-06-24.md` верная по направлению: система уже  |
 | [kotel-system-critique-2026-06-24.md](../topics/kotel-system-critique-2026-06-24.md) | doc | proposed | *Статус: Консенсус достигнут. Ожидается подтверждение Человека на перевод в `accepted`.* |
-| [meta-sanation-questions-2026-06-24.md](../topics/meta-sanation-questions-2026-06-24.md) | topic | open | Пронумерованный реестр концептуальных вопросов (6 разделов, подвопросы разной глубины) о т |
+| [meta-sanation-questions-2026-06-24.md](../topics/meta-sanation-questions-2026-06-24.md) | topic | needs-decision | Пронумерованный реестр концептуальных вопросов (6 разделов, подвопросы разной глубины) о т |
 | [migrate-file-names.md](../topics/migrate-file-names.md) | — | done | D-005 принял ASCII для **новых** файлов. Открытый под-вопрос: что делать с уже существующи |
 | [mmorpg-2d-text-workbench-2026-06-26.md](../topics/mmorpg-2d-text-workbench-2026-06-26.md) | topic | proposed | Идея сильная: взять не графику MMORPG, а её **организационную механику** и перевести в 2D- |
 | [navigation-vs-sharding-2026-06-24.md](../topics/navigation-vs-sharding-2026-06-24.md) | topic | proposed | Шардинг tasks/ ОТКЛОН�ён (машине плоско всё равно, цена = переписать всех читателей); вмес |
 | [new-problems-2026-06-23.md](../topics/new-problems-2026-06-23.md) | topic | resolved | The two collaboration-safety subsystems detect the **same** T-150-class incident (a foreig |
 | [offline-headless-workbench-mvp-2026-06-26.md](../topics/offline-headless-workbench-mvp-2026-06-26.md) | topic | proposed | а GUI на Rust/GPUI — не наш путь (Termux/терминал/файлы). |
 | [opinion-synthesis-2026-06-21.md](../topics/opinion-synthesis-2026-06-21.md) | — | done | По запросу Stefan: сделано несколько вариантов обзора/мнения; здесь они сведены, сравнены, |
+| [orchestration-workflow-design-2026-07-06.md](../topics/orchestration-workflow-design-2026-07-06.md) | — | proposed | Выстраиваю трёхуровневую пирамидальную систему оркестрации: |
 | [organization.md](../topics/organization.md) | — | done | Эта тема — место, где обсуждаем структуру рабочей папки и **обоснования правок**. Идея: ка |
 | [parallel-forks-history-2026-06-22.md](../topics/parallel-forks-history-2026-06-22.md) | topic | — | Каждый механизм — что это, где задокументировано, статус. Статусы: ПРИНЯТО (governance acc |
 | [parallel-work-divergences-2026-06-22.md](../topics/parallel-work-divergences-2026-06-22.md) | topic | proposed | — |
@@ -76,20 +77,22 @@
 | [razbor-divergence-2026-06-24.md](../topics/razbor-divergence-2026-06-24.md) | topic | proposed | Пункты, встречающиеся ТОЛЬКО в одном доке (standalone-инсайт, пока не подтверждён вторым |
 | [razbor-divergence-status-2026-06-24.md](../topics/razbor-divergence-status-2026-06-24.md) | topic | proposed | Из 21 разногласия ~9 разрешены этой сессией (мигрируют в консенсус), ~4 tracked/partial, ~ |
 | [repo-as-collaborative-dev-service-2026-06-26.md](../topics/repo-as-collaborative-dev-service-2026-06-26.md) | topic | proposed | доски; провалы — merge-конфликты + изолированные окна, не видящие правок друг друга. Никто |
-| [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | open | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
+| [repo-review-2026-06-21.md](../topics/repo-review-2026-06-21.md) | — | done | работать в диалоге, дать плюсы/минусы, мнение и рекомендации. |
 | [safe-auto-apply-design-2026-06-23.md](../topics/safe-auto-apply-design-2026-06-23.md) | topic | proposed | В рамках задачи **T-206 (P28 FINDER-фронтира)** мы внедряем механизм авто-исправления (`sa |
 | [sandbox-and-forks-2026-06-21.md](../topics/sandbox-and-forks-2026-06-21.md) | — | done | По запросу Stefan — поднять два старых долга, сверить с тем, что уже обсуждалось, сравнить |
 | [scaling-design.md](../topics/scaling-design.md) | — | done | Согласен с основной оценкой Claude: текущая система уже вышла из стадии "набор Markdown-фа |
 | [session-backlog-2026-06-26.md](../topics/session-backlog-2026-06-26.md) | topic | proposed | спец §5 «brain-adapter позже». Генерит `text_cell.v1` ПРЕДЛОЖЕНИЯ (status:proposed, owner: |
 | [session-state-2026-06-23.md](../topics/session-state-2026-06-23.md) | topic | proposed | The `git log --oneline -28` window (top commit `91cd162`, down to `e57b78e`) introduced si |
 | [session-status-2026-06-24.md](../topics/session-status-2026-06-24.md) | topic | proposed | Срез на 2026-06-24 — что построено (самоулучшающая машина + 3 оси), состояние канона (72 т |
+| [smart_synthesis_20260706_125626.md](../topics/smart_synthesis_20260706_125626.md) | topic | proposed | Machine-generated TF-IDF synthesis prompt over cauldron_graph atoms; proposed material for |
+| [smart_synthesis_bm25_20260706_132603.md](../topics/smart_synthesis_bm25_20260706_132603.md) | topic | proposed | Machine-generated BM25/N-grams synthesis prompt over cauldron_graph atoms; proposed materi |
 | [solver-report-2026-06-23.md](../topics/solver-report-2026-06-23.md) | solver-report | proposed | **Apply: inline** (single dev, additive, opt-in default-off). Зеркало уже-принятого `frict |
 | [svend4-infon-assessment-2026-06-26.md](../topics/svend4-infon-assessment-2026-06-26.md) | topic | proposed | For this repository, the correct adaptation is not terminal video. The correct adaptation  |
 | [text-diffusion-canvas-from-infon-2026-06-26.md](../topics/text-diffusion-canvas-from-infon-2026-06-26.md) | topic | proposed | turn a terminal into a multi-layer communication surface |
 | [text-extract-deps-evidence-2026-06-21.md](../topics/text-extract-deps-evidence-2026-06-21.md) | topic | proposed | T-133 (`tools/text_extract.py`) реализует Codex: генерик-извлечение `.md/.txt/.html` на st |
 | [textscene-unified-spec-2026-06-26.md](../topics/textscene-unified-spec-2026-06-26.md) | topic | proposed | cols=актор/владелец (матрица консенсуса). → **Примирение: это ДВА режима проекции одного c |
 | [time-axis-decay-2026-06-24.md](../topics/time-axis-decay-2026-06-24.md) | topic | proposed | После оси-дерева (ГДЕ живёт) и оси-графа (КАК связан) — ось времени (НАСКОЛЬКО свеж): git- |
-| [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | open | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
+| [triadic-golden-mean-questionnaire-2026-06-25.md](../topics/triadic-golden-mean-questionnaire-2026-06-25.md) | topic | needs-decision | Вопросник (формулировка ПЕРЕД ответами, от общего к частному) о принципе троичности: кажды |
 | [tvcp-live-repo-eval-2026-06-26.md](../topics/tvcp-live-repo-eval-2026-06-26.md) | topic | proposed | TVCP: видеосвязь внутри терминала (Unicode-кварт-блоки `.babe`-кодек, 382 kbps vs 1.8 Mbps |
 | [tvcp-patch-advice-2026-06-26.md](../topics/tvcp-patch-advice-2026-06-26.md) | topic | proposed | **Где:** `pkg/scene/scene.go:75` `Apply`; `case "rect"` (`:85`) и `case "disc"` (`:126`) г |
 | [tvcp-text-diffusion-hybrid-2026-06-26.md](../topics/tvcp-text-diffusion-hybrid-2026-06-26.md) | topic | proposed | **Доки (+):** drift-guard встроен в документацию, а не декларирован: `TVCP_AI_PROTOCOL` §0 |

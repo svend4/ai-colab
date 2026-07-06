@@ -8,6 +8,20 @@
       "next": "Использовать как независимую перепроверку D-020/T-137; решения переносить только через accepted decision"
     },
     {
+      "id": "meta-sanation-questions-2026-06-24",
+      "title": "Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету",
+      "file": "topics/meta-sanation-questions-2026-06-24.md",
+      "status": "needs-decision",
+      "next": "Human decision via T-284; see reports/topics-review-2026-07-06.md and docs/HUMAN-DECISIONS-OPEN.md Q8."
+    },
+    {
+      "id": "triadic-golden-mean-questionnaire-2026-06-25",
+      "title": "Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации",
+      "file": "topics/triadic-golden-mean-questionnaire-2026-06-25.md",
+      "status": "needs-decision",
+      "next": "Human decision via T-284; see reports/topics-review-2026-07-06.md and docs/HUMAN-DECISIONS-OPEN.md Q8."
+    },
+    {
       "id": "dogfood-run",
       "title": "Первый реальный прогон системы (dogfood)",
       "file": "topics/dogfood-run.md",
@@ -36,37 +50,9 @@
       "next": ""
     },
     {
-      "id": "meta-sanation-questions-2026-06-24",
-      "title": "Реестр МЕТА-вопросов — информационный рефакторинг, санация, омоложение репозитория на лету",
-      "file": "topics/meta-sanation-questions-2026-06-24.md",
-      "status": "open",
-      "next": ""
-    },
-    {
       "id": "parallel-forks-history-2026-06-22",
       "title": "Параллельная многоагентная работа без блокировки: «ручейки/streams», форк-варианты, worktree и merge-back",
       "file": "topics/parallel-forks-history-2026-06-22.md",
-      "status": "open",
-      "next": ""
-    },
-    {
-      "id": "repo-review-2026-06-21",
-      "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
-      "file": "topics/repo-review-2026-06-21.md",
-      "status": "open",
-      "next": "P0-1 выполнен Codex: T-039 снят, T-029 закрыта, ready pool восстановлен; дальше решить draft→ready и P1 security"
-    },
-    {
-      "id": "topics/orchestration-workflow-design-2026-07-06.md",
-      "title": "Orchestration Workflow — архитектура мультиагентного конвейера",
-      "file": "topics/orchestration-workflow-design-2026-07-06.md",
-      "status": "open",
-      "next": ""
-    },
-    {
-      "id": "triadic-golden-mean-questionnaire-2026-06-25",
-      "title": "Вопросник — триадный фрактал «золотой середины» (частный·средний·глобальный) как универсальный принцип записи информации",
-      "file": "topics/triadic-golden-mean-questionnaire-2026-06-25.md",
       "status": "open",
       "next": ""
     },
@@ -118,6 +104,13 @@
       "file": "topics/q006-agent-onboarding.md",
       "status": "done",
       "next": "Решено A (D-009); запланирована эволюция к C по мере роста числа агентов/снижения доверия"
+    },
+    {
+      "id": "repo-review-2026-06-21",
+      "title": "Перепроверка и независимое ревью репозитория (Claude, 2026-06-21)",
+      "file": "topics/repo-review-2026-06-21.md",
+      "status": "done",
+      "next": "Closed by T-281; historical review is preserved, follow-ups were split into concrete tasks and later audits."
     },
     {
       "id": "sandbox-and-forks-2026-06-21",
@@ -491,6 +484,20 @@
       "next": ""
     },
     {
+      "id": "smart-synthesis-20260706-125626",
+      "title": "Умный семантический синтез TF-IDF",
+      "file": "topics/smart_synthesis_20260706_125626.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "smart-synthesis-bm25-20260706-132603",
+      "title": "Умный семантический синтез BM25 + N-Grams",
+      "file": "topics/smart_synthesis_bm25_20260706_132603.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
       "id": "solver-report-2026-06-23",
       "title": "SOLVER report — 2026-06-23",
       "file": "topics/solver-report-2026-06-23.md",
@@ -536,6 +543,13 @@
       "id": "topics/finder-doc-vs-reality-2026-06-23.md",
       "title": "\"FINDER — doc-vs-reality синтез (26 подтверждённых находок)\"",
       "file": "topics/finder-doc-vs-reality-2026-06-23.md",
+      "status": "proposed",
+      "next": ""
+    },
+    {
+      "id": "topics/orchestration-workflow-design-2026-07-06.md",
+      "title": "Orchestration Workflow — архитектура мультиагентного конвейера",
+      "file": "topics/orchestration-workflow-design-2026-07-06.md",
       "status": "proposed",
       "next": ""
     },
@@ -3527,7 +3541,7 @@
     {
       "id": "T-269",
       "title": "Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком)",
-      "status": "todo",
+      "status": "blocked",
       "owner": "stefan",
       "priority": "high",
       "risk": "medium",
@@ -3560,7 +3574,7 @@
     {
       "id": "T-272",
       "title": "C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания",
-      "status": "todo",
+      "status": "doing",
       "owner": "any",
       "priority": "normal",
       "risk": "low",
@@ -3571,7 +3585,7 @@
     {
       "id": "T-273",
       "title": "AI-OS Bridge L2 — первый живой продуктовый груз конвейера",
-      "status": "review",
+      "status": "done",
       "owner": "stefan+any",
       "priority": "normal",
       "risk": "low",
@@ -3582,7 +3596,7 @@
     {
       "id": "T-274",
       "title": "Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat)",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3593,7 +3607,7 @@
     {
       "id": "T-275",
       "title": "\"Оркестрация: governance-батч — ратификация 7 proposed + котёл-вопросы\"",
-      "status": "todo",
+      "status": "done",
       "owner": "mavis",
       "priority": "high",
       "risk": "medium",
@@ -3626,7 +3640,7 @@
     {
       "id": "T-278",
       "title": "\"Governance-батч: writer — документ батч-ратификации 7 proposed-решений\"",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "high",
       "risk": "low",
@@ -3636,14 +3650,135 @@
     },
     {
       "id": "T-279",
-      "title": "(зарезервировано — заполните)",
-      "status": "todo",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
       "owner": "mavis",
       "priority": "normal",
       "risk": "low",
       "depends_on": "[]",
       "topic": "",
-      "next": "зарезервировано через tools/next_id.py — заполните"
+      "next": "closed as retired placeholder by T-282; for new work use a fresh task id with real scope"
+    },
+    {
+      "id": "T-280",
+      "title": "D-033 ratification — создать задачу на ратификацию proposed-решения",
+      "status": "blocked",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Решить: принять D-033 (accepted), отклонить (rejected), или объединить с другим решением. Создать батч-ратификацию если нужно."
+    },
+    {
+      "id": "T-281",
+      "title": "Обработать 3 open-темы без связанных задач (C29 compliance)",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Для каждой open-темы: либо создать задачу, либо закрыть (answered/closed), либо перевести в blocked с причиной."
+    },
+    {
+      "id": "T-282",
+      "title": "Cleanup T-279 placeholder — удалить или заполнить пустую зарезервированную задачу",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Либо заполнить T-279 содержательным описанием (если Mavis планировал работу), либо удалить как пустой placeholder."
+    },
+    {
+      "id": "T-283",
+      "title": "Retired placeholder — no task assigned",
+      "status": "done",
+      "owner": "unknown",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "closed as retired placeholder; for new work use a fresh task id with real scope"
+    },
+    {
+      "id": "T-284",
+      "title": "Human decision — resolve meta-sanation and triadic topic statuses",
+      "status": "blocked",
+      "owner": "Stefan",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "reports/topics-review-2026-07-06.md",
+      "next": "Stefan selects options for meta-sanation and triadic questionnaire; agents then implement selected follow-up."
+    },
+    {
+      "id": "T-285",
+      "title": "Доработка драйвера codex-local по замечаниям верификации D-015",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038"
+    },
+    {
+      "id": "T-286",
+      "title": "Доработка драйвера data по замечаниям верификации D-015",
+      "status": "doing",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "доработать драйвер data по замечаниям верификации 2026-07-06, затем повторная верификация по D-038"
+    },
+    {
+      "id": "T-287",
+      "title": "Доработка драйвера files по замечаниям верификации D-015",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "доработать драйвер files по замечаниям верификации 2026-07-06, затем повторная верификация по D-038"
+    },
+    {
+      "id": "T-288",
+      "title": "Доработка драйвера repo-runner по замечаниям верификации D-015",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "доработать драйвер repo-runner по замечаниям верификации 2026-07-06, затем повторная верификация по D-038"
+    },
+    {
+      "id": "T-289",
+      "title": "D-015 driver hardening — fix small actionable verification findings",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "drivers/index.json",
+      "next": "Fix low-risk actionable D-015 findings without marking drivers verified_by; run focused tests and validate."
+    },
+    {
+      "id": "T-290",
+      "title": "Доработка D-033 по направлению котёл-дня",
+      "status": "done",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "доработать черновик D-033 по 5 пунктам секции «Направление доработки (Stefan, котёл-день 2026-07-06)», затем повторный заход на подтверждение"
     }
   ],
   "questions": [
@@ -4036,7 +4171,7 @@
     },
     {
       "id": "D-033",
-      "title": "ЧЕРНОВИК — дисциплина автономных действий (помечать/комментировать/×N-подтверждать/корректировать) + C5 commit_queue-стандарт + B2 accept-гейт",
+      "title": "\"Доработка D-033: уточнённая дисциплина автономных действий + C5 commit_queue + B2\"",
       "status": "proposed",
       "date": "2026-06-26",
       "file": "decisions/D-033.md"
@@ -4054,6 +4189,27 @@
       "status": "accepted",
       "date": "2026-07-06",
       "file": "decisions/D-035.md"
+    },
+    {
+      "id": "D-036",
+      "title": "Оркестраторный цикл принят как стандарт работы главных агентов (двухслойная модель + пакеты + повестка + эстафета)",
+      "status": "accepted",
+      "date": "2026-07-06",
+      "file": "decisions/D-036.md"
+    },
+    {
+      "id": "D-037",
+      "title": "Мягкая заморозка мета-развития v2 — новые tools/*.py только из friction-боли или явной потребности человека (advisory)",
+      "status": "accepted",
+      "date": "2026-07-06",
+      "file": "decisions/D-037.md"
+    },
+    {
+      "id": "D-038",
+      "title": "Верификация драйверов по риску — обычные драйверы 2 прохода (можно одна модель), execute/high-risk требуют разные модели/агенты",
+      "status": "accepted",
+      "date": "2026-07-06",
+      "file": "decisions/D-038.md"
     }
   ],
   "drivers": [
@@ -4062,12 +4218,12 @@
       "title": "Codex local driver — мост к локальной рабочей среде",
       "file": "drivers/codex-local.md",
       "status": "ready",
-      "level": "L1",
+      "level": "L2",
       "mode": "manual",
       "owner": "Codex",
       "risk": "medium",
       "activation": "manual",
-      "interfaces": "[workspace-status, run-checks, summarize-changes]",
+      "interfaces": "[codex_available, codex_info, workspace-status, run-checks, summarize-changes]",
       "inputs": "[workspace-path, task-id]",
       "outputs": "[status, report, patch-summary]",
       "sandbox": "current-workspace-policy",
@@ -4164,7 +4320,7 @@
       "title": "Repo runner — inventory репозиториев и будущий запуск в песочнице",
       "file": "drivers/repo-runner.md",
       "status": "ready",
-      "level": "L1",
+      "level": "L2",
       "mode": "read-only",
       "owner": "Novax",
       "risk": "medium",
