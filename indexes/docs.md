@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 128 файлов
+# Индекс папки `docs/` — 129 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -82,11 +82,12 @@
 | [middle-layer-guide.md](../docs/middle-layer-guide.md) | — | — | **Версия:** 1.0 · Июнь 2026 · Подготовлено для Max |
 | [mvp-roadmap.md](../docs/mvp-roadmap.md) | — | — | Дата: 2026-06-20 |
 | [nested-orchestration-3to1.md](../docs/nested-orchestration-3to1.md) | doc | proposed | Это слой НАД `docs/orchestration-architecture-2026-06-23.md` (бригада = `{3 продюсера + 1  |
-| [next-stage-action-plan-2026-07-06.md](../docs/next-stage-action-plan-2026-07-06.md) | doc | proposed | 1.1. Этот документ фиксирует письменный план дальнейших действий после перепроверки состоя |
+| [next-stage-action-plan-2026-07-06.md](../docs/next-stage-action-plan-2026-07-06.md) | doc | proposed | type: inbox-output |
 | [non-svend4-development-plan-2026-06-21.md](../docs/non-svend4-development-plan-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [onboarding-opinions-comparison-2026-06-21.md](../docs/onboarding-opinions-comparison-2026-06-21.md) | — | — | Дата: 2026-06-21 |
 | [optimal-information-architecture-2026-06-24.md](../docs/optimal-information-architecture-2026-06-24.md) | architecture-synthesis | proposed | id: DOC-000 |
 | [orchestration-architecture-2026-06-23.md](../docs/orchestration-architecture-2026-06-23.md) | doc | proposed | Конвейерный слой живёт НАД `docs/workflow-orchestration-policy.md` (один воркфлоу) и держи |
+| [orchestrator-cycle-proposal-2026-07-06.md](../docs/orchestrator-cycle-proposal-2026-07-06.md) | doc | proposed | *Предложение по собственным правилам (§4: методология = medium/high) уходит на |
 | [parallel-streams-problems-review-2026-06-22.md](../docs/parallel-streams-problems-review-2026-06-22.md) | — | — | Task: `T-146` |
 | [parallel-work-consensus-2026-06-22.md](../docs/parallel-work-consensus-2026-06-22.md) | doc | proposed | Пункты 1–8 подтверждены **обоими** независимыми проходами (PASS1 и PASS2) с совпадающими c |
 | [parallel-work-policy.md](../docs/parallel-work-policy.md) | — | — | Дата: 2026-06-22 · Статус: **accepted** (ратифицировано `D-022`, Stefan по D-006). Источни |
