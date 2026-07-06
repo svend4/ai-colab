@@ -301,5 +301,5 @@
 | T-287 | Доработка драйвера files по замечаниям верификации D-015 | done | pool | — | доработать драйвер files по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | done | codex | — | Done by Codex 2026-07-06; repo-runner limits hardened, tests passed, D-015 verified_by still requires independent reviewer. |
 | T-290 | Доработка D-033 по направлению котёл-дня | done | pool | — | доработать черновик D-033 по 5 пунктам секции «Направление доработки (Stefan, котёл-день 2026-07-06)», затем повторный заход на подтверждение |
-| T-291 | Вплести стандарт безопасного коммита в PROTOCOL.md (ссылка на tools/commit.py) | todo | pool | — | когда PROTOCOL.md свободен (не M у другого агента) — усилить правило коммита ссылкой на docs/commit-safety-standard.md и tools/commit.py |
+| T-291 | Вплести стандарт безопасного коммита в PROTOCOL.md (ссылка на tools/commit.py) | done | pool | — | когда PROTOCOL.md свободен (не M у другого агента) — усилить правило коммита ссылкой на docs/commit-safety-standard.md и tools/commit.py |
 <!-- GEN:tasks END -->

@@ -3750,7 +3750,7 @@
     {
       "id": "T-291",
       "title": "Вплести стандарт безопасного коммита в PROTOCOL.md (ссылка на tools/commit.py)",
-      "status": "todo",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",

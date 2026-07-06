@@ -294,4 +294,4 @@
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
-| [T-291.md](../tasks/T-291.md) | task | todo | Стандарт безопасного коммита оформлен (docs/commit-safety-standard.md, |
+| [T-291.md](../tasks/T-291.md) | task | done | Стандарт безопасного коммита оформлен (docs/commit-safety-standard.md, |
