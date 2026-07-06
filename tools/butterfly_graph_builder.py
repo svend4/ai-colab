@@ -98,7 +98,33 @@ def build_graph(source_dir=SOURCE_DIR, graph_path=GRAPH_FILE, limit=0):
                 "content": content,
                 "spiral_layer": 0,
                 "type": "raw_matter",
+                "tags": [],
+                "links": []
             }
+            
+            try:
+                from semantic_engine import AdvancedAlgorithms
+                atom["tags"] = AdvancedAlgorithms.extract_textrank_keywords(content, top_n=3)
+                
+                # Knowledge Graph: Contradiction Engine
+                for existing_atom in graph_db:
+                    if existing_atom.get("hash") == atom_hash: continue
+                    existing_tags = set(existing_atom.get("tags", []))
+                    new_tags = set(atom["tags"])
+                    common_tags = existing_tags.intersection(new_tags)
+                    
+                    if common_tags:
+                        dist = AdvancedAlgorithms.levenshtein_distance(content, existing_atom["content"])
+                        max_len = max(len(content), len(existing_atom["content"]))
+                        if max_len > 0 and (dist / max_len) > 0.8:
+                            atom["links"].append({
+                                "type": "contradicts",
+                                "target": existing_atom["hash"],
+                                "reason": f"shared concept '{list(common_tags)[0]}' but high semantic distance"
+                            })
+            except ImportError:
+                pass
+                
             graph_db.append(atom)
             new_atoms.append(atom)
             existing_hashes.add(atom_hash)
