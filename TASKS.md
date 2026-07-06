@@ -285,7 +285,7 @@
 | T-269 | Закрыть инцидент outbox-mass-strip (формальное закрытие — за человеком) | blocked | stefan | — | до 2026-07-13 (ответственный Stefan) — получить объяснение antigravity либо закрыть инцидент с оргвыводом; выбор A2(b) зафиксирован 2026-07-06 |
 | T-270 | Разбор и ратификация очереди proposed-решений (ратификация — за человеком) | done | stefan | — | закрыто — Stefan дал вердикты по всем 8 решениям котёл-ответом 2026-07-06 (см. «Итог») |
 | T-271 | Приёмка Q-023 (матрица полномочий) и связанного D-027 (решение — за человеком) | done | stefan | — | закрыто — D-027 accepted, Q-023 answered (котёл-ответ Stefan 2026-07-06, см. «Итог») |
-| T-272 | C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания | doing | any | — | при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist |
+| T-272 | C33 — контур safe_write; миграция оставшихся канон-писателей по мере касания | todo | any | — | при касании файла из WRITE_ALLOWLIST в tools/adoption.py — мигрировать на safe_write или вписать маркер и убрать запись из allowlist |
 | T-273 | AI-OS Bridge L2 — первый живой продуктовый груз конвейера | done | stefan+any | — | финальное done — за человеком/котлом (принять package/agenda-слой по kotel/agenda.md, при желании завести кандидаты задач из payload §7) |
 | T-274 | Tripwire D-012 в pipeline.py — авто-детект одновременности агентов (>=3 -> пересмотр heartbeat) | done | pool | `topics/agent-pipeline.md` | добавить в pipeline.py snapshot/status подсчёт одновременных активных агентов (свежие claim'ы + свежие heartbeat'ы) и advisory-строку tripwire D-012 при >=3 |
 | T-275 | "Оркестрация: governance-батч — ратификация 7 proposed + котёл-вопросы" | done | mavis | `topics/orchestration-workflow-design-2026-07-06.md` | "Этап 1: спавн 3 workers (researcher + verifier + writer) для параллельной работы. Этап 2: координация и синтез. Этап 3: презентация человеку." |
@@ -299,9 +299,9 @@
 | T-283 | Retired placeholder — no task assigned | done | unknown | — | closed as retired placeholder; for new work use a fresh task id with real scope |
 | T-284 | Human decision — resolve meta-sanation and triadic topic statuses | blocked | Stefan | `reports/topics-review-2026-07-06.md` | Stefan selects options for meta-sanation and triadic questionnaire; agents then implement selected follow-up. |
 | T-285 | Доработка драйвера codex-local по замечаниям верификации D-015 | done | pool | — | доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
-| T-286 | Доработка драйвера data по замечаниям верификации D-015 | doing | pool | — | доработать драйвер data по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
+| T-286 | Доработка драйвера data по замечаниям верификации D-015 | todo | pool | — | доработать драйвер data по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-287 | Доработка драйвера files по замечаниям верификации D-015 | done | pool | — | доработать драйвер files по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
-| T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | todo | pool | — | доработать драйвер repo-runner по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
+| T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | doing | pool | — | доработать драйвер repo-runner по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-289 | D-015 driver hardening — fix small actionable verification findings | done | codex | `drivers/index.json` | Fix low-risk actionable D-015 findings without marking drivers verified_by; run focused tests and validate. |
 | T-290 | Доработка D-033 по направлению котёл-дня | done | pool | — | доработать черновик D-033 по 5 пунктам секции «Направление доработки (Stefan, котёл-день 2026-07-06)», затем повторный заход на подтверждение |
 <!-- GEN:tasks END -->

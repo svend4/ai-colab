@@ -278,7 +278,7 @@
 | [T-269.md](../tasks/T-269.md) | task | blocked | Аудит 2026-07-02, находка C29: конвейер пуст (все задачи done), при этом инцидент |
 | [T-270.md](../tasks/T-270.md) | task | done | Аудит 2026-07-02, находка C29: 7 нератифицированных решений висят без задачи — конвейер |
 | [T-271.md](../tasks/T-271.md) | task | done | Аудит 2026-07-02, находка C29: открытый вопрос Q-023 (матрица полномочий агентов) и |
-| [T-272.md](../tasks/T-272.md) | task | doing | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
+| [T-272.md](../tasks/T-272.md) | task | todo | Аудит 2026-07-02, находка C33 (medium): `_ioutil.safe_write` использовался в 3 из ~40 |
 | [T-273.md](../tasks/T-273.md) | task | done | Конвейер пуст (272/272 задач закрыто) — весь предыдущий груз был инфраструктурным. |
 | [T-274.md](../tasks/T-274.md) | task | done | D-012 сделал heartbeat добровольным и оставил tripwire пересмотра: «если в |
 | [T-275.md](../tasks/T-275.md) | — | done | — |
@@ -292,8 +292,8 @@
 | [T-283.md](../tasks/T-283.md) | task | done | This id was reserved through `tools/next_id.py`, but no concrete task title, scope, owner  |
 | [T-284.md](../tasks/T-284.md) | task | blocked | T-281 reviewed three old `open` topics that were causing C29 drift. One topic (`repo-revie |
 | [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-286.md](../tasks/T-286.md) | task | doing | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-286.md](../tasks/T-286.md) | task | todo | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
-| [T-288.md](../tasks/T-288.md) | task | todo | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-288.md](../tasks/T-288.md) | task | doing | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-289.md](../tasks/T-289.md) | task | done | Small autonomous fixes extracted from the D-015 advisory notes in driver manifests: |
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
