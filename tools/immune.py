@@ -1,3 +1,4 @@
+# ast: allow-subprocess
 # ==========================================
 # [FILE ID CARD]
 # ID: tools.immune

@@ -77,8 +77,26 @@ def consensus(paths, thr=DEFAULT_THR):
     for cl in clusters:
         support = sorted({items[i]["var"] for i in cl})
         wit = im.effective_witnesses([cache[p] for p in support if cache[p]])
-        rows.append({"text": items[cl[0]]["text"], "occurrences": len(cl),
-                     "support": [os.path.basename(p) for p in support], "witnesses": wit})
+        
+        # Echo Chamber Detection: If > 2 witnesses and similarity is very high
+        echo_chamber = False
+        if wit >= 3:
+            total_sim = 0
+            pairs = 0
+            for i in range(len(cl)):
+                for j in range(i+1, len(cl)):
+                    total_sim += _sim(items[cl[i]]["toks"], items[cl[j]]["toks"])
+                    pairs += 1
+            if pairs > 0 and (total_sim / pairs) > 0.90:
+                echo_chamber = True
+                
+        rows.append({
+            "text": items[cl[0]]["text"], 
+            "occurrences": len(cl),
+            "support": [os.path.basename(p) for p in support], 
+            "witnesses": wit,
+            "echo_chamber": echo_chamber
+        })
     rows.sort(key=lambda r: (-r["witnesses"], -r["occurrences"]))
     return {
         "n_variants": len(paths), "n_claims": len(items), "n_clusters": len(clusters),
@@ -119,8 +137,9 @@ def _print_report(r, title):
     print("  вариантов %d · claim %d · кластеров %d" % (r["n_variants"], r["n_claims"], r["n_clusters"]))
     print("  --- ЯДРО (>=2 НЕЗАВИСИМЫХ свидетеля) ---")
     for c in r["core"][:20]:
-        print("    [св %d / вхожд %d] %s  ⟵ %s" % (
-            c["witnesses"], c["occurrences"], c["text"], ", ".join(c["support"])))
+        warning = " [⚠️ ЭХО-КАМЕРА: Требуется Адвокат Дьявола]" if c.get("echo_chamber") else ""
+        print("    [св %d / вхожд %d] %s  ⟵ %s%s" % (
+            c["witnesses"], c["occurrences"], c["text"], ", ".join(c["support"]), warning))
     if not r["core"]:
         print("    (нет: независимой конвергенции не обнаружено)")
     print("  --- МИНОР (1 свидетель — СОХРАНЁН, не отброшен) ---")

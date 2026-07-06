@@ -91,13 +91,23 @@ def main():
         fails.append("hook: застрахованная массовая операция не блокируется")
     if bg.hook_rc("ok-not-bulk", "accepted") != 0:
         fails.append("hook: не-массовая операция не блокируется")
+    insured, verdict = bg.classify_verdict(True, ["backup-old"], [])
+    if insured or verdict != "STOP-uninsured":
+        fails.append("старый backup-тег не на HEAD не должен страховать bulk-diff")
+    insured, verdict = bg.classify_verdict(True, ["backup-current"], ["backup-current"])
+    if not insured or verdict != "ok-insured":
+        fails.append("backup-тег на HEAD должен страховать bulk-diff")
 
     # d026_status: машинное чтение front-matter из fixture-корня
-    import tempfile
     import shutil
-    froot = tempfile.mkdtemp(prefix="bulk_guard_d026_")
+    repo_root = os.path.abspath(os.path.join(HERE, os.pardir))
+    tmp_root = os.path.join(repo_root, "tmp-work")
+    froot = os.path.join(tmp_root, "bulk_guard_d026_fixture")
+    if not os.path.abspath(froot).startswith(os.path.abspath(tmp_root) + os.sep):
+        fails.append("fixture path escaped tmp-work")
     try:
-        os.makedirs(os.path.join(froot, "decisions"))
+        shutil.rmtree(froot, ignore_errors=True)
+        os.makedirs(os.path.join(froot, "decisions"), exist_ok=True)
         p = os.path.join(froot, "decisions", "D-026.md")
         with open(p, "w", encoding="utf-8", newline="\n") as f:
             f.write("---\nid: D-026\ntype: decision\ntitle: t\nstatus: proposed\n---\n# D-026\n")
@@ -125,7 +135,7 @@ def main():
             print("  -", f)
         sys.exit(1)
     print("OK test_bulk_guard: numstat-парсинг + бинарный-пропуск + порог-строк + порог-файлов + "
-          "не-массовая + check-структура + C44 hook (proposed→советник, accepted→блок; d026_status fixture)")
+          "не-массовая + check-структура + strict backup-on-HEAD insurance + C44 hook (proposed→советник, accepted→блок; d026_status fixture)")
 
 
 if __name__ == "__main__":

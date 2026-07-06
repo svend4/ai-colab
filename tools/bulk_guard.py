@@ -1,3 +1,4 @@
+# ast: allow-subprocess
 # ==========================================
 # [FILE ID CARD]
 # ID: tools.bulk_guard
@@ -10,7 +11,7 @@
 
 Реализует политику bulk-information-safety: ловит «массовую операцию» в git-diff
 (≥THRESHOLD_LINES удалённых строк ИЛИ ≥THRESHOLD_FILES файлов с крупным урезанием) и проверяет
-наличие СТРАХОВКИ — git-тега `backup-*`, указывающего на HEAD (состояние ДО стирания). Без страховки
+наличие СТРАХОВКИ — git-тега `backup-*`, указывающего на текущий HEAD (состояние ДО стирания). Старый backup-тег не считается страховкой для нового bulk-изменения. Без страховки
 печатает STOP. Прецедент — инцидент outbox-mass-strip 2026-06-24 (147 файлов / 8643 строки без
 согласия). Read-only (только чтение git).
 
@@ -82,17 +83,25 @@ def backup_tags():
     return allt, head
 
 
+def classify_verdict(is_bulk, backup_tags=None, backup_on_head=None):
+    """Classify a bulk operation. D-026 insurance requires a backup tag on current HEAD."""
+    backup_tags = backup_tags or []
+    backup_on_head = backup_on_head or []
+    insured = bool(backup_on_head)
+    verdict = "ok-not-bulk" if not is_bulk else ("ok-insured" if insured else "STOP-uninsured")
+    return insured, verdict
+
+
 def check(staged=False):
     args = ["diff", "--numstat"] + (["--cached"] if staged else ["HEAD"])
     stat = parse_numstat(_git(args))
     is_bulk = stat["deletions"] >= THRESHOLD_LINES or stat["bulk_files"] >= THRESHOLD_FILES
     allt, head = backup_tags()
-    # страховка для UNCOMMITTED bulk: пре-стирочное состояние ещё в HEAD (восстановимо checkout'ом)
-    # ИЛИ есть backup-тег. Сильнейшая — тег прямо на HEAD.
-    insured = bool(allt)
+    # D-026 П-2: страховка должна указывать на состояние ДО стирания, т.е. текущий HEAD.
+    # Старые backup-* теги полезны для истории, но не страхуют новый bulk-diff.
+    insured, verdict = classify_verdict(is_bulk, allt, head)
     return {**stat, "is_bulk": is_bulk, "insured": insured, "backup_tags": allt,
-            "backup_on_head": head,
-            "verdict": ("ok-not-bulk" if not is_bulk else ("ok-insured" if insured else "STOP-uninsured"))}
+            "backup_on_head": head, "verdict": verdict}
 
 
 def d026_status(root=None):
@@ -157,10 +166,13 @@ def main(argv):
         if r["backup_on_head"]:
             print("\n  ✓ ЗАСТРАХОВАНО — backup-тег прямо на HEAD: %s" % ", ".join(r["backup_on_head"]))
         else:
-            print("\n  ✓ ЗАСТРАХОВАНО — backup-тег(и) существуют: %s" % ", ".join(r["backup_tags"]))
-            print("    (не на текущем HEAD — убедись, что тег покрывает удаляемый контент)")
+            print("\n  ✗ backup-тег(и) существуют, но НЕ на текущем HEAD: %s" % ", ".join(r["backup_tags"]))
+            print("    D-026 требует страховку состояния ДО этой операции: tag должен points-at HEAD.")
         print("    контент восстановим; массовая операция допустима.")
         return 0
+    if r["backup_tags"] and not r["backup_on_head"]:
+        print("\n  ! Найдены backup-теги, но ни один не указывает на текущий HEAD: %s" % ", ".join(r["backup_tags"]))
+        print("    Они НЕ страхуют данный bulk-diff. Создай новый backup-тег на HEAD.")
     print("\n  ✗ STOP — массовое стирание БЕЗ страховки (нарушение D-026 П-2).")
     print("    СНАЧАЛА застрахуй: git tag backup-<тема>-<дата> HEAD + внешняя копия/bundle,")
     print("    затем повтори. ≥500 строк живого контента — ещё и согласие человека (D-026 П-4).")

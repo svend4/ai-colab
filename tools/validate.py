@@ -1,3 +1,4 @@
+# ast: allow-subprocess
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ==========================================
@@ -836,6 +837,38 @@ def check_agents_roster():
     if not flagged:
         ok("agents: все наблюдаемые агенты (%d) есть в AGENTS_ROSTER (или служебные)" % len(observed))
 
+# ---------- D-036: Семантический Песочник (AST-Sandbox) ----------
+def check_ast_sandbox():
+    try:
+        from ast_sandbox import check_file
+    except ImportError:
+        warn("ast_sandbox: модуль ast_sandbox.py отсутствует, проверка пропущена")
+        return
+        
+    checked = 0
+    dirs_to_check = ["tools", "sandbox", "scratch"]
+    
+    for dname in dirs_to_check:
+        dpath = os.path.join(ROOT, dname)
+        if not os.path.isdir(dpath):
+            continue
+            
+        for dirpath, _, sorted_files in os.walk(dpath):
+            for fn in sorted(sorted_files):
+                if fn.endswith(".py"):
+                    filepath = os.path.join(dirpath, fn)
+                    rel = os.path.relpath(filepath, ROOT).replace("\\", "/")
+                    
+                    errors = check_file(filepath)
+                    if errors:
+                        for err_msg in errors:
+                            err(f"ast_sandbox: {rel} - {err_msg}")
+                    checked += 1
+                    
+    if checked:
+        ok(f"ast_sandbox: проверено {checked} Python-скриптов на безопасность (AST)")
+
+
 def main():
     help_guard(__doc__)
     decisions = parse_decisions()
@@ -855,6 +888,7 @@ def main():
     check_driver_ready_verification()
     check_index_ownership_d023()
     check_agents_roster()
+    check_ast_sandbox()
 
     for m in OKS:
         print("OK:   " + m)

@@ -1,3 +1,4 @@
+# ast: allow-subprocess
 #!/usr/bin/env python3
 # [FILE ID CARD]
 # id: tools/tests/test_commit.py

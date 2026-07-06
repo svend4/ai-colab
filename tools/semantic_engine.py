@@ -199,3 +199,40 @@ class AdvancedAlgorithms:
         anomaly_score = min(1.0, density / 0.05)
         return anomaly_score
 
+    @staticmethod
+    def simhash(text):
+        """
+        Calculates a 64-bit SimHash for the text.
+        Useful for Locality-Sensitive Hashing (LSH).
+        """
+        words = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', text.lower())
+        v = [0] * 64
+        
+        for word in words:
+            # We need a stable hash. Built-in hash() is randomized in Python 3.
+            # Using md5 to generate a stable 64-bit integer
+            import hashlib
+            h = int(hashlib.md5(word.encode('utf-8')).hexdigest(), 16)
+            for i in range(64):
+                bit = (h >> i) & 1
+                if bit:
+                    v[i] += 1
+                else:
+                    v[i] -= 1
+                    
+        fingerprint = 0
+        for i in range(64):
+            if v[i] > 0:
+                fingerprint |= (1 << i)
+                
+        return fingerprint
+
+    @staticmethod
+    def hamming_distance(h1, h2):
+        """
+        Calculates the Hamming distance between two 64-bit integers.
+        """
+        x = (h1 ^ h2) & ((1 << 64) - 1)
+        return bin(x).count('1')
+
+

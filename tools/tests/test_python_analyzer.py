@@ -1,3 +1,5 @@
+# ast: allow-eval
+# ast: allow-subprocess
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ==========================================
