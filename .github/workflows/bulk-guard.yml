@@ -1,0 +1,70 @@
+name: Bulk-Deletion Guard (D-026)
+
+# Серверный энфорсмент недеструктивной политики (D-026): массовое удаление
+# файлов/истории ОТКЛОНЯЕТСЯ на push/PR в main. Ключевое: `git commit --no-verify`
+# обходит только ЛОКАЛЬНЫЕ хуки — против этой CI-проверки он бессилен.
+# Локальный аналог: tools/bulk_guard.py (pre-commit) + tools/commit.py (обёртка).
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  bulk-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # нужна полная история для диапазона
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Проверка массового удаления в диапазоне (D-026)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE="${{ github.event.before }}"
+            HEAD="${{ github.sha }}"
+          fi
+          # Новая ветка / отсутствующая база → сравнить с первым родителем HEAD.
+          if [ -z "$BASE" ] || ! git rev-parse --verify "${BASE}^{commit}" >/dev/null 2>&1; then
+            BASE=$(git rev-parse "${HEAD}~1" 2>/dev/null || echo "")
+          fi
+          if [ -z "$BASE" ]; then
+            echo "Нет базы для сравнения (первый коммит) — пропускаю."; exit 0
+          fi
+          echo "Диапазон: ${BASE}..${HEAD}"
+          DEL_FILES=$(git diff --diff-filter=D --name-only "$BASE" "$HEAD" | grep -c . || true)
+          DEL_LINES=$(git diff "$BASE" "$HEAD" --numstat | awk '{s+=$2} END {print s+0}')
+          echo "Удалено файлов: ${DEL_FILES}, строк: ${DEL_LINES}"
+          # Осознанное массовое удаление разрешается токеном в сообщениях диапазона.
+          if git log "${BASE}..${HEAD}" --format=%B | grep -qiE '\[bulk-approved|allow-mass-delete|D-026 accepted:'; then
+            echo "Массовое удаление одобрено токеном ([bulk-approved …]) — пропускаю."
+            exit 0
+          fi
+          # Пороги согласованы с локальным bulk_guard / dir_health.
+          if [ "${DEL_FILES}" -gt 20 ] || [ "${DEL_LINES}" -gt 500 ]; then
+            echo "::error::D-026: массовое удаление (${DEL_FILES} файлов / ${DEL_LINES} строк) без одобрения — БЛОК."
+            echo "Недеструктивная политика: помечай устаревшее status: closed/deprecated (reconcile), не удаляй."
+            echo "Если удаление осознанно — добавь в сообщение коммита токен: [bulk-approved D-0XX: причина]"
+            exit 1
+          fi
+          echo "OK: массового удаления нет."
+
+      - name: Целостность канона (validate.py ERROR=0)
+        shell: bash
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          python -m pip install --upgrade pip >/dev/null
+          if [ -f requirements.txt ]; then pip install -r requirements.txt >/dev/null 2>&1 || true; fi
+          python tools/validate.py
