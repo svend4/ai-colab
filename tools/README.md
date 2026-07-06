@@ -42,7 +42,7 @@
 несвежесть ловится `python tools/generate.py --check` (pre-commit hook).
 
 <!-- GEN:tools-index START — генерируется tools/generate.py, не править вручную -->
-Всего не-тестовых инструментов: 138. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
+Всего не-тестовых инструментов: 139. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
 
 | Инструмент | Назначение |
 |---|---|
@@ -57,6 +57,7 @@
 | `agent_queue.py` | Очередь 2.0 — атомарный рабочий цикл задач для многих агентов (Этап D из scaling-design). |
 | `assurance.py` | Read-only апекс-дашборд: evidence, актуальность, coverage и поток инструкций к вершине. |
 | `ast_healer.py` | — |
+| `ast_sandbox.py` | AST-Sandbox Guard (D-036) |
 | `autolink.py` | ADVISORY: предложения, как ДОЗРЕТЬ незрелым атомам (type/gist/topic). |
 | `autonomy_guard.py` | детектор АВТОНОМНЫХ `accept` без подтверждения человека (B2 / дисциплина D-033 §0). |
 | `backlog_rescan.py` | Workflow backlog rescan tool. |
