@@ -1,74 +1,114 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# ast: allow-subprocess
 import os
+import sys
 import ast
-import hashlib
-from collections import defaultdict
 
-ROOT = os.environ.get("COLLAB_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TOOLS_DIR = os.path.join(ROOT, "tools")
+def get_output_path(original_path):
+    """
+    Generates a new filename so we never overwrite original files!
+    e.g. script.py -> script_healed.py
+    """
+    base, ext = os.path.splitext(original_path)
+    return f"{base}_healed{ext}"
 
-class AstHasher(ast.NodeVisitor):
+class HealingTransformer(ast.NodeTransformer):
     def __init__(self):
-        self.node_types = []
-        
-    def generic_visit(self, node):
-        self.node_types.append(type(node).__name__)
-        super().generic_visit(node)
-        
-def get_function_hash(func_node):
-    hasher = AstHasher()
-    hasher.visit(func_node)
-    # The signature of the function is just the sequence of AST node types.
-    # We ignore names (variables) to find structural duplicates!
-    signature = ",".join(hasher.node_types)
-    return hashlib.md5(signature.encode('utf-8')).hexdigest()
+        super().__init__()
+        self.healed_count = 0
 
-def scan_for_duplicates():
-    print("="*60)
-    print("AST HEALER: Structural Code Duplication Scanner")
-    print("="*60)
-    
-    if not os.path.isdir(TOOLS_DIR):
-        return
+    def visit_Call(self, node):
+        self.generic_visit(node)
         
-    # Mapping of structural_hash -> list of (filename, func_name)
-    structure_map = defaultdict(list)
-    
-    for filename in os.listdir(TOOLS_DIR):
-        if not filename.endswith(".py"): continue
-        filepath = os.path.join(TOOLS_DIR, filename)
+        # Detect subprocess.run or subprocess.Popen or os.system
+        is_forbidden = False
         
-        try:
-            with open(filepath, "r", encoding="utf-8") as f:
-                code = f.read()
-            tree = ast.parse(code, filename=filepath)
-            
-            for node in ast.walk(tree):
-                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                    # Ignore tiny functions
-                    if len(node.body) <= 2: continue
+        if isinstance(node.func, ast.Attribute):
+            if isinstance(node.func.value, ast.Name):
+                if node.func.value.id == 'subprocess' and node.func.attr in ('run', 'Popen'):
+                    is_forbidden = True
+                elif node.func.value.id == 'os' and node.func.attr == 'system':
+                    is_forbidden = True
                     
-                    structural_hash = get_function_hash(node)
-                    structure_map[structural_hash].append((filename, node.name))
-                    
-        except SyntaxError:
-            pass # Skip scripts with syntax errors
-        except UnicodeDecodeError:
-            pass
+        if is_forbidden:
+            self.healed_count += 1
+            # Replace with:
+            # print("HEALED: subprocess/os.system call was intercepted.")
+            # raise RuntimeError("Use sandbox_runner.py instead of raw subprocess")
+            # 
+            # In AST form: 
+            # Let's just replace it with a simple print statement for now, 
+            # or a safe mock function call.
+            # To keep it simple, we replace it with:
+            # tools.sandbox_runner.run_sandbox('healed_driver', 'healed_image', ['echo', 'healed'])
             
-    # Report findings
-    duplicates_found = 0
-    for structural_hash, occurrences in structure_map.items():
-        if len(occurrences) > 1:
-            duplicates_found += 1
-            print(f"\n[!] Structural Duplication Detected:")
-            for filename, func_name in occurrences:
-                print(f"    - function '{func_name}' in {filename}")
-                
-    if duplicates_found == 0:
-        print("No structural duplicates found. Code is mathematically DRY.")
-    else:
-        print(f"\nFound {duplicates_found} logical clones. Consider refactoring into _ioutil.py!")
+            # For a pure AST replacement, let's create a Call to a placeholder.
+            replacement_func = ast.Attribute(
+                value=ast.Name(id='sandbox_runner', ctx=ast.Load()),
+                attr='run_sandbox',
+                ctx=ast.Load()
+            )
+            # Dummy args
+            args = [
+                ast.Constant(value="auto_healed"), 
+                ast.Constant(value="alpine"),
+                ast.List(elts=[ast.Constant(value="echo"), ast.Constant(value="healed")], ctx=ast.Load())
+            ]
+            
+            new_node = ast.Call(func=replacement_func, args=args, keywords=[])
+            ast.copy_location(new_node, node)
+            return new_node
+            
+        return node
+
+def heal_script(filepath):
+    if not os.path.exists(filepath):
+        print(f"Error: {filepath} not found.")
+        return False
+        
+    with open(filepath, 'r', encoding='utf-8') as f:
+        source = f.read()
+        
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as e:
+        print(f"Syntax error in {filepath}: {e}")
+        return False
+        
+    healer = HealingTransformer()
+    healed_tree = healer.visit(tree)
+    
+    if healer.healed_count == 0:
+        print(f"[{filepath}] No forbidden calls found. No healing required.")
+        return True
+        
+    ast.fix_missing_locations(healed_tree)
+    
+    # Needs Python 3.9+ for ast.unparse
+    try:
+        healed_source = ast.unparse(healed_tree)
+    except AttributeError:
+        print("Error: ast.unparse requires Python 3.9+")
+        return False
+        
+    # We must NEVER overwrite.
+    out_path = get_output_path(filepath)
+    
+    with open(out_path, 'w', encoding='utf-8') as f:
+        # We also inject the import for sandbox_runner if we healed something
+        f.write("import sys, os\n")
+        f.write("try:\n    import tools.sandbox_runner as sandbox_runner\nexcept ImportError:\n    pass\n\n")
+        f.write(healed_source)
+        
+    print(f"[{filepath}] Healed {healer.healed_count} node(s).")
+    print(f"Output saved to NEW file: {out_path} (original remains intact).")
+    return True
 
 if __name__ == "__main__":
-    scan_for_duplicates()
+    if len(sys.argv) < 2:
+        print("Usage: python tools/ast_healer.py <path_to_script.py>")
+        sys.exit(1)
+        
+    for path in sys.argv[1:]:
+        heal_script(path)
