@@ -307,4 +307,5 @@
 | T-294 | Bulk guard range gate — проверить диапазон коммитов от массового стирания | done | codex | — | Реализовать additive-режим `tools/bulk_guard.py --range BASE..HEAD --json` и тесты без изменения hooks/deny-путей. |
 | T-295 | Cauldron materializer — превращать отчёты агентов в варианты для синтеза | todo | pool | — | Спроектировать и добавить additive-инструмент, который регистрирует найденные outbox/report варианты в формате, пригодном для synthesis helper. |
 | T-296 | Additive enrichment shortlist — список безопасных задач для обогащения проекта | todo | pool | — | Создать обсуждаемый список additive-задач: только добавление защиты, индексов, методов, отчётов и прототипов без удаления истории. |
+| T-297 | Интегрировать Гейт B (work_admission) в точку старта — top.py take / pipeline claim | todo | pool | — | при взятии задачи вызывать work_admission acquire; QUEUE (exit 1) → агент откладывает/ждёт; release по завершении. Плюс добавить worktree_gate --hook в pre-commit (Гейт A для всех коммитов, не только через commit.py) |
 <!-- GEN:tasks END -->

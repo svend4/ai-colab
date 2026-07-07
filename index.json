@@ -3812,6 +3812,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Создать обсуждаемый список additive-задач: только добавление защиты, индексов, методов, отчётов и прототипов без удаления истории."
+    },
+    {
+      "id": "T-297",
+      "title": "Интегрировать Гейт B (work_admission) в точку старта — top.py take / pipeline claim",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "при взятии задачи вызывать work_admission acquire; QUEUE (exit 1) → агент откладывает/ждёт; release по завершении. Плюс добавить worktree_gate --hook в pre-commit (Гейт A для всех коммитов, не только через commit.py)"
     }
   ],
   "questions": [

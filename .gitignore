@@ -16,6 +16,8 @@ PIPELINE.md
 logs/heartbeat.json
 # пер-агентные heartbeat volatile по D-022 (аудит C39, Q-W2-10a): каталог целиком
 logs/heartbeat/
+# runtime-лизинги слотов work_admission (Гейт B, D-039): volatile, как heartbeat
+logs/slots/
 logs/pipeline.json
 logs/conveyor.json
 logs/adoption-baseline.json
