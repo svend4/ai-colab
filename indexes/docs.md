@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 142 файлов
+# Индекс папки `docs/` — 144 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -108,6 +108,7 @@
 | [portal-example-l2-result-2026-06-21.md](../docs/portal-example-l2-result-2026-06-21.md) | report | done | The operational corpus remains in `data/portals/example/corpus/`. After D-021/T-145, `tool |
 | [portal-location-split-result-2026-06-22.md](../docs/portal-location-split-result-2026-06-22.md) | — | — | Task: `T-145` |
 | [powershell-utf8-output.md](../docs/powershell-utf8-output.md) | — | — | Дата: 2026-06-20 |
+| [pre-commit-lightening-proposal-2026-07-07.md](../docs/pre-commit-lightening-proposal-2026-07-07.md) | doc | proposed | Под многоагентной нагрузкой (3+ агента коммитят одновременно) коммиты стали занимать |
 | [project-audit-2026-06-23.md](../docs/project-audit-2026-06-23.md) | audit | proposed | Дата аудита: 2026-06-23. Аудит сделан по текущей рабочей папке, включая незакоммиченные из |
 | [promotion-rules.md](../docs/promotion-rules.md) | — | — | Дата: 2026-06-21 |
 | [protocol-machine-layer.md](../docs/protocol-machine-layer.md) | doc | accepted | Документ описывает **детерминированные правила**, обязательные для исполнения всеми AI-аге |
@@ -148,4 +149,5 @@
 | [workflow-conveyor-policy.md](../docs/workflow-conveyor-policy.md) | doc | proposed | Один контекст-оркестратор = один последовательный планировщик с N фоновыми воркерами. Узко |
 | [workflow-orchestration-policy.md](../docs/workflow-orchestration-policy.md) | doc | proposed | **воркфлоу** — кластер мелких под-агентов, работающих параллельно, плюс агент-**синтезатор |
 | [workspace-pyramid-levels.md](../docs/workspace-pyramid-levels.md) | — | — | Дата: 2026-06-21 |
+| [worktree-isolation-enforcement-2026-07-07.md](../docs/worktree-isolation-enforcement-2026-07-07.md) | doc | proposed | Диагноз (reports/machine-saturation-diagnosis-2026-07-07.md): агенты работают на общем |
 | [zed-like-headless-workbench-mvp.md](../docs/zed-like-headless-workbench-mvp.md) | doc | proposed | Этот документ фиксирует практический план: как использовать идеи Zed |

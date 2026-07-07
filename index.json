@@ -3779,6 +3779,39 @@
       "depends_on": "[]",
       "topic": "",
       "next": "Провести многоагентную верификацию для codex-local, data, files, repo-runner. Либо собрать 2+ агентов для review, либо понизить статус до draft."
+    },
+    {
+      "id": "T-294",
+      "title": "Bulk guard range gate — проверить диапазон коммитов от массового стирания",
+      "status": "done",
+      "owner": "codex",
+      "priority": "high",
+      "risk": "medium",
+      "depends_on": "[D-026]",
+      "topic": "",
+      "next": "Реализовать additive-режим `tools/bulk_guard.py --range BASE..HEAD --json` и тесты без изменения hooks/deny-путей."
+    },
+    {
+      "id": "T-295",
+      "title": "Cauldron materializer — превращать отчёты агентов в варианты для синтеза",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "high",
+      "risk": "low",
+      "depends_on": "[D-017, D-018]",
+      "topic": "",
+      "next": "Спроектировать и добавить additive-инструмент, который регистрирует найденные outbox/report варианты в формате, пригодном для synthesis helper."
+    },
+    {
+      "id": "T-296",
+      "title": "Additive enrichment shortlist — список безопасных задач для обогащения проекта",
+      "status": "todo",
+      "owner": "pool",
+      "priority": "normal",
+      "risk": "low",
+      "depends_on": "[]",
+      "topic": "",
+      "next": "Создать обсуждаемый список additive-задач: только добавление защиты, индексов, методов, отчётов и прототипов без удаления истории."
     }
   ],
   "questions": [
@@ -4210,6 +4243,13 @@
       "status": "accepted",
       "date": "2026-07-06",
       "file": "decisions/D-038.md"
+    },
+    {
+      "id": "D-039",
+      "title": "Обязательная worktree-изоляция при N≥3 + потолок одновременности (Гейты A/B)",
+      "status": "accepted",
+      "date": "2026-07-07",
+      "file": "decisions/D-039.md"
     }
   ],
   "drivers": [
