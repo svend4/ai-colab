@@ -46,7 +46,10 @@ ROOT = os.environ.get("COLLAB_ROOT") or os.getcwd()
 SLOTS_DIR = os.path.join(ROOT, "logs", "slots")
 LOCK_PATH = os.path.join(SLOTS_DIR, ".admit.lock")
 DEFAULT_TTL = 1200          # слот протухает через 20 мин без обновления (крашнувшийся агент)
-DEFAULT_RESERVE = 1         # оставить ядро под систему/git
+# Запас ядер под систему/git. RESERVE=2 (слотов = ядра−2) по стресс-тесту 2026-07-07:
+# 6 агентов на 4 ядрах дали git-латентность 24-59с/таймаут (насыщение). Совпадает с
+# капом самого Workflow-инструмента (min(16, ядра−2)). На 4-ядерной → 2 слота.
+DEFAULT_RESERVE = 2
 LOCK_STALE = 10             # короткий крит-лок count+create протухает за 10с
 _EPOCH = 1751000000         # фиксированная база (Date.now недоступен в некоторых средах — тут time.time ок)
 
