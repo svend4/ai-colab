@@ -168,6 +168,20 @@ def main(argv=None) -> int:
             _git("reset", "--quiet", "HEAD", "--", *args.paths)
             return 1
 
+    # Гейт A (worktree-изоляция, docs/worktree-isolation-enforcement-2026-07-07.md): при коммите
+    # в общий main + высокая одновременность направляет в worktree. Advisory до ратификации
+    # (worktree_gate --hook сам вернёт 1 ТОЛЬКО когда решение accepted → тогда блок).
+    if os.path.exists(os.path.join("tools", "worktree_gate.py")):
+        wg = _run([py, "tools/worktree_gate.py", "--hook"])
+        if wg.returncode == 1:
+            print(wg.stdout.strip(), file=sys.stderr)
+            print("ОТКАЗ (Гейт A): коммит в общий main при N≥порог — работай в worktree "
+                  "(flow.py start <agent> <T-id> --worktree).", file=sys.stderr)
+            _git("reset", "--quiet", "HEAD", "--", *args.paths)
+            return 1
+        if wg.stdout.strip():
+            print(wg.stdout.strip())   # advisory-подсказка (не блокирует)
+
     if args.dry_run:
         print("\n[dry-run] Проверки пройдены. Коммит НЕ сделан. Снимаю staged.")
         _git("reset", "--quiet", "HEAD", "--", *args.paths)
