@@ -134,12 +134,14 @@ class _CritLock:
     """Короткий O_EXCL-лок вокруг count+create (иначе гонка над-подписки слотов)."""
     def __enter__(self):
         _ensure_dir()
+        self.acquired = False   # True только если МЫ создали лок через O_EXCL
         deadline = _now() + 5
         while True:
             try:
                 fd = os.open(LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(fd, str(os.getpid()).encode())
                 os.close(fd)
+                self.acquired = True
                 return self
             except OSError as e:
                 if e.errno != errno.EEXIST:
@@ -156,10 +158,13 @@ class _CritLock:
                 time.sleep(0.05)
 
     def __exit__(self, *exc):
-        try:
-            os.remove(LOCK_PATH)
-        except OSError:
-            pass
+        # Снимаем лок ТОЛЬКО если сами его создали (O_EXCL). Иначе advisory-инстанс
+        # (не владеющий локом) удалял бы ЧУЖОЙ удерживаемый лок → над-подписка (аудит 2026-07-07).
+        if getattr(self, "acquired", False):
+            try:
+                os.remove(LOCK_PATH)
+            except OSError:
+                pass
         return False
 
 
@@ -168,7 +173,14 @@ def _make_token():
 
 
 def acquire(agent, slots=None, reserve=DEFAULT_RESERVE, ttl=DEFAULT_TTL, wait=0):
-    """Взять слот. Возвращает (True, token) если взял; (False, None) если очередь."""
+    """Взять слот. Возвращает (True, token) если взял; (False, None) если очередь / запись не удалась.
+
+    HEARTBEAT (важно для задач дольше ttl): acquire — одноразовый вызов, ts пишется один раз.
+    Ветка `mine` обновляет ts при ПОВТОРНОМ acquire того же агента, но сам инструмент не крутит
+    фон. Для задач дольше ttl (по умолч. 20 мин) вызывающий ДОЛЖЕН периодически повторять acquire
+    (< ttl) как heartbeat, иначе _active_slots сочтёт живой слот протухшим и освободит его →
+    над-подписка. Автоматический heartbeat — за интеграцией в top.py/pipeline (T-297); либо
+    поднимай --ttl под длительность задачи."""
     n_slots = _slots(slots, reserve)
     deadline = _now() + max(0, wait)
     while True:
@@ -183,8 +195,13 @@ def acquire(agent, slots=None, reserve=DEFAULT_RESERVE, ttl=DEFAULT_TTL, wait=0)
                 return True, d.get("token")
             if len(active) < n_slots:
                 token = _make_token()
-                _write_atomic(_slot_path(agent),
-                              {"agent": agent, "ts": _now(), "ttl": ttl, "token": token})
+                # Проверяем, что слот РЕАЛЬНО записан на диск: если _write_atomic упал
+                # (Windows AV/индексатор держит файл, все ретраи os.replace дали PermissionError),
+                # НЕ рапортуем «слот взят» — иначе фантомный допуск без файла → над-подписка,
+                # т.к. _active_slots считает только файлы на диске (аудит 2026-07-07).
+                if not _write_atomic(_slot_path(agent),
+                                     {"agent": agent, "ts": _now(), "ttl": ttl, "token": token}):
+                    return False, None
                 return True, token
         # слотов нет
         if _now() >= deadline:

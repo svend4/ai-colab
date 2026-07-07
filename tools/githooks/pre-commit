@@ -74,6 +74,19 @@ if [ "$?" -eq 1 ]; then
   exit 1
 fi
 
+# --- БЫСТРО + БЛОК: Гейт A (worktree-изоляция) для ЛЮБОГО коммита, не только через commit.py (T-297) ---
+# Закрывает дыру принуждения: сырой `git commit` минует обёртку commit.py, где раньше жил
+# единственный вызов worktree_gate. --hook сам вернёт 1 ТОЛЬКО при SHARED-BUSY И ратифицированном
+# D-039 (иначе advisory exit 0). Аудит 2026-07-07: D-039 обещал «обойти = только --no-verify»,
+# но сырой commit тихо минул Гейт A.
+"$PY" tools/worktree_gate.py --hook
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit(fast): Гейт A — коммит в общий main при высокой одновременности (N>=3, D-039). Отклонено."
+  echo "Работай изолированно: python tools/flow.py start <agent> <T-id> --worktree"
+  exit 1
+fi
+
 # --- WARN (не блок): устаревшесть всего-дерева-нав (чужая работа), сироты, dcard ---
 "$PY" tools/generate.py --check >/dev/null 2>&1
 if [ "$?" -ne 0 ]; then

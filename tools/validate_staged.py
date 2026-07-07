@@ -101,8 +101,10 @@ def check(root=None):
             errors.append(f"{rel}: нет YAML front-matter")
             continue
         fid = fm.get("id", "")
-        # (1) id == имя файла
-        if fid != base:
+        # (1) id == имя файла — НЕ для topics: их конвенция допускает id != filename, и полный
+        #     validate.py вовсе не id-чекает topics (только tasks/questions/decisions, и то WARN).
+        #     Без исключения был ложный ERROR на любом staged topics/*.md (аудит 2026-07-07).
+        if d0 != "topics" and fid != base:
             errors.append(f"{rel}: id '{fid}' != имя файла '{base}'")
         # префикс id по каталогу
         pref = _PREFIX[d0]

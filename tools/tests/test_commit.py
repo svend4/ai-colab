@@ -85,6 +85,31 @@ def test_small_deletion_allowed_with_flag():
     print("  OK: одиночное удаление с --allow-deletions 1 прошло")
 
 
+def test_partial_deletion_cap_respected():
+    # Регрессия (аудит 2026-07-07): --allow-deletions 2 при 4 удалениях должен ОТКАЗАТЬ.
+    # Было max(N,5) → пропускало до 5 удалений вместо запрошенных N.
+    d = _mkrepo()
+    for i in range(4):
+        os.remove(os.path.join(d, f"f{i}.md"))
+    paths = [f"f{i}.md" for i in range(4)]
+    r = _commit(d, *paths, "-m", "delete 4", "--allow-deletions", "2")
+    assert r.returncode == 1, f"4 удаления при allow=2 → отказ, got {r.returncode}: {r.stdout}{r.stderr}"
+    assert "D-026" in (r.stdout + r.stderr), "нет ссылки на D-026"
+    print("  OK: --allow-deletions 2 не пропускает 4 удаления (порог = N, не max(N,5))")
+
+
+def test_magic_pathspec_refused():
+    # Регрессия (аудит 2026-07-07): git-магия ':(top)' стейджила всё дерево в обход набора.
+    d = _mkrepo()
+    with open(os.path.join(d, "sneaky.md"), "w", encoding="utf-8") as fh:
+        fh.write("unnamed content\n")
+    r = _commit(d, ":(top)", "-m", "broad sneaky stage")
+    assert r.returncode == 1, f"':(top)' должен быть отвергнут, got {r.returncode}: {r.stdout}{r.stderr}"
+    assert "pathspec" in (r.stdout + r.stderr).lower() or "ОТКАЗ" in (r.stdout + r.stderr)
+    assert "broad sneaky" not in _git(d, "log", "--oneline").stdout, "ничего не должно быть закоммичено"
+    print("  OK: магический pathspec ':(top)' отвергнут")
+
+
 def test_normal_add_commits_without_no_verify():
     d = _mkrepo()
     with open(os.path.join(d, "new.md"), "w", encoding="utf-8") as fh:
@@ -99,9 +124,11 @@ def run():
     test_forbidden_add_all()
     test_no_paths()
     test_mass_deletion_refused()
+    test_partial_deletion_cap_respected()
+    test_magic_pathspec_refused()
     test_small_deletion_allowed_with_flag()
     test_normal_add_commits_without_no_verify()
-    print("TESTS OK commit: safe-add + D-026 порог удаления + обычный коммит")
+    print("TESTS OK commit: safe-add + magic-pathspec + D-026 порог(N) + обычный коммит")
 
 
 if __name__ == "__main__":

@@ -82,6 +82,21 @@ def test_evaluate_isolated():
         shutil.rmtree(d, ignore_errors=True)
 
 
+def test_readme_not_counted():
+    # Регрессия (аудит 2026-07-07): README.md трекается в queues/claimed и на свежем
+    # clone/worktree имеет свежий mtime; он НЕ должен считаться агентом — только *.claim.md.
+    d = _tmp_with_claims(2)
+    try:
+        p = os.path.join(d, "queues", "claimed", "README.md")
+        with open(p, "w", encoding="utf-8") as f:
+            f.write("# очередь claimed\n")
+        os.utime(p, (time.time(), time.time()))   # свежий, как на clone
+        assert wg.active_agents(d) == 2, "README.md (не claim) не должен раздувать счёт"
+        print("  OK: README.md (не *.claim.md) не считается агентом")
+    finally:
+        shutil.rmtree(d, ignore_errors=True)
+
+
 def test_evaluate_low_concurrency_ok():
     d = _tmp_with_claims(1)
     saved = wg.current_branch
@@ -98,10 +113,11 @@ def test_evaluate_low_concurrency_ok():
 def run():
     test_hook_rc_pure()
     test_active_agents_count()
+    test_readme_not_counted()
     test_evaluate_shared_busy()
     test_evaluate_isolated()
     test_evaluate_low_concurrency_ok()
-    print("TESTS OK worktree_gate: hook_rc + счёт + SHARED-BUSY + ISOLATED + соразмерность")
+    print("TESTS OK worktree_gate: hook_rc + счёт + README-excl + SHARED-BUSY + ISOLATED + соразмерность")
 
 
 if __name__ == "__main__":

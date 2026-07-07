@@ -41,7 +41,10 @@ for _s in (sys.stdout, sys.stderr):
 
 SHARED_BRANCHES = {"main", "master"}
 CONCURRENCY_THRESHOLD = 3          # Гейт A: ≥ N одновременных → worktree обязателен (точка насыщения)
-MACHINE_SLOTS = 3                  # Гейт B: CAP тяжёлых агентов ≈ ядра−запас; лишние — в очередь
+# Гейт B: CAP тяжёлых агентов ≈ ядра−2; лишние — в очередь. Согласовано с work_admission
+# (RESERVE=2) по стресс-тесту 2026-07-07 (6 агентов на 4 ядрах → git 24-59с). Было жёстко 3 —
+# рассинхрон с реальным капом 2 на 4-ядерной (аудит 2026-07-07).
+MACHINE_SLOTS = max(1, (os.cpu_count() or 4) - 2)
 FRESH_CLAIM_SECONDS = 20 * 60      # claim считается «свежим» (агент активен) в пределах 20 мин
 # Решение, ратификация которого превращает WARN→BLOCK (пока такого нет — гейт advisory).
 RATIFY_DECISION = "D-039"          # placeholder: «worktree обязателен при N≥порог» (см. котёл §6 доки)
@@ -73,7 +76,10 @@ def active_agents(root=None):
     n = 0
     try:
         for name in os.listdir(d):
-            if not name.endswith(".md"):
+            # Только claim-файлы агентов (*.claim.md). НЕ трекаемый README.md и прочие .md:
+            # на свежем clone/worktree у README свежий mtime → он раздувал N и давал
+            # ложный SHARED-BUSY на границе N==3 (аудит 2026-07-07).
+            if not name.endswith(".claim.md"):
                 continue
             try:
                 if now - os.path.getmtime(os.path.join(d, name)) <= FRESH_CLAIM_SECONDS:

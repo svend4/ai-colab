@@ -47,6 +47,15 @@ DELETION_THRESHOLD = 5
 FORBIDDEN_PATHSPECS = {"-A", "--all", ".", "*", ":/", "-u", "--update"}
 
 
+def _is_forbidden_pathspec(x: str) -> bool:
+    """Запрещённый/магический pathspec массового стейджа. Кроме точного набора ловим
+    git-«магию»: ':' (всё дерево), ':(top)'/':(...)' , ':/...' (от корня), ':!'/':^' (исключения).
+    Аудит 2026-07-07: `git add -- ':(top)'` стейджил всё дерево в обход набора."""
+    if x in FORBIDDEN_PATHSPECS:
+        return True
+    return x == ":" or x.startswith(":(") or x.startswith(":/") or x.startswith(":!") or x.startswith(":^")
+
+
 def _run(args, **kw):
     """Запуск git/py без падения; возвращает CompletedProcess."""
     return subprocess.run(args, capture_output=True, text=True, encoding="utf-8",
@@ -102,10 +111,11 @@ def main(argv=None) -> int:
         print("ОТКАЗ: не заданы явные пути зоны. Обёртка не делает `git add -A`.\n"
               "       Укажи файлы: python tools/commit.py <файл>... -m \"...\"", file=sys.stderr)
         return 2
-    bad = [x for x in args.paths if x in FORBIDDEN_PATHSPECS]
+    bad = [x for x in args.paths if _is_forbidden_pathspec(x)]
     if bad:
-        print(f"ОТКАЗ: запрещённые pathspec {bad}. Массовый стейдж (`-A`/`.`/`*`) "
-              f"запрещён (D-026) — перечисли конкретные файлы.", file=sys.stderr)
+        print(f"ОТКАЗ: запрещённые/магические pathspec {bad}. Массовый стейдж "
+              f"(`-A`/`.`/`*`/`:`/`:(top)`/`:!`) запрещён (D-026) — перечисли конкретные файлы.",
+              file=sys.stderr)
         return 1
     if not args.message and not args.dry_run:
         print("ОТКАЗ: нужно -m \"сообщение\".", file=sys.stderr)
@@ -130,23 +140,24 @@ def main(argv=None) -> int:
     print(f"Staged: {len(staged)} файлов ({len(dels)} удалений). Зона: {args.paths}")
 
     # --- Инвариант 2: порог массового удаления (D-026) ---
-    if len(dels) > max(args.allow_deletions, DELETION_THRESHOLD if args.allow_deletions else 0):
-        if len(dels) > args.allow_deletions:
-            print(f"\n*** ОТКАЗ (D-026): в staged {len(dels)} удалений, "
-                  f"порог {args.allow_deletions}. ***\n"
-                  f"Массовое удаление файлов запрещено недеструктивной политикой.\n"
-                  f"Удаляемые файлы:", file=sys.stderr)
-            for d in dels[:30]:
-                print(f"   - {d}", file=sys.stderr)
-            if len(dels) > 30:
-                print(f"   ... ещё {len(dels) - 30}", file=sys.stderr)
-            print("\nЕсли удаление осознанно и мало — повтори с --allow-deletions <N> "
-                  "и обоснованием в сообщении. Массовое стирание истории — только через\n"
-                  "accepted-решение и человека (reconcile: помечай closed/deprecated, не удаляй).",
-                  file=sys.stderr)
-            # снять со стейджа, чтобы не оставлять опасное staged-состояние
-            _git("reset", "--quiet", "HEAD", "--", *args.paths)
-            return 1
+    # Порог = именно args.allow_deletions (default 0 → любое удаление отвергается).
+    # Было max(N, 5): при 0<N<5 пропускало до 5 удалений вместо запрошенных N (аудит 2026-07-07).
+    if len(dels) > args.allow_deletions:
+        print(f"\n*** ОТКАЗ (D-026): в staged {len(dels)} удалений, "
+              f"порог {args.allow_deletions}. ***\n"
+              f"Массовое удаление файлов запрещено недеструктивной политикой.\n"
+              f"Удаляемые файлы:", file=sys.stderr)
+        for d in dels[:30]:
+            print(f"   - {d}", file=sys.stderr)
+        if len(dels) > 30:
+            print(f"   ... ещё {len(dels) - 30}", file=sys.stderr)
+        print("\nЕсли удаление осознанно и мало — повтори с --allow-deletions <N> "
+              "и обоснованием в сообщении. Массовое стирание истории — только через\n"
+              "accepted-решение и человека (reconcile: помечай closed/deprecated, не удаляй).",
+              file=sys.stderr)
+        # снять со стейджа, чтобы не оставлять опасное staged-состояние
+        _git("reset", "--quiet", "HEAD", "--", *args.paths)
+        return 1
 
     # --- Инвариант 3: guard'ы ДО коммита ---
     def _guard(name, cmd):

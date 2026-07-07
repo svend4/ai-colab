@@ -224,7 +224,12 @@ def check_numeric(lines, counts):
         actual = counts.get(section)
         if actual is None:
             continue
-        rx = re.compile(r"(\d+)\s+%s\w*" % noun)
+        if noun == "тем":
+            # «тем» — 3-буквенная основа; \w* цепляло «тематик/темп/температур» → ложный дрейф
+            # (аудит 2026-07-07). Ограничиваем валидными склонениями «тема» + граница по кириллице.
+            rx = re.compile(r"(\d+)\s+тем(?:а|ы|е|у|ой|ам|ами|ах)?(?![а-яё])", re.IGNORECASE)
+        else:
+            rx = re.compile(r"(\d+)\s+%s\w*" % noun)
         for lineno, text in scope:
             if _is_historical(text):
                 continue
@@ -259,10 +264,13 @@ def check_decision_status(lines, statuses):
         if not m:
             continue
         # Ложное срабатывание: строка ОПИСЫВАЕТ принятие решений («приняты N (D-…→accepted)»),
-        # а не заявляет их нератифицированными. Слово «proposed» тут — прилагательное к «решений».
-        # Guard из ОДНОЗНАЧНЫХ позитивных фраз: не «ратифицир» (оно есть в «не-ратифицир-ованных»!)
-        # и не «принят» (есть в «непринятых»), а «приняты/принято/→ accepted/уже accepted».
-        if re.search(r"приняты|принято|→\s*accepted|уже\s+accepted", text, re.IGNORECASE):
+        # а не заявляет их нератифицированными. Guard из ОДНОЗНАЧНЫХ позитивных фраз.
+        # Аудит 2026-07-07: (a) «приняты/принято» без границы \b — ПОДСТРОКА «непринятых/непринято»
+        # → заглатывал реальный дрейф; лечим \b (в «непринято» границы перед «принято» нет).
+        # (b) если в строке есть маркер нератифицированности («неприня…») — это НЕ описание принятия,
+        # а заявка о дрейфе → НЕ пропускаем (перекрывает и нарративное «принято решение доработать»).
+        if re.search(r"→\s*accepted|уже\s+accepted|\bприняты\b|\bпринято\b", text, re.IGNORECASE) \
+                and not re.search(r"неприня", text, re.IGNORECASE):
             continue
         claimed_n = int(m.group(1))
         ids = _DEC_RE.findall(text)
