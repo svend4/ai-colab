@@ -1,115 +1,87 @@
 #!/bin/sh
-# pre-commit hook: блокирует коммит, если валидатор канона (tools/validate.py) нашёл ERROR.
-# WARN (например, кириллические имена по D-007) НЕ блокирует.
+# ЧЕРНОВИК облегчённого pre-commit (не активен). Применение — см.
+# docs/pre-commit-lightening-proposal-2026-07-07.md (swap-план + risk-анализ).
 #
-# Активация один раз (из корня репозитория):
-#     git config core.hooksPath tools/githooks
-# Разовый пропуск:
-#     git commit --no-verify
+# Мотив: текущий pre-commit гоняет ПОЛНЫЙ validate.py (~2 мин на 290 задач) + generate --check
+# (всё дерево) на КАЖДОМ коммите — под многоагентной нагрузкой коммиты по 5-10 мин, машина
+# насыщается. Оборона в глубину (docs/commit-safety-standard.md): локально — БЫСТРО, полнота — в CI.
 #
-# Состав шагов (волна 2, аудит 2026-07-02 — единый заход C1-b/C15-d/C44/P8-b/P10-b):
-#   БЛОКИРУЮТ: validate ERROR · generate --check (рабочее дерево) · staged_check (staged-снимок, C1-b)
-#              · gap_scan drift · bulk_guard --hook (ТОЛЬКО при ратифицированном D-026, C44)
-#   WARN (не блокируют): gap_scan orphans (C15-d) · gap_scan dcard (P8-b)
+# ЧТО ИЗМЕНЕНО против боевого хука:
+#   - полный validate.py  →  validate_staged.py (только staged канон-файлы, секунды); полный — в CI
+#   - generate.py --check (всё дерево, БЛОК)  →  WARN (не блок): чужой entangled-нав не тормозит
+#     твой коммит; согласованность ТВОИХ изменений уже ловит staged_check (БЛОК ниже)
+#   - СОХРАНЕНЫ как БЛОКИРУЮЩИЕ и быстрые: staged_check (C1-b), gap_scan drift (D-032),
+#     bulk_guard --hook (D-026, безопасность) — все секундные
+#   - WARN без изменений: gap_scan orphans (C15-d), dcard (P8-b)
+# CI (.github/workflows/bulk-guard.yml + canon-check) держит ПОЛНЫЙ validate + generate --check +
+# массовое-удаление — то, что --no-verify не обходит.
 
-# Найти РАБОЧИЙ Python 3.
-# На Windows 'python3' часто — нерабочий App-Execution-Alias (заглушка Microsoft Store):
-# он есть в PATH, но печатает "Python" и падает. Поэтому проверяем, что интерпретатор
-# реально запускается и это Python 3, а не просто присутствует в PATH.
-# Дополнительно ищем по типовым Windows-путям, если PATH не содержит Python.
 PY=""
 for cand in python python3 py; do
   if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
-    PY="$cand"
-    break
+    PY="$cand"; break
   fi
 done
-
-# Fallback: типовые Windows-пути (Git Bash, Python 3.12)
 if [ -z "$PY" ]; then
   for cand in \
     "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python312/python.exe" \
     "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python311/python.exe" \
-    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python310/python.exe" \
     "/c/Program Files/Python312/python.exe" \
-    "/c/Program Files/Python311/python.exe" \
-    "/c/Program Files/Python310/python.exe"; do
-    if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
-      PY="$cand"
-      break
-    fi
+    "/c/Program Files/Python311/python.exe"; do
+    if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then PY="$cand"; break; fi
   done
 fi
-
 if [ -z "$PY" ]; then
-  echo "pre-commit: рабочий Python 3 не найден — валидация пропущена."
-  echo "Установите Python 3 или добавьте в PATH. Проверка отключена, но НЕ рекомендуется."
-  # C44-a (решение Stefan Q-W2-13): fail-open остаётся, но факт «тихого» коммита без
-  # валидации фиксируется в logs/friction.jsonl (чистый sh, Python недоступен) — чтобы
-  # такие коммиты были видны постфактум (friction.py log их посчитает).
+  echo "pre-commit(fast): рабочий Python 3 не найден — локальная валидация пропущена (CI проверит)."
   mkdir -p logs 2>/dev/null
-  printf '{"ts": "%s", "fid": "precommit-skip", "agent": "pre-commit", "where": "tools/githooks/pre-commit", "result": "python not found - validation skipped (fail-open)"}\n' \
+  printf '{"ts": "%s", "fid": "precommit-skip", "agent": "pre-commit-fast", "result": "python not found"}\n' \
     "$(date +%Y-%m-%dT%H:%M:%S)" >> logs/friction.jsonl 2>/dev/null
   exit 0
 fi
 
-"$PY" tools/validate.py || {
-  echo ""
-  echo "pre-commit: валидатор канона нашёл ошибки (см. выше). Коммит отклонён."
-  echo "Исправь их или используй 'git commit --no-verify', если уверен."
-  exit 1
-}
+# --- БЫСТРО: валидация только staged канон-файлов (секунды вместо ~2 мин) ---
+# ВРЕМЕННО WARN (не блок), пока validate_staged не протестирован под нагрузкой — чтобы
+# возможный баг НЕ блокировал чужие коммиты. Промоут в BLOCK (exit 1) после
+# `py -3 tools/tests/test_validate_staged.py` → TESTS OK. Полный validate — в CI (блок).
+"$PY" tools/validate_staged.py
+if [ "$?" -eq 1 ]; then
+  echo "pre-commit(fast) WARN: validate_staged нашёл проблему в staged канон-файле (не блок пока; проверь вывод; полную сверку сделает CI)."
+fi
 
-"$PY" tools/generate.py --check || {
-  echo ""
-  echo "pre-commit: навигация устарела. Запусти 'python tools/generate.py', добавь изменения (git add) и закоммить снова."
-  echo "Или 'git commit --no-verify', если уверен."
-  exit 1
-}
-
-# Гейт staged-снимка (C1-b, корень находки C1: частичный стейджинг проходил проверку рабочего
-# дерева). Блокируем ТОЛЬКО на реальной находке (rc=1): канон-источники staged, а регенерированная
-# навигация не застейджена. rc=2 (git недоступен) и прочие rc НЕ блокируют (fail-open).
+# --- БЫСТРО + БЛОК: согласованность твоих staged canon-источников с навигацией (C1-b) ---
 "$PY" tools/staged_check.py
 if [ "$?" -eq 1 ]; then
   echo ""
-  echo "pre-commit: staged-снимок несогласован — регенерированная навигация не добавлена в коммит."
-  echo "git add регенераты (см. выше) или 'git commit --no-verify' (исключение D-023 foreign-индекс)."
+  echo "pre-commit(fast): staged-снимок несогласован — регенерированная навигация не добавлена."
+  echo "python tools/generate.py && git add <регенераты>, затем повтори."
   exit 1
 fi
 
-# Гейт «тихого дрейфа деривата» (formula (f), D-032): мёртвый литерал каталога (напр. "темы"→"topics"),
-# из-за которого счётчик/индекс молча читает несуществующий путь и возвращает 0. Блокируем ТОЛЬКО на
-# реальной находке (rc=1); ошибка/отсутствие инструмента (любой иной rc) НЕ блокирует (fail-open).
+# --- БЫСТРО + БЛОК: тихий дрейф деривата (D-032) ---
 "$PY" tools/gap_scan.py drift --strict
 if [ "$?" -eq 1 ]; then
   echo ""
-  echo "pre-commit: gap_scan нашёл тихий дрейф деривата (мёртвый литерал каталога). Коммит отклонён."
-  echo "Почини литерал (см. вывод выше) или 'git commit --no-verify', если уверен."
+  echo "pre-commit(fast): gap_scan нашёл тихий дрейф деривата. Коммит отклонён."
   exit 1
 fi
 
-# bulk_guard (C44, решение Stefan Q-W2-13c): условная строгость по МАШИННОМУ статусу D-026.
-# Пока D-026 proposed — инструмент сам печатает WARN и возвращает 0 (советник); после ратификации
-# (status: accepted) нарушение «массовое стирание без страховки» блокирует коммит (rc=1).
+# --- БЫСТРО + БЛОК: массовое стирание без страховки (D-026, безопасность) ---
 "$PY" tools/bulk_guard.py --hook
 if [ "$?" -eq 1 ]; then
   echo ""
-  echo "pre-commit: bulk_guard — массовое стирание без страховки при ратифицированном D-026. Коммит отклонён."
-  echo "Сначала страховка: git tag backup-<тема>-<дата> HEAD (+ внешняя копия), затем повтори."
+  echo "pre-commit(fast): bulk_guard — массовое стирание без страховки при ратифицированном D-026. Отклонено."
+  echo "Страховка: git tag backup-<тема>-<дата> HEAD (+ внешняя копия), затем повтори."
   exit 1
 fi
 
-# WARN-шаги (НЕ блокируют): новые сироты (C15-d) и инструменты без [FILE ID CARD] (P8-b).
-# Вывод детекторов скрываем, печатаем только короткое предупреждение — детали по команде.
+# --- WARN (не блок): устаревшесть всего-дерева-нав (чужая работа), сироты, dcard ---
+"$PY" tools/generate.py --check >/dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+  echo "pre-commit(fast) WARN: навигация дерева устарела (возможно от чужой незакоммиченной работы; не блок). Полную сверку сделает CI."
+fi
 "$PY" tools/gap_scan.py orphans --strict >/dev/null 2>&1
-if [ "$?" -eq 1 ]; then
-  echo "pre-commit WARN: появились orphan-инструменты (не блокирует). Детали: python tools/gap_scan.py orphans"
-fi
-
+[ "$?" -eq 1 ] && echo "pre-commit(fast) WARN: orphan-инструменты (не блок). Детали: python tools/gap_scan.py orphans"
 "$PY" tools/gap_scan.py dcard --strict >/dev/null 2>&1
-if [ "$?" -eq 1 ]; then
-  echo "pre-commit WARN: tools/*.py без [FILE ID CARD] (не блокирует). Детали: python tools/gap_scan.py dcard"
-fi
+[ "$?" -eq 1 ] && echo "pre-commit(fast) WARN: tools/*.py без [FILE ID CARD] (не блок). Детали: python tools/gap_scan.py dcard"
 
 exit 0

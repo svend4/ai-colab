@@ -1,0 +1,87 @@
+#!/bin/sh
+# ЧЕРНОВИК облегчённого pre-commit (не активен). Применение — см.
+# docs/pre-commit-lightening-proposal-2026-07-07.md (swap-план + risk-анализ).
+#
+# Мотив: текущий pre-commit гоняет ПОЛНЫЙ validate.py (~2 мин на 290 задач) + generate --check
+# (всё дерево) на КАЖДОМ коммите — под многоагентной нагрузкой коммиты по 5-10 мин, машина
+# насыщается. Оборона в глубину (docs/commit-safety-standard.md): локально — БЫСТРО, полнота — в CI.
+#
+# ЧТО ИЗМЕНЕНО против боевого хука:
+#   - полный validate.py  →  validate_staged.py (только staged канон-файлы, секунды); полный — в CI
+#   - generate.py --check (всё дерево, БЛОК)  →  WARN (не блок): чужой entangled-нав не тормозит
+#     твой коммит; согласованность ТВОИХ изменений уже ловит staged_check (БЛОК ниже)
+#   - СОХРАНЕНЫ как БЛОКИРУЮЩИЕ и быстрые: staged_check (C1-b), gap_scan drift (D-032),
+#     bulk_guard --hook (D-026, безопасность) — все секундные
+#   - WARN без изменений: gap_scan orphans (C15-d), dcard (P8-b)
+# CI (.github/workflows/bulk-guard.yml + canon-check) держит ПОЛНЫЙ validate + generate --check +
+# массовое-удаление — то, что --no-verify не обходит.
+
+PY=""
+for cand in python python3 py; do
+  if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then
+    PY="$cand"; break
+  fi
+done
+if [ -z "$PY" ]; then
+  for cand in \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python312/python.exe" \
+    "/c/Users/$(whoami)/AppData/Local/Programs/Python/Python311/python.exe" \
+    "/c/Program Files/Python312/python.exe" \
+    "/c/Program Files/Python311/python.exe"; do
+    if "$cand" -c "import sys; assert sys.version_info[0] >= 3" >/dev/null 2>&1; then PY="$cand"; break; fi
+  done
+fi
+if [ -z "$PY" ]; then
+  echo "pre-commit(fast): рабочий Python 3 не найден — локальная валидация пропущена (CI проверит)."
+  mkdir -p logs 2>/dev/null
+  printf '{"ts": "%s", "fid": "precommit-skip", "agent": "pre-commit-fast", "result": "python not found"}\n' \
+    "$(date +%Y-%m-%dT%H:%M:%S)" >> logs/friction.jsonl 2>/dev/null
+  exit 0
+fi
+
+# --- БЫСТРО: валидация только staged канон-файлов (секунды вместо ~2 мин) ---
+# ВРЕМЕННО WARN (не блок), пока validate_staged не протестирован под нагрузкой — чтобы
+# возможный баг НЕ блокировал чужие коммиты. Промоут в BLOCK (exit 1) после
+# `py -3 tools/tests/test_validate_staged.py` → TESTS OK. Полный validate — в CI (блок).
+"$PY" tools/validate_staged.py
+if [ "$?" -eq 1 ]; then
+  echo "pre-commit(fast) WARN: validate_staged нашёл проблему в staged канон-файле (не блок пока; проверь вывод; полную сверку сделает CI)."
+fi
+
+# --- БЫСТРО + БЛОК: согласованность твоих staged canon-источников с навигацией (C1-b) ---
+"$PY" tools/staged_check.py
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit(fast): staged-снимок несогласован — регенерированная навигация не добавлена."
+  echo "python tools/generate.py && git add <регенераты>, затем повтори."
+  exit 1
+fi
+
+# --- БЫСТРО + БЛОК: тихий дрейф деривата (D-032) ---
+"$PY" tools/gap_scan.py drift --strict
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit(fast): gap_scan нашёл тихий дрейф деривата. Коммит отклонён."
+  exit 1
+fi
+
+# --- БЫСТРО + БЛОК: массовое стирание без страховки (D-026, безопасность) ---
+"$PY" tools/bulk_guard.py --hook
+if [ "$?" -eq 1 ]; then
+  echo ""
+  echo "pre-commit(fast): bulk_guard — массовое стирание без страховки при ратифицированном D-026. Отклонено."
+  echo "Страховка: git tag backup-<тема>-<дата> HEAD (+ внешняя копия), затем повтори."
+  exit 1
+fi
+
+# --- WARN (не блок): устаревшесть всего-дерева-нав (чужая работа), сироты, dcard ---
+"$PY" tools/generate.py --check >/dev/null 2>&1
+if [ "$?" -ne 0 ]; then
+  echo "pre-commit(fast) WARN: навигация дерева устарела (возможно от чужой незакоммиченной работы; не блок). Полную сверку сделает CI."
+fi
+"$PY" tools/gap_scan.py orphans --strict >/dev/null 2>&1
+[ "$?" -eq 1 ] && echo "pre-commit(fast) WARN: orphan-инструменты (не блок). Детали: python tools/gap_scan.py orphans"
+"$PY" tools/gap_scan.py dcard --strict >/dev/null 2>&1
+[ "$?" -eq 1 ] && echo "pre-commit(fast) WARN: tools/*.py без [FILE ID CARD] (не блок). Детали: python tools/gap_scan.py dcard"
+
+exit 0
