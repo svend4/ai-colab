@@ -36,9 +36,15 @@ GRAPH_FILE = os.path.join("indexes", "cauldron_graph.json")
 
 
 def generate_hash(text):
-    """Stable short hash for atom identity; kept md5/8 for compatibility."""
+    """Stable short hash for atom identity.
+
+    ФИКС Б4: md5/8 = 32 бита — по парадоксу дней рождения коллизии становятся
+    регулярными уже при ~65 тыс. атомов, и новые атомы МОЛЧА теряются в дедупе.
+    Теперь md5/16 (64 бита); старые 8-символьные хэши распознаются по префиксу
+    (см. проверку дедупа в build_graph).
+    """
     normalized = "\n".join(line.rstrip() for line in text.strip().splitlines())
-    return hashlib.md5(normalized.encode("utf-8")).hexdigest()[:8]
+    return hashlib.md5(normalized.encode("utf-8")).hexdigest()[:16]
 
 
 def read_markdown(path):
@@ -90,7 +96,8 @@ def build_graph(source_dir=SOURCE_DIR, graph_path=GRAPH_FILE, limit=0):
 
         for content in iter_atoms(read_markdown(filepath)):
             atom_hash = generate_hash(content)
-            if atom_hash in existing_hashes:
+            # совместимость: старые атомы хранят 8-символьные хэши
+            if atom_hash in existing_hashes or atom_hash[:8] in existing_hashes:
                 continue
             atom = {
                 "hash": atom_hash,
@@ -105,23 +112,34 @@ def build_graph(source_dir=SOURCE_DIR, graph_path=GRAPH_FILE, limit=0):
             try:
                 from semantic_engine import AdvancedAlgorithms
                 atom["tags"] = AdvancedAlgorithms.extract_textrank_keywords(content, top_n=3)
-                
-                # Knowledge Graph: Contradiction Engine
+
+                # Knowledge Graph: честный Contradiction Engine (ФИКС Б1).
+                # Старый критерий «Левенштейн > 0.8» был инвертирован:
+                # реальные противоречия текстуально близки (~0.06), а далёкие
+                # формулировки — чаще согласие. Теперь: общий концепт +
+                # БЛИЗКИЕ тексты (SimHash) + разная полярность = противоречие;
+                # та же полярность = поддержка.
+                new_tags = set(atom["tags"])
                 for existing_atom in graph_db:
-                    if existing_atom.get("hash") == atom_hash: continue
-                    existing_tags = set(existing_atom.get("tags", []))
-                    new_tags = set(atom["tags"])
-                    common_tags = existing_tags.intersection(new_tags)
-                    
-                    if common_tags:
-                        dist = AdvancedAlgorithms.levenshtein_distance(content, existing_atom["content"])
-                        max_len = max(len(content), len(existing_atom["content"]))
-                        if max_len > 0 and (dist / max_len) > 0.8:
-                            atom["links"].append({
-                                "type": "contradicts",
-                                "target": existing_atom["hash"],
-                                "reason": f"shared concept '{list(common_tags)[0]}' but high semantic distance"
-                            })
+                    common_tags = set(existing_atom.get("tags", [])).intersection(new_tags)
+                    if not common_tags:
+                        continue
+                    check = AdvancedAlgorithms.contradiction_check(
+                        content, existing_atom.get("content", ""))
+                    if check["contradicts"]:
+                        atom["links"].append({
+                            "type": "contradicts",
+                            "target": existing_atom["hash"],
+                            "reason": "shared concept '%s': close texts (hamming %s) with opposite polarity"
+                                      % (sorted(common_tags)[0], check["hamming"]),
+                        })
+                    elif check["related"]:
+                        atom["links"].append({
+                            "type": "supports",
+                            "target": existing_atom["hash"],
+                            "reason": "shared concept '%s': close texts (hamming %s), same polarity"
+                                      % (sorted(common_tags)[0], check["hamming"]),
+                        })
             except ImportError:
                 pass
                 

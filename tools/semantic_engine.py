@@ -1,8 +1,17 @@
 import math
 import re
+import hashlib
 from collections import defaultdict, Counter
 
 class AdvancedAlgorithms:
+    # Маркеры отрицания для честной проверки противоречий (contradiction_check)
+    NEGATIONS = {"не", "нет", "нельзя", "никогда", "нету",
+                 "not", "no", "never", "cannot", "without", "без"}
+    # Стоп-слова для дистрибутивных векторов (get_synonyms)
+    STOPWORDS = {"и", "в", "на", "с", "по", "не", "что", "это", "как", "а",
+                 "но", "для", "из", "у", "о", "же", "к", "то", "его", "их",
+                 "the", "a", "an", "of", "to", "in", "and", "or", "is", "are"}
+
     @staticmethod
     def levenshtein_distance(s1, s2):
         if len(s1) < len(s2):
@@ -23,12 +32,12 @@ class AdvancedAlgorithms:
 
     @staticmethod
     def extract_textrank_keywords(text, window_size=2, top_n=3, iterations=20, d=0.85):
-        words = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', text.lower())
+        words = [w for w in re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', text.lower())
+                 if w not in AdvancedAlgorithms.STOPWORDS]
         if not words: return []
         
         vocab = list(set(words))
-        word_to_id = {w: i for i, w in enumerate(vocab)}
-        
+
         # Build adjacency matrix (dictionary of dictionaries)
         graph = defaultdict(lambda: defaultdict(float))
         for i in range(len(words)):
@@ -104,7 +113,9 @@ class AdvancedAlgorithms:
         def sentence_similarity(s1, s2):
             words1 = set(re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', s1.lower()))
             words2 = set(re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', s2.lower()))
-            if not words1 or not words2: return 0.0
+            # ФИКС Б2: однословные предложения давали log10(1)=0 в знаменателе,
+            # similarity взрывалась до ~1e9 и мусор захватывал PageRank.
+            if len(words1) < 2 or len(words2) < 2: return 0.0
             return len(words1.intersection(words2)) / (math.log10(len(words1)) + math.log10(len(words2)) + 1e-9)
 
         # Build graph
@@ -140,12 +151,17 @@ class AdvancedAlgorithms:
     def get_synonyms(word, corpus, top_n=3):
         """
         Vector Semantics (LSA-lite): Finds synonyms by comparing context vectors.
-        Two words are synonyms if they co-occur with the same words (similar PMI profiles).
+        ФИКС Н1: раньше сравнивались сырые счётчики (докстринг обещал PMI) —
+        метод возвращал контекстных СОСЕДЕЙ слова, а не его заменителей.
+        Теперь: стоп-слова исключены из контекстов, вектора взвешены PPMI
+        (positive pointwise mutual information) — сравниваются профили
+        УДИВИТЕЛЬНОСТИ контекстов, что и даёт дистрибутивные синонимы.
         """
         word = word.lower()
         co_occurrence = defaultdict(Counter)
         word_counts = Counter()
-        
+        STOP = AdvancedAlgorithms.STOPWORDS
+
         for doc in corpus:
             words = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', doc.lower())
             word_counts.update(words)
@@ -154,13 +170,32 @@ class AdvancedAlgorithms:
                 start = max(0, i - 2)
                 end = min(len(words), i + 3)
                 for j in range(start, end):
-                    if i != j:
+                    if i != j and words[j] not in STOP:
                         co_occurrence[w1][words[j]] += 1
-                        
+
         if word not in co_occurrence:
             return []
-            
-        # Calculate cosine similarity of context vectors
+
+        # PPMI-взвешивание: ppmi(w,c) = max(0, log2(p(w,c) / (p(w)·p(c))))
+        row_sum = {w: sum(v.values()) for w, v in co_occurrence.items()}
+        col_sum = Counter()
+        for w, v in co_occurrence.items():
+            for c, n in v.items():
+                col_sum[c] += n
+        total = sum(row_sum.values()) or 1
+
+        def ppmi_vector(w):
+            out = {}
+            rw = row_sum.get(w, 0)
+            if not rw:
+                return out
+            for c, n in co_occurrence[w].items():
+                ratio = (n * total) / (rw * col_sum[c]) if col_sum[c] else 0
+                if ratio > 1:
+                    out[c] = math.log2(ratio)
+            return out
+
+        # Calculate cosine similarity of PPMI vectors
         def cosine_sim(v1, v2):
             intersection = set(v1.keys()) & set(v2.keys())
             dot_product = sum(v1[x] * v2[x] for x in intersection)
@@ -168,14 +203,13 @@ class AdvancedAlgorithms:
             mag2 = math.sqrt(sum(x**2 for x in v2.values()))
             if mag1 * mag2 == 0: return 0.0
             return dot_product / (mag1 * mag2)
-            
-        target_vector = co_occurrence[word]
+
+        target_vector = ppmi_vector(word)
         similarities = {}
-        for other_word, other_vector in co_occurrence.items():
-            if other_word != word and word_counts[other_word] >= 2:
-                sim = cosine_sim(target_vector, other_vector)
-                similarities[other_word] = sim
-                
+        for other_word in co_occurrence:
+            if other_word != word and other_word not in STOP and word_counts[other_word] >= 2:
+                similarities[other_word] = cosine_sim(target_vector, ppmi_vector(other_word))
+
         sorted_sim = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
         return [w for w, score in sorted_sim[:top_n] if score > 0.1]
 
@@ -185,13 +219,19 @@ class AdvancedAlgorithms:
         Anomaly & Sentiment Detection: Calculates the density of negative markers.
         Returns a score (0.0 to 1.0) indicating the likelihood of AI being stuck.
         """
-        markers = {"error", "fail", "broken", "missing", "cannot", "conflict", 
-                   "stuck", "loop", "wrong", "ошибка", "сбой", "завис", "не могу"}
-                   
-        words = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', text.lower())
+        markers = {"error", "fail", "broken", "missing", "cannot", "conflict",
+                   "stuck", "loop", "wrong", "ошибка", "сбой", "завис"}
+        # ФИКС Б3: «не могу» — двухсловный маркер, он никогда не совпадал
+        # с однословными токенами. Фразовые маркеры ищем подстрокой в тексте.
+        phrase_markers = ("не могу", "не получается", "give up", "same error")
+
+        low = text.lower()
+        words = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', low)
         if not words: return 0.0
-        
+
         marker_count = sum(1 for w in words if w in markers)
+        for ph in phrase_markers:
+            marker_count += low.count(ph)
         # If density is high (e.g., > 5% of words are negative markers), anomaly is high
         density = marker_count / len(words)
         
@@ -210,8 +250,7 @@ class AdvancedAlgorithms:
         
         for word in words:
             # We need a stable hash. Built-in hash() is randomized in Python 3.
-            # Using md5 to generate a stable 64-bit integer
-            import hashlib
+            # Using md5 (imported at module level) to generate a stable integer
             h = int(hashlib.md5(word.encode('utf-8')).hexdigest(), 16)
             for i in range(64):
                 bit = (h >> i) & 1
@@ -234,5 +273,28 @@ class AdvancedAlgorithms:
         """
         x = (h1 ^ h2) & ((1 << 64) - 1)
         return bin(x).count('1')
+
+    @staticmethod
+    def contradiction_check(text1, text2, hamming_threshold=20):
+        """
+        ФИКС Б1: честная проверка противоречия.
+        Старый подход (Левенштейн > 0.8) был инвертирован: настоящее
+        противоречие («X» vs «не X») текстуально БЛИЗКО (ratio ~0.06),
+        а далёкие формулировки — чаще согласие, не спор.
+        Новый критерий: тексты семантически/текстуально БЛИЗКИ
+        (SimHash Hamming <= порога), но различаются ПОЛЯРНОСТЬЮ
+        (числом маркеров отрицания).
+        Возвращает {"related": bool, "contradicts": bool, "hamming": int}.
+        """
+        h = AdvancedAlgorithms.hamming_distance(
+            AdvancedAlgorithms.simhash(text1), AdvancedAlgorithms.simhash(text2))
+        related = h <= hamming_threshold
+
+        def neg_count(t):
+            ws = re.findall(r'\b[a-zA-Zа-яА-Я0-9_]+\b', t.lower())
+            return sum(1 for w in ws if w in AdvancedAlgorithms.NEGATIONS)
+
+        contradicts = bool(related and neg_count(text1) != neg_count(text2))
+        return {"related": related, "contradicts": contradicts, "hamming": h}
 
 

@@ -16,7 +16,7 @@ inputs: [csv, tsv]
 outputs: [schema, rows, aggregates, summary]
 sandbox: required-before-write-or-code-exec
 secrets: forbidden-in-repo
-verified_by: [Novax]
+verified_by: [Novax (2026-07-06), Codex (2026-07-06)]
 verified_date: 2026-07-06
 source_last_verified: 2026-06-21
 timeout_seconds: 30

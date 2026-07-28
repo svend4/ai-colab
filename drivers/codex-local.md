@@ -16,7 +16,7 @@ inputs: [workspace-path, task-id]
 outputs: [status, report, patch-summary]
 sandbox: current-workspace-policy
 secrets: forbidden-in-repo
-verified_by: [Novax]
+verified_by: [Novax (2026-07-06), Codex (2026-07-06)]
 verified_date: 2026-07-06
 source_last_verified: 2026-06-21
 timeout_seconds: 30
@@ -76,6 +76,8 @@ related: topics/ai-os-bridge.md
 2. ✅ Добавлены поля `implemented:` и `planned:`
 3. ✅ Аудит: Known Limitation задокументирована
 
-**Ожидает:** повторная верификация по D-038 для снятия WARN D-015.
+**Повторная верификация завершена:** Novax и Codex независимо подтвердили
+соответствие манифеста реализации; доказательства и команды приведены в
+`reports/d015-second-driver-verification-codex-2026-07-06.md` и маркере `T-293`.
 
 **Примечание:** STALE навигации (generate.py) — repo-wide issue, не дефект драйвера.

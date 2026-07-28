@@ -3,7 +3,7 @@ id: files
 type: driver
 title: Files driver — безопасное чтение и инвентаризация файлов
 status: ready
-level: L1
+level: L2
 mode: read-only
 owner: Codex
 risk: low
@@ -14,7 +14,7 @@ inputs: [path, pattern]
 outputs: [file-list, snippets, summary]
 sandbox: not-required-for-read-only
 secrets: forbidden-in-repo
-verified_by: [Novax]
+verified_by: [Novax (2026-07-06), Codex (2026-07-06)]
 verified_date: 2026-07-06
 source_last_verified: 2026-06-21
 timeout_seconds: 30

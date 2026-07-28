@@ -296,7 +296,7 @@
 | T-280 | D-033 ratification brief — human decision gate | blocked | human | `reports/d033-ratification-brief-2026-07-06.md` | Waiting for Stefan/human ratification decision for D-033. |
 | T-281 | C29 open topics cleanup | done | codex | `topics/repo-review-2026-06-21.md` | Done; historical topics were routed or closed with trace. |
 | T-282 | Cleanup retired placeholder T-279 | done | codex | `topics/orchestration-workflow-design-2026-07-06.md` | Done; T-279 is kept as retired placeholder metadata. |
-| T-285 | Доработка драйвера codex-local по замечаниям верификации D-015 | doing | pool | — | доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
+| T-285 | Доработка драйвера codex-local по замечаниям верификации D-015 | done | pool | — | доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-286 | Доработка драйвера data по замечаниям верификации D-015 | done | pool | — | доработать драйвер data по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-287 | Доработка драйвера files по замечаниям верификации D-015 | done | pool | — | доработать драйвер files по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | done | codex | — | Done by Codex 2026-07-06; repo-runner limits hardened, tests passed, D-015 verified_by still requires independent reviewer. |
@@ -308,4 +308,5 @@
 | T-295 | Cauldron materializer — превращать отчёты агентов в варианты для синтеза | todo | pool | — | Спроектировать и добавить additive-инструмент, который регистрирует найденные outbox/report варианты в формате, пригодном для synthesis helper. |
 | T-296 | Additive enrichment shortlist — список безопасных задач для обогащения проекта | todo | pool | — | Создать обсуждаемый список additive-задач: только добавление защиты, индексов, методов, отчётов и прототипов без удаления истории. |
 | T-297 | Интегрировать Гейт B (work_admission) в точку старта — top.py take / pipeline claim | todo | pool | — | при взятии задачи вызывать work_admission acquire; QUEUE (exit 1) → агент откладывает/ждёт; release по завершении. Плюс добавить worktree_gate --hook в pre-commit (Гейт A для всех коммитов, не только через commit.py) |
+| T-298 | Butterfly semantic hardening — gap strategy, contradiction check и loss-gated rationalization | done | codex | — | Проверить и зафиксировать независимый Butterfly/Semantic пакет с portable fallback и focused tests. |
 <!-- GEN:tasks END -->

@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 294 файлов
+# Индекс папки `tasks/` — 295 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -289,7 +289,7 @@
 | [T-280.md](../tasks/T-280.md) | task | blocked | Recovered task source for the D-033 human decision gate. It remains `blocked` because acce |
 | [T-281.md](../tasks/T-281.md) | task | done | Recovered task source for documentation references. The related topic closeout notes are p |
 | [T-282.md](../tasks/T-282.md) | task | done | Recovered task source for documentation references. The cleanup result is represented by ` |
-| [T-285.md](../tasks/T-285.md) | task | doing | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-286.md](../tasks/T-286.md) | task | done | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
@@ -301,3 +301,4 @@
 | [T-295.md](../tasks/T-295.md) | task | todo | Сделать так, чтобы полезные ответы агентов не оставались мёртвым текстом. Инструмент долже |
 | [T-296.md](../tasks/T-296.md) | task | todo | Дать людям и агентам явный список задач, которые можно брать без риска разрушения истории: |
 | [T-297.md](../tasks/T-297.md) | task | todo | D-039 ратифицировал два гейта. Гейт A (worktree_gate) уже в `commit.py` (advisory→BLOCK |
+| [T-298.md](../tasks/T-298.md) | task | done | Завершить незакоммиченный пакет смыслового котла как самостоятельное, |

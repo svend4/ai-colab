@@ -15,7 +15,13 @@ def run_cmd(cmd, desc):
 
 def main():
     print("Starting pre-commit smoke tests...\n")
-    
+
+    # Clean CI checkouts intentionally omit volatile pipeline snapshots.
+    run_cmd(
+        f"{sys.executable} tools/pipeline.py snapshot",
+        "Bootstrap Pipeline Runtime Snapshot",
+    )
+
     # 1. Validate canon
     run_cmd(f"{sys.executable} tools/validate.py", "Validate Canon")
     
