@@ -76,6 +76,8 @@ related: topics/ai-os-bridge.md
 2. ✅ Добавлены поля `implemented:` и `planned:`
 3. ✅ Аудит: Known Limitation задокументирована
 
-**Ожидает:** повторная верификация по D-038 для снятия WARN D-015.
+**Повторная верификация завершена:** Novax и Codex независимо подтвердили
+соответствие манифеста реализации; доказательства и команды приведены в
+`reports/d015-second-driver-verification-codex-2026-07-06.md` и маркере `T-293`.
 
 **Примечание:** STALE навигации (generate.py) — repo-wide issue, не дефект драйвера.

@@ -289,7 +289,7 @@
 | [T-280.md](../tasks/T-280.md) | task | blocked | Recovered task source for the D-033 human decision gate. It remains `blocked` because acce |
 | [T-281.md](../tasks/T-281.md) | task | done | Recovered task source for documentation references. The related topic closeout notes are p |
 | [T-282.md](../tasks/T-282.md) | task | done | Recovered task source for documentation references. The cleanup result is represented by ` |
-| [T-285.md](../tasks/T-285.md) | task | doing | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-285.md](../tasks/T-285.md) | task | done | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-286.md](../tasks/T-286.md) | task | done | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |

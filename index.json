@@ -3695,7 +3695,7 @@
     {
       "id": "T-285",
       "title": "Доработка драйвера codex-local по замечаниям верификации D-015",
-      "status": "doing",
+      "status": "done",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
