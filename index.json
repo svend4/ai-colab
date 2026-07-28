@@ -3823,6 +3823,17 @@
       "depends_on": "[]",
       "topic": "",
       "next": "при взятии задачи вызывать work_admission acquire; QUEUE (exit 1) → агент откладывает/ждёт; release по завершении. Плюс добавить worktree_gate --hook в pre-commit (Гейт A для всех коммитов, не только через commit.py)"
+    },
+    {
+      "id": "T-298",
+      "title": "Butterfly semantic hardening — gap strategy, contradiction check и loss-gated rationalization",
+      "status": "done",
+      "owner": "codex",
+      "priority": "normal",
+      "risk": "medium",
+      "depends_on": "[D-037]",
+      "topic": "",
+      "next": "Проверить и зафиксировать независимый Butterfly/Semantic пакет с portable fallback и focused tests."
     }
   ],
   "questions": [
