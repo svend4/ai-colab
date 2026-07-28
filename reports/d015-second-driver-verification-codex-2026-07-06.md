@@ -1,7 +1,7 @@
 # D-015 second driver verification - Codex - 2026-07-06
 
-Author: Codex  
-Status: applied evidence  
+Author: Codex
+Status: applied evidence
 Related: `T-293`, `D-015`, `D-038`, `queues/done/T-293.done.md`
 
 ## Context
