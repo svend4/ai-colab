@@ -124,11 +124,17 @@ def _inside_root(path: Path, allowed: Path) -> bool:
 def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden: bool = False,
               hash_files: bool = False, max_hash_bytes: int = DEFAULT_MAX_HASH_BYTES,
               base_dir=None) -> dict:
-    root = Path(root_path).resolve()
-    allowed = Path(base_dir).resolve() if base_dir is not None else root
+    if base_dir is not None and not str(base_dir).strip():
+        return {"error": "ConfigError", "message": "base_dir is blank (fail-closed)"}
     # The boundary is checked before exists(), so an outside path gets the same answer
-    # whether it exists or not.
-    if not _is_relative_to(root, allowed):
+    # whether it exists or not. A symlink loop that cannot be resolved counts as outside.
+    try:
+        root = Path(root_path).resolve()
+        allowed = Path(base_dir).resolve() if base_dir is not None else root
+        inside = _is_relative_to(root, allowed)
+    except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
+        inside = False
+    if not inside:
         return {"error": "path is outside allowed root", "path": str(root_path)}
     if not root.exists():
         return {"error": "path not found", "path": str(root)}
@@ -148,6 +154,8 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
     for dirpath, dirnames, filenames in os.walk(root):
         kept_dirs = []
         for dirname in dirnames:
+            if not _inside_root(Path(dirpath) / dirname, allowed):
+                continue  # каталог-симлинк наружу: ни имени, ни счёта
             if should_skip_dir(dirname, include_hidden):
                 skipped_dirs.append(str((Path(dirpath) / dirname).relative_to(root)))
             else:

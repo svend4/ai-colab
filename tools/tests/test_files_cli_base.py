@@ -120,6 +120,64 @@ class CliBaseTest(unittest.TestCase):
         names = {item["path"] for item in report["files"]}
         self.assertIn("alias.txt", names)
 
+    def test_read_through_symlink_outside_does_not_name_target(self):
+        rc, out = run_files_cli(["read", "link.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn("secret.txt", out)
+        self.assertNotIn(self.outside, out)
+
+    def test_list_through_dir_symlink_outside_does_not_name_target(self):
+        os.symlink(self.outside, os.path.join(self.base, "outdir"))
+        rc, out = run_files_cli(["list", "outdir", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn("secret.txt", out)
+        self.assertNotIn(self.outside, out)
+
+    def test_inventory_dir_symlink_outside_is_not_counted(self):
+        os.symlink(self.outside, os.path.join(self.base, "build"))
+        report = inv.inventory(self.base, base_dir=self.base)
+        self.assertEqual(report["summary"]["total_dirs"], 0)
+        self.assertEqual(report["skipped_dirs"], [])
+        self.assertNotIn("build", json.dumps(report))
+
+    def test_inventory_loop_outside_gives_same_answer(self):
+        loop = os.path.join(self.outside, "loop")
+        os.symlink(loop, loop)
+        loop_report = inv.inventory(loop, base_dir=self.base)
+        missing_report = inv.inventory(os.path.join(self.outside, "nope"), base_dir=self.base)
+        self.assertEqual(loop_report["error"], "path is outside allowed root")
+        self.assertEqual(loop_report["error"], missing_report["error"])
+
+    def test_read_loop_outside_gives_same_answer(self):
+        loop = os.path.join(self.outside, "loop")
+        os.symlink(loop, loop)
+        rc, out = run_files_cli(["read", loop, "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        # Сообщение повторяет то, что передал вызывающий: разрешённой цели нет (цикл).
+        self.assertEqual(json.loads(out)["message"], "path is outside allowed root: " + loop)
+
+    def test_tilde_is_not_expanded_under_base(self):
+        with open(os.path.join(self.base, "~note.txt"), "w", encoding="utf-8") as f:
+            f.write("tilde ok\n")
+        rc, out = run_files_cli(["read", "~note.txt", "--base", self.base])
+        self.assertEqual(rc, 0)
+        self.assertIn("tilde ok", out)
+        for name in ("~nosuchuser_xyz/x", "~root/x"):
+            with self.subTest(path=name):
+                rc, out = run_files_cli(["read", name, "--base", self.base])
+                self.assertEqual(json.loads(out)["error"], "FileNotFoundError")
+
+    def test_missing_or_blank_base_is_refused(self):
+        with self.assertRaises(fd.PathAccessError):
+            fd.list_files(self.base)
+        with self.assertRaises(fd.PathAccessError):
+            fd.read_file("inside.txt", base_dir="   ")
+        report = inv.inventory(self.base, base_dir="")
+        self.assertEqual(report["error"], "ConfigError")
+
 
 if __name__ == "__main__":
     unittest.main()

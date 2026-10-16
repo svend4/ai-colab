@@ -69,13 +69,20 @@ def _is_relative_to(path, base):
 
 
 def _resolve_path(path_value, base_dir=None):
-    if base_dir is None:
-        return Path(path_value).expanduser().resolve()
+    # Граница обязательна: без allowed-root движок ничего не отдаёт (fail-closed).
+    if base_dir is None or not str(base_dir).strip():
+        raise PathAccessError("allowed root is required (fail-closed)")
     base = Path(base_dir).expanduser().resolve()
-    raw_path = Path(path_value).expanduser()
-    candidate = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
-    if not _is_relative_to(candidate, base):
-        raise PathAccessError(f"path is outside allowed root: {candidate}")
+    # «~» под базой не раскрываем: иначе ответ зависит от учётных записей системы.
+    raw_path = Path(path_value)
+    try:
+        candidate = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
+        inside = _is_relative_to(candidate, base)
+    except (OSError, RuntimeError):  # симлинк-цикл: до Python 3.13 resolve() кидает RuntimeError
+        inside = False
+    if not inside:
+        # Сообщение печатает то, что передал вызывающий, а не разрешённую цель симлинка.
+        raise PathAccessError(f"path is outside allowed root: {path_value}")
     return candidate
 
 
@@ -92,7 +99,7 @@ def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_di
     if not root_path.is_dir():
         raise NotADirectoryError(str(root_path))
     # граница — разрешённая папка (base_dir); файл-симлинк наружу не отдаём ни в list, ни в search
-    allowed = Path(base_dir).expanduser().resolve() if base_dir is not None else root_path
+    allowed = Path(base_dir).expanduser().resolve()
 
     count = 0
     for dp, dirs, fns in os.walk(root_path):
