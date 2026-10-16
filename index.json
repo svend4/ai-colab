@@ -3695,7 +3695,7 @@
     {
       "id": "T-285",
       "title": "Доработка драйвера codex-local по замечаниям верификации D-015",
-      "status": "doing",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3957,9 +3957,9 @@
     {
       "id": "Q-024",
       "title": "Что делать с T-285: задача в doing без claim блокирует drift-гейт smoke",
-      "status": "open",
+      "status": "answered",
       "where": "tasks/T-285.md, tools/drift_check.py (пункт «orphan: doing без claim»)",
-      "outcome": "\"\""
+      "outcome": "\"Выбран вариант A, T-285 возвращена в todo и резерв снят. Решение 2026-10-16 через карточку решения в треде проекта.\""
     }
   ],
   "decisions": [

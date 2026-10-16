@@ -30,4 +30,4 @@
 | [Q-021.md](../questions/Q-021.md) | question | answered | **Ответ (свод §4):** длинный файл — **дерево** (метаданные/ToC → тело → хвост, общее→частн |
 | [Q-022.md](../questions/Q-022.md) | question | answered | **Ответ (доказано; был ~45% — единственный фунд <50%, теперь закрыт):** |
 | [Q-023.md](../questions/Q-023.md) | question | answered | В `topics/information-refactoring-question-tree-2026-06-25.md` вопрос 11.3.1 переведён в ` |
-| [Q-024.md](../questions/Q-024.md) | question | open | **Факт.** T-285 («Доработка драйвера codex-local по замечаниям верификации D-015») помечен |
+| [Q-024.md](../questions/Q-024.md) | question | answered | **Факт.** T-285 («Доработка драйвера codex-local по замечаниям верификации D-015») помечен |

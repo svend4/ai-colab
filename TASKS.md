@@ -296,7 +296,7 @@
 | T-280 | D-033 ratification brief — human decision gate | blocked | human | `reports/d033-ratification-brief-2026-07-06.md` | Waiting for Stefan/human ratification decision for D-033. |
 | T-281 | C29 open topics cleanup | done | codex | `topics/repo-review-2026-06-21.md` | Done; historical topics were routed or closed with trace. |
 | T-282 | Cleanup retired placeholder T-279 | done | codex | `topics/orchestration-workflow-design-2026-07-06.md` | Done; T-279 is kept as retired placeholder metadata. |
-| T-285 | Доработка драйвера codex-local по замечаниям верификации D-015 | doing | pool | — | доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
+| T-285 | Доработка драйвера codex-local по замечаниям верификации D-015 | todo | pool | — | доработать драйвер codex-local по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-286 | Доработка драйвера data по замечаниям верификации D-015 | done | pool | — | доработать драйвер data по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-287 | Доработка драйвера files по замечаниям верификации D-015 | done | pool | — | доработать драйвер files по замечаниям верификации 2026-07-06, затем повторная верификация по D-038 |
 | T-288 | Доработка драйвера repo-runner по замечаниям верификации D-015 | done | codex | — | Done by Codex 2026-07-06; repo-runner limits hardened, tests passed, D-015 verified_by still requires independent reviewer. |
