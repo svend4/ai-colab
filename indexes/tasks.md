@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `tasks/` — 291 файлов
+# Индекс папки `tasks/` — 294 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -297,4 +297,7 @@
 | [T-291.md](../tasks/T-291.md) | task | done | Стандарт безопасного коммита оформлен (docs/commit-safety-standard.md, |
 | [T-292.md](../tasks/T-292.md) | task | done | Проверить, что весь pipeline работает от начала до конца без ручного вмешательства. |
 | [T-293.md](../tasks/T-293.md) | task | doing | 1. `drivers/codex-local.md` |
+| [T-294.md](../tasks/T-294.md) | task | done | Recovered task source for the D-026 bulk-deletion guard. The shard text is not in git hist |
+| [T-295.md](../tasks/T-295.md) | task | todo | Recovered task source for the cauldron materializer. The shard text is not in git history: |
+| [T-296.md](../tasks/T-296.md) | task | todo | Recovered task source for the additive enrichment shortlist. The shard text is not in git  |
 | [T-297.md](../tasks/T-297.md) | task | todo | D-039 ратифицировал два гейта. Гейт A (worktree_gate) уже в `commit.py` (advisory→BLOCK |
