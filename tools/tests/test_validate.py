@@ -177,7 +177,7 @@ def run():
     assert v._parse_inline_list("") == []
     assert "real" not in v.strip_code_fences("text ```real``` tail")
 
-    # D-037 (волна 3): чистая логика case_collisions
+    # T-296, п.3 списка docs/additive-enrichment-shortlist.md: чистая логика case_collisions
     assert v.case_collisions(["a/Foo.md", "a/foo.md", "b.md"]) == [["a/Foo.md", "a/foo.md"]]
     assert v.case_collisions(["Docs/x.md", "docs/y.md"]) == [["Docs", "docs"]]
     assert v.case_collisions(["Docs/x.md", "docs/x.md"]) == [["Docs", "docs"]]
@@ -332,7 +332,7 @@ def run():
     rc, out, _ = _run_validate_argv(["--help"])
     assert rc == 0 and "Валидатор" in out, "--help сломан (rc=%d):\n%s" % (rc, out)
 
-    # D-037: Прогон на case-sensitive FS с case collisions
+    # T-296, п.3 списка docs/additive-enrichment-shortlist.md: Прогон на case-sensitive FS с case collisions
     with temp_dir("validate_case_") as root:
         _build_valid_root(root)
         fs_supports_case = True
@@ -342,6 +342,8 @@ def run():
             with open(os.path.join(root, "testCase")) as f:
                 if f.read() == "b":
                     fs_supports_case = False
+            os.remove(os.path.join(root, "testCase"))
+            os.remove(os.path.join(root, "testcase"))
         except Exception:
             fs_supports_case = False
 
