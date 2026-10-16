@@ -1,5 +1,5 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `docs/` — 144 файлов
+# Индекс папки `docs/` — 146 файлов
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
@@ -65,6 +65,7 @@
 | [gateway-inprocess-test-result-2026-06-21.md](../docs/gateway-inprocess-test-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [gateway-status-result-2026-06-21.md](../docs/gateway-status-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
 | [git-log-second-verification-result-2026-06-21.md](../docs/git-log-second-verification-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
+| [github-migration-scope-2026-07-07.md](../docs/github-migration-scope-2026-07-07.md) | doc | draft | **Одной фразой:** переносить не «всё», а **менять модель** — GitHub берёт оркестрацию дост |
 | [glossary.md](../docs/glossary.md) | — | — | Термины проекта в алфавитном порядке. Каждый термин: имя → определение → где встречается.  |
 | [implementation-stage-report-2026-06-20.md](../docs/implementation-stage-report-2026-06-20.md) | — | — | Дата: 2026-06-20 |
 | [independent-consensus-overview.md](../docs/independent-consensus-overview.md) | — | — | Дата: 2026-06-25 · Статус: **обзор** (карта артефактов; решения — `D-028`/`D-030`, evidenc |
@@ -114,7 +115,6 @@
 | [protocol-machine-layer.md](../docs/protocol-machine-layer.md) | doc | accepted | Документ описывает **детерминированные правила**, обязательные для исполнения всеми AI-аге |
 | [pyramid-candidate-map.md](../docs/pyramid-candidate-map.md) | — | — | Дата: 2026-06-21 · Статус: **proposed** (материал для котла, Q2/Q3 решает коллектив, D-018 |
 | [quickstart.md](../docs/quickstart.md) | — | — | Если вы открыли эту папку впервые — прочтите этот файл за 5 минут и начните работу. |
-| [recommendations-next-phase-detailed.md](../docs/recommendations-next-phase-detailed.md) | doc | proposed | Проект находится в состоянии **Alpha-3 / pre-beta control plane**. Технический каркас силё |
 | [recursive-self-improvement.md](../docs/recursive-self-improvement.md) | doc | proposed | Adoption-аудит (`topics/adoption-statistics-2026-06-23.md`) дал диагноз, который и есть от |
 | [repo-runner-mcp-hardening.md](../docs/repo-runner-mcp-hardening.md) | — | — | Дата: 2026-06-20 |
 | [repository-audit-action-plan-2026-07-06.md](../docs/repository-audit-action-plan-2026-07-06.md) | — | — | **Автор:** Codex |
@@ -127,6 +127,7 @@
 | [runtime-unblock-result-2026-06-21.md](../docs/runtime-unblock-result-2026-06-21.md) | — | — | Date: 2026-06-21 |
 | [runtime-validation-batch-2026-06-20.md](../docs/runtime-validation-batch-2026-06-20.md) | — | — | Дата: 2026-06-20 |
 | [sandbox-self-reflection-methodology.md](../docs/sandbox-self-reflection-methodology.md) | doc | accepted | Реальный прогон этой методички, демонстрирующий, зачем нужен Уровень 2: |
+| [scaling-storage-nas-vs-github-2026-07-07.md](../docs/scaling-storage-nas-vs-github-2026-07-07.md) | doc | draft | Стресс-тест смешивает два разных ограничения — их надо разделить, иначе выбор хранилища |
 | [session-master-2026-06-23.md](../docs/session-master-2026-06-23.md) | doc | proposed | **Общий хребет:** `tools/pipeline.py`, `tools/validate.py`, `tools/merge_gate.py`, `tools/ |
 | [skills-usage.md](../docs/skills-usage.md) | — | accepted | Дата: 2026-06-21. |
 | [sqlite-driver-acceptance-result-2026-06-21.md](../docs/sqlite-driver-acceptance-result-2026-06-21.md) | — | done | Дата: 2026-06-21. |
@@ -139,6 +140,7 @@
 | [t148-volatile-runtime-result-2026-06-22.md](../docs/t148-volatile-runtime-result-2026-06-22.md) | — | — | Task: `T-148` |
 | [technical-audit-2026-07-06.md](../docs/technical-audit-2026-07-06.md) | — | — | **Пройдено (16 проверок):** |
 | [test-corpus-plan.md](../docs/test-corpus-plan.md) | — | — | Маленький, безопасный, детерминированный набор fixture-файлов для проверки драйверов (`fil |
+| [three-paths-strategy-2026-07-07.md](../docs/three-paths-strategy-2026-07-07.md) | doc | draft | *Синтез стратегии для приватного русскоязычного «канона» на одной 4-ядерной машине.* |
 | [top-agent-operating-manual.md](../docs/top-agent-operating-manual.md) | — | accepted | Дата: 2026-06-21. |
 | [top-layer-command-groups.md](../docs/top-layer-command-groups.md) | — | — | Дата: 2026-06-21. |
 | [top-layer-throughput-methodology.md](../docs/top-layer-throughput-methodology.md) | doc | proposed | Главный ограничитель системы с множеством агентов — не запуск новых исполнителей, а способ |
@@ -149,5 +151,5 @@
 | [workflow-conveyor-policy.md](../docs/workflow-conveyor-policy.md) | doc | proposed | Один контекст-оркестратор = один последовательный планировщик с N фоновыми воркерами. Узко |
 | [workflow-orchestration-policy.md](../docs/workflow-orchestration-policy.md) | doc | proposed | **воркфлоу** — кластер мелких под-агентов, работающих параллельно, плюс агент-**синтезатор |
 | [workspace-pyramid-levels.md](../docs/workspace-pyramid-levels.md) | — | — | Дата: 2026-06-21 |
-| [worktree-isolation-enforcement-2026-07-07.md](../docs/worktree-isolation-enforcement-2026-07-07.md) | doc | proposed | Диагноз (reports/machine-saturation-diagnosis-2026-07-07.md): агенты работают на общем |
+| [worktree-isolation-enforcement-2026-07-07.md](../docs/worktree-isolation-enforcement-2026-07-07.md) | doc | accepted | Диагноз (reports/machine-saturation-diagnosis-2026-07-07.md): агенты работают на общем |
 | [zed-like-headless-workbench-mvp.md](../docs/zed-like-headless-workbench-mvp.md) | doc | proposed | Этот документ фиксирует практический план: как использовать идеи Zed |
