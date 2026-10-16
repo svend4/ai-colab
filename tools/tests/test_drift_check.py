@@ -32,9 +32,10 @@ import drift_check as dc
 
 def prepare_base():
     candidates = [
-        os.path.join(r"C:\tmp", "ai_colab_drift_test"),
         os.path.join(ROOT, "tmp-work", "drift_test_runtime"),
     ]
+    if os.name == "nt":  # C:\tmp только на Windows; на Linux это относительный путь в cwd
+        candidates.insert(0, os.path.join(r"C:\tmp", "ai_colab_drift_test"))
     last_error = None
     for base in candidates:
         try:

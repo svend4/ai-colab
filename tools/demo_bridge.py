@@ -89,6 +89,7 @@ def main():
 
     # 5) workbench память: занести документы и найти
     tmp = os.path.join(ROOT, "logs", "demo_bridge.db")
+    os.makedirs(os.path.dirname(tmp), exist_ok=True)  # logs/ может отсутствовать в чистом checkout
     if os.path.exists(tmp):
         os.remove(tmp)
     conn = wb.init(tmp, base_dir=ROOT)

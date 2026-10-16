@@ -32,9 +32,10 @@ import question_tree as qt
 
 def prepare_root():
     candidates = [
-        os.path.join(r"C:\tmp", "ai_colab_question_tree_test"),
         os.path.join(ROOT, "tmp-work", "question_tree_test_runtime"),
     ]
+    if os.name == "nt":  # C:\tmp только на Windows; на Linux это относительный путь в cwd
+        candidates.insert(0, os.path.join(r"C:\tmp", "ai_colab_question_tree_test"))
     last_error = None
     for root in candidates:
         try:

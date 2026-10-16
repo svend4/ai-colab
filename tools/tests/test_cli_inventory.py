@@ -34,9 +34,10 @@ import cli_inventory as ci
 
 def prepare_root():
     candidates = [
-        os.path.join(r"C:\tmp", "ai_colab_cli_inventory_test"),
         os.path.join(ROOT, "tmp-work", "cli_inventory_test_runtime"),
     ]
+    if os.name == "nt":  # C:\tmp только на Windows; на Linux это относительный путь в cwd
+        candidates.insert(0, os.path.join(r"C:\tmp", "ai_colab_cli_inventory_test"))
     last_error = None
     for root in candidates:
         try:

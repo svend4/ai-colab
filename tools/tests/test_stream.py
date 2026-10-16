@@ -20,6 +20,7 @@ if _TOOLS_DIR not in _sys.path:
     _sys.path.insert(0, _TOOLS_DIR)
 # --- конец бутстрапа ---
 
+import datetime
 import os
 import sys
 import shutil
@@ -51,7 +52,7 @@ id: {stream_id}
 topic: {topic}
 agent: {agent}
 status: ready-for-synthesis
-created: 2026-06-25
+created: {created}
 variant_policy: independent-first
 synthesis_ready: true
 status_note: variant completed
@@ -103,7 +104,8 @@ status_note: variant completed
 ## 08. Adoption
 
 Тестовый пакет не переносится в mainline.
-""".format(stream_id=stream_id, topic=topic, agent=agent)
+""".format(stream_id=stream_id, topic=topic, agent=agent,
+           created=datetime.date.today().isoformat())
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(body)
 
