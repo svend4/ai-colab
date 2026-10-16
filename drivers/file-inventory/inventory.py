@@ -6,10 +6,10 @@ File inventory driver (T-059) — no-deps read-only project file map.
 Does not write to the scanned folder, does not execute files, and does not use
 network access. Output goes to stdout as JSON or Markdown.
 
-CLI:
-    python inventory.py <path>
-    python inventory.py <path> --hash
-    python inventory.py <path> --markdown
+CLI (--base is required: the report stays inside it, and symlinks that lead outside are left out):
+    python inventory.py <path> --base <allowed-root>
+    python inventory.py <path> --base <allowed-root> --hash
+    python inventory.py <path> --base <allowed-root> --markdown
     python inventory.py <path> --max-files 1000 --base <allowed-root>
 """
 import argparse
@@ -51,6 +51,10 @@ class PathAccessError(ValueError):
     pass
 
 
+class ConfigError(ValueError):
+    pass
+
+
 def configure_output():
     for name in ("stdout", "stderr"):
         stream = getattr(sys, name, None)
@@ -69,19 +73,41 @@ def _is_relative_to(path, base):
         return False
 
 
+def _readable_path(path, allowed):
+    # A symlink that leads outside the allowed root (or loops) is not read at all:
+    # no name, size or hash. Regular paths are returned as they are.
+    if not os.path.islink(path):
+        return path
+    try:
+        real = path.resolve()
+    except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
+        return None
+    return real if _is_relative_to(real, allowed) else None
+
+
 def resolve_root(root_path, base_dir=None):
-    if base_dir is None:
-        root = Path(root_path).expanduser().resolve()
-    else:
-        base = Path(base_dir).expanduser().resolve()
-        raw = Path(root_path).expanduser()
-        root = (raw if raw.is_absolute() else base / raw).resolve()
-        if not _is_relative_to(root, base):
-            raise PathAccessError(f"path is outside allowed root: {root}")
+    if base_dir is not None and not str(base_dir).strip():
+        raise ConfigError("allowed root is blank (fail-closed)")
+    # The boundary is checked before exists(), so an outside path gets the same answer
+    # whether it exists or not. Without base_dir the root itself is the boundary.
+    try:
+        if base_dir is None:
+            root = Path(root_path).expanduser().resolve()
+            allowed = root
+        else:
+            # "~" is not expanded under the base: the answer must not depend on system accounts.
+            allowed = Path(base_dir).expanduser().resolve()
+            raw = Path(root_path)
+            root = (raw if raw.is_absolute() else allowed / raw).resolve()
+        inside = _is_relative_to(root, allowed)
+    except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
+        inside = False
+    if not inside:
+        raise PathAccessError(f"path is outside allowed root: {root_path}")
     if not root.exists():
-        raise FileNotFoundError(str(root))
+        raise FileNotFoundError(str(root_path))
     if not root.is_dir():
-        raise NotADirectoryError(str(root))
+        raise NotADirectoryError(str(root_path))
     return root
 
 
@@ -129,6 +155,7 @@ def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
 def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
          hash_files=False, max_hash_bytes=DEFAULT_MAX_HASH_BYTES, base_dir=None):
     root = resolve_root(root_path, base_dir=base_dir)
+    allowed = Path(base_dir).expanduser().resolve() if base_dir is not None else root
     files = []
     summary = {
         "total_files": 0,
@@ -143,18 +170,22 @@ def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
         dirnames[:] = [
             name for name in dirnames
             if name not in SKIP_DIRS and (include_hidden or not name.startswith("."))
+            and _readable_path(Path(dirpath) / name, allowed) is not None  # dir symlink outside: never walked
         ]
         for filename in filenames:
             if not include_hidden and filename.startswith("."):
                 continue
+            path = Path(dirpath) / filename
+            target = _readable_path(path, allowed)
+            if target is None:
+                continue  # file symlink outside: no name, size or hash
             if len(files) >= max_files:
                 truncated = True
                 dirnames[:] = []
                 break
-            path = Path(dirpath) / filename
             rel = path.relative_to(root).as_posix()
             try:
-                st = path.stat()
+                st = target.stat()
             except OSError as exc:
                 files.append({"path": rel, "error": str(exc)})
                 continue
@@ -173,7 +204,7 @@ def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
                 "risk_flags": flags,
             }
             if hash_files:
-                digest = sha256_file(path, max_bytes=max_hash_bytes)
+                digest = sha256_file(target, max_bytes=max_hash_bytes)
                 item["sha256"] = digest
                 if digest is None:
                     item["hash_skipped"] = True
@@ -226,7 +257,7 @@ def render_markdown(report):
 def parse_args(argv):
     parser = argparse.ArgumentParser(prog="inventory.py")
     parser.add_argument("path")
-    parser.add_argument("--base")
+    parser.add_argument("--base", default="", help="allowed root, required: the report stays inside it")
     parser.add_argument("--max-files", type=int, default=DEFAULT_MAX_FILES)
     parser.add_argument("--include-hidden", action="store_true")
     parser.add_argument("--hash", action="store_true", dest="hash_files")
@@ -237,6 +268,9 @@ def parse_args(argv):
 
 def main(argv=None):
     args = parse_args(argv or sys.argv[1:])
+    if not args.base.strip():
+        print(json.dumps({"error": "ConfigError", "message": "--base is required: pass the allowed root (fail-closed)"}, ensure_ascii=False))
+        return 2
     try:
         report = scan(
             args.path,
