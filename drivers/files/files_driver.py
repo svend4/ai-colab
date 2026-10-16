@@ -8,11 +8,11 @@ files driver (L2, read-only) — T-043.
 `max_output_bytes` для read, маскировка секрет-паттернов в выдаче search.
 Потом тонко оборачивается в MCP-сервер (stdio) — это «движок» драйвера.
 
-CLI:
-    python files_driver.py list <dir>
-    python files_driver.py read <file> [--max-bytes N]
-    python files_driver.py search <pattern> <dir>
-    python files_driver.py summarize <dir>
+CLI (--base <allowed-root> обязателен: без него команда отказывает, fail-closed):
+    python files_driver.py list <dir> --base <allowed-root>
+    python files_driver.py read <file> --base <allowed-root> [--max-bytes N]
+    python files_driver.py search <pattern> <dir> --base <allowed-root>
+    python files_driver.py summarize <dir> --base <allowed-root>
 """
 import os
 import re
@@ -195,6 +195,9 @@ def main():
     cmd = a[0]
     try:
         base_dir = _option(a, "--base")
+        if cmd in ("list", "read", "search", "summarize") and not (base_dir or "").strip():
+            print(json.dumps({"error": "ConfigError", "message": "--base is required: pass the allowed root (fail-closed)"}, ensure_ascii=False))
+            return 2
         include_hidden = "--include-hidden" in a
         if cmd == "list" and len(a) > 1:
             print(json.dumps(

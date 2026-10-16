@@ -81,7 +81,7 @@ def test_cli_json():
         (root / "a.txt").write_text("aaa", encoding="utf-8")
         script = Path(__file__).with_name("inventory.py")
         completed = subprocess.run(
-            [sys.executable, str(script), tmp, "--hash"],
+            [sys.executable, str(script), tmp, "--hash", "--base", tmp],
             check=True,
             capture_output=True,
             text=True,

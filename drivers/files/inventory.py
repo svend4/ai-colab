@@ -4,6 +4,9 @@ Files inventory driver - read-only scanner for local folders.
 
 It does not write, rename, delete, move, or execute files. The script only
 collects metadata and prints JSON to stdout.
+
+Usage: python inventory.py <dir> --base <allowed-root> [--hash] [--include-hidden]
+--base is required. The scan stays inside it, and symlinks that lead outside are skipped.
 """
 
 import argparse
@@ -102,9 +105,31 @@ def should_skip_file(name: str, include_hidden: bool) -> bool:
     return False
 
 
+def _is_relative_to(path: Path, base: Path) -> bool:
+    try:
+        path.relative_to(base)
+        return True
+    except ValueError:
+        return False
+
+
+def _inside_root(path: Path, allowed: Path) -> bool:
+    # A symlink that leads outside the allowed root is not reported at all: no name, size or hash.
+    try:
+        return _is_relative_to(path.resolve(), allowed)
+    except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
+        return False
+
+
 def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden: bool = False,
-              hash_files: bool = False, max_hash_bytes: int = DEFAULT_MAX_HASH_BYTES) -> dict:
+              hash_files: bool = False, max_hash_bytes: int = DEFAULT_MAX_HASH_BYTES,
+              base_dir=None) -> dict:
     root = Path(root_path).resolve()
+    allowed = Path(base_dir).resolve() if base_dir is not None else root
+    # The boundary is checked before exists(), so an outside path gets the same answer
+    # whether it exists or not.
+    if not _is_relative_to(root, allowed):
+        return {"error": "path is outside allowed root", "path": str(root_path)}
     if not root.exists():
         return {"error": "path not found", "path": str(root)}
     if not root.is_dir():
@@ -133,12 +158,14 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
         for filename in filenames:
             if should_skip_file(filename, include_hidden):
                 continue
+            path = Path(dirpath) / filename
+            if not _inside_root(path, allowed):
+                continue
             if total_files >= max_files:
                 truncated = True
                 dirnames[:] = []
                 break
 
-            path = Path(dirpath) / filename
             rel = path.relative_to(root).as_posix()
             suffix = path.suffix.lower() or "<none>"
             kind = file_kind(path)
@@ -198,6 +225,7 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
 def parse_args(argv):
     parser = argparse.ArgumentParser(prog="inventory.py")
     parser.add_argument("path", help="Directory to scan")
+    parser.add_argument("--base", default="", help="allowed root, required: the scan stays inside it")
     parser.add_argument("--max-files", type=int, default=DEFAULT_MAX_FILES)
     parser.add_argument("--include-hidden", action="store_true")
     parser.add_argument("--hash", action="store_true", dest="hash_files")
@@ -207,6 +235,9 @@ def parse_args(argv):
 
 def main(argv=None):
     args = parse_args(argv or sys.argv[1:])
+    if not args.base.strip():
+        print(json.dumps({"error": "ConfigError", "message": "--base is required: pass the allowed root (fail-closed)"}, ensure_ascii=False))
+        return 2
     if args.max_files <= 0:
         print(json.dumps({"error": "--max-files must be positive"}))
         return 2
@@ -219,6 +250,7 @@ def main(argv=None):
         include_hidden=args.include_hidden,
         hash_files=args.hash_files,
         max_hash_bytes=args.max_hash_bytes,
+        base_dir=args.base,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 1 if "error" in report else 0
