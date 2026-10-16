@@ -3953,6 +3953,13 @@
       "status": "answered",
       "where": "topics/information-refactoring-cycle-3-2026-06-25.md",
       "outcome": "answered by D-027 (accepted 2026-07-06) + docs/agent-approval-matrix.md; roster fixed per A4 (antigravity out until incident explanation; subagent-worker = service agent)"
+    },
+    {
+      "id": "Q-024",
+      "title": "Что делать с T-285: задача в doing без claim блокирует drift-гейт smoke",
+      "status": "open",
+      "where": "tasks/T-285.md, tools/drift_check.py (пункт «orphan: doing без claim»)",
+      "outcome": "\"\""
     }
   ],
   "decisions": [
