@@ -22,7 +22,9 @@ CLI:
 """
 import errno
 import os
+import stat
 import sys
+from pathlib import Path
 from _ioutil import configure_output
 from _cli import help_guard
 import re
@@ -115,6 +117,45 @@ def _has_loop(path):
     return False
 
 
+# O_NOFOLLOW and dir_fd are not available everywhere (not on Windows); there the path-based check stays.
+_SAFE_OPEN = hasattr(os, "O_NOFOLLOW") and os.open in os.supports_dir_fd
+
+
+def _open_physical(base, physical, given):
+    # Открывает уже разрешённый путь внутри базы цепочкой dir_fd с O_NOFOLLOW (как в drivers/files): компонент,
+    # подменённый на симлинк после проверки, даёт ELOOP и не открывается. Не-файл и жёсткая ссылка отказывают.
+    try:
+        if not _SAFE_OPEN:
+            fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
+        else:
+            parts = Path(physical).relative_to(base).parts
+            if not parts:
+                raise FileNotFoundError(errno.ENOENT, "not a file")
+            dirfd = os.open(str(base), os.O_RDONLY)
+            try:
+                for name in parts[:-1]:
+                    nextfd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+                    os.close(dirfd)
+                    dirfd = nextfd
+                fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+            finally:
+                os.close(dirfd)
+    except OSError as exc:
+        if exc.errno == errno.ELOOP:  # компонент стал симлинком: путь снаружи
+            raise PathAccessError("path outside allowed root: %s" % given) from None
+        raise type(exc)(exc.errno, exc.strerror, str(given)) from None
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise FileNotFoundError(str(given))  # каталог или FIFO: не файл
+        if st.st_nlink > 1:
+            raise PathAccessError("hard-linked file is refused (fail-closed): %s" % given)
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
 def _docx_read(path, base_dir):
     """Извлечь текст .docx чистой stdlib (zipfile + WordprocessingML), с confinement и redaction.
 
@@ -132,8 +173,10 @@ def _docx_read(path, base_dir):
         inside = False
     if not inside:
         raise PathAccessError("path outside allowed root: %s" % path)
+    # Файл читается через fd от базы: подмена компонента после проверки и жёсткая ссылка не дают чтения снаружи.
+    fd = _open_physical(base_real, real, path)
     try:
-        with zipfile.ZipFile(real) as zf:
+        with os.fdopen(fd, "rb") as f, zipfile.ZipFile(f) as zf:
             xml = zf.read("word/document.xml")
     except (zipfile.BadZipFile, KeyError) as exc:
         raise ValueError("not a valid .docx (Open XML): %s" % exc)

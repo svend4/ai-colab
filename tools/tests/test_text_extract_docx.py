@@ -24,6 +24,7 @@ import os
 import sys
 import zipfile
 import shutil
+from unittest import mock
 
 HERE = _TOOLS_DIR  # tools/ — тест перенесён в tools/tests/ (C14)
 ROOT = os.path.dirname(HERE)
@@ -88,11 +89,63 @@ def _boundary_checks(base):
     assert tx.extract("inside.docx", base_dir=root)["supported"] is True
 
 
+def _race_and_hardlink_checks(base):
+    # Каталог или файл внутри корня подменяется симлинком наружу уже после проверки: цепочка dir_fd с
+    # O_NOFOLLOW даёт ELOOP и отказ. Жёсткая ссылка на файл снаружи тоже отказ.
+    root = os.path.join(base, "allowed2")
+    outside = os.path.join(base, "outside2")
+    marker = "TOPSECRET_DOCX_RACE_MARKER"
+    os.makedirs(os.path.join(root, "sub"))
+    os.makedirs(outside)
+    _make_docx(os.path.join(outside, "secret.docx"), [marker])
+    _make_docx(os.path.join(root, "sub", "inside.docx"), ["внутренний абзац"])
+    _make_docx(os.path.join(root, "one.docx"), ["один"])
+    real_open = os.open
+    swapped = []
+
+    def refused(rel):
+        try:
+            item = tx.extract(rel, base_dir=root)
+        except tx.PathAccessError:
+            return True
+        assert marker not in repr(item), "утечка через %r: %r" % (rel, item)
+        return False
+
+    def swap_dir(name, flags, *args, **kwargs):
+        if name == "sub" and not swapped:
+            swapped.append(name)
+            shutil.rmtree(os.path.join(root, "sub"))
+            os.symlink(outside, os.path.join(root, "sub"))
+        return real_open(name, flags, *args, **kwargs)
+
+    with mock.patch.object(tx.os, "open", side_effect=swap_dir):
+        assert refused(os.path.join("sub", "inside.docx")), "подмена каталога перед открытием не отказана"
+    assert swapped == ["sub"], "подмена каталога не сработала"
+
+    swapped.clear()
+    target = os.path.join(root, "one.docx")
+
+    def swap_file(name, flags, *args, **kwargs):
+        if name == "one.docx" and not swapped:
+            swapped.append(name)
+            os.remove(target)
+            os.symlink(os.path.join(outside, "secret.docx"), target)
+        return real_open(name, flags, *args, **kwargs)
+
+    with mock.patch.object(tx.os, "open", side_effect=swap_file):
+        assert refused("one.docx"), "подмена файла перед открытием не отказана"
+    assert swapped == ["one.docx"], "подмена файла не сработала"
+
+    os.link(os.path.join(outside, "secret.docx"), os.path.join(root, "hard.docx"))
+    assert refused("hard.docx"), "жёсткая ссылка на файл снаружи не отказана"
+
+
 def run():
     ok = True
     base = make_temp_dir("docx_")
     try:
         _boundary_checks(base)
+        _race_and_hardlink_checks(base)
         p = os.path.join(base, "doc.docx")
         _make_docx(p, ["Первый абзац DeepNeedle", "token=SUPERSECRETXYZ123"])
         item = tx.extract(p, base_dir=base)
