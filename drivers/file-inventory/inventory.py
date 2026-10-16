@@ -112,23 +112,25 @@ def _expand_base(base_dir) -> str:
 
 
 def resolve_root(root_path, base_dir=None):
-    # A blank base, or "." (what an empty Path("") becomes), is refused: the cwd must not become
+    # The allowed root is required: without it the root would be its own boundary, so the call is refused.
+    # A blank base, or "." (what an empty Path("") becomes), is refused too: the cwd must not become
     # the boundary by accident. The CLI turns an explicit "." into an absolute path first.
-    if base_dir is not None and (not str(base_dir).strip() or Path(base_dir).parts == ()):
+    if base_dir is None or not str(base_dir).strip() or Path(base_dir).parts == ():
         raise ConfigError("allowed root must be an explicit path, not blank or '.' (fail-closed)")
-    # The boundary is checked before exists(), so an outside path gets the same answer
-    # whether it exists or not. Without base_dir the root itself is the boundary.
+    # A loop at the base itself: RuntimeError before Python 3.13, an unresolved symlink from 3.13 on.
     try:
-        if base_dir is None:
-            joined = Path(root_path).expanduser()
-            root = joined.resolve()
-            allowed = root
-        else:
-            # "~" is not expanded under the base: the answer must not depend on system accounts.
-            allowed = Path(_expand_base(base_dir)).resolve()
-            raw = Path(root_path)
-            joined = raw if raw.is_absolute() else allowed / raw
-            root = joined.resolve()
+        allowed = Path(_expand_base(base_dir)).resolve()
+    except (OSError, RuntimeError):
+        raise ConfigError("allowed root is not a usable directory (fail-closed)") from None
+    if not _is_physical(allowed):
+        raise ConfigError("allowed root is not a usable directory (fail-closed)")
+    # The boundary is checked before exists(), so an outside path gets the same answer
+    # whether it exists or not.
+    try:
+        # "~" is not expanded under the base: the answer must not depend on system accounts.
+        raw = Path(root_path)
+        joined = raw if raw.is_absolute() else allowed / raw
+        root = joined.resolve()
         inside = _is_relative_to(root, allowed) and _is_physical(root) and not _has_loop(joined)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
@@ -172,13 +174,92 @@ def risk_flags(path, mode):
     return flags
 
 
-def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
+# O_NOFOLLOW and dir_fd are not available everywhere (not on Windows); there the path-based check stays.
+_SAFE_OPEN = hasattr(os, "O_NOFOLLOW") and os.open in os.supports_dir_fd
+
+
+def _is_hardlink(path):
+    # A hard link can name a file outside the root, so it is not reported (fail-closed when it cannot be checked).
+    try:
+        return os.stat(path).st_nlink > 1
+    except FileNotFoundError:
+        return False  # a missing target is not a hard link: it is reported as an error entry, with no name
+    except OSError:
+        return True
+
+
+def _parent_dirfd(base, physical):
+    # Open the file's directory from the base with dir_fd, one component at a time, each with O_NOFOLLOW.
+    # A component swapped for a symlink after the check fails with ELOOP. Returns (dir fd, file name);
+    # the caller closes the fd.
+    try:
+        parts = physical.relative_to(base).parts
+    except ValueError:
+        raise PathAccessError("path is outside allowed root (fail-closed)") from None
+    if not parts:
+        raise FileNotFoundError(errno.ENOENT, "not a file")
+    dirfd = os.open(str(base), os.O_RDONLY)
+    try:
+        for name in parts[:-1]:
+            nextfd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+            os.close(dirfd)
+            dirfd = nextfd
+    except BaseException:
+        os.close(dirfd)
+        raise
+    return dirfd, parts[-1]
+
+
+def _stat_physical(base, physical, given):
+    # Size and type without opening the file for reading, so an unreadable file is still counted, as before.
+    if not _SAFE_OPEN:
+        st = os.stat(str(physical))
+    else:
+        dirfd, name = _parent_dirfd(base, physical)
+        try:
+            st = os.stat(name, dir_fd=dirfd, follow_symlinks=False)
+        finally:
+            os.close(dirfd)
+    if stat.S_ISLNK(st.st_mode):  # swapped for a symlink after the check: not a file
+        raise FileNotFoundError(str(given))
+    return st
+
+
+def _open_physical(base, physical):
+    # Open through the dir_fd chain with O_NOFOLLOW. O_NONBLOCK stops a FIFO from blocking the open;
+    # fstat then refuses it, and so it refuses a hard link (st_nlink > 1).
+    if not _SAFE_OPEN:
+        fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
+    else:
+        dirfd, name = _parent_dirfd(base, physical)
+        try:
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+        finally:
+            os.close(dirfd)
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise PathAccessError("not a regular file (fail-closed)")
+        if st.st_nlink > 1:
+            raise PathAccessError("hard-linked file is refused (fail-closed)")
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
+def _sha256_fd(base, physical, max_bytes=DEFAULT_MAX_HASH_BYTES):
+    # Hash through the fd from _open_physical, so a swapped or hard-linked file is never read.
     # An unreadable file is not hashed and does not stop the scan; the error names no path.
     try:
-        if path.stat().st_size > max_bytes:
-            return None
-        digest = hashlib.sha256()
-        with path.open("rb") as f:
+        fd = _open_physical(base, physical)
+    except (OSError, ValueError):
+        return None
+    try:
+        with os.fdopen(fd, "rb") as f:
+            if os.fstat(f.fileno()).st_size > max_bytes:
+                return None
+            digest = hashlib.sha256()
             for chunk in iter(lambda: f.read(1024 * 1024), b""):
                 digest.update(chunk)
     except OSError:
@@ -189,7 +270,7 @@ def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
 def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
          hash_files=False, max_hash_bytes=DEFAULT_MAX_HASH_BYTES, base_dir=None):
     root = resolve_root(root_path, base_dir=base_dir)
-    allowed = Path(_expand_base(base_dir)).resolve() if base_dir is not None else root
+    allowed = Path(_expand_base(base_dir)).resolve()
     files = []
     summary = {
         "total_files": 0,
@@ -211,17 +292,17 @@ def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
                 continue
             path = Path(dirpath) / filename
             target = _readable_path(path, allowed)
-            if target is None:
-                continue  # file symlink outside: no name, size or hash
+            if target is None or _is_hardlink(target):
+                continue  # file symlink outside, or a hard link: no name, size or hash
             if len(files) >= max_files:
                 truncated = True
                 dirnames[:] = []
                 break
             rel = path.relative_to(root).as_posix()
             try:
-                st = target.stat()
-            except OSError as exc:
-                files.append({"path": rel, "error": exc.strerror or type(exc).__name__})
+                st = _stat_physical(allowed, target, rel)
+            except (OSError, ValueError) as exc:
+                files.append({"path": rel, "error": getattr(exc, "strerror", None) or type(exc).__name__})
                 continue
 
             ext = path.suffix.lower() or "(none)"
@@ -238,7 +319,7 @@ def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
                 "risk_flags": flags,
             }
             if hash_files:
-                digest = sha256_file(target, max_bytes=max_hash_bytes)
+                digest = _sha256_fd(allowed, target, max_bytes=max_hash_bytes)
                 item["sha256"] = digest
                 if digest is None:
                     item["hash_skipped"] = True

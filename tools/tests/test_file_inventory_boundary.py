@@ -79,9 +79,12 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         with self.assertRaises(fi.ConfigError):
             fi.scan(self.outside, base_dir="")
 
-    def test_library_without_base_keeps_root_as_boundary(self):
-        names = {item["path"] for item in fi.scan(self.base)["files"]}
-        self.assertEqual(names, {"inside.txt"})
+    def test_library_without_base_is_refused(self):
+        # Корень сам себе граница не служит: без base_dir библиотека отказывает (fail-closed).
+        with self.assertRaises(fi.ConfigError):
+            fi.scan(self.base)
+        with self.assertRaises(fi.ConfigError):
+            fi.resolve_root(self.base)
 
     def test_cli_with_base_lists_inside_only(self):
         rc, out = run_cli([self.base, "--base", self.base, "--hash"])
@@ -178,7 +181,7 @@ class FileInventoryBoundaryTest(unittest.TestCase):
 
     def test_unreadable_file_is_not_hashed_and_does_not_stop_scan(self):
         # Каталог вместо файла: открыть его нельзя, но это не должно ни ронять обход, ни давать хеш.
-        self.assertIsNone(fi.sha256_file(Path(self.base)))
+        self.assertIsNone(fi._sha256_fd(Path(self.base), Path(self.base)))
         report = fi.scan(self.base, base_dir=self.base, hash_files=True)
         self.assertEqual({item["path"] for item in report["files"]}, {"inside.txt"})
         self.assertIsNotNone(report["files"][0]["sha256"])
@@ -228,6 +231,38 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         os.makedirs(os.path.join(self.base, "sub"))
         with self.assertRaises(fi.PathAccessError):
             fi.resolve_root("Lin3/../sub", base_dir=self.base)
+
+    def test_hard_link_to_outside_file_is_not_listed_or_hashed(self):
+        try:
+            os.link(self.secret, os.path.join(self.base, "hard.txt"))
+        except OSError:
+            self.skipTest("жёсткие ссылки недоступны в этой ФС")
+        report = fi.scan(self.base, base_dir=self.base, hash_files=True)
+        self.assertEqual({item["path"] for item in report["files"]}, {"inside.txt"})
+        self.assertNotIn(hashlib.sha256(MARKER.encode("utf-8")).hexdigest(), json.dumps(report))
+
+    def test_race_swap_before_hash_is_not_hashed(self):
+        # inside.txt прошёл проверку, а перед хешированием стал симлинком на секрет: O_NOFOLLOW даёт ELOOP.
+        target = os.path.join(self.base, "inside.txt")
+        real_open = os.open
+        swapped = []
+
+        def swap_then_open(name, flags, *args, **kwargs):
+            if os.path.basename(str(name)) == "inside.txt" and not swapped:
+                swapped.append(name)
+                os.remove(target)
+                os.symlink(self.secret, target)
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fi.os, "open", side_effect=swap_then_open):
+            report = fi.scan(self.base, base_dir=self.base, hash_files=True)
+        self.assertEqual(swapped, ["inside.txt"])
+        self.assertEqual([item["path"] for item in report["files"]], ["inside.txt"])
+        item = report["files"][0]
+        self.assertIsNone(item["sha256"])
+        self.assertTrue(item["hash_skipped"])
+        self.assertNotIn(hashlib.sha256(MARKER.encode("utf-8")).hexdigest(), json.dumps(report))
+        self.assertNotIn(MARKER.strip(), json.dumps(report))
 
 
 if __name__ == "__main__":
