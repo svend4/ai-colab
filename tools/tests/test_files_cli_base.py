@@ -136,11 +136,12 @@ class CliBaseTest(unittest.TestCase):
         self.assertNotIn(self.outside, out)
 
     def test_inventory_dir_symlink_outside_is_not_counted(self):
-        os.symlink(self.outside, os.path.join(self.base, "build"))
+        # Имя не из SKIP_DIRS: иначе каталог пропускался бы и без проверки границы.
+        os.symlink(self.outside, os.path.join(self.base, "extdir"))
         report = inv.inventory(self.base, base_dir=self.base)
         self.assertEqual(report["summary"]["total_dirs"], 0)
         self.assertEqual(report["skipped_dirs"], [])
-        self.assertNotIn("build", json.dumps(report))
+        self.assertNotIn("extdir", json.dumps(report))
 
     def test_inventory_loop_outside_gives_same_answer(self):
         loop = os.path.join(self.outside, "loop")
@@ -177,6 +178,70 @@ class CliBaseTest(unittest.TestCase):
             fd.read_file("inside.txt", base_dir="   ")
         report = inv.inventory(self.base, base_dir="")
         self.assertEqual(report["error"], "ConfigError")
+
+    def _loop_then_dotdot_fixture(self):
+        # L -> сам себя, S -> ../outside. На Python 3.12 resolve() после цикла оставляет хвост с L
+        # нерешённым и схлопывает «..» по тексту: L/../S/secret.txt превращался в S/secret.txt и
+        # читал внешний файл через S.
+        loop = os.path.join(self.base, "L")
+        os.symlink(loop, loop)
+        os.symlink(os.path.join("..", "outside"), os.path.join(self.base, "S"))
+
+    def test_dotdot_after_loop_read_does_not_reach_outside(self):
+        self._loop_then_dotdot_fixture()
+        rc, out = run_files_cli(["read", "L/../S/secret.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn(MARKER, out)
+
+    def test_dotdot_after_loop_inventory_does_not_list_outside(self):
+        self._loop_then_dotdot_fixture()
+        # inventory резолвит относительный путь от cwd, поэтому здесь путь абсолютный, через базу.
+        rc, out = run_inventory_cli([os.path.join(self.base, "L", "..", "S"), "--base", self.base, "--hash"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "path is outside allowed root")
+        self.assertNotIn("secret.txt", out)
+        self.assertNotIn(MARKER, out)
+
+    def test_in_root_loop_is_outside_on_every_version(self):
+        loop = os.path.join(self.base, "Lin")
+        os.symlink(loop, loop)
+        rc, out = run_files_cli(["read", "Lin", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+
+    def test_read_outside_exists_and_missing_give_same_answer(self):
+        missing = os.path.join(self.outside, "nope.txt")
+        rc_e, out_e = run_files_cli(["read", self.secret, "--base", self.base])
+        rc_m, out_m = run_files_cli(["read", missing, "--base", self.base])
+        self.assertEqual(rc_e, rc_m)
+        existing, absent = json.loads(out_e), json.loads(out_m)
+        self.assertEqual(existing["error"], absent["error"])
+        self.assertEqual(existing["message"].replace(self.secret, "<path>"),
+                         absent["message"].replace(missing, "<path>"))
+
+    def test_sibling_with_same_prefix_is_outside(self):
+        sibling = os.path.join(self.tmp, "allowed2")
+        os.makedirs(sibling)
+        with open(os.path.join(sibling, "x.txt"), "w", encoding="utf-8") as f:
+            f.write("SIBLING_MARKER\n")
+        rc, out = run_files_cli(["read", "../allowed2/x.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn("SIBLING_MARKER", out)
+
+    def test_relative_base_reads_inside_and_refuses_outside(self):
+        cwd = os.getcwd()
+        os.chdir(self.tmp)
+        try:
+            rc, out = run_files_cli(["read", "inside.txt", "--base", "allowed"])
+            self.assertEqual(rc, 0)
+            self.assertIn("обычный текст", out)
+            rc, out = run_files_cli(["read", self.secret, "--base", "allowed"])
+            self.assertEqual(json.loads(out)["error"], "PathAccessError")
+            self.assertNotIn(MARKER, out)
+        finally:
+            os.chdir(cwd)
 
 
 if __name__ == "__main__":

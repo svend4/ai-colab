@@ -68,6 +68,12 @@ def _is_relative_to(path, base):
         return False
 
 
+def _is_physical(path):
+    # На Python 3.12 resolve() после цикла симлинков не досказывает путь и схлопывает «..» по тексту,
+    # так что в результате может остаться симлинк. Полностью разрешённый путь симлинков не содержит.
+    return not any(part.is_symlink() for part in (path, *path.parents))
+
+
 def _resolve_path(path_value, base_dir=None):
     # Граница обязательна: без allowed-root движок ничего не отдаёт (fail-closed).
     if base_dir is None or not str(base_dir).strip():
@@ -77,7 +83,7 @@ def _resolve_path(path_value, base_dir=None):
     raw_path = Path(path_value)
     try:
         candidate = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
-        inside = _is_relative_to(candidate, base)
+        inside = _is_relative_to(candidate, base) and _is_physical(candidate)
     except (OSError, RuntimeError):  # симлинк-цикл: до Python 3.13 resolve() кидает RuntimeError
         inside = False
     if not inside:

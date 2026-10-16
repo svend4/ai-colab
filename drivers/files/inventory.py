@@ -113,10 +113,17 @@ def _is_relative_to(path: Path, base: Path) -> bool:
         return False
 
 
+def _is_physical(path: Path) -> bool:
+    # On Python 3.12 resolve() after a symlink loop leaves the tail unresolved and collapses ".."
+    # by text, so the result can still name a symlink. A fully resolved path contains none.
+    return not any(part.is_symlink() for part in (path, *path.parents))
+
+
 def _inside_root(path: Path, allowed: Path) -> bool:
     # A symlink that leads outside the allowed root is not reported at all: no name, size or hash.
     try:
-        return _is_relative_to(path.resolve(), allowed)
+        real = path.resolve()
+        return _is_relative_to(real, allowed) and _is_physical(real)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         return False
 
@@ -131,7 +138,7 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
     try:
         root = Path(root_path).resolve()
         allowed = Path(base_dir).resolve() if base_dir is not None else root
-        inside = _is_relative_to(root, allowed)
+        inside = _is_relative_to(root, allowed) and _is_physical(root)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
     if not inside:
