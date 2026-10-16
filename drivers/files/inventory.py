@@ -10,6 +10,7 @@ Usage: python inventory.py <dir> --base <allowed-root> [--hash] [--include-hidde
 """
 
 import argparse
+import errno
 import hashlib
 import json
 import os
@@ -119,6 +120,23 @@ def _is_physical(path: Path) -> bool:
     return not any(part.is_symlink() for part in (path, *path.parents))
 
 
+def _has_loop(path: Path) -> bool:
+    # A symlink loop anywhere in the path, even when a later ".." walks the result back inside.
+    try:
+        os.path.realpath(path, strict=True)
+    except OSError as exc:
+        return exc.errno == errno.ELOOP
+    return False
+
+
+def _expand_base(base_dir: str) -> str:
+    # "~" is expanded for the CLI only. An empty HOME turns it into "/": a refusal, not the root.
+    expanded = os.path.expanduser(str(base_dir))
+    if expanded == os.sep and str(base_dir).strip() != os.sep:
+        raise ValueError("allowed root must not expand to / (fail-closed)")
+    return expanded
+
+
 def _inside_root(path: Path, allowed: Path) -> bool:
     # A symlink that leads outside the allowed root is not reported at all: no name, size or hash.
     try:
@@ -136,17 +154,19 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
     # The boundary is checked before exists(), so an outside path gets the same answer
     # whether it exists or not. A symlink loop that cannot be resolved counts as outside.
     try:
-        root = Path(root_path).resolve()
+        raw = Path(root_path)
+        root = raw.resolve()
         allowed = Path(base_dir).resolve() if base_dir is not None else root
-        inside = _is_relative_to(root, allowed) and _is_physical(root)
+        inside = _is_relative_to(root, allowed) and _is_physical(root) and not _has_loop(raw)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
     if not inside:
         return {"error": "path is outside allowed root", "path": str(root_path)}
+    # Errors name the path as passed, not the resolved target of a symlink.
     if not root.exists():
-        return {"error": "path not found", "path": str(root)}
+        return {"error": "path not found", "path": str(root_path)}
     if not root.is_dir():
-        return {"error": "not a directory", "path": str(root)}
+        return {"error": "not a directory", "path": str(root_path)}
 
     items = []
     extensions = {}
@@ -259,13 +279,18 @@ def main(argv=None):
     if args.max_hash_bytes <= 0:
         print(json.dumps({"error": "--max-hash-bytes must be positive"}))
         return 2
+    try:
+        base_dir = os.path.abspath(_expand_base(args.base))
+    except ValueError as exc:
+        print(json.dumps({"error": "ConfigError", "message": str(exc)}, ensure_ascii=False))
+        return 2
     report = inventory(
         args.path,
         max_files=args.max_files,
         include_hidden=args.include_hidden,
         hash_files=args.hash_files,
         max_hash_bytes=args.max_hash_bytes,
-        base_dir=os.path.abspath(os.path.expanduser(args.base)),
+        base_dir=base_dir,
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 1 if "error" in report else 0

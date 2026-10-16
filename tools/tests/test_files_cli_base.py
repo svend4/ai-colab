@@ -294,6 +294,44 @@ class CliBaseTest(unittest.TestCase):
         self.assertEqual(rc_inv, 0)
         self.assertEqual({item["path"] for item in json.loads(out_inv)["files"]}, {"inside.txt"})
 
+    def test_loop_base_is_refused_on_every_version(self):
+        loop = os.path.join(self.base, "Lbase")
+        os.symlink(loop, loop)
+        with self.assertRaises(fd.PathAccessError):
+            fd.read_file("inside.txt", base_dir=loop)
+
+    def test_tilde_base_with_empty_home_is_refused(self):
+        with mock.patch.dict(os.environ, {"HOME": ""}):
+            self.assertEqual(os.path.expanduser("~"), "/")  # ловушка: пустой HOME даёт корень
+            with self.assertRaises(fd.PathAccessError):
+                fd.read_file(self.secret, base_dir="~")
+            rc, out = run_files_cli(["read", self.secret, "--base", "~"])
+            self.assertEqual(rc, 1)
+            self.assertEqual(json.loads(out)["error"], "PathAccessError")
+            self.assertNotIn(MARKER, out)
+            rc, out = run_inventory_cli([self.outside, "--base", "~"])
+            self.assertEqual(rc, 2)
+            self.assertEqual(json.loads(out)["error"], "ConfigError")
+            self.assertNotIn("secret.txt", out)
+
+    def test_dotdot_after_in_base_loop_is_refused(self):
+        loop = os.path.join(self.base, "Lin2")
+        os.symlink(loop, loop)
+        rc, out = run_files_cli(["read", "Lin2/../inside.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+
+    def test_inventory_error_names_the_given_path(self):
+        os.symlink(os.path.join(self.base, "missing_in.txt"), os.path.join(self.base, "dangling_in.txt"))
+        os.symlink(os.path.join(self.base, "inside.txt"), os.path.join(self.base, "alias_in.txt"))
+        dangling = inv.inventory(os.path.join(self.base, "dangling_in.txt"), base_dir=self.base)
+        self.assertEqual(dangling["error"], "path not found")
+        self.assertEqual(dangling["path"], os.path.join(self.base, "dangling_in.txt"))
+        alias = inv.inventory(os.path.join(self.base, "alias_in.txt"), base_dir=self.base)
+        self.assertEqual(alias["error"], "not a directory")
+        self.assertEqual(alias["path"], os.path.join(self.base, "alias_in.txt"))
+        self.assertNotIn("missing_in.txt", json.dumps([dangling, alias]))
+
 
 if __name__ == "__main__":
     unittest.main()

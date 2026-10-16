@@ -14,6 +14,7 @@ CLI (--base <allowed-root> обязателен: без него команда 
     python files_driver.py search <pattern> <dir> --base <allowed-root>
     python files_driver.py summarize <dir> --base <allowed-root>
 """
+import errno
 import os
 import re
 import sys
@@ -74,17 +75,38 @@ def _is_physical(path):
     return not any(part.is_symlink() for part in (path, *path.parents))
 
 
+def _has_loop(path):
+    # Цикл симлинков в пути, даже если «..» потом уводит результат внутрь: строгий realpath() кидает ELOOP.
+    try:
+        os.path.realpath(path, strict=True)
+    except OSError as exc:
+        return exc.errno == errno.ELOOP
+    return False
+
+
+def _expand_base(base_dir):
+    # «~» раскрываем, но пустой HOME даёт «/»: такая база — отказ, а не корень файловой системы.
+    expanded = os.path.expanduser(str(base_dir))
+    if expanded == os.sep and str(base_dir).strip() != os.sep:
+        raise PathAccessError("allowed root must not expand to / (fail-closed)")
+    return expanded
+
+
 def _resolve_path(path_value, base_dir=None):
     # Граница обязательна: без allowed-root движок ничего не отдаёт (fail-closed).
     # Пустая база и «.» (что даёт Path("")) тоже отказ: cwd не становится границей по ошибке.
     if base_dir is None or not str(base_dir).strip() or Path(base_dir).parts == ():
         raise PathAccessError("allowed root must be an explicit path, not blank or '.' (fail-closed)")
-    base = Path(base_dir).expanduser().resolve()
+    try:
+        base = Path(_expand_base(base_dir)).resolve()
+    except (OSError, RuntimeError):  # цикл у самой базы: до Python 3.13 resolve() кидает RuntimeError
+        raise PathAccessError("allowed root is not a usable directory (fail-closed)") from None
     # «~» под базой не раскрываем: иначе ответ зависит от учётных записей системы.
     raw_path = Path(path_value)
+    joined = raw_path if raw_path.is_absolute() else base / raw_path
     try:
-        candidate = (raw_path if raw_path.is_absolute() else base / raw_path).resolve()
-        inside = _is_relative_to(candidate, base) and _is_physical(candidate)
+        candidate = joined.resolve()
+        inside = _is_relative_to(candidate, base) and _is_physical(candidate) and not _has_loop(joined)
     except (OSError, RuntimeError):  # симлинк-цикл: до Python 3.13 resolve() кидает RuntimeError
         inside = False
     if not inside:
@@ -106,7 +128,7 @@ def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_di
     if not root_path.is_dir():
         raise NotADirectoryError(str(root))  # как передали, а не разрешённую цель симлинка
     # граница — разрешённая папка (base_dir); файл-симлинк наружу не отдаём ни в list, ни в search
-    allowed = Path(base_dir).expanduser().resolve()
+    allowed = Path(_expand_base(base_dir)).resolve()
 
     count = 0
     for dp, dirs, fns in os.walk(root_path):
@@ -219,7 +241,7 @@ def main():
             return 2
         if base_dir is not None:
             # Явная «.» или относительная база становятся абсолютным путём уже в CLI.
-            base_dir = os.path.abspath(os.path.expanduser(base_dir))
+            base_dir = os.path.abspath(_expand_base(base_dir))
         include_hidden = "--include-hidden" in a
         if cmd == "list" and len(a) > 1:
             print(json.dumps(
