@@ -22,6 +22,7 @@ if _TOOLS_DIR not in _sys.path:
 
 import os
 import sys
+import tempfile
 import unittest
 
 HERE = _TOOLS_DIR  # tools/ — тест перенесён в tools/tests/ (C14)
@@ -120,6 +121,21 @@ class TestExecutePreflight(unittest.TestCase):
         ok, msg = execute_preflight.check_sandbox_isolation(cmd)
         self.assertFalse(ok)
         self.assertIn("outside sandbox work/out whitelist", msg)
+
+    def test_isolation_mount_verdict_independent_of_cwd(self):
+        # Вердикт не зависит от cwd: относительный источник не привязывается к нему
+        # (раньше запуск из-под /home давал «sensitive», а не «outside whitelist»)
+        cmd = ["docker", "run", "--rm", "--network", "none",
+               "-v", "D:\\data:/data:ro", "alpine"]
+        cwd = os.getcwd()
+        try:
+            for d in (tempfile.gettempdir(), os.path.expanduser("~")):
+                os.chdir(d)
+                ok, msg = execute_preflight.check_sandbox_isolation(cmd)
+                self.assertFalse(ok)
+                self.assertIn("outside sandbox work/out whitelist", msg, "cwd=%s" % d)
+        finally:
+            os.chdir(cwd)
 
     def test_isolation_sandbox_mounts_allowed(self):
         # Реальная команда sandbox_runner.py (work/out из белого списка) проходит

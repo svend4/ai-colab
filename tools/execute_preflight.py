@@ -126,10 +126,14 @@ FORBIDDEN_MOUNT_FRAGMENTS = (
 
 
 def _norm_mount_path(path):
-    """Нормализует путь для сравнения: раскрывает ~ и %VAR%, делает
-    абсолютным, приводит к нижнему регистру и прямым слэшам."""
+    """Нормализует путь для сравнения: раскрывает ~ и %VAR%, приводит к нижнему
+    регистру и прямым слэшам. Абсолютизируем только абсолютные пути: относительный
+    источник нельзя привязывать к cwd, иначе вердикт зависит от того, где запущена
+    проверка (из-под /home получали «sensitive» вместо «outside whitelist»)."""
     expanded = os.path.expandvars(os.path.expanduser(path))
-    return os.path.abspath(expanded).replace("\\", "/").lower()
+    if os.path.isabs(expanded):
+        expanded = os.path.abspath(expanded)
+    return expanded.replace("\\", "/").lower()
 
 
 def _split_volume_source(value):
