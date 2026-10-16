@@ -212,6 +212,23 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual({item["path"] for item in json.loads(out)["files"]}, {"inside.txt"})
 
+    def test_tilde_base_with_empty_home_is_refused(self):
+        with mock.patch.dict(os.environ, {"HOME": ""}):
+            self.assertEqual(os.path.expanduser("~"), "/")  # ловушка: пустой HOME даёт корень
+            with self.assertRaises(fi.ConfigError):
+                fi.scan(self.outside, base_dir="~")
+            rc, out = run_cli([self.outside, "--base", "~"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "ConfigError")
+        self.assertNotIn("secret.txt", out)
+
+    def test_dotdot_after_in_root_loop_is_refused(self):
+        loop = os.path.join(self.base, "Lin3")
+        os.symlink(loop, loop)
+        os.makedirs(os.path.join(self.base, "sub"))
+        with self.assertRaises(fi.PathAccessError):
+            fi.resolve_root("Lin3/../sub", base_dir=self.base)
+
 
 if __name__ == "__main__":
     unittest.main()

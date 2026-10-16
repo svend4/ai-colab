@@ -14,6 +14,7 @@ CLI (--base is required: the report stays inside it, and symlinks that lead outs
 """
 import argparse
 import datetime
+import errno
 import hashlib
 import json
 import mimetypes
@@ -93,6 +94,23 @@ def _readable_path(path, allowed):
     return real if inside else None
 
 
+def _has_loop(path: Path) -> bool:
+    # A symlink loop anywhere in the path, even when a later ".." walks the result back inside.
+    try:
+        os.path.realpath(path, strict=True)
+    except OSError as exc:
+        return exc.errno == errno.ELOOP
+    return False
+
+
+def _expand_base(base_dir) -> str:
+    # "~" is expanded for the base only. An empty HOME turns it into "/": a refusal, not the root.
+    expanded = os.path.expanduser(str(base_dir))
+    if expanded == os.sep and str(base_dir).strip() != os.sep:
+        raise ConfigError("allowed root must not expand to / (fail-closed)")
+    return expanded
+
+
 def resolve_root(root_path, base_dir=None):
     # A blank base, or "." (what an empty Path("") becomes), is refused: the cwd must not become
     # the boundary by accident. The CLI turns an explicit "." into an absolute path first.
@@ -102,14 +120,16 @@ def resolve_root(root_path, base_dir=None):
     # whether it exists or not. Without base_dir the root itself is the boundary.
     try:
         if base_dir is None:
-            root = Path(root_path).expanduser().resolve()
+            joined = Path(root_path).expanduser()
+            root = joined.resolve()
             allowed = root
         else:
             # "~" is not expanded under the base: the answer must not depend on system accounts.
-            allowed = Path(base_dir).expanduser().resolve()
+            allowed = Path(_expand_base(base_dir)).resolve()
             raw = Path(root_path)
-            root = (raw if raw.is_absolute() else allowed / raw).resolve()
-        inside = _is_relative_to(root, allowed) and _is_physical(root)
+            joined = raw if raw.is_absolute() else allowed / raw
+            root = joined.resolve()
+        inside = _is_relative_to(root, allowed) and _is_physical(root) and not _has_loop(joined)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
     if not inside:
@@ -169,7 +189,7 @@ def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
 def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
          hash_files=False, max_hash_bytes=DEFAULT_MAX_HASH_BYTES, base_dir=None):
     root = resolve_root(root_path, base_dir=base_dir)
-    allowed = Path(base_dir).expanduser().resolve() if base_dir is not None else root
+    allowed = Path(_expand_base(base_dir)).resolve() if base_dir is not None else root
     files = []
     summary = {
         "total_files": 0,
@@ -292,7 +312,7 @@ def main(argv=None):
             include_hidden=args.include_hidden,
             hash_files=args.hash_files,
             max_hash_bytes=args.max_hash_bytes,
-            base_dir=os.path.abspath(os.path.expanduser(args.base)),
+            base_dir=os.path.abspath(_expand_base(args.base)),
         )
     except Exception as exc:
         print(json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False))
