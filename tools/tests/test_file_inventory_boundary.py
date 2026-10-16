@@ -15,6 +15,8 @@ import os
 import shutil
 import sys
 import unittest
+from pathlib import Path
+from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -159,6 +161,56 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         os.symlink(loop, loop)
         with self.assertRaises(fi.PathAccessError):
             fi.resolve_root("Lin", base_dir=self.base)
+
+    def test_in_root_file_loop_is_not_listed(self):
+        loop = os.path.join(self.base, "Lfile")
+        os.symlink(loop, loop)
+        report = fi.scan(self.base, base_dir=self.base)
+        self.assertEqual({item["path"] for item in report["files"]}, {"inside.txt"})
+
+    def test_error_entry_does_not_name_resolved_target(self):
+        # Внутренний симлинк на отсутствующий внутренний файл: ошибка видна, имя цели — нет.
+        os.symlink(os.path.join(self.base, "missing_in.txt"), os.path.join(self.base, "dangling_in.txt"))
+        report = fi.scan(self.base, base_dir=self.base)
+        errors = [item for item in report["files"] if "error" in item]
+        self.assertEqual([item["path"] for item in errors], ["dangling_in.txt"])
+        self.assertNotIn("missing_in.txt", json.dumps(report))
+
+    def test_unreadable_file_is_not_hashed_and_does_not_stop_scan(self):
+        # Каталог вместо файла: открыть его нельзя, но это не должно ни ронять обход, ни давать хеш.
+        self.assertIsNone(fi.sha256_file(Path(self.base)))
+        report = fi.scan(self.base, base_dir=self.base, hash_files=True)
+        self.assertEqual({item["path"] for item in report["files"]}, {"inside.txt"})
+        self.assertIsNotNone(report["files"][0]["sha256"])
+
+    def test_symlink_whose_lstat_fails_is_not_reported(self):
+        real_lstat = os.lstat
+
+        def flaky_lstat(path, *args, **kwargs):
+            if str(path).endswith("link.txt"):
+                raise PermissionError(13, "Permission denied")
+            return real_lstat(path, *args, **kwargs)
+
+        with mock.patch.object(os, "lstat", side_effect=flaky_lstat):
+            report = fi.scan(self.base, base_dir=self.base, hash_files=True)
+        self.assertEqual({item["path"] for item in report["files"]}, {"inside.txt"})
+        self.assertNotIn("link.txt", json.dumps(report))
+
+    def test_library_refuses_dot_and_empty_base(self):
+        for base in ("", ".", "   ", Path(""), Path(".")):
+            with self.subTest(base=str(base)):
+                with self.assertRaises(fi.ConfigError):
+                    fi.scan(self.outside, base_dir=base)
+
+    def test_cli_dot_base_is_the_explicit_current_directory(self):
+        cwd = os.getcwd()
+        os.chdir(self.base)
+        try:
+            rc, out = run_cli([".", "--base", "."])
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(rc, 0)
+        self.assertEqual({item["path"] for item in json.loads(out)["files"]}, {"inside.txt"})
 
 
 if __name__ == "__main__":

@@ -81,10 +81,11 @@ def _is_physical(path):
 
 def _readable_path(path, allowed):
     # A symlink that leads outside the allowed root (or loops) is not read at all:
-    # no name, size or hash. Regular paths are returned as they are.
-    if not os.path.islink(path):
-        return path
+    # no name, size or hash. Regular paths are returned as they are. An entry that cannot
+    # be examined is left out too, since it cannot be shown to be inside.
     try:
+        if not stat.S_ISLNK(os.lstat(path).st_mode):
+            return path
         real = path.resolve()
         inside = _is_relative_to(real, allowed) and _is_physical(real)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
@@ -93,8 +94,10 @@ def _readable_path(path, allowed):
 
 
 def resolve_root(root_path, base_dir=None):
-    if base_dir is not None and not str(base_dir).strip():
-        raise ConfigError("allowed root is blank (fail-closed)")
+    # A blank base, or "." (what an empty Path("") becomes), is refused: the cwd must not become
+    # the boundary by accident. The CLI turns an explicit "." into an absolute path first.
+    if base_dir is not None and (not str(base_dir).strip() or Path(base_dir).parts == ()):
+        raise ConfigError("allowed root must be an explicit path, not blank or '.' (fail-closed)")
     # The boundary is checked before exists(), so an outside path gets the same answer
     # whether it exists or not. Without base_dir the root itself is the boundary.
     try:
@@ -150,12 +153,16 @@ def risk_flags(path, mode):
 
 
 def sha256_file(path, max_bytes=DEFAULT_MAX_HASH_BYTES):
-    if path.stat().st_size > max_bytes:
+    # An unreadable file is not hashed and does not stop the scan; the error names no path.
+    try:
+        if path.stat().st_size > max_bytes:
+            return None
+        digest = hashlib.sha256()
+        with path.open("rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                digest.update(chunk)
+    except OSError:
         return None
-    digest = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(1024 * 1024), b""):
-            digest.update(chunk)
     return digest.hexdigest()
 
 
@@ -194,7 +201,7 @@ def scan(root_path, max_files=DEFAULT_MAX_FILES, include_hidden=False,
             try:
                 st = target.stat()
             except OSError as exc:
-                files.append({"path": rel, "error": str(exc)})
+                files.append({"path": rel, "error": exc.strerror or type(exc).__name__})
                 continue
 
             ext = path.suffix.lower() or "(none)"
@@ -285,7 +292,7 @@ def main(argv=None):
             include_hidden=args.include_hidden,
             hash_files=args.hash_files,
             max_hash_bytes=args.max_hash_bytes,
-            base_dir=args.base,
+            base_dir=os.path.abspath(os.path.expanduser(args.base)),
         )
     except Exception as exc:
         print(json.dumps({"error": type(exc).__name__, "message": str(exc)}, ensure_ascii=False))
