@@ -289,15 +289,15 @@
 | [T-280.md](../tasks/T-280.md) | task | blocked | Recovered task source for the D-033 human decision gate. It remains `blocked` because acce |
 | [T-281.md](../tasks/T-281.md) | task | done | Recovered task source for documentation references. The related topic closeout notes are p |
 | [T-282.md](../tasks/T-282.md) | task | done | Recovered task source for documentation references. The cleanup result is represented by ` |
-| [T-285.md](../tasks/T-285.md) | task | doing | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
+| [T-285.md](../tasks/T-285.md) | task | todo | Доработать драйвер `codex-local` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-286.md](../tasks/T-286.md) | task | done | Доработать драйвер `data` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-287.md](../tasks/T-287.md) | task | done | Доработать драйвер `files` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-288.md](../tasks/T-288.md) | task | done | Доработать драйвер `repo-runner` по замечаниям верификации 2026-07-06 (см. секцию |
 | [T-290.md](../tasks/T-290.md) | task | done | Доработать черновик дисциплины автономных действий `decisions/D-033.md` по |
 | [T-291.md](../tasks/T-291.md) | task | done | Стандарт безопасного коммита оформлен (docs/commit-safety-standard.md, |
 | [T-292.md](../tasks/T-292.md) | task | done | Проверить, что весь pipeline работает от начала до конца без ручного вмешательства. |
-| [T-293.md](../tasks/T-293.md) | task | done | 1. `drivers/codex-local.md` |
-| [T-294.md](../tasks/T-294.md) | task | done | Добавить второй слой защиты после инцидента с `git commit --no-verify`: проверять уже созд |
-| [T-295.md](../tasks/T-295.md) | task | todo | Сделать так, чтобы полезные ответы агентов не оставались мёртвым текстом. Инструмент долже |
-| [T-296.md](../tasks/T-296.md) | task | todo | Дать людям и агентам явный список задач, которые можно брать без риска разрушения истории: |
+| [T-293.md](../tasks/T-293.md) | task | doing | 1. `drivers/codex-local.md` |
+| [T-294.md](../tasks/T-294.md) | task | done | Recovered task source for the D-026 bulk-deletion guard. The shard text is not in git hist |
+| [T-295.md](../tasks/T-295.md) | task | todo | Recovered task source for the cauldron materializer. The shard text is not in git history: |
+| [T-296.md](../tasks/T-296.md) | task | todo | Recovered task source for the additive enrichment shortlist. The shard text is not in git  |
 | [T-297.md](../tasks/T-297.md) | task | todo | D-039 ратифицировал два гейта. Гейт A (worktree_gate) уже в `commit.py` (advisory→BLOCK |

@@ -58,9 +58,10 @@ def run():
     assert pipe_by_id["F-010"]["status"] == "warn", pipe_by_id
 
     tmp_base_candidates = [
-        os.path.join(r"C:\tmp", "ai_colab_friction_test"),
         os.path.join(friction.ROOT, "tmp-work", "friction_test_runtime"),
     ]
+    if os.name == "nt":  # C:\tmp только на Windows; на Linux это относительный путь в cwd
+        tmp_base_candidates.insert(0, os.path.join(r"C:\tmp", "ai_colab_friction_test"))
     last_error = None
     tmp = None
     for candidate in tmp_base_candidates:

@@ -3695,7 +3695,7 @@
     {
       "id": "T-285",
       "title": "Доработка драйвера codex-local по замечаниям верификации D-015",
-      "status": "doing",
+      "status": "todo",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3772,7 +3772,7 @@
     {
       "id": "T-293",
       "title": "D-015 driver verification — cross-agent review для 4 ready-драйверов",
-      "status": "done",
+      "status": "doing",
       "owner": "pool",
       "priority": "normal",
       "risk": "low",
@@ -3986,6 +3986,13 @@
       "status": "answered",
       "where": "topics/information-refactoring-cycle-3-2026-06-25.md",
       "outcome": "answered by D-027 (accepted 2026-07-06) + docs/agent-approval-matrix.md; roster fixed per A4 (antigravity out until incident explanation; subagent-worker = service agent)"
+    },
+    {
+      "id": "Q-024",
+      "title": "Что делать с T-285: задача в doing без claim блокирует drift-гейт smoke",
+      "status": "answered",
+      "where": "tasks/T-285.md, tools/drift_check.py (пункт «orphan: doing без claim»)",
+      "outcome": "\"Выбран вариант A, T-285 возвращена в todo и резерв снят. Решение 2026-10-16 через карточку решения в треде проекта.\""
     }
   ],
   "decisions": [
@@ -4320,7 +4327,7 @@
       "title": "Files driver — безопасное чтение и инвентаризация файлов",
       "file": "drivers/files.md",
       "status": "ready",
-      "level": "L2",
+      "level": "L1",
       "mode": "read-only",
       "owner": "Codex",
       "risk": "low",

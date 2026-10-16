@@ -1,12 +1,11 @@
 <!-- GENERATED folder_index.py — НЕ редактировать руками; навигация-через-метаданные -->
-# Индекс папки `topics/` — 84 файлов, 5 подпапок
+# Индекс папки `topics/` — 84 файлов, 4 подпапок
 
 > Машино- и человекочитаемое оглавление визиток (вместо шардинга плоской папки).
 
 ## Подпапки
 
 - `topics/agent-onboarding/`
-- `topics/archive/`
 - `topics/commit-policy/`
 - `topics/driver-acceptance-batch/`
 - `topics/repo-review/`

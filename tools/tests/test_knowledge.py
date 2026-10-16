@@ -35,6 +35,7 @@ from test_tmp import temp_dir  # workspace-safe temp под ROOT/tmp-work (вн�
 def run():
     ok = True
     db = os.path.join(ROOT, "logs", "_kn_test.db")
+    os.makedirs(os.path.dirname(db), exist_ok=True)  # logs/ может отсутствовать в чистом checkout
     try:
         with temp_dir("kn_corpus_") as corpus:
             with open(os.path.join(corpus, "a.md"), "w", encoding="utf-8", newline="\n") as f:
@@ -68,7 +69,7 @@ def run():
                 conn.close()
 
             # отчёт строится без ошибок
-            rep = kn.report(corpus, db=os.path.join("logs", "_kn_test2.db"), query_text="текст")
+            rep = kn.report(corpus, db=os.path.join(ROOT, "logs", "_kn_test2.db"), query_text="текст")
             assert "Knowledge report" in rep and "Состав по типам" in rep, rep[:200]
             assert isinstance(rep, str) and rep.startswith("# Knowledge report"), rep[:80]
 

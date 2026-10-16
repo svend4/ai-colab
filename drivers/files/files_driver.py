@@ -91,6 +91,8 @@ def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_di
     root_path = _resolve_path(root, base_dir)
     if not root_path.is_dir():
         raise NotADirectoryError(str(root_path))
+    # граница — разрешённая папка (base_dir); файл-симлинк наружу не отдаём ни в list, ни в search
+    allowed = Path(base_dir).expanduser().resolve() if base_dir is not None else root_path
 
     count = 0
     for dp, dirs, fns in os.walk(root_path):
@@ -101,6 +103,12 @@ def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_di
             if count >= max_files:
                 return
             full_path = Path(dp) / fn
+            try:
+                inside = _is_relative_to(full_path.resolve(), allowed)
+            except (OSError, RuntimeError):  # RuntimeError: цикл симлинков до Python 3.13
+                inside = False
+            if not inside:
+                continue
             rel = full_path.relative_to(root_path).as_posix()
             count += 1
             yield rel, full_path

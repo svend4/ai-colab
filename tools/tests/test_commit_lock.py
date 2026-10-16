@@ -31,9 +31,10 @@ REPO_ROOT = os.path.dirname(HERE)
 
 def prepare_root():
     candidates = [
-        os.path.join(r"C:\tmp", "ai_colab_commit_lock_test"),
         os.path.join(REPO_ROOT, "tmp-work", "commit_lock_test_runtime"),
     ]
+    if os.name == "nt":  # C:\tmp только на Windows; на Linux это относительный путь в cwd
+        candidates.insert(0, os.path.join(r"C:\tmp", "ai_colab_commit_lock_test"))
     last_error = None
     for root in candidates:
         try:

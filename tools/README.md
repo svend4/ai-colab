@@ -42,7 +42,7 @@
 несвежесть ловится `python tools/generate.py --check` (pre-commit hook).
 
 <!-- GEN:tools-index START — генерируется tools/generate.py, не править вручную -->
-Всего не-тестовых инструментов: 139. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
+Всего не-тестовых инструментов: 146. Источник описаний: D-Card SUMMARY ([FILE ID CARD]) или первая строка докстринга модуля; обновляется `python tools/generate.py`, несвежесть ловит `--check` (hook/CI).
 
 | Инструмент | Назначение |
 |---|---|
@@ -72,6 +72,7 @@
 | `capabilities.py` | Генерирует system-capabilities.json — машинный манифест возможностей верхнего слоя. |
 | `card.py` | card.py — универсальная КАРТОЧКА-визитка: фрактальная единица коммуникации (средний слой). |
 | `cauldron_task_materializer.py` | Cauldron Task Materializer (T-276) |
+| `chrono_guard.py` | — |
 | `cli_inventory.py` | Read-only inventory of tools/*.py CLI help/json safety patterns. |
 | `code_activation.py` | Read-only activation plan for code artifacts; no execute. |
 | `code_pyramid.py` | code_pyramid.py — линт «3 слоёв» внутри .py (ответ на §3.3 вопросника триадности). |
@@ -99,6 +100,7 @@
 | `drivers_catalog.py` | Генератор каталога драйверов (T-030). |
 | `edges.py` | типизированный граф связей (DIV-07/08): первоклассные направленные рёбра над атомами. |
 | `enforce_metadata.py` | Проверяет наличие и валидность D-Cards во всех файлах tools/. |
+| `entropy_monitor.py` | — |
 | `execute_audit.py` | Audit & Rollback Logger для execute-sandbox (Gates 7/8). |
 | `execute_human_gate.py` | Механизм человеко-подтверждения для execute-sandbox (Gate 10). |
 | `execute_preflight.py` | Preflight-чекер для execute-sandbox (Gates 4/5, 6, 9). |
@@ -113,6 +115,7 @@
 | `git_reconcile.py` | git merge-driver: при коллизии канон-файла зовёт crdt_merge (field-level 3-way). |
 | `header.py` | header.py — визитка-шапка файла (C-07: консенсус 2+ агентов) — извлечь/линтить/покрытие. |
 | `heading_check.py` | heading_check.py — внутренняя структура файла (C-11 «файл-как-дерево») — heading-lint + нумерация. |
+| `holo_distiller.py` | — |
 | `immune.py` | иммунная система канона (negative-selection детектор аномалий). |
 | `independence_measure.py` | несущая стена №2: измерить независимость вариантов, а не объявить. |
 | `independent_first.py` | Checks that an independent-first stream has real own sections before repo-search/comparison. |
@@ -141,6 +144,7 @@
 | `portals.py` | средний слой охвата (И-8, золотая середина): варианты → кластеры/порталы по ТЕМЕ. |
 | `promote.py` | Promotion gate пирамиды рабочих областей (ответ на open-question 5 |
 | `python_analyzer.py` | Read-only semantic AST analyzer for Python code. |
+| `quantum_merge.py` | — |
 | `question_tree.py` | Read-only extractor for numbered question trees: questions, answers, statuses, next-action hints. |
 | `queue.py` | Совместимостный алиас на agent_queue.py (историческое имя queue.py из доков, T-009). |
 | `race_test.py` | Тест атомарности claim под реальной гонкой (предложение Mavis из dogfood-прогона). |
@@ -179,11 +183,14 @@
 | `topic_sanitation.py` | advisory-детектор залежавшихся proposed/open-тем (болото идей, диагноз mavis FM-1). |
 | `two_track.py` | two_track.py — двухтрековая классификация работы для котла/конвейера. |
 | `validate.py` | Главный валидатор (T-004/T-070/T-164). Проверяет целостность ссылок, статус файлов, сироты, драйверы. |
+| `validate_staged.py` | validate_staged.py — быстрый локальный гейт: проверяет ТОЛЬКО staged канон-файлы. |
 | `variants.py` | Variants (D-018) — READ-ONLY реестр/дискавери параллельных форк-вариантов по всему репо. |
 | `view.py` | релевантный СРЕЗ канона под задачу (подача контекста агенту), над существующими рёбрами. |
 | `view_html.py` | компиляция среза канона в самодостаточный <details>-каскад HTML (progressive disclosure). |
+| `work_admission.py` | work_admission.py — потолок одновременности + очередь (Гейт B). |
 | `workflow_recover.py` | восстановление ПАРТИАЛ-результатов фонового workflow (durability слоя оркестрации). |
 | `worktree.py` | worktree (Уровень-1 политики коммитов, T-136 — принят Stefan 2026-06-21) — git-worktree на агента. |
+| `worktree_gate.py` | worktree_gate.py — направляет агентов в worktree при высокой одновременности. |
 | `zone_overlap.py` | Zone-overlap advisory (M3, Codex §4.4) — пересечения зон активных пакетов котла (proposed, не enforced). |
 <!-- GEN:tools-index END -->
 
