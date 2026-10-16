@@ -73,6 +73,12 @@ def _is_relative_to(path, base):
         return False
 
 
+def _is_physical(path):
+    # On Python 3.12 resolve() after a symlink loop leaves the tail unresolved and collapses ".."
+    # by text, so the result can still name a symlink. A fully resolved path contains none.
+    return not any(part.is_symlink() for part in (path, *path.parents))
+
+
 def _readable_path(path, allowed):
     # A symlink that leads outside the allowed root (or loops) is not read at all:
     # no name, size or hash. Regular paths are returned as they are.
@@ -80,9 +86,10 @@ def _readable_path(path, allowed):
         return path
     try:
         real = path.resolve()
+        inside = _is_relative_to(real, allowed) and _is_physical(real)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         return None
-    return real if _is_relative_to(real, allowed) else None
+    return real if inside else None
 
 
 def resolve_root(root_path, base_dir=None):
@@ -99,7 +106,7 @@ def resolve_root(root_path, base_dir=None):
             allowed = Path(base_dir).expanduser().resolve()
             raw = Path(root_path)
             root = (raw if raw.is_absolute() else allowed / raw).resolve()
-        inside = _is_relative_to(root, allowed)
+        inside = _is_relative_to(root, allowed) and _is_physical(root)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
     if not inside:

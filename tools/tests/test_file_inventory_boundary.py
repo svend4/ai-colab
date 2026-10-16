@@ -137,6 +137,29 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         names = {item["path"] for item in fi.scan(self.base, base_dir=self.base)["files"]}
         self.assertEqual(names, {"inside.txt", "alias.txt"})
 
+    def _loop_then_dotdot_fixture(self):
+        # L -> сам себя, S -> ../outside. На Python 3.12 L/../S читал внешний каталог: resolve()
+        # после цикла схлопывает «..» по тексту, и результат называет S внутри базы.
+        loop = os.path.join(self.base, "L")
+        os.symlink(loop, loop)
+        os.symlink(os.path.join("..", "outside"), os.path.join(self.base, "S"))
+
+    def test_dotdot_after_loop_cannot_reach_outside(self):
+        self._loop_then_dotdot_fixture()
+        with self.assertRaises(fi.PathAccessError):
+            fi.resolve_root("L/../S", base_dir=self.base)
+        rc, out = run_cli(["L/../S", "--base", self.base, "--hash"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn("secret.txt", out)
+        self.assertNotIn(MARKER.strip(), out)
+
+    def test_in_root_loop_is_outside_on_every_version(self):
+        loop = os.path.join(self.base, "Lin")
+        os.symlink(loop, loop)
+        with self.assertRaises(fi.PathAccessError):
+            fi.resolve_root("Lin", base_dir=self.base)
+
 
 if __name__ == "__main__":
     unittest.main()
