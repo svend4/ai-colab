@@ -269,8 +269,14 @@ class CliBaseTest(unittest.TestCase):
 
     def test_open_error_for_in_base_symlink_names_the_given_path(self):
         os.symlink(os.path.join(self.base, "inside.txt"), os.path.join(self.base, "alias_in.txt"))
-        target = os.path.join(self.base, "inside.txt")
-        with mock.patch.object(fd.Path, "open", side_effect=PermissionError(13, "Permission denied", target)):
+        real_open = os.open
+
+        def failing_open(name, flags, *args, **kwargs):
+            if os.path.basename(str(name)) == "inside.txt":
+                raise PermissionError(13, "Permission denied", str(name))
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fd.os, "open", side_effect=failing_open):
             rc, out = run_files_cli(["read", "alias_in.txt", "--base", self.base])
         self.assertEqual(rc, 1)
         self.assertEqual(json.loads(out)["error"], "PermissionError")
@@ -331,6 +337,75 @@ class CliBaseTest(unittest.TestCase):
         self.assertEqual(alias["error"], "not a directory")
         self.assertEqual(alias["path"], os.path.join(self.base, "alias_in.txt"))
         self.assertNotIn("missing_in.txt", json.dumps([dangling, alias]))
+
+    def test_inventory_library_without_base_is_refused(self):
+        # Корень сам себе граница не служит: без базы библиотека отказывает (fail-closed).
+        for base in (None, ""):
+            with self.subTest(base=base):
+                report = inv.inventory(self.base, base_dir=base)
+                self.assertEqual(report["error"], "ConfigError")
+                self.assertNotIn("inside.txt", json.dumps(report))
+        self.assertEqual(inv.inventory(self.base)["error"], "ConfigError")
+
+    def test_hard_link_to_outside_file_is_not_served_or_listed(self):
+        hard = os.path.join(self.base, "hard.txt")
+        try:
+            os.link(self.secret, hard)
+        except OSError:
+            self.skipTest("жёсткие ссылки недоступны в этой ФС")
+        rc, out = run_files_cli(["read", "hard.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn(MARKER, out)
+        self.assertNotIn("hard.txt", fd.list_files(self.base, base_dir=self.base))
+        report = inv.inventory(self.base, base_dir=self.base, hash_files=True)
+        self.assertNotIn("hard.txt", {item["path"] for item in report["files"]})
+        self.assertNotIn(MARKER, json.dumps(report))
+
+    def test_race_swap_of_file_before_open_is_refused(self):
+        # Файл прошёл проверку границы, а перед открытием заменён симлинком наружу: O_NOFOLLOW даёт ELOOP.
+        target = os.path.join(self.base, "inside.txt")
+        real_open = os.open
+        swapped = []
+
+        def swap_then_open(name, flags, *args, **kwargs):
+            if os.path.basename(str(name)) == "inside.txt" and not swapped:
+                swapped.append(name)
+                os.remove(target)
+                os.symlink(self.secret, target)
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fd.os, "open", side_effect=swap_then_open):
+            rc, out = run_files_cli(["read", "inside.txt", "--base", self.base])
+        self.assertEqual(swapped, ["inside.txt"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn(MARKER, out)
+
+    def test_race_swap_of_directory_before_open_is_refused(self):
+        # Каталог внутри базы подменён симлинком наружу уже после проверки: цепочка dir_fd по нему не идёт.
+        sub = os.path.join(self.base, "sub")
+        os.makedirs(sub)
+        with open(os.path.join(sub, "deep.txt"), "w", encoding="utf-8") as f:
+            f.write(INSIDE_TEXT)
+        with open(os.path.join(self.outside, "deep.txt"), "w", encoding="utf-8") as f:
+            f.write(MARKER + "\n")
+        real_open = os.open
+        swapped = []
+
+        def swap_then_open(name, flags, *args, **kwargs):
+            if name == "sub" and not swapped:
+                swapped.append(name)
+                shutil.rmtree(sub)
+                os.symlink(self.outside, sub)
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fd.os, "open", side_effect=swap_then_open):
+            rc, out = run_files_cli(["read", "sub/deep.txt", "--base", self.base])
+        self.assertEqual(swapped, ["sub"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PathAccessError")
+        self.assertNotIn(MARKER, out)
 
 
 if __name__ == "__main__":

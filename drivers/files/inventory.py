@@ -14,12 +14,15 @@ import errno
 import hashlib
 import json
 import os
+import stat
 import sys
 from pathlib import Path
 
 
 DEFAULT_MAX_FILES = 1000
 DEFAULT_MAX_HASH_BYTES = 10 * 1024 * 1024
+# O_NOFOLLOW and dir_fd are not available everywhere (not on Windows); there the path-based check stays.
+_SAFE_OPEN = hasattr(os, "O_NOFOLLOW") and os.open in os.supports_dir_fd
 
 SKIP_DIRS = {
     ".git",
@@ -56,23 +59,6 @@ TEXT_EXTENSIONS = {
     ".ps1",
     ".sh",
 }
-
-
-def sha256_file(path: Path, max_bytes: int):
-    try:
-        size = path.stat().st_size
-    except OSError:
-        return None
-    if size > max_bytes:
-        return None
-    h = hashlib.sha256()
-    try:
-        with path.open("rb") as f:
-            for chunk in iter(lambda: f.read(1024 * 1024), b""):
-                h.update(chunk)
-    except OSError:
-        return None
-    return h.hexdigest()
 
 
 def file_kind(path: Path) -> str:
@@ -137,26 +123,130 @@ def _expand_base(base_dir: str) -> str:
     return expanded
 
 
-def _inside_root(path: Path, allowed: Path) -> bool:
-    # A symlink that leads outside the allowed root is not reported at all: no name, size or hash.
+def _resolve_base(base_dir) -> Path:
+    # The allowed root is required: without it nothing is reported, and the root is never its own boundary.
+    # A blank base and "." (what Path("") gives) are refused too.
+    if base_dir is None or not str(base_dir).strip() or Path(base_dir).parts == ():
+        raise ValueError("base_dir must be an explicit path, not blank or '.' (fail-closed)")
+    try:
+        resolved = Path(_expand_base(base_dir)).resolve()
+    except (OSError, RuntimeError):  # a loop at the base itself: RuntimeError before Python 3.13
+        raise ValueError("allowed root is not a usable directory (fail-closed)") from None
+    if not _is_physical(resolved):  # Python 3.13 does not raise on a loop, it leaves the symlink in place
+        raise ValueError("allowed root is not a usable directory (fail-closed)")
+    return resolved
+
+
+def _inside_root(path: Path, allowed: Path):
+    # The physical path inside the allowed root, or None. A symlink that leads outside, a loop and a
+    # missing path are not reported at all: no name, size or hash.
     try:
         real = path.resolve()
-        return _is_relative_to(real, allowed) and _is_physical(real)
+        if _is_relative_to(real, allowed) and _is_physical(real):
+            return real
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
-        return False
+        pass
+    return None
+
+
+def _is_hardlink(path: Path) -> bool:
+    # A hard link (several names for one inode) can reach a file outside the root, so such files are not reported.
+    try:
+        return os.stat(path).st_nlink > 1
+    except OSError:
+        return True  # cannot check: not reported (fail-closed)
+
+
+def _parent_dirfd(base: Path, physical: Path):
+    # Open the file's directory from the base with dir_fd, one component at a time, each with O_NOFOLLOW.
+    # A component swapped for a symlink after the check fails with ELOOP. Returns (dir fd, file name);
+    # the caller closes the fd.
+    try:
+        parts = physical.relative_to(base).parts
+    except ValueError:
+        raise ValueError("path is outside allowed root (fail-closed)") from None
+    if not parts:
+        raise ValueError("not a file (fail-closed)")
+    dirfd = os.open(str(base), os.O_RDONLY)
+    try:
+        for name in parts[:-1]:
+            nextfd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+            os.close(dirfd)
+            dirfd = nextfd
+    except BaseException:
+        os.close(dirfd)
+        raise
+    return dirfd, parts[-1]
+
+
+def _stat_physical(base: Path, physical: Path, given: str):
+    # Size and type without opening the file for reading, so an unreadable file is still counted, as before.
+    if not _SAFE_OPEN:
+        st = os.stat(str(physical))
+    else:
+        dirfd, name = _parent_dirfd(base, physical)
+        try:
+            st = os.stat(name, dir_fd=dirfd, follow_symlinks=False)
+        finally:
+            os.close(dirfd)
+    if stat.S_ISLNK(st.st_mode):  # swapped for a symlink after the check: not a file
+        raise FileNotFoundError(errno.ENOENT, "not a file", str(given))
+    return st
+
+
+def _open_physical(base: Path, physical: Path) -> int:
+    # Open through the dir_fd chain with O_NOFOLLOW. O_NONBLOCK stops a FIFO from blocking the open;
+    # fstat then refuses it, and so it refuses a hard link (st_nlink > 1).
+    if not _SAFE_OPEN:
+        fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
+    else:
+        dirfd, name = _parent_dirfd(base, physical)
+        try:
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+        finally:
+            os.close(dirfd)
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise ValueError("not a regular file (fail-closed)")
+        if st.st_nlink > 1:
+            raise ValueError("hard-linked file is refused (fail-closed)")
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
+def _sha256_physical(base: Path, physical: Path, max_bytes: int):
+    # Hash through the fd from _open_physical, so a swapped or hard-linked file is never read.
+    try:
+        fd = _open_physical(base, physical)
+    except (OSError, ValueError):
+        return None
+    try:
+        with os.fdopen(fd, "rb") as f:
+            if os.fstat(f.fileno()).st_size > max_bytes:
+                return None
+            h = hashlib.sha256()
+            for chunk in iter(lambda: f.read(1024 * 1024), b""):
+                h.update(chunk)
+    except OSError:
+        return None
+    return h.hexdigest()
 
 
 def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden: bool = False,
               hash_files: bool = False, max_hash_bytes: int = DEFAULT_MAX_HASH_BYTES,
               base_dir=None) -> dict:
-    if base_dir is not None and (not str(base_dir).strip() or Path(base_dir).parts == ()):
-        return {"error": "ConfigError", "message": "base_dir must be an explicit path, not blank or '.' (fail-closed)"}
+    try:
+        allowed = _resolve_base(base_dir)
+    except ValueError as exc:
+        return {"error": "ConfigError", "message": str(exc)}
     # The boundary is checked before exists(), so an outside path gets the same answer
     # whether it exists or not. A symlink loop that cannot be resolved counts as outside.
     try:
         raw = Path(root_path)
         root = raw.resolve()
-        allowed = Path(base_dir).resolve() if base_dir is not None else root
         inside = _is_relative_to(root, allowed) and _is_physical(root) and not _has_loop(raw)
     except (OSError, RuntimeError):  # RuntimeError: symlink loop on Python < 3.13
         inside = False
@@ -181,8 +271,8 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
     for dirpath, dirnames, filenames in os.walk(root):
         kept_dirs = []
         for dirname in dirnames:
-            if not _inside_root(Path(dirpath) / dirname, allowed):
-                continue  # каталог-симлинк наружу: ни имени, ни счёта
+            if _inside_root(Path(dirpath) / dirname, allowed) is None:
+                continue  # a directory symlink leading outside: no name and no count
             if should_skip_dir(dirname, include_hidden):
                 skipped_dirs.append(str((Path(dirpath) / dirname).relative_to(root)))
             else:
@@ -194,8 +284,9 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
             if should_skip_file(filename, include_hidden):
                 continue
             path = Path(dirpath) / filename
-            if not _inside_root(path, allowed):
-                continue
+            real = _inside_root(path, allowed)
+            if real is None or _is_hardlink(real):
+                continue  # outside, a loop, or a hard link: no name and no count
             if total_files >= max_files:
                 truncated = True
                 dirnames[:] = []
@@ -205,9 +296,8 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
             suffix = path.suffix.lower() or "<none>"
             kind = file_kind(path)
             try:
-                stat = path.stat()
-                size = stat.st_size
-            except OSError as exc:
+                size = _stat_physical(allowed, real, rel).st_size
+            except (OSError, ValueError) as exc:
                 errors.append({"path": rel, "error": str(exc)})
                 size = 0
 
@@ -224,7 +314,7 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
                 "size_bytes": size,
             }
             if hash_files:
-                digest = sha256_file(path, max_hash_bytes)
+                digest = _sha256_physical(allowed, real, max_hash_bytes)
                 if digest:
                     entry["sha256"] = digest
                 else:
