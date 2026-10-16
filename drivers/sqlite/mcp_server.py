@@ -16,10 +16,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # drivers/ — общие хелперы
 import sqlite_driver as sd
 from audit import audit  # аудит вызовов: risk=medium (policy, D-015)
+
+BASE = os.environ.get("SQLITE_DRIVER_BASE", "")
+if not BASE.strip():  # проверка до импорта mcp: отказ виден и без FastMCP
+    sys.exit("SQLITE_DRIVER_BASE не задан: укажите allowed-root (fail-closed, docs/files-driver-hardening.md)")
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("sqlite")
-BASE = os.environ.get("SQLITE_DRIVER_BASE") or os.getcwd()
 
 
 @mcp.tool()

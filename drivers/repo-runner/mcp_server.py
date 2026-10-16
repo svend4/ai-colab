@@ -19,7 +19,7 @@ stdio). Только инспекция репозитория: структур
 Ограничение зоны:
     REPO_RUNNER_BASE=<allowed-root> python drivers/repo-runner/mcp_server.py
 
-Если REPO_RUNNER_BASE не задан, allowed-root равен текущей рабочей папке процесса.
+Без REPO_RUNNER_BASE сервер не стартует (fail-closed, см. docs/files-driver-hardening.md).
 """
 import os
 import sys
@@ -28,10 +28,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # drivers/ — общие хелперы
 import inventory
 from audit import audit  # аудит вызовов: risk=medium (driver-safety-policy, ревью T-078 E)
+
+BASE_DIR = os.environ.get("REPO_RUNNER_BASE", "")
+if not BASE_DIR.strip():  # проверка до импорта mcp: отказ виден и без FastMCP
+    sys.exit("REPO_RUNNER_BASE не задан: укажите allowed-root (fail-closed, docs/files-driver-hardening.md)")
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("repo-runner")
-BASE_DIR = os.environ.get("REPO_RUNNER_BASE") or os.getcwd()
 
 
 def _scan(repo_path: str, max_files: int) -> dict:

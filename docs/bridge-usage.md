@@ -46,7 +46,7 @@ args = ["<repo>/drivers/gateway/mcp_server.py"]
 env = { GATEWAY_BASE = "<allowed-root>" }
 ```
 
-`GATEWAY_BASE` ограничивает зону доступа (allowed-root). Без него — текущая рабочая папка.
+`GATEWAY_BASE` ограничивает зону доступа (allowed-root) и обязателен: без него gateway не стартует (fail-closed, см. `docs/files-driver-hardening.md`).
 
 ## 4. Безопасность (что гарантировано)
 

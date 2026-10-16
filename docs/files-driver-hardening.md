@@ -26,7 +26,7 @@ Claude закрыл `T-046`: добавлен `drivers/files/mcp_server.py`, don
 В `drivers/files/mcp_server.py`:
 
 - добавлен `FILES_DRIVER_BASE` как allowed-root для MCP-сервера;
-- если `FILES_DRIVER_BASE` не задан, allowed-root равен текущей рабочей папке процесса;
+- если `FILES_DRIVER_BASE` не задан, сервер не стартует (fail-closed; это изменено, см. раздел «Изменение 2026-10-16» ниже);
 - MCP-инструменты передают `base_dir`, `max_files`, `max_hits`, `include_hidden` в engine;
 - MCP `read_file` всегда использует redaction;
 - MCP `search` использует substring-search, regex не открыт в tool surface.
@@ -55,3 +55,27 @@ python tools\generate.py --check
 Теперь направление правильнее: MCP-layer остаётся простым, но больше не должен видеть всю файловую систему по умолчанию. Для первого L2-драйвера это принципиально. Удобство можно расширять позже, а allowed-root и лимиты должны быть встроены сразу.
 
 Оставшийся риск один: без реального runtime-прогона нельзя подтвердить, что FastMCP schema корректно отражает новые параметры и что тесты проходят в этой Windows-среде.
+
+## Изменение 2026-10-16: fail-closed для `*_BASE`
+
+Раньше каждая точка входа делала `X_BASE or os.getcwd()`: без переменной зона тихо становилась рабочей папкой процесса. Если процесс запускали из домашней папки, зоной оказывалась вся домашняя папка. Теперь переменная зоны обязательна.
+
+| Переменная | Точка входа |
+|---|---|
+| `FILES_DRIVER_BASE` | `drivers/files/mcp_server.py` |
+| `REPO_RUNNER_BASE` | `drivers/repo-runner/mcp_server.py` |
+| `GIT_LOG_BASE` | `drivers/git-log/mcp_server.py` |
+| `DATA_DRIVER_BASE` | `drivers/data/mcp_server.py` |
+| `SQLITE_DRIVER_BASE` | `drivers/sqlite/mcp_server.py` |
+| `GATEWAY_BASE` | `drivers/gateway/mcp_server.py` |
+| `WORKBENCH_BASE` | `drivers/workbench/workbench.py`, `drivers/workbench/ingest.py` |
+| `INGEST_SOURCE_BASE` | `drivers/workbench/ingest.py` |
+
+- MCP-сервер без переменной завершается с кодом 1 и сообщением на stderr. Проверка стоит до импорта `mcp`, поэтому отказ виден даже без FastMCP.
+- CLI без переменной печатает JSON `{"error": "ConfigError", ...}` и возвращает код 2.
+- Пустая или пробельная переменная считается незаданной.
+- Клиенты MCP (например, `~/.codex/config.toml`) должны передавать нужную переменную в `env`; иначе сервер не запустится.
+
+Проверка: `tools/tests/test_base_env_fail_closed.py` (отказ каждой точки входа без переменной, пустое значение, позитивный прогон CLI с `WORKBENCH_BASE`).
+
+После merge драйвер `files` перепроверяется по D-038 (решение участника проекта).

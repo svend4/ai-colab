@@ -26,7 +26,7 @@ Claude закрыл `T-049`: добавлен `drivers/repo-runner/mcp_server.py
 В `drivers/repo-runner/mcp_server.py`:
 
 - добавлен `REPO_RUNNER_BASE` как allowed-root;
-- если env не задан, allowed-root равен текущей рабочей папке процесса;
+- если `REPO_RUNNER_BASE` не задан, сервер не стартует (fail-closed, см. `docs/files-driver-hardening.md`);
 - все MCP-tools (`inspect_repo`, `repo_summary`, `repo_risks`) передают `base_dir` и `max_files`.
 
 В `drivers/repo-runner/test_inventory.py`:

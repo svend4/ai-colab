@@ -18,7 +18,7 @@ Codex перепроверил код статически. В отличие о
 - добавлен `resolve_db_path(db_path, base_dir=None)`;
 - добавлены разрешённые suffix: `.db`, `.sqlite`, `.sqlite3`;
 - `connect()` и `init()` получили `base_dir`;
-- CLI использует `WORKBENCH_BASE` или текущую рабочую папку как allowed-root;
+- CLI использует `WORKBENCH_BASE` как allowed-root и требует её (fail-closed, см. `docs/files-driver-hardening.md`);
 - `query_documents()` и `audit()` ограничивают `limit`;
 - `ingest_repo()` получил `max_documents`.
 
