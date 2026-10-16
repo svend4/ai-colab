@@ -169,7 +169,7 @@
     {
       "audit": true,
       "id": "codex-local",
-      "level": "L1",
+      "level": "L2",
       "mode": "manual",
       "risk": "medium",
       "status": "ready",
@@ -182,11 +182,11 @@
     {
       "audit": true,
       "id": "data",
-      "level": "L1",
+      "level": "L2",
       "mode": "read-only",
       "risk": "medium",
       "status": "ready",
-      "title": "Data driver — таблицы, JSON, SQLite и индексы",
+      "title": "Data driver — CSV/TSV таблицы и табличные summary",
       "tools": [
         "list_tables",
         "columns",
@@ -257,7 +257,7 @@
     {
       "audit": true,
       "id": "repo-runner",
-      "level": "L1",
+      "level": "L2",
       "mode": "read-only",
       "risk": "medium",
       "status": "ready",
