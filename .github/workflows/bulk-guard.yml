@@ -60,6 +60,15 @@ jobs:
           fi
           echo "OK: массового удаления нет."
 
+      - name: Снимок конвейера (D-011, артефакты gitignored)
+        shell: bash
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          # PIPELINE.md и logs/pipeline.json не коммитятся, в чистом checkout их нет,
+          # а validate.py (D-011) требует их наличия — создаём снимок до проверки канона.
+          python tools/pipeline.py snapshot
+
       - name: Целостность канона (validate.py ERROR=0)
         shell: bash
         env:
