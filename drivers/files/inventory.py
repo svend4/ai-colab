@@ -153,6 +153,8 @@ def _is_hardlink(path: Path) -> bool:
     # A hard link (several names for one inode) can reach a file outside the root, so such files are not reported.
     try:
         return os.stat(path).st_nlink > 1
+    except FileNotFoundError:
+        return False  # a missing target is not a hard link: it is listed as an error, with no name
     except OSError:
         return True  # cannot check: not reported (fail-closed)
 
@@ -298,7 +300,7 @@ def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden
             try:
                 size = _stat_physical(allowed, real, rel).st_size
             except (OSError, ValueError) as exc:
-                errors.append({"path": rel, "error": str(exc)})
+                errors.append({"path": rel, "error": getattr(exc, "strerror", None) or type(exc).__name__})
                 size = 0
 
             total_files += 1

@@ -129,6 +129,8 @@ def _is_hardlink(path):
     # Жёсткая ссылка (несколько имён у одного inode) может вести к файлу снаружи: такие файлы не отдаём.
     try:
         return os.stat(path).st_nlink > 1
+    except FileNotFoundError:
+        return False  # цели нет: не жёсткая ссылка; при чтении или сводке это отказ «не файл», без имени цели
     except OSError:
         return True  # не удалось проверить: не отдаём (fail-closed)
 

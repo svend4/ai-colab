@@ -338,6 +338,13 @@ class CliBaseTest(unittest.TestCase):
         self.assertEqual(alias["path"], os.path.join(self.base, "alias_in.txt"))
         self.assertNotIn("missing_in.txt", json.dumps([dangling, alias]))
 
+    def test_dangling_in_base_symlink_is_error_entry_without_target_name(self):
+        # Симлинк внутри базы на отсутствующий внутри файл: в списке ошибка, а имени цели в отчёте нет.
+        os.symlink(os.path.join(self.base, "missing_in.txt"), os.path.join(self.base, "dangling_in.txt"))
+        report = inv.inventory(self.base, base_dir=self.base)
+        self.assertEqual([item["path"] for item in report["errors"]], ["dangling_in.txt"])
+        self.assertNotIn("missing_in.txt", json.dumps(report))
+
     def test_inventory_library_without_base_is_refused(self):
         # Корень сам себе граница не служит: без базы библиотека отказывает (fail-closed).
         for base in (None, ""):
