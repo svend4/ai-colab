@@ -74,7 +74,9 @@ def _boundary_checks(base):
         return False
 
     assert refused("L/../S/secret.docx", root), "«..» после симлинк-цикла вывел из корня"
+    os.symlink(os.path.join(root, "Ltx"), os.path.join(root, "Ltx"))
     assert refused("S/secret.docx", root), "симлинк наружу не отказан"
+    assert refused("Ltx/../inside.docx", root), "«..» после петли внутри корня вернул файл"
     assert refused(os.path.join(outside, "secret.docx"), root), "абсолютный путь наружу не отказан"
     cwd = os.getcwd()
     os.chdir(root)

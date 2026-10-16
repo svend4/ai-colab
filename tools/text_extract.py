@@ -20,6 +20,7 @@ CLI:
     python tools/text_extract.py extract <file> [--base ROOT]
     python tools/text_extract.py summary <file> [--base ROOT]
 """
+import errno
 import os
 import sys
 from _ioutil import configure_output
@@ -105,6 +106,15 @@ def _is_physical(path):
         current = parent
 
 
+def _has_loop(path):
+    # Цикл симлинков в пути, даже если «..» потом уводит результат внутрь: строгий realpath() кидает ELOOP.
+    try:
+        os.path.realpath(path, strict=True)
+    except OSError as exc:
+        return exc.errno == errno.ELOOP
+    return False
+
+
 def _docx_read(path, base_dir):
     """Извлечь текст .docx чистой stdlib (zipfile + WordprocessingML), с confinement и redaction.
 
@@ -117,7 +127,7 @@ def _docx_read(path, base_dir):
     real = os.path.realpath(raw)
     base_real = os.path.realpath(base_dir)
     try:
-        inside = os.path.commonpath([real, base_real]) == base_real and _is_physical(real)
+        inside = os.path.commonpath([real, base_real]) == base_real and _is_physical(real) and not _has_loop(raw)
     except ValueError:  # разные диски (Windows) — точно вне корня
         inside = False
     if not inside:
