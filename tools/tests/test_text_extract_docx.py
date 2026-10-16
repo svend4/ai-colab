@@ -52,10 +52,45 @@ def _make_docx(path, paragraphs):
         zf.writestr("word/document.xml", doc)
 
 
+def _boundary_checks(base):
+    # Граница корня. На Python 3.12 realpath() после цикла симлинков схлопывает «..» по тексту:
+    # L/../S/secret.docx оказывался внутри корня, хотя читал файл снаружи через симлинк S.
+    root = os.path.join(base, "allowed")
+    outside = os.path.join(base, "outside")
+    os.makedirs(root)
+    os.makedirs(outside)
+    marker = "TOPSECRET_DOCX_BOUNDARY_MARKER"
+    _make_docx(os.path.join(outside, "secret.docx"), [marker])
+    _make_docx(os.path.join(root, "inside.docx"), ["внутренний абзац"])
+    os.symlink(os.path.join(root, "L"), os.path.join(root, "L"))
+    os.symlink(os.path.join("..", "outside"), os.path.join(root, "S"))
+
+    def refused(path, base_dir):
+        try:
+            item = tx.extract(path, base_dir=base_dir)
+        except tx.PathAccessError:
+            return True
+        assert marker not in repr(item), "утечка через %r: %r" % (path, item)
+        return False
+
+    assert refused("L/../S/secret.docx", root), "«..» после симлинк-цикла вывел из корня"
+    assert refused("S/secret.docx", root), "симлинк наружу не отказан"
+    assert refused(os.path.join(outside, "secret.docx"), root), "абсолютный путь наружу не отказан"
+    cwd = os.getcwd()
+    os.chdir(root)
+    try:
+        for bad_base in ("", ".", "   "):
+            assert refused("inside.docx", bad_base), "база %r приняла текущую папку" % bad_base
+    finally:
+        os.chdir(cwd)
+    assert tx.extract("inside.docx", base_dir=root)["supported"] is True
+
+
 def run():
     ok = True
     base = make_temp_dir("docx_")
     try:
+        _boundary_checks(base)
         p = os.path.join(base, "doc.docx")
         _make_docx(p, ["Первый абзац DeepNeedle", "token=SUPERSECRETXYZ123"])
         item = tx.extract(p, base_dir=base)

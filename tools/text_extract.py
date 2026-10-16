@@ -92,16 +92,32 @@ def _strip_markdown_noise(text):
     text = re.sub(r"^[\s>*_`#-]+", "", text, flags=re.M)
     return text
 
+def _is_physical(path):
+    # На Python 3.12 realpath() после цикла симлинков оставляет хвост нерешённым и схлопывает «..» по тексту,
+    # так что результат может всё ещё называть симлинк. Полностью разрешённый путь симлинков не содержит.
+    current = path
+    while True:
+        if os.path.islink(current):
+            return False
+        parent = os.path.dirname(current)
+        if parent == current:
+            return True
+        current = parent
+
+
 def _docx_read(path, base_dir):
     """Извлечь текст .docx чистой stdlib (zipfile + WordprocessingML), с confinement и redaction.
 
     .docx — бинарный Open XML, поэтому идёт мимо read_file (тот читает текст). Confinement к
     base_dir (allowed-root) и маскирование секретов делаем здесь явно, как и read_file(redact=True)."""
+    # Пустая база и «.» отказывают: иначе границей становится текущая папка (fail-closed).
+    if base_dir is None or os.path.normpath(str(base_dir).strip()) == ".":
+        raise PathAccessError("allowed root must be an explicit path, not blank or '.' (fail-closed)")
     raw = path if os.path.isabs(str(path)) else os.path.join(base_dir, str(path))
     real = os.path.realpath(raw)
     base_real = os.path.realpath(base_dir)
     try:
-        inside = os.path.commonpath([real, base_real]) == base_real
+        inside = os.path.commonpath([real, base_real]) == base_real and _is_physical(real)
     except ValueError:  # разные диски (Windows) — точно вне корня
         inside = False
     if not inside:
