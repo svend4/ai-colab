@@ -44,10 +44,14 @@ wb = _load("wb_workbench", "workbench", "workbench.py")
 
 sys.path.insert(0, DRIVERS)  # для общего audit-хелпера (drivers/audit.py)
 from audit import audit  # аудит вызовов: gateway risk=medium (policy, ревью T-078 E, D-015)
+
+BASE = os.environ.get("GATEWAY_BASE", "")
+if not BASE.strip():  # проверка до импорта mcp: отказ виден и без FastMCP
+    sys.exit("GATEWAY_BASE не задан: укажите allowed-root (fail-closed, docs/files-driver-hardening.md)")
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("ai-os-bridge")
-BASE = os.environ.get("GATEWAY_BASE") or os.getcwd()
 
 
 # --- files ---

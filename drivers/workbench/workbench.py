@@ -179,7 +179,10 @@ def main():
         print(__doc__)
         return 2
     cmd, db = a[0], a[1]
-    base_dir = os.environ.get("WORKBENCH_BASE") or os.getcwd()
+    base_dir = os.environ.get("WORKBENCH_BASE", "")
+    if not base_dir.strip():  # fail-closed: без allowed-root CLI не работает
+        print(json.dumps({"error": "ConfigError", "message": "WORKBENCH_BASE не задан: укажите allowed-root (fail-closed)"}, ensure_ascii=False))
+        return 2
 
     def opt(name):
         return a[a.index(name) + 1] if name in a and a.index(name) + 1 < len(a) else None

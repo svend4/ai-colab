@@ -15,20 +15,24 @@ MCP-сервер `files` (read-only) — T-046.
     command = "python"
     args = ["<repo>/drivers/files/mcp_server.py"]
 
-Ограничение зоны:
+Ограничение зоны (обязательно, fail-closed):
     FILES_DRIVER_BASE=<allowed-root> python drivers/files/mcp_server.py
 
-Если FILES_DRIVER_BASE не задан, allowed-root равен текущей рабочей папке процесса.
+Без FILES_DRIVER_BASE сервер не стартует: раньше allowed-root тихо становился рабочей папкой.
 """
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import files_driver as fd
+
+BASE_DIR = os.environ.get("FILES_DRIVER_BASE", "")
+if not BASE_DIR.strip():  # проверка до импорта mcp: отказ виден и без FastMCP
+    sys.exit("FILES_DRIVER_BASE не задан: укажите allowed-root (fail-closed, docs/files-driver-hardening.md)")
+
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("files")
-BASE_DIR = os.environ.get("FILES_DRIVER_BASE") or os.getcwd()
 
 
 def _clamp_int(value, default, upper):

@@ -100,8 +100,12 @@ def main():
         print(__doc__)
         return 2
     cmd, db, target = a[0], a[1], a[2]
-    db_base = os.environ.get("WORKBENCH_BASE") or os.getcwd()
-    source_base = os.environ.get("INGEST_SOURCE_BASE") or os.getcwd()
+    db_base = os.environ.get("WORKBENCH_BASE", "")
+    source_base = os.environ.get("INGEST_SOURCE_BASE", "")
+    missing = [n for n, v in (("WORKBENCH_BASE", db_base), ("INGEST_SOURCE_BASE", source_base)) if not v.strip()]
+    if missing:  # fail-closed: без allowed-root ingest не работает
+        print(json.dumps({"error": "ConfigError", "message": "не задано: %s (fail-closed, укажите allowed-root)" % ", ".join(missing)}, ensure_ascii=False))
+        return 2
     max_files = int(os.environ.get("INGEST_MAX_FILES") or DEFAULT_MAX_FILES)
     try:
         if cmd == "repo":
