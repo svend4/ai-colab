@@ -4263,11 +4263,11 @@
       "file": "decisions/D-039.md"
     },
     {
-      "id": "D-040",
+      "id": "D-041",
       "title": "Подключение Google Labs Jules как агента, работающего только через PR",
       "status": "proposed",
       "date": "2026-10-16",
-      "file": "decisions/D-040.md"
+      "file": "decisions/D-041.md"
     }
   ],
   "drivers": [

@@ -20,7 +20,7 @@
 Единый источник ростера — `tools/_canon.py`, зоны записи — `tools/permissions.json` (проверка: `python tools/permissions.py <agent>`).
 
 - **Ростер** (`AGENTS_ROSTER`, ратифицирован: Stefan, 2026-07-06): claude, codex, mavis, novax.
-- **Кандидат в ростер**: jules (Google Labs Jules, облачный агент) — работает только через ветки и PR; статус по D-040 (`proposed`).
+- **Кандидат в ростер**: jules (Google Labs Jules, облачный агент) — работает только через ветки и PR; статус по D-041 (`proposed`).
 - **Служебные** (`SERVICE_AGENTS`): subagent-worker — служебные исполнители роёв (workflow-подагенты); их следы в рабочих артефактах — норма, `validate.py` не даёт WARN (решение Stefan 2026-07-06).
 - **Исключённые** (`EXCLUDED_AGENTS`): antigravity — вне ростера до объяснения по инциденту outbox-mass-strip (решение Stefan 2026-07-06); `validate.py` напоминает WARN'ом с этой причиной.
 - **Критические пути** (deny-список `"_deny_agents"` в `tools/permissions.json`, проверяется ПЕРВЫМ для любого агента, включая зону `**`): `tools/permissions.json`, `tools/githooks/**`, `sandbox/approvals/**` — правит только человек (решение Stefan 2026-07-06, закрывает gate-10/C31).
