@@ -131,8 +131,8 @@ def _inside_root(path: Path, allowed: Path) -> bool:
 def inventory(root_path: str, max_files: int = DEFAULT_MAX_FILES, include_hidden: bool = False,
               hash_files: bool = False, max_hash_bytes: int = DEFAULT_MAX_HASH_BYTES,
               base_dir=None) -> dict:
-    if base_dir is not None and not str(base_dir).strip():
-        return {"error": "ConfigError", "message": "base_dir is blank (fail-closed)"}
+    if base_dir is not None and (not str(base_dir).strip() or Path(base_dir).parts == ()):
+        return {"error": "ConfigError", "message": "base_dir must be an explicit path, not blank or '.' (fail-closed)"}
     # The boundary is checked before exists(), so an outside path gets the same answer
     # whether it exists or not. A symlink loop that cannot be resolved counts as outside.
     try:
@@ -265,7 +265,7 @@ def main(argv=None):
         include_hidden=args.include_hidden,
         hash_files=args.hash_files,
         max_hash_bytes=args.max_hash_bytes,
-        base_dir=args.base,
+        base_dir=os.path.abspath(os.path.expanduser(args.base)),
     )
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 1 if "error" in report else 0

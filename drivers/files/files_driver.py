@@ -76,8 +76,9 @@ def _is_physical(path):
 
 def _resolve_path(path_value, base_dir=None):
     # Граница обязательна: без allowed-root движок ничего не отдаёт (fail-closed).
-    if base_dir is None or not str(base_dir).strip():
-        raise PathAccessError("allowed root is required (fail-closed)")
+    # Пустая база и «.» (что даёт Path("")) тоже отказ: cwd не становится границей по ошибке.
+    if base_dir is None or not str(base_dir).strip() or Path(base_dir).parts == ():
+        raise PathAccessError("allowed root must be an explicit path, not blank or '.' (fail-closed)")
     base = Path(base_dir).expanduser().resolve()
     # «~» под базой не раскрываем: иначе ответ зависит от учётных записей системы.
     raw_path = Path(path_value)
@@ -103,7 +104,7 @@ def _skip_file(name, include_hidden=False):
 def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_dir=None):
     root_path = _resolve_path(root, base_dir)
     if not root_path.is_dir():
-        raise NotADirectoryError(str(root_path))
+        raise NotADirectoryError(str(root))  # как передали, а не разрешённую цель симлинка
     # граница — разрешённая папка (base_dir); файл-симлинк наружу не отдаём ни в list, ни в search
     allowed = Path(base_dir).expanduser().resolve()
 
@@ -117,7 +118,8 @@ def _iter_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_di
                 return
             full_path = Path(dp) / fn
             try:
-                inside = _is_relative_to(full_path.resolve(), allowed)
+                real = full_path.resolve()
+                inside = _is_relative_to(real, allowed) and _is_physical(real)
             except (OSError, RuntimeError):  # RuntimeError: цикл симлинков до Python 3.13
                 inside = False
             if not inside:
@@ -136,10 +138,14 @@ def list_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_dir
 
 def read_file(path, max_bytes=MAX_OUTPUT_BYTES, base_dir=None, redact=True):
     resolved = _resolve_path(path, base_dir)
+    # Ошибки называют путь так, как его передали, а не разрешённую цель симлинка внутри базы.
     if not resolved.is_file():
-        raise FileNotFoundError(str(resolved))
-    with resolved.open("rb") as f:
-        data = f.read(max_bytes + 1)
+        raise FileNotFoundError(str(path))
+    try:
+        with resolved.open("rb") as f:
+            data = f.read(max_bytes + 1)
+    except OSError as exc:
+        raise type(exc)(exc.errno, exc.strerror, str(path)) from None
     truncated = len(data) > max_bytes
     text = data[:max_bytes].decode("utf-8", "replace")
     if redact:
@@ -173,7 +179,7 @@ def search(
 
 def summarize(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_dir=None):
     root_path = _resolve_path(root, base_dir)
-    files = list_files(root_path, max_files=max_files, include_hidden=include_hidden, base_dir=base_dir)
+    files = list_files(root, max_files=max_files, include_hidden=include_hidden, base_dir=base_dir)
     by_ext = {}
     total = 0
     for rel in files:
@@ -211,6 +217,9 @@ def main():
         if cmd in ("list", "read", "search", "summarize") and not (base_dir or "").strip():
             print(json.dumps({"error": "ConfigError", "message": "--base is required: pass the allowed root (fail-closed)"}, ensure_ascii=False))
             return 2
+        if base_dir is not None:
+            # Явная «.» или относительная база становятся абсолютным путём уже в CLI.
+            base_dir = os.path.abspath(os.path.expanduser(base_dir))
         include_hidden = "--include-hidden" in a
         if cmd == "list" and len(a) > 1:
             print(json.dumps(

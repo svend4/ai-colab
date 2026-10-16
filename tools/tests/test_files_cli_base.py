@@ -13,6 +13,7 @@ import os
 import shutil
 import sys
 import unittest
+from pathlib import Path
 from unittest import mock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -242,6 +243,56 @@ class CliBaseTest(unittest.TestCase):
             self.assertNotIn(MARKER, out)
         finally:
             os.chdir(cwd)
+
+    def test_dot_or_empty_path_base_is_refused_by_engine(self):
+        for base in (".", Path("")):
+            with self.subTest(base=str(base)):
+                with self.assertRaises(fd.PathAccessError):
+                    fd.read_file("inside.txt", base_dir=base)
+                with self.assertRaises(fd.PathAccessError):
+                    fd.list_files(self.base, base_dir=base)
+                self.assertEqual(inv.inventory(self.base, base_dir=base)["error"], "ConfigError")
+
+    def test_read_error_for_in_base_symlink_names_the_given_path(self):
+        os.symlink(os.path.join(self.base, "missing_in.txt"), os.path.join(self.base, "dangling_in.txt"))
+        rc, out = run_files_cli(["read", "dangling_in.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "FileNotFoundError")
+        self.assertEqual(json.loads(out)["message"], "dangling_in.txt")
+
+    def test_list_error_for_in_base_symlink_names_the_given_path(self):
+        os.symlink(os.path.join(self.base, "inside.txt"), os.path.join(self.base, "alias_in.txt"))
+        rc, out = run_files_cli(["list", "alias_in.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "NotADirectoryError")
+        self.assertEqual(json.loads(out)["message"], "alias_in.txt")
+
+    def test_open_error_for_in_base_symlink_names_the_given_path(self):
+        os.symlink(os.path.join(self.base, "inside.txt"), os.path.join(self.base, "alias_in.txt"))
+        target = os.path.join(self.base, "inside.txt")
+        with mock.patch.object(fd.Path, "open", side_effect=PermissionError(13, "Permission denied", target)):
+            rc, out = run_files_cli(["read", "alias_in.txt", "--base", self.base])
+        self.assertEqual(rc, 1)
+        self.assertEqual(json.loads(out)["error"], "PermissionError")
+        self.assertNotIn("inside.txt", out)
+
+    def test_in_root_file_loop_is_not_listed(self):
+        loop = os.path.join(self.base, "Lfile")
+        os.symlink(loop, loop)
+        self.assertEqual(fd.list_files(self.base, base_dir=self.base), ["inside.txt"])
+
+    def test_cli_dot_base_is_the_explicit_current_directory(self):
+        cwd = os.getcwd()
+        os.chdir(self.base)
+        try:
+            rc, out = run_files_cli(["read", "inside.txt", "--base", "."])
+            rc_inv, out_inv = run_inventory_cli([".", "--base", "."])
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(rc, 0)
+        self.assertIn("обычный текст", out)
+        self.assertEqual(rc_inv, 0)
+        self.assertEqual({item["path"] for item in json.loads(out_inv)["files"]}, {"inside.txt"})
 
 
 if __name__ == "__main__":
