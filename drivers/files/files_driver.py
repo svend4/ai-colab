@@ -182,29 +182,43 @@ def _stat_physical(base, physical, given):
 
 def _open_physical(base, physical, given):
     # Файл открывается цепочкой dir_fd с O_NOFOLLOW: подмена компонента после проверки даёт ELOOP, а не чтение.
-    # FIFO открывается без ожидания (O_NONBLOCK) и отказывает по S_ISREG; жёсткая ссылка тоже отказ.
+    # Тип и число ссылок проверяются по stat до open(): open() на устройстве или терминале уже может что-то сделать
+    # (O_NOCTTY не даёт терминалу стать управляющим). После open() сверяется, что открыт тот же объект.
     # Без O_NOFOLLOW или dir_fd (Windows) остаётся проверка по пути, как раньше.
     try:
         if _SAFE_OPEN:
             dirfd, name = _parent_dirfd(base, physical)
             try:
-                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+                before = os.stat(name, dir_fd=dirfd, follow_symlinks=False)
+                _check_regular(before, given)
+                fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_NOCTTY, dir_fd=dirfd)
             finally:
                 os.close(dirfd)
         else:
+            before = os.stat(str(physical))
+            _check_regular(before, given)
             fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
     except OSError as exc:
         raise _refuse(exc, given) from None
     try:
         st = os.fstat(fd)
-        if not stat.S_ISREG(st.st_mode):
-            raise FileNotFoundError(str(given))  # каталог или FIFO: как и прежде, не файл
-        if st.st_nlink > 1:
-            raise PathAccessError(f"hard-linked file is refused (fail-closed): {given}")
+        if _SAFE_OPEN and (st.st_dev, st.st_ino) != (before.st_dev, before.st_ino):
+            raise PathAccessError(f"path changed while opening (fail-closed): {given}")
+        _check_regular(st, given)
     except BaseException:
         os.close(fd)
         raise
     return fd
+
+
+def _check_regular(st, given):
+    # Симлинк, каталог, устройство и FIFO — не файл; жёсткая ссылка отказывает, её второе имя может быть снаружи.
+    if stat.S_ISLNK(st.st_mode):  # подменён на симлинк после проверки: путь снаружи, как при ELOOP
+        raise PathAccessError(f"path is outside allowed root: {given}")
+    if not stat.S_ISREG(st.st_mode):
+        raise FileNotFoundError(errno.ENOENT, "not a file", str(given))  # _refuse отдаёт это как «не файл»
+    if st.st_nlink > 1:
+        raise PathAccessError(f"hard-linked file is refused (fail-closed): {given}")
 
 
 def _skip_dir(name, include_hidden=False):
@@ -251,6 +265,8 @@ def list_files(root, max_files=DEFAULT_MAX_FILES, include_hidden=False, base_dir
 
 
 def read_file(path, max_bytes=MAX_OUTPUT_BYTES, base_dir=None, redact=True):
+    # Предел держим в 0..MAX_OUTPUT_BYTES: отрицательный давал read(-1) и читал файл целиком мимо лимита.
+    max_bytes = max(0, min(max_bytes, MAX_OUTPUT_BYTES))
     resolved = _resolve_path(path, base_dir)
     # Файл открываем цепочкой dir_fd с O_NOFOLLOW: подмена компонента после проверки не даёт чтения.
     fd = _open_physical(_resolve_base(base_dir), resolved, path)

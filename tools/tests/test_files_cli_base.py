@@ -307,6 +307,8 @@ class CliBaseTest(unittest.TestCase):
             fd.read_file("inside.txt", base_dir=loop)
 
     def test_tilde_base_with_empty_home_is_refused(self):
+        if os.name == "nt":
+            self.skipTest("expanduser на Windows берёт USERPROFILE, а не HOME")
         with mock.patch.dict(os.environ, {"HOME": ""}):
             self.assertEqual(os.path.expanduser("~"), "/")  # ловушка: пустой HOME даёт корень
             with self.assertRaises(fd.PathAccessError):
@@ -370,6 +372,8 @@ class CliBaseTest(unittest.TestCase):
         self.assertNotIn(MARKER, json.dumps(report))
 
     def test_race_swap_of_file_before_open_is_refused(self):
+        if not fd._SAFE_OPEN:
+            self.skipTest("нужны O_NOFOLLOW и dir_fd (нет на Windows)")
         # Файл прошёл проверку границы, а перед открытием заменён симлинком наружу: O_NOFOLLOW даёт ELOOP.
         target = os.path.join(self.base, "inside.txt")
         real_open = os.open
@@ -390,6 +394,8 @@ class CliBaseTest(unittest.TestCase):
         self.assertNotIn(MARKER, out)
 
     def test_race_swap_of_directory_before_open_is_refused(self):
+        if not fd._SAFE_OPEN:
+            self.skipTest("нужны O_NOFOLLOW и dir_fd (нет на Windows)")
         # Каталог внутри базы подменён симлинком наружу уже после проверки: цепочка dir_fd по нему не идёт.
         sub = os.path.join(self.base, "sub")
         os.makedirs(sub)
@@ -413,6 +419,31 @@ class CliBaseTest(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertEqual(json.loads(out)["error"], "PathAccessError")
         self.assertNotIn(MARKER, out)
+
+    def test_negative_max_bytes_does_not_read_whole_file(self):
+        # Отрицательный предел раньше давал read(-1): файл читался целиком, мимо лимита вывода.
+        with open(os.path.join(self.base, "big.txt"), "w", encoding="utf-8") as f:
+            f.write("x" * 100)
+        out = fd.read_file("big.txt", max_bytes=-2, base_dir=self.base)
+        self.assertEqual(out["text"], "")
+        self.assertTrue(out["truncated"])
+
+    def test_fifo_in_base_is_refused_without_opening_it(self):
+        # Тип проверяется до open(): FIFO в базе не открывается вовсе, а отказывает как «не файл».
+        if not hasattr(os, "mkfifo"):
+            self.skipTest("FIFO недоступен в этой ОС")
+        os.mkfifo(os.path.join(self.base, "pipe.txt"))
+        real_open = os.open
+        opened = []
+
+        def recording_open(name, flags, *args, **kwargs):
+            opened.append(os.path.basename(str(name)))
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fd.os, "open", side_effect=recording_open):
+            with self.assertRaises(FileNotFoundError):
+                fd.read_file("pipe.txt", base_dir=self.base)
+        self.assertNotIn("pipe.txt", opened)
 
 
 if __name__ == "__main__":
