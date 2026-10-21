@@ -216,6 +216,8 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         self.assertEqual({item["path"] for item in json.loads(out)["files"]}, {"inside.txt"})
 
     def test_tilde_base_with_empty_home_is_refused(self):
+        if os.name == "nt":
+            self.skipTest("expanduser на Windows берёт USERPROFILE, а не HOME")
         with mock.patch.dict(os.environ, {"HOME": ""}):
             self.assertEqual(os.path.expanduser("~"), "/")  # ловушка: пустой HOME даёт корень
             with self.assertRaises(fi.ConfigError):
@@ -242,6 +244,8 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         self.assertNotIn(hashlib.sha256(MARKER.encode("utf-8")).hexdigest(), json.dumps(report))
 
     def test_race_swap_before_hash_is_not_hashed(self):
+        if not fi._SAFE_OPEN:
+            self.skipTest("нужны O_NOFOLLOW и dir_fd (нет на Windows)")
         # inside.txt прошёл проверку, а перед хешированием стал симлинком на секрет: O_NOFOLLOW даёт ELOOP.
         target = os.path.join(self.base, "inside.txt")
         real_open = os.open
@@ -263,6 +267,24 @@ class FileInventoryBoundaryTest(unittest.TestCase):
         self.assertTrue(item["hash_skipped"])
         self.assertNotIn(hashlib.sha256(MARKER.encode("utf-8")).hexdigest(), json.dumps(report))
         self.assertNotIn(MARKER.strip(), json.dumps(report))
+
+    def test_fifo_in_base_is_listed_without_hash_and_not_opened(self):
+        # Тип проверяется до open(): FIFO в базе не открывается вовсе и попадает в список без хеша.
+        if not hasattr(os, "mkfifo"):
+            self.skipTest("FIFO недоступен в этой ОС")
+        os.mkfifo(os.path.join(self.base, "pipe.txt"))
+        real_open = os.open
+        opened = []
+
+        def recording_open(name, flags, *args, **kwargs):
+            opened.append(os.path.basename(str(name)))
+            return real_open(name, flags, *args, **kwargs)
+
+        with mock.patch.object(fi.os, "open", side_effect=recording_open):
+            report = fi.scan(self.base, base_dir=self.base, hash_files=True)
+        self.assertNotIn("pipe.txt", opened)
+        entries = {item["path"]: item for item in report["files"]}
+        self.assertTrue(entries["pipe.txt"]["hash_skipped"])
 
 
 if __name__ == "__main__":

@@ -226,26 +226,38 @@ def _stat_physical(base, physical, given):
 
 
 def _open_physical(base, physical):
-    # Open through the dir_fd chain with O_NOFOLLOW. O_NONBLOCK stops a FIFO from blocking the open;
-    # fstat then refuses it, and so it refuses a hard link (st_nlink > 1).
+    # Open through the dir_fd chain with O_NOFOLLOW. The type and link count are checked by stat before open(),
+    # since open() on a device or tty can already have an effect (O_NOCTTY keeps a tty from becoming controlling).
+    # After open() the fd must still be the object that was checked.
     if not _SAFE_OPEN:
+        before = os.stat(str(physical))
+        _check_regular(before)
         fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
     else:
         dirfd, name = _parent_dirfd(base, physical)
         try:
-            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+            before = os.stat(name, dir_fd=dirfd, follow_symlinks=False)
+            _check_regular(before)
+            fd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_NOCTTY, dir_fd=dirfd)
         finally:
             os.close(dirfd)
     try:
         st = os.fstat(fd)
-        if not stat.S_ISREG(st.st_mode):
-            raise PathAccessError("not a regular file (fail-closed)")
-        if st.st_nlink > 1:
-            raise PathAccessError("hard-linked file is refused (fail-closed)")
+        if _SAFE_OPEN and (st.st_dev, st.st_ino) != (before.st_dev, before.st_ino):
+            raise PathAccessError("path changed while opening (fail-closed)")
+        _check_regular(st)
     except BaseException:
         os.close(fd)
         raise
     return fd
+
+
+def _check_regular(st):
+    # A symlink, directory, device or FIFO is not a file; a hard link can name a file outside the root.
+    if not stat.S_ISREG(st.st_mode):
+        raise PathAccessError("not a regular file (fail-closed)")
+    if st.st_nlink > 1:
+        raise PathAccessError("hard-linked file is refused (fail-closed)")
 
 
 def _sha256_fd(base, physical, max_bytes=DEFAULT_MAX_HASH_BYTES):
