@@ -121,11 +121,24 @@ def _has_loop(path):
 _SAFE_OPEN = hasattr(os, "O_NOFOLLOW") and os.open in os.supports_dir_fd
 
 
+def _check_regular(st, given):
+    # Симлинк (подменён после проверки), каталог, устройство и FIFO — не файл; жёсткая ссылка отказывает.
+    if stat.S_ISLNK(st.st_mode):
+        raise PathAccessError("path outside allowed root: %s" % given)
+    if not stat.S_ISREG(st.st_mode):
+        raise FileNotFoundError(errno.ENOENT, "not a file", str(given))  # каталог, устройство или FIFO
+    if st.st_nlink > 1:
+        raise PathAccessError("hard-linked file is refused (fail-closed): %s" % given)
+
+
 def _open_physical(base, physical, given):
     # Открывает уже разрешённый путь внутри базы цепочкой dir_fd с O_NOFOLLOW (как в drivers/files): компонент,
-    # подменённый на симлинк после проверки, даёт ELOOP и не открывается. Не-файл и жёсткая ссылка отказывают.
+    # подменённый на симлинк после проверки, даёт ELOOP и не открывается. Тип и число ссылок проверяются по stat
+    # до open(): открытие устройства или FIFO уже может что-то сделать. После open() сверяется тот же объект.
     try:
         if not _SAFE_OPEN:
+            before = os.stat(str(physical))
+            _check_regular(before, given)
             fd = os.open(str(physical), os.O_RDONLY | getattr(os, "O_BINARY", 0))
         else:
             parts = Path(physical).relative_to(base).parts
@@ -137,7 +150,9 @@ def _open_physical(base, physical, given):
                     nextfd = os.open(name, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
                     os.close(dirfd)
                     dirfd = nextfd
-                fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=dirfd)
+                before = os.stat(parts[-1], dir_fd=dirfd, follow_symlinks=False)
+                _check_regular(before, given)
+                fd = os.open(parts[-1], os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_NOCTTY, dir_fd=dirfd)
             finally:
                 os.close(dirfd)
     except OSError as exc:
@@ -146,10 +161,9 @@ def _open_physical(base, physical, given):
         raise type(exc)(exc.errno, exc.strerror, str(given)) from None
     try:
         st = os.fstat(fd)
-        if not stat.S_ISREG(st.st_mode):
-            raise FileNotFoundError(str(given))  # каталог или FIFO: не файл
-        if st.st_nlink > 1:
-            raise PathAccessError("hard-linked file is refused (fail-closed): %s" % given)
+        if _SAFE_OPEN and (st.st_dev, st.st_ino) != (before.st_dev, before.st_ino):
+            raise PathAccessError("path changed while opening: %s" % given)
+        _check_regular(st, given)
     except BaseException:
         os.close(fd)
         raise
