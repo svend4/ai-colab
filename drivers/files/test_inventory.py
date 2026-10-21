@@ -19,7 +19,7 @@ def inventory_temp_dir():
 
 def test_empty_directory():
     with inventory_temp_dir() as tmp:
-        report = inventory(tmp)
+        report = inventory(tmp, base_dir=tmp)
         assert report["summary"]["total_files"] == 0
         assert report["summary"]["total_size_bytes"] == 0
         assert report["truncated"] is False
@@ -35,7 +35,7 @@ def test_basic_inventory_and_kinds():
         (root / "sub").mkdir()
         (root / "sub" / "notes.txt").write_text("notes\n", encoding="utf-8")
 
-        report = inventory(tmp)
+        report = inventory(tmp, base_dir=tmp)
         assert report["summary"]["total_files"] == 4
         assert report["summary"]["extensions"][".md"] == 1
         assert report["summary"]["extensions"][".json"] == 1
@@ -53,7 +53,7 @@ def test_skips_hidden_and_common_dirs_by_default():
         (root / ".git" / "config").write_text("config\n", encoding="utf-8")
         (root / "visible.txt").write_text("visible\n", encoding="utf-8")
 
-        report = inventory(tmp)
+        report = inventory(tmp, base_dir=tmp)
         paths = {item["path"] for item in report["files"]}
         assert "visible.txt" in paths
         assert ".secret" not in paths
@@ -68,7 +68,7 @@ def test_hash_and_truncation():
         (root / "a.txt").write_text("aaa", encoding="utf-8")
         (root / "b.txt").write_text("bbb", encoding="utf-8")
 
-        report = inventory(tmp, max_files=1, hash_files=True)
+        report = inventory(tmp, max_files=1, hash_files=True, base_dir=tmp)
         assert report["summary"]["total_files"] == 1
         assert report["truncated"] is True
         assert "sha256" in report["files"][0]
@@ -81,7 +81,7 @@ def test_cli_json():
         (root / "a.txt").write_text("aaa", encoding="utf-8")
         script = Path(__file__).with_name("inventory.py")
         completed = subprocess.run(
-            [sys.executable, str(script), tmp, "--hash"],
+            [sys.executable, str(script), tmp, "--hash", "--base", tmp],
             check=True,
             capture_output=True,
             text=True,

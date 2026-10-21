@@ -31,23 +31,23 @@ def run():
     d = make_corpus()
     ok = True
     try:
-        files = fd.list_files(d)
+        files = fd.list_files(d, base_dir=d)
         assert "nested/a.txt" in files, "вложенные не обходятся"
         assert len(files) == 5, files
 
-        assert fd.read_file(os.path.join(d, "empty.txt"))["text"] == "", "empty не пустой"
+        assert fd.read_file(os.path.join(d, "empty.txt"), base_dir=d)["text"] == "", "empty не пустой"
 
-        rb = fd.read_file(os.path.join(d, "plain.txt"), max_bytes=4)
+        rb = fd.read_file(os.path.join(d, "plain.txt"), max_bytes=4, base_dir=d)
         assert rb["truncated"] and rb["text"] == "hell", rb
 
-        redacted = fd.read_file(os.path.join(d, "secret-like.txt"))["text"]
+        redacted = fd.read_file(os.path.join(d, "secret-like.txt"), base_dir=d)["text"]
         assert "supersecret123" not in redacted and "***" in redacted, "read() не маскирует секрет"
 
-        hits = fd.search("API_KEY", d)
+        hits = fd.search("API_KEY", d, base_dir=d)
         assert any(h["path"] == "secret-like.txt" for h in hits), "не нашёл API_KEY"
         assert all("supersecret123" not in h["text"] for h in hits), "СЕКРЕТ УТЁК"
-        assert len(fd.search("file", d, max_hits=1)) == 1, "max_hits не ограничивает выдачу"
-        assert len(fd.list_files(d, max_files=2)) == 2, "max_files не ограничивает обход"
+        assert len(fd.search("file", d, max_hits=1, base_dir=d)) == 1, "max_hits не ограничивает выдачу"
+        assert len(fd.list_files(d, max_files=2, base_dir=d)) == 2, "max_files не ограничивает обход"
 
         try:
             fd.read_file(os.path.join(d, "plain.txt"), base_dir=os.path.join(d, "nested"))
@@ -55,7 +55,13 @@ def run():
         except fd.PathAccessError:
             pass
 
-        s = fd.summarize(d)
+        try:
+            fd.list_files(d)
+            assert False, "движок без base работает без границы"
+        except fd.PathAccessError:
+            pass
+
+        s = fd.summarize(d, base_dir=d)
         assert s["files"] == 5 and s["total_bytes"] > 0, s
 
         # регрессия (аудит C45): лимит в коде обязан совпадать с max_output_bytes
