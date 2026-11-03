@@ -4268,6 +4268,13 @@
       "status": "accepted",
       "date": "2026-07-07",
       "file": "decisions/D-039.md"
+    },
+    {
+      "id": "D-041",
+      "title": "Подключение Google Labs Jules как агента, работающего только через PR",
+      "status": "proposed",
+      "date": "2026-10-16",
+      "file": "decisions/D-041.md"
     }
   ],
   "drivers": [
