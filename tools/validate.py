@@ -264,15 +264,45 @@ def check_topics():
         ok("topics: %d тем, у всех есть front-matter title" % total)
 
 # ---------- имена файлов (D-005/D-007) ----------
+def case_collisions(paths):
+    """Возвращает сгруппированные списки путей, которые конфликтуют только регистром."""
+    prefixes = set()
+    for p in paths:
+        parts = p.split('/')
+        for i in range(1, len(parts) + 1):
+            prefixes.add('/'.join(parts[:i]))
+
+    by_lower = {}
+    for pref in prefixes:
+        by_lower.setdefault(pref.lower(), []).append(pref)
+
+    conflict_lowers = {k for k, v in by_lower.items() if len(v) > 1}
+
+    filtered_conflicts = []
+    for lower_pref in sorted(conflict_lowers):
+        parts = lower_pref.split('/')
+        parent_conflict = False
+        for i in range(1, len(parts)):
+            if '/'.join(parts[:i]) in conflict_lowers:
+                parent_conflict = True
+                break
+        if not parent_conflict:
+            filtered_conflicts.append(sorted(by_lower[lower_pref]))
+
+    return sorted(filtered_conflicts)
+
 def check_naming():
     cyr = []
+    all_paths = []
     for dirpath, _dirs, files in os.walk(ROOT):
         if ".git" in dirpath:
             continue
         for fn in files:
+            rel = os.path.relpath(os.path.join(dirpath, fn), ROOT).replace("\\", "/")
+            all_paths.append(rel)
             if fn.endswith(".md") and not all(ord(c) < 128 for c in fn):
-                rel = os.path.relpath(os.path.join(dirpath, fn), ROOT)
                 cyr.append(rel)
+
     if cyr:
         warn(
             "Имена с кириллицей (по D-007 мигрируют лениво, не ошибка): "
@@ -280,6 +310,13 @@ def check_naming():
         )
     else:
         ok("Все имена файлов ASCII (D-005)")
+
+    collisions = case_collisions(all_paths)
+    if collisions:
+        for group in collisions:
+            warn("Имена различаются только регистром (на Windows/macOS это один путь, checkout сломается): " + " ↔ ".join(group))
+    else:
+        ok("Нет имён, различающихся только регистром")
 
 # ---------- источники: tasks/ questions/ decisions/ (валидатор v2) ----------
 def check_sources():

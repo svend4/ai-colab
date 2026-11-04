@@ -177,6 +177,12 @@ def run():
     assert v._parse_inline_list("") == []
     assert "real" not in v.strip_code_fences("text ```real``` tail")
 
+    # T-296, п.3 списка docs/additive-enrichment-shortlist.md: чистая логика case_collisions
+    assert v.case_collisions(["a/Foo.md", "a/foo.md", "b.md"]) == [["a/Foo.md", "a/foo.md"]]
+    assert v.case_collisions(["Docs/x.md", "docs/y.md"]) == [["Docs", "docs"]]
+    assert v.case_collisions(["Docs/x.md", "docs/x.md"]) == [["Docs", "docs"]]
+    assert v.case_collisions(["a.md", "b/a.md"]) == []
+
     # P10-b (волна 2): чистая логика D-023 (ownership индексов) — без git
     f1 = v.d023_findings(["tasks/T-001.md"])  # source без индекса
     assert len(f1) == 1 and "D-023" in f1[0] and "source" in f1[0], f1
@@ -326,7 +332,31 @@ def run():
     rc, out, _ = _run_validate_argv(["--help"])
     assert rc == 0 and "Валидатор" in out, "--help сломан (rc=%d):\n%s" % (rc, out)
 
-    print("TESTS OK validate: helpers (table_rows/md_paths/inline-list/fences) + "
+    # T-296, п.3 списка docs/additive-enrichment-shortlist.md: Прогон на case-sensitive FS с case collisions
+    with temp_dir("validate_case_") as root:
+        _build_valid_root(root)
+        fs_supports_case = True
+        try:
+            _write(root, "testCase", "a")
+            _write(root, "testcase", "b")
+            with open(os.path.join(root, "testCase")) as f:
+                if f.read() == "b":
+                    fs_supports_case = False
+            os.remove(os.path.join(root, "testCase"))
+            os.remove(os.path.join(root, "testcase"))
+        except Exception:
+            fs_supports_case = False
+
+        if fs_supports_case:
+            _write(root, "topics/Case.md", "---\nid: Case\ntype: topic\ntitle: Case\nstatus: open\n---\n")
+            _write(root, "topics/case.md", "---\nid: case\ntype: topic\ntitle: case\nstatus: open\n---\n")
+            rc, out = _run_validate(root)
+            ok, warn, err = _counters(out)
+            assert rc == 0, "Конфликт регистра должен давать WARN, не ERROR:\n%s" % out
+            assert "Имена различаются только регистром" in out, "Ожидался WARN про регистр:\n%s" % out
+            assert "topics/Case.md ↔ topics/case.md" in out or "topics/case.md ↔ topics/Case.md" in out, "Ожидались имена конфликтующих файлов в выводе:\n%s" % out
+
+    print("TESTS OK validate: helpers (table_rows/md_paths/inline-list/fences/case_collisions) + "
           "main() контракт OK/WARN/ERROR (valid→0, 3 ERROR-кейса→1) + "
           "C18 WARN тема-без-title + C48 argv (флаг/битый ROOT→die 2, каталог→ok, --help→0) + "
           "волна2: C7 D-014 execute_decision (нет поля/proposed→ERROR, accepted→0) + "
