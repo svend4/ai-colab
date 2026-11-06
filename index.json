@@ -4268,6 +4268,13 @@
       "status": "accepted",
       "date": "2026-07-07",
       "file": "decisions/D-039.md"
+    },
+    {
+      "id": "D-040",
+      "title": "Одобрение массового удаления через GitHub Environment вместо токена в сообщении коммита",
+      "status": "proposed",
+      "date": "2026-10-16",
+      "file": "decisions/D-040.md"
     }
   ],
   "drivers": [
